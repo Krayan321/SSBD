@@ -10,6 +10,11 @@
     <name>ssbd01</name>
 
     <developers>
+        <developer>
+            <id>ajonczyk</id>
+            <name>Antoni Jończyk</name>
+            <email>236551@edu.p.lodz.pl</email>
+        </developer>
 
     </developers>
 
