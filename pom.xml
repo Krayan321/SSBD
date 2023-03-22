@@ -10,7 +10,10 @@
     <name>ssbd01</name>
 
     <developers>
-
+        <developer>
+            <id>236660</id>
+            <name>Piotr Strachota</name>
+        </developer>
     </developers>
 
     <properties>
