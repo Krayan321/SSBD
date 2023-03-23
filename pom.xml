@@ -19,6 +19,11 @@
             <name>Antoni Jończyk</name>
             <email>236551@edu.p.lodz.pl</email>
         </developer>
+        <developer>
+            <id>229979</id>
+            <name>Michal Pianka</name>
+        </developer>
+
     </developers>
 
     <properties>
