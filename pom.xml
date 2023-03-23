@@ -23,7 +23,11 @@
             <id>229979</id>
             <name>Michal Pianka</name>
         </developer>
-
+        <developer>
+            <id>236641</id>
+            <name>Jan Rubacha</name>
+            <email>236641@edu.p.lodz.pl</email>
+        </developer>
     </developers>
 
     <properties>
