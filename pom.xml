@@ -10,7 +10,10 @@
     <name>ssbd01</name>
 
     <developers>
-
+        <developer>
+            <id>236535</id>
+            <name>Jakub Glegola</name>
+        </developer>
     </developers>
 
     <properties>
