@@ -28,6 +28,11 @@
             <name>Jan Rubacha</name>
             <email>236641@edu.p.lodz.pl</email>
         </developer>
+        <developer>
+            <id>236594</id>
+            <name>Wiktor Malavasi</name>
+        </developer>
+
     </developers>
 
     <properties>
