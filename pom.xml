@@ -32,7 +32,10 @@
             <id>236594</id>
             <name>Wiktor Malavasi</name>
         </developer>
-
+        <developer>
+            <id>236535</id>
+            <name>Jakub Glegola</name>
+        </developer>
     </developers>
 
     <properties>
