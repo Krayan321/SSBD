@@ -11,11 +11,14 @@
 
     <developers>
         <developer>
+            <id>236660</id>
+            <name>Piotr Strachota</name>
+        </developer>
+        <developer>
             <id>236551</id>
             <name>Antoni Jończyk</name>
             <email>236551@edu.p.lodz.pl</email>
         </developer>
-
     </developers>
 
     <properties>
