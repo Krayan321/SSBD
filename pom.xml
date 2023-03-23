@@ -10,7 +10,11 @@
     <name>ssbd01</name>
 
     <developers>
-
+        <developer>
+            <id>236641</id>
+            <name>Jan Rubacha</name>
+            <email>236641@edu.p.lodz.pl</email>
+        </developer>
     </developers>
 
     <properties>
