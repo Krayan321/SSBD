@@ -14,7 +14,7 @@
         <role-name>ADMINISTRATOR</role-name>
     </security-role>
     <security-role>
-        <role-name>PHARMACIST</role-name>
+        <role-name>CHEMIST</role-name>
     </security-role>
     <security-role>
         <role-name>PATIENT</role-name>
