@@ -32,4 +32,16 @@
             <transport-guarantee>CONFIDENTIAL</transport-guarantee>
         </user-data-constraint>
     </security-constraint>
+
+    <!--dodano nazwe przestrzeni uwierzytelniania, odwolanie do stron formularza - na przyszlosc
+    <login-config>
+        <auth-method>FORM</auth-method>
+        <realm-name>ssbd01realm</realm-name>
+        <form-login-config>
+            <form-login-page>/login/login.html</form-login-page>
+            <form-error-page>/login/error.html</form-error-page>
+        </form-login-config>
+    </login-config>
+    -->
+
 </web-app>
