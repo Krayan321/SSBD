@@ -14,7 +14,7 @@ import lombok.ToString;
 @DiscriminatorValue("PATIENT")
 @NoArgsConstructor
 @ToString(callSuper = true)
-@NamedQuery(name="patientData.findAll", query = "SELECT o FROM Account o")
+@NamedQuery(name="patientData.findAll", query = "SELECT o FROM PatientData o")
 public class PatientData extends AccessLevel implements Serializable {
 
     private static final long serialVersionUID = 1L;
