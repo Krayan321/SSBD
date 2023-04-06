@@ -1,27 +1,20 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.entities;
 
-import jakarta.persistence.DiscriminatorColumn;
-import jakarta.persistence.DiscriminatorType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Inheritance;
-import jakarta.persistence.InheritanceType;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
+
 import java.io.Serializable;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import javax.validation.constraints.NotNull;
+
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 @ToString(callSuper = true)
 @NoArgsConstructor
-@DiscriminatorColumn(discriminatorType = DiscriminatorType.STRING, name = "access_level")
+@DiscriminatorColumn(discriminatorType = DiscriminatorType.STRING, name = "access_level_role")
 public class AccessLevel extends AbstractEntity implements Serializable {
 
     public static final Long serialVersionUID = 1L;
@@ -33,6 +26,10 @@ public class AccessLevel extends AbstractEntity implements Serializable {
 
     @Getter
     @Enumerated(EnumType.STRING)
+    @NotNull
+    @Basic(optional = false)
+    @Setter(lombok.AccessLevel.NONE)
+    @Column(name = "access_level_role", nullable = false, updatable = false)
     private Role role;
 
     @Getter

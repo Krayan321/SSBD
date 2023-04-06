@@ -1,10 +1,7 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
+
 import java.io.Serializable;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,7 +18,7 @@ public class ShipmentMedication extends AbstractEntity implements Serializable {
     @Getter
     private Long id;
 
-    @OneToOne
+    @ManyToOne
     @Getter
     @Setter
     private Medication medication;

@@ -5,9 +5,11 @@ import pl.lodz.p.it.ssbd2023.ssbd01.entities.Account;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
+import java.util.List;
 
-@Stateless
-public class AccountFacade extends AbstractFacade<Account>{
+@Stateless(name = "AccountFacade")
+public class AccountFacade extends AbstractFacade<Account> implements AccountFacadeLocal {
 
     @PersistenceContext(unitName = "ssbd01admin")
     private EntityManager em;
@@ -20,4 +22,16 @@ public class AccountFacade extends AbstractFacade<Account>{
     public AccountFacade() {
         super(Account.class);
     }
+
+    public List<Account> findAll() {
+        TypedQuery<Account> tq = em.createNamedQuery("account.findAll", Account.class);
+        return tq.getResultList();
+    }
+
+    public Account findByLogin(String login) {
+        TypedQuery<Account> tq = em.createNamedQuery("account.findByLogin", Account.class);
+        tq.setParameter(1, login);
+        return tq.getSingleResult();
+    }
+
 }
