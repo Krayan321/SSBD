@@ -1,10 +1,7 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
+
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
@@ -16,6 +13,8 @@ import lombok.ToString;
 @Entity
 @NoArgsConstructor
 @ToString
+@NamedQuery(name="account.findAll", query = "SELECT o FROM Account o")
+@NamedQuery(name="account.findByLogin", query = "SELECT o FROM Account o WHERE o.login = ?1")
 public class Account extends AbstractEntity implements Serializable {
 
     public static final long serialVersionUID = 1L;

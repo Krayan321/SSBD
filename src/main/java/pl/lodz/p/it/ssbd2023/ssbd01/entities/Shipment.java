@@ -1,10 +1,7 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
+
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -14,6 +11,7 @@ import lombok.Setter;
 
 @Entity
 @NoArgsConstructor
+@NamedQuery(name="shipment.findAll", query = "SELECT o FROM Shipment o")
 public class Shipment extends AbstractEntity implements Serializable {
 
     public static final long serialVersionUID = 1L;

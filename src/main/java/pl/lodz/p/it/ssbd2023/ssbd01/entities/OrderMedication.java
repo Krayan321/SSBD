@@ -27,7 +27,7 @@ public class OrderMedication extends AbstractEntity implements Serializable {
     @Setter
     private Order order;
 
-    @OneToOne
+    @ManyToOne
     @Getter
     @Setter
     private Medication medication;

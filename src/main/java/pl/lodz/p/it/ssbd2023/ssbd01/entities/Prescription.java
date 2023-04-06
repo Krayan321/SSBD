@@ -1,9 +1,7 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+
 import java.io.Serializable;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,6 +9,7 @@ import lombok.Setter;
 
 @Entity
 @NoArgsConstructor
+@NamedQuery(name="prescription.findAll", query = "SELECT o FROM Prescription o")
 public class Prescription extends AbstractEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
