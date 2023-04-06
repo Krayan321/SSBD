@@ -1,6 +1,7 @@
-package pl.lodz.p.it.ssbd2023.ssbd01.facades;
+package pl.lodz.p.it.ssbd2023.ssbd01.facades.mok;
 
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Account;
+import pl.lodz.p.it.ssbd2023.ssbd01.facades.AbstractFacade;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -11,7 +12,7 @@ import java.util.List;
 @Stateless(name = "AccountFacade")
 public class AccountFacade extends AbstractFacade<Account> implements AccountFacadeLocal {
 
-    @PersistenceContext(unitName = "ssbd01admin")
+    @PersistenceContext(unitName = "ssbd01mok")
     private EntityManager em;
 
     @Override
