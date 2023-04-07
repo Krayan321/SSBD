@@ -1,9 +1,11 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.entities;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import java.io.Serializable;
@@ -14,40 +16,33 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
+@Getter
+@Setter
 @NoArgsConstructor
 public class Order extends AbstractEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Getter
     private Long id;
 
-    @Getter
-    @Setter
     private Boolean inQueue;
 
-    @Getter
-    @Setter
     private LocalDateTime orderDate;
 
-    @OneToMany
-    @Getter
-    @Setter
+    @OneToMany(mappedBy = "order", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    @JoinColumn(name = "order_id")
     private List<OrderMedication> orderMedications;
 
-    @OneToMany
-    @Getter
-    @Setter
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinColumn(name = "prescription_id")
     private List<Prescription> prescription;
 
-    @ManyToOne
-    @Getter
-    @Setter
+    @ManyToOne(optional = false, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinColumn(name = "patient_data_id", referencedColumnName = "id")
     private PatientData patientData;
 
-    @ManyToOne
-    @Getter
-    @Setter
+    @ManyToOne(optional = false, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinColumn(name = "chemist_data_id", referencedColumnName = "id")
     private ChemistData chemistData;
 
 }
