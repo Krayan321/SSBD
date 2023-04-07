@@ -1,11 +1,15 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.entities;
 
+import jakarta.persistence.Basic;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.Digits;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import lombok.Builder;
@@ -21,6 +25,24 @@ import lombok.ToString;
 @NoArgsConstructor
 public class Medication extends AbstractEntity implements Serializable {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Getter
+    private Long id;
+    private String name;
+    @Basic(optional = false)
+    @NotNull
+    @Min(value = 0, message = "Stock must be greater than or equal to 0")
+    private Integer stock;
+    @Basic(optional = false)
+    @NotNull
+    @Digits(integer = 10, fraction = 2)
+    @Min(value = 0, message = "Price must be greater than or equal 0")
+    private BigDecimal price;
+    @Enumerated(value = EnumType.STRING)
+    @NotNull
+    private Category category;
+
     @Builder
     public Medication(String name, Integer stock, BigDecimal price,
                       Category category) {
@@ -29,18 +51,4 @@ public class Medication extends AbstractEntity implements Serializable {
         this.price = price;
         this.category = category;
     }
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Getter
-    private Long id;
-
-    private String name;
-
-    private Integer stock;
-
-    private BigDecimal price;
-
-    @Enumerated(value = EnumType.STRING)
-    private Category category;
 }

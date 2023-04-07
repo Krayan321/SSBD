@@ -1,11 +1,14 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.entities;
 
+import jakarta.persistence.Basic;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
@@ -32,14 +35,27 @@ public class Account extends AbstractEntity implements Serializable {
     @Setter(lombok.AccessLevel.NONE)
     private Long id;
 
+    @Basic(optional = false)
+    @NotNull
     private String login;
 
+    @NotNull
+    @Basic(optional = false)
+    @Pattern(regexp = "^[A-Za-z0-9+_.-]+@(.+)$")
+    private String email;
+
     @ToString.Exclude
+    @Basic(optional = false)
+    @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$")
     private String password;
 
+    @NotNull
+    @Basic(optional = false)
     private Boolean active;
 
-    private Boolean registered;
+    @NotNull
+    @Basic(optional = false)
+    private Boolean confirmed = false;
 
     @Builder
     public Account(String login, String password) {
