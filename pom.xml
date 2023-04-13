@@ -8,7 +8,6 @@
     <artifactId>ssbd01</artifactId>
     <version>0.0.1</version>
     <name>ssbd01</name>
-    <packaging>war</packaging>
 
     <developers>
         <developer>
@@ -45,7 +44,6 @@
         <junit.version>5.8.1</junit.version>
     </properties>
 
-
     <dependencies>
 
         <dependency>
@@ -72,25 +70,14 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>javax</groupId>
-            <artifactId>javaee-api</artifactId>
-            <version>7.0</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-            <version>42.5.4</version>
+            <groupId>jakarta.validation</groupId>
+            <artifactId>jakarta.validation-api</artifactId>
+            <version>3.0.2</version>
         </dependency>
     </dependencies>
 
     <build>
         <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-war-plugin</artifactId>
-                <version>3.3.2</version>
-            </plugin>
         </plugins>
     </build>
 </project>

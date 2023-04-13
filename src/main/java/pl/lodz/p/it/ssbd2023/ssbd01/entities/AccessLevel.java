@@ -1,19 +1,31 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.entities;
 
-import jakarta.persistence.*;
-
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.DiscriminatorColumn;
+import jakarta.persistence.DiscriminatorType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import java.io.Serializable;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-import javax.validation.constraints.NotNull;
-
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 @ToString(callSuper = true)
 @NoArgsConstructor
+@Getter
+@Setter
 @DiscriminatorColumn(discriminatorType = DiscriminatorType.STRING, name = "access_level_role")
 public class AccessLevel extends AbstractEntity implements Serializable {
 
@@ -21,22 +33,19 @@ public class AccessLevel extends AbstractEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Getter
+    @Setter(lombok.AccessLevel.NONE)
     private Long id;
 
     @Getter
     @Enumerated(EnumType.STRING)
-    @NotNull
-    @Basic(optional = false)
     @Setter(lombok.AccessLevel.NONE)
     @Column(name = "access_level_role", nullable = false, updatable = false)
     private Role role;
 
-    @Getter
-    @Setter
     private Boolean active = true;
 
-    @ManyToOne
+    @ManyToOne(optional = false, cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "account_id", referencedColumnName = "id", updatable = false)
     private Account account;
 
 }

@@ -1,7 +1,9 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.entities;
 
+import jakarta.persistence.Basic;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
+import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
 
 import jakarta.persistence.NamedQuery;
@@ -23,5 +25,7 @@ public class ChemistData extends AccessLevel implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    @NotNull
+    @Basic(optional = false)
     private String licenseNumber;
 }
