@@ -11,7 +11,9 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Set;
+import java.time.LocalDate;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -56,6 +58,16 @@ public class Account extends AbstractEntity implements Serializable {
     @NotNull
     @Basic(optional = false)
     private Boolean confirmed = false;
+
+    @NotNull
+    @Basic(optional = false)
+    private Locale language;
+
+    private LocalDate lastPositiveLogin;
+
+    private LocalDate lastNegativeLogin;
+
+    private String logicalAddress;
 
     @Builder
     public Account(String login, String password) {
