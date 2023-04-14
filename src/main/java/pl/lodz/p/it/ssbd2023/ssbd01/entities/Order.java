@@ -1,14 +1,6 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.entities;
 
-import jakarta.persistence.Basic;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -21,6 +13,12 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
+@Table(indexes = {
+        @Index(name = "order_index", columnList = "order_id", unique = true),
+        @Index(name = "prescription_index", columnList = "prescription_id", unique = true),
+        @Index(name = "patient_data_index", columnList = "patient_data_id", unique = true),
+        @Index(name = "chemist_data_index", columnList = "chemist_data_id", unique = true),
+})
 public class Order extends AbstractEntity implements Serializable {
 
     @Id
