@@ -2,14 +2,19 @@ package pl.lodz.p.it.ssbd2023.ssbd01.entities;
 
 import jakarta.persistence.Basic;
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.NamedQuery;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
@@ -25,11 +30,14 @@ import lombok.ToString;
 @ToString
 @Getter
 @Setter
+@NamedQuery(name="account.findAll", query = "SELECT o FROM Account o")
+@NamedQuery(name="account.findByLogin", query = "SELECT o FROM Account o WHERE o.login = ?1")
 public class Account extends AbstractEntity implements Serializable {
 
     public static final long serialVersionUID = 1L;
 
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, mappedBy = "account")
+    @ToString.Exclude
     Set<AccessLevel> accessLevels = new HashSet<>();
 
     @Id
@@ -37,35 +45,37 @@ public class Account extends AbstractEntity implements Serializable {
     @Setter(lombok.AccessLevel.NONE)
     private Long id;
 
-    @Basic(optional = false)
+    @Column(unique = true, nullable = false)
     @NotNull
     private String login;
 
     @NotNull
-    @Basic(optional = false)
+    @Column(unique = true, nullable = false)
     @Pattern(regexp = "^[A-Za-z0-9+_.-]+@(.+)$")
     private String email;
 
     @ToString.Exclude
-    @Basic(optional = false)
+    @Column(nullable = false)
     @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$")
     private String password;
 
     @NotNull
-    @Basic(optional = false)
+    @Column(nullable = false)
     private Boolean active;
 
     @NotNull
-    @Basic(optional = false)
-    private Boolean confirmed = false;
+    @Column(nullable = false, columnDefinition = "boolean default false")
+    private Boolean confirmed;
 
     @NotNull
     @Basic(optional = false)
     private Locale language;
 
-    private LocalDate lastPositiveLogin;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date lastPositiveLogin;
 
-    private LocalDate lastNegativeLogin;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date lastNegativeLogin;
 
     private String logicalAddress;
 

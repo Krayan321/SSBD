@@ -1,15 +1,51 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.entities;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 import jakarta.persistence.Version;
+import java.util.Date;
 import lombok.Getter;
+import lombok.Setter;
 
 @MappedSuperclass
+@Getter
+@Setter
 public abstract class AbstractEntity {
 
     @Version
-    @Getter
+    @Setter(lombok.AccessLevel.NONE)
     private Long version;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(nullable = false, updatable = false)
+    private Date creationDate;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date modificationDate;
+
+    @OneToOne(optional = false)
+    @JoinColumn(name = "created_by", updatable = false)
+    private Account createdBy;
+
+    @PrePersist
+    public void prePersist() {
+        this.creationDate = new Date();
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        this.modificationDate = new Date();
+    }
+
+    @OneToOne
+    @JoinColumn(name = "modified_by")
+    private Account modifiedBy;
 
     @Override
     public int hashCode() {

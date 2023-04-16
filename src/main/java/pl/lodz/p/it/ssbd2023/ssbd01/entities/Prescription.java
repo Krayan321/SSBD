@@ -2,6 +2,7 @@ package pl.lodz.p.it.ssbd2023.ssbd01.entities;
 
 import jakarta.persistence.*;
 
+import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
 import lombok.Builder;
 import lombok.Getter;
@@ -29,8 +30,11 @@ public class Prescription extends AbstractEntity implements Serializable {
     private Long id;
 
     @ManyToOne(optional = false, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinColumn(name = "patient_data_id")
+    @JoinColumn(name = "patient_data_id", nullable = false, updatable = false)
     private PatientData patientData;
+
+    @Column(nullable = false)
+    @NotNull
     private String prescriptionNumber;
 
     @Builder

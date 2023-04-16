@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,8 +16,9 @@ import lombok.Setter;
 @Getter
 @Setter
 @Table(indexes = {
-        @Index(name = "shipment_index", columnList = "shipment_id", unique = true),
+        @Index(name = "shipment_index", columnList = "id", unique = true),
 })
+@NamedQuery(name="shipment.findAll", query = "SELECT o FROM Shipment o")
 public class Shipment extends AbstractEntity implements Serializable {
 
     public static final long serialVersionUID = 1L;
@@ -26,11 +29,12 @@ public class Shipment extends AbstractEntity implements Serializable {
     private Long id;
 
     @NotNull
-    @Basic(optional = false)
-    private LocalDate shipmentDate;
+    @Column(nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date shipmentDate;
 
-    @OneToMany(mappedBy = "shipment", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    @OneToMany(mappedBy = "shipment", cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.REMOVE}, orphanRemoval = true)
     @JoinColumn(name = "shipment_id")
-    private List<ShipmentMedication> shipmentMedications;
+    private List<ShipmentMedication> shipmentMedications = new ArrayList<>();
 
 }
