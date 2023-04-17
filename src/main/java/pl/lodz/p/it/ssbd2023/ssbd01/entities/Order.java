@@ -40,7 +40,7 @@ public class Order extends AbstractEntity implements Serializable {
     @JoinColumn(name = "order_id")
     private List<OrderMedication> orderMedications = new ArrayList<>();
 
-    @OneToOne(optional = false, cascade = {CascadeType.PERSIST})
+    @OneToOne(cascade = {CascadeType.PERSIST})
     @JoinColumn(name = "prescription_id", referencedColumnName = "id")
     private Prescription prescription;
 
@@ -48,8 +48,8 @@ public class Order extends AbstractEntity implements Serializable {
     @JoinColumn(name = "patient_data_id", referencedColumnName = "id", nullable = false, updatable = false)
     private PatientData patientData;
 
-    @ManyToOne(optional = false, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinColumn(name = "chemist_data_id", referencedColumnName = "id")
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinColumn(name = "chemist_data_id", referencedColumnName = "id", updatable = false)
     private ChemistData chemistData;
 
 }

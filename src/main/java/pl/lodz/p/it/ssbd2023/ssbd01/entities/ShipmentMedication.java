@@ -30,7 +30,7 @@ public class ShipmentMedication extends AbstractEntity implements Serializable {
     private Shipment shipment;
 
     @ManyToOne(optional = false, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinColumn(name = "medication_id")
+    @JoinColumn(name = "medication_id", updatable = false, nullable = false)
     private Medication medication;
 
     @Column(nullable = false)
