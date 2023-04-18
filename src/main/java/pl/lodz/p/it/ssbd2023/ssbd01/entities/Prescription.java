@@ -29,7 +29,7 @@ public class Prescription extends AbstractEntity implements Serializable {
     @Getter
     private Long id;
 
-    @ManyToOne(optional = false, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToOne(optional = false)
     @JoinColumn(name = "patient_data_id", nullable = false, updatable = false)
     private PatientData patientData;
 

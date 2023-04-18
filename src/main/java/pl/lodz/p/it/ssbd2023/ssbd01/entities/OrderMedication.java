@@ -25,11 +25,11 @@ public class OrderMedication extends AbstractEntity implements Serializable {
     @Setter(lombok.AccessLevel.NONE)
     private Long id;
 
-    @ManyToOne(optional = false, cascade = {CascadeType.PERSIST})
+    @ManyToOne(optional = false, cascade = {CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinColumn(name = "order_id", updatable = false, nullable = false)
     private Order order;
 
-    @ManyToOne(optional = false, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToOne(optional = false)
     @JoinColumn(name = "medication_id", updatable = false, nullable = false)
     private Medication medication;
 

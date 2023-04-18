@@ -36,12 +36,12 @@ public class Order extends AbstractEntity implements Serializable {
     @Column(nullable = false)
     private Date orderDate;
 
-    @OneToMany(mappedBy = "order", cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.REMOVE}, orphanRemoval = true)
+    @OneToMany(mappedBy = "order", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
     @JoinColumn(name = "order_id")
     private List<OrderMedication> orderMedications = new ArrayList<>();
 
     @OneToOne(cascade = {CascadeType.PERSIST})
-    @JoinColumn(name = "prescription_id", referencedColumnName = "id")
+    @JoinColumn(name = "prescription_id", referencedColumnName = "id", updatable = false)
     private Prescription prescription;
 
     @ManyToOne(optional = false, cascade = {CascadeType.PERSIST, CascadeType.MERGE})

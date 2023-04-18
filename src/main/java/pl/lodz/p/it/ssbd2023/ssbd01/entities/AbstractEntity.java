@@ -1,5 +1,6 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.entities;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.MappedSuperclass;
@@ -29,8 +30,8 @@ public abstract class AbstractEntity {
     @Temporal(TemporalType.TIMESTAMP)
     private Date modificationDate;
 
-    @OneToOne(optional = false)
-    @JoinColumn(name = "created_by", updatable = false)
+    @OneToOne(optional = false, cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "created_by", updatable = false, nullable = false)
     private Account createdBy;
 
     @PrePersist

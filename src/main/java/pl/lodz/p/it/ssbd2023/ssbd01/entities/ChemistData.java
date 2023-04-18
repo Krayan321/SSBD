@@ -27,6 +27,6 @@ public class ChemistData extends AccessLevel implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @NotNull
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String licenseNumber;
 }
