@@ -25,15 +25,15 @@ public class ShipmentMedication extends AbstractEntity implements Serializable {
     @Setter(lombok.AccessLevel.NONE)
     private Long id;
 
-    @ManyToOne(optional = false, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinColumn(name = "shipment_id")
+    @ManyToOne(optional = false, cascade = {CascadeType.PERSIST})
+    @JoinColumn(name = "shipment_id", updatable = false, nullable = false)
     private Shipment shipment;
 
     @ManyToOne(optional = false, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinColumn(name = "medication_id")
+    @JoinColumn(name = "medication_id", updatable = false, nullable = false)
     private Medication medication;
 
-    @Basic(optional = false)
+    @Column(nullable = false)
     @NotNull
     @Min(value = 1, message = "Quantity must be greater than 0")
     private Integer quantity;

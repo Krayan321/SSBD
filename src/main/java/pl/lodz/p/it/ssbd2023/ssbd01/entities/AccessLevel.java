@@ -14,6 +14,7 @@ import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -42,7 +43,9 @@ public class AccessLevel extends AbstractEntity implements Serializable {
     @Column(name = "access_level_role", nullable = false, updatable = false)
     private Role role;
 
-    private Boolean active = true;
+    @Column(nullable = false, columnDefinition = "boolean default true")
+    @NotNull
+    private Boolean active;
 
     @ManyToOne(optional = false, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "account_id", referencedColumnName = "id", updatable = false)
