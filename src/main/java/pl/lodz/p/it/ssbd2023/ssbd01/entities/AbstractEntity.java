@@ -24,7 +24,7 @@ public abstract class AbstractEntity {
     private Long version;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(nullable = false, updatable = false)
+    @Column(name = "creation_date", nullable = false, updatable = false)
     private Date creationDate;
 
     @Temporal(TemporalType.TIMESTAMP)

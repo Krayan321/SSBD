@@ -1,6 +1,15 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.entities;
 
-import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Index;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
@@ -12,10 +21,11 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(indexes = {
-        @Index(name = "shipment_index", columnList = "shipment_id", unique = true),
-        @Index(name = "medication_index", columnList = "medication_id", unique = true)
-})
+@Table(name = "shipment_medication",
+        indexes = {
+                @Index(name = "shipment_index", columnList = "shipment_id", unique = true),
+                @Index(name = "medication_index", columnList = "medication_id", unique = true)
+        })
 public class ShipmentMedication extends AbstractEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -25,11 +35,11 @@ public class ShipmentMedication extends AbstractEntity implements Serializable {
     @Setter(lombok.AccessLevel.NONE)
     private Long id;
 
-    @ManyToOne(optional = false, cascade = {CascadeType.PERSIST})
+    @ManyToOne(optional = false)
     @JoinColumn(name = "shipment_id", updatable = false, nullable = false)
     private Shipment shipment;
 
-    @ManyToOne(optional = false, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToOne(optional = false, cascade = {CascadeType.PERSIST})
     @JoinColumn(name = "medication_id", updatable = false, nullable = false)
     private Medication medication;
 

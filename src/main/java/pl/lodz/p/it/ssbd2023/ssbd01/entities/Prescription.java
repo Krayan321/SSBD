@@ -1,7 +1,16 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.entities;
 
-import jakarta.persistence.*;
-
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Index;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
 import lombok.Builder;
@@ -13,12 +22,12 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(
+@Table(name = "prescription",
         indexes = {
-            @Index(name = "patient_data_index", columnList = "patient_data_id", unique = true)},
+                @Index(name = "patient_data_index", columnList = "patient_data_id", unique = true)},
         uniqueConstraints = {
-            @UniqueConstraint(columnNames = {"patient_data_id", "prescription_number"}),
-})
+                @UniqueConstraint(columnNames = {"patient_data_id", "prescription_number"}),
+        })
 
 
 public class Prescription extends AbstractEntity implements Serializable {
@@ -29,11 +38,11 @@ public class Prescription extends AbstractEntity implements Serializable {
     @Getter
     private Long id;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, cascade = {CascadeType.REFRESH})
     @JoinColumn(name = "patient_data_id", nullable = false, updatable = false)
     private PatientData patientData;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "prescription_number")
     @NotNull
     private String prescriptionNumber;
 

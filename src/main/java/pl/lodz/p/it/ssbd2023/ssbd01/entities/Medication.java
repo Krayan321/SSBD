@@ -9,6 +9,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.NamedQuery;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
@@ -21,6 +22,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 @Entity
+@Table(name = "medication")
 @ToString
 @Getter
 @Setter
@@ -34,7 +36,7 @@ public class Medication extends AbstractEntity implements Serializable {
     private Long id;
 
     @NotNull
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, unique = true, name = "medication_name")
     private String name;
 
     @Column(nullable = false)

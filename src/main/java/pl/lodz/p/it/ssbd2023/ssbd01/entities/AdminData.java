@@ -2,6 +2,7 @@ package pl.lodz.p.it.ssbd2023.ssbd01.entities;
 
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import java.io.Serializable;
 
 import jakarta.persistence.NamedQuery;
@@ -10,6 +11,7 @@ import lombok.ToString;
 
 @Entity
 @NoArgsConstructor
+@Table(name = "admin_data")
 @DiscriminatorValue("ADMIN")
 @ToString(callSuper = true)
 @NamedQuery(name="adminData.findAll", query = "SELECT o FROM AdminData o")
