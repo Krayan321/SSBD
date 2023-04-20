@@ -1,11 +1,6 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
 import lombok.Builder;
@@ -20,6 +15,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @NoArgsConstructor
+@NamedQuery(name = "category.findAll", query = "SELECT o FROM Category o")
 public class Category extends AbstractEntity implements Serializable {
 
     @Id

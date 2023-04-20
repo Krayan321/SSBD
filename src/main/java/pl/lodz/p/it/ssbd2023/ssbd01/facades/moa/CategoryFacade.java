@@ -1,16 +1,16 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.facades.moa;
 
-import pl.lodz.p.it.ssbd2023.ssbd01.entities.Order;
-import pl.lodz.p.it.ssbd2023.ssbd01.facades.AbstractFacade;
-
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
+import pl.lodz.p.it.ssbd2023.ssbd01.entities.Category;
+import pl.lodz.p.it.ssbd2023.ssbd01.facades.AbstractFacade;
+
 import java.util.List;
 
-@Stateless(name = "OrderFacade")
-public class OrderFacade extends AbstractFacade<Order> implements OrderFacadeLocal {
+@Stateless(name = "CategoryFacade")
+public class CategoryFacade extends AbstractFacade<Category> implements CategoryFacadeLocal {
     @PersistenceContext(unitName = "ssbd01moa")
     private EntityManager em;
 
@@ -19,12 +19,12 @@ public class OrderFacade extends AbstractFacade<Order> implements OrderFacadeLoc
         return em;
     }
 
-    public OrderFacade() {
-        super(Order.class);
+    public CategoryFacade() {
+        super(Category.class);
     }
 
-    public List<Order> findAll() {
-        TypedQuery<Order> tq = em.createNamedQuery("order.findAll", Order.class);
+    public List<Category> findAll() {
+        TypedQuery<Category> tq = em.createNamedQuery("category.findAll", Category.class);
         return tq.getResultList();
     }
 }

@@ -4,7 +4,7 @@ import pl.lodz.p.it.ssbd2023.ssbd01.entities.Account;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Shipment;
 import pl.lodz.p.it.ssbd2023.ssbd01.facades.AbstractFacadeLocal;
 
-import javax.ejb.Local;
+import jakarta.ejb.Local;
 import java.util.List;
 
 @Local

@@ -1,6 +1,6 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.facades;
 
-import javax.persistence.EntityManager;
+import jakarta.persistence.EntityManager;
 
 public abstract class AbstractFacade<T> {
 
