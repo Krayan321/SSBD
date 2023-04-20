@@ -14,6 +14,7 @@ import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
 import lombok.Getter;
@@ -22,6 +23,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 @Entity
+@Table(name = "access_level")
 @Inheritance(strategy = InheritanceType.JOINED)
 @ToString(callSuper = true)
 @NoArgsConstructor
@@ -47,7 +49,7 @@ public class AccessLevel extends AbstractEntity implements Serializable {
     @NotNull
     private Boolean active;
 
-    @ManyToOne(optional = false, cascade = CascadeType.PERSIST)
+    @ManyToOne(optional = false)
     @JoinColumn(name = "account_id", referencedColumnName = "id", updatable = false)
     private Account account;
 

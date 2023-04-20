@@ -1,6 +1,15 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.entities;
 
-import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Index;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
@@ -12,10 +21,11 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(indexes = {
-        @Index(name = "order_index", columnList = "order_id", unique = true),
-        @Index(name = "medication_index", columnList = "medication_id", unique = true)
-})
+@Table(name = "order_medication",
+        indexes = {
+                @Index(name = "order_index", columnList = "order_id", unique = true),
+                @Index(name = "medication_index", columnList = "medication_id", unique = true)
+        })
 public class OrderMedication extends AbstractEntity implements Serializable {
 
     public static final long serialVersionUID = 1L;
@@ -25,8 +35,8 @@ public class OrderMedication extends AbstractEntity implements Serializable {
     @Setter(lombok.AccessLevel.NONE)
     private Long id;
 
-    @ManyToOne(optional = false, cascade = {CascadeType.PERSIST, CascadeType.REFRESH})
-    @JoinColumn(name = "order_id", updatable = false, nullable = false)
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "patient_order_id", updatable = false, nullable = false)
     private Order order;
 
     @ManyToOne(optional = false)

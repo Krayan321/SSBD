@@ -9,6 +9,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.NamedQuery;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import jakarta.validation.constraints.NotNull;
@@ -29,6 +30,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 @Getter
+@Table(name = "account")
 @Setter
 @NamedQuery(name="account.findAll", query = "SELECT o FROM Account o")
 @NamedQuery(name="account.findByLogin", query = "SELECT o FROM Account o WHERE o.login = ?1")
@@ -36,7 +38,7 @@ public class Account extends AbstractEntity implements Serializable {
 
     public static final long serialVersionUID = 1L;
 
-    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, mappedBy = "account")
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.MERGE}, mappedBy = "account")
     @ToString.Exclude
     Set<AccessLevel> accessLevels = new HashSet<>();
 
@@ -56,7 +58,7 @@ public class Account extends AbstractEntity implements Serializable {
 
     @ToString.Exclude
     @Column(nullable = false)
-    @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$")
+    @Pattern(regexp = "^[0-9a-f]{64}$")
     private String password;
 
     @NotNull
