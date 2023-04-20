@@ -49,7 +49,7 @@ public class Order extends AbstractEntity implements Serializable {
     @Column(nullable = false, name = "order_date")
     private Date orderDate;
 
-    @OneToMany(mappedBy = "order", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
+    @OneToMany(mappedBy = "order", cascade = {CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.MERGE}, orphanRemoval = true)
     @JoinColumn(name = "order_id")
     private List<OrderMedication> orderMedications = new ArrayList<>();
 
