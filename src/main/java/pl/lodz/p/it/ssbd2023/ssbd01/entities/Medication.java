@@ -1,13 +1,13 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.entities;
 
-import jakarta.persistence.Basic;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedQuery;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Digits;
@@ -27,7 +27,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @NoArgsConstructor
-@NamedQuery(name="medication.findAll", query = "SELECT o FROM Medication o")
+@NamedQuery(name = "medication.findAll", query = "SELECT o FROM Medication o")
 public class Medication extends AbstractEntity implements Serializable {
 
     @Id
@@ -50,9 +50,8 @@ public class Medication extends AbstractEntity implements Serializable {
     @Min(value = 0, message = "Price must be greater than or equal 0")
     private BigDecimal price;
 
-    @Enumerated(value = EnumType.STRING)
-    @NotNull
-    @Column(nullable = false)
+    @ManyToOne(optional = false, cascade = {CascadeType.PERSIST, CascadeType.REFRESH})
+    @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
     @Builder
