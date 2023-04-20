@@ -1,20 +1,6 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.entities;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.DiscriminatorColumn;
-import jakarta.persistence.DiscriminatorType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Inheritance;
-import jakarta.persistence.InheritanceType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
 import lombok.Getter;
@@ -30,6 +16,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @DiscriminatorColumn(discriminatorType = DiscriminatorType.STRING, name = "access_level_role")
+@NamedQuery(name = "accessLevel.findAll", query = "SELECT o FROM AccessLevel o")
 public class AccessLevel extends AbstractEntity implements Serializable {
 
     public static final Long serialVersionUID = 1L;

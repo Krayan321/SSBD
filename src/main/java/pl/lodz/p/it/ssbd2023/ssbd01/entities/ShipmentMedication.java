@@ -1,15 +1,6 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.entities;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Index;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
@@ -26,6 +17,7 @@ import lombok.Setter;
                 @Index(name = "shipment_index", columnList = "shipment_id", unique = true),
                 @Index(name = "medication_index", columnList = "medication_id", unique = true)
         })
+@NamedQuery(name = "shipmentMedication.findAll", query = "SELECT o FROM ShipmentMedication o")
 public class ShipmentMedication extends AbstractEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
