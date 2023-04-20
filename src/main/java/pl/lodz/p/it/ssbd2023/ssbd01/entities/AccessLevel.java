@@ -16,8 +16,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @DiscriminatorColumn(discriminatorType = DiscriminatorType.STRING, name = "access_level_role")
-@NamedQuery(name = "accessLevel.findAll", query = "SELECT o FROM AccessLevel o")
-public class AccessLevel extends AbstractEntity implements Serializable {
+public abstract class AccessLevel extends AbstractEntity implements Serializable {
 
     public static final Long serialVersionUID = 1L;
 
