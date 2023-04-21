@@ -1,15 +1,6 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.entities;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.NamedQuery;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
@@ -22,7 +13,10 @@ import lombok.Setter;
 import lombok.ToString;
 
 @Entity
-@Table(name = "medication")
+@Table(name = "medication",
+        indexes = {
+                @Index(name = "category_index", columnList = "category_id", unique = true)
+        })
 @ToString
 @Getter
 @Setter
