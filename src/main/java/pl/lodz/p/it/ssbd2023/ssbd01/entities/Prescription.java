@@ -35,7 +35,7 @@ public class Prescription extends AbstractEntity implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Getter
+    @Setter(lombok.AccessLevel.NONE)
     private Long id;
 
     @ManyToOne(optional = false, cascade = {CascadeType.REFRESH})
