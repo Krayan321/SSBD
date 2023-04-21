@@ -26,7 +26,7 @@ public class Medication extends AbstractEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Getter
+    @Setter(lombok.AccessLevel.NONE)
     private Long id;
 
     @NotNull
