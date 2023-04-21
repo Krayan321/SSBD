@@ -28,6 +28,7 @@ public abstract class AbstractEntity {
     private Date creationDate;
 
     @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "modification_date")
     private Date modificationDate;
 
     @OneToOne(optional = false, cascade = CascadeType.PERSIST)
