@@ -11,7 +11,7 @@ import java.util.List;
 
 @Stateless(name = "AdminDataFacade")
 public class AdminDataFacade extends AbstractFacade<AdminData> implements AdminDataFacadeLocal {
-    @PersistenceContext(unitName = "ssbd01mok")
+    @PersistenceContext(unitName = "ssbd01mokPU")
     private EntityManager em;
 
     @Override

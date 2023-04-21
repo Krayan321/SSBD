@@ -12,7 +12,7 @@ import java.util.List;
 @Stateless(name = "PatientDataFacadeMoa")
 public class PatientDataFacade extends AbstractFacade<PatientData> implements PatientDataFacadeLocal {
 
-    @PersistenceContext(unitName = "ssbd01moa")
+    @PersistenceContext(unitName = "ssbd01moaPU")
     private EntityManager em;
 
     @Override

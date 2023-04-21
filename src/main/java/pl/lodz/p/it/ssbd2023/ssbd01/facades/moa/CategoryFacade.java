@@ -11,7 +11,7 @@ import java.util.List;
 
 @Stateless(name = "CategoryFacade")
 public class CategoryFacade extends AbstractFacade<Category> implements CategoryFacadeLocal {
-    @PersistenceContext(unitName = "ssbd01moa")
+    @PersistenceContext(unitName = "ssbd01moaPU")
     private EntityManager em;
 
     @Override
