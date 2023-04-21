@@ -4,13 +4,14 @@ import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
-import pl.lodz.p.it.ssbd2023.ssbd01.entities.Category;
+import pl.lodz.p.it.ssbd2023.ssbd01.entities.PatientData;
 import pl.lodz.p.it.ssbd2023.ssbd01.facades.AbstractFacade;
 
 import java.util.List;
 
-@Stateless(name = "CategoryFacade")
-public class CategoryFacade extends AbstractFacade<Category> implements CategoryFacadeLocal {
+@Stateless(name = "PatientDataFacadeMoa")
+public class PatientDataFacade extends AbstractFacade<PatientData> implements PatientDataFacadeLocal {
+
     @PersistenceContext(unitName = "ssbd01moaPU")
     private EntityManager em;
 
@@ -19,12 +20,13 @@ public class CategoryFacade extends AbstractFacade<Category> implements Category
         return em;
     }
 
-    public CategoryFacade() {
-        super(Category.class);
+    public PatientDataFacade() {
+        super(PatientData.class);
     }
 
-    public List<Category> findAll() {
-        TypedQuery<Category> tq = em.createNamedQuery("category.findAll", Category.class);
+    public List<PatientData> findAll() {
+        TypedQuery<PatientData> tq = em.createNamedQuery("patientData.findAll", PatientData.class);
         return tq.getResultList();
     }
+
 }

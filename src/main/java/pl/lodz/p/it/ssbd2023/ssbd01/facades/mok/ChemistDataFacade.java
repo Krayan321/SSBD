@@ -9,10 +9,10 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import java.util.List;
 
-@Stateless(name = "ChemistDataFacade")
+@Stateless(name = "ChemistDataFacadeMok")
 public class ChemistDataFacade extends AbstractFacade<ChemistData> implements ChemistDataFacadeLocal {
 
-    @PersistenceContext(unitName = "ssbd01mok")
+    @PersistenceContext(unitName = "ssbd01mokPU")
     private EntityManager em;
 
     @Override

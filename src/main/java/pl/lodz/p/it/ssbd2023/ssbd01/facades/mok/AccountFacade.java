@@ -12,7 +12,7 @@ import java.util.List;
 @Stateless(name = "AccountFacade")
 public class AccountFacade extends AbstractFacade<Account> implements AccountFacadeLocal {
 
-    @PersistenceContext(unitName = "ssbd01mok")
+    @PersistenceContext(unitName = "ssbd01mokPU")
     private EntityManager em;
 
     @Override

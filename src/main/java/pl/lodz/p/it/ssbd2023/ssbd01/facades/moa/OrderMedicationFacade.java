@@ -11,7 +11,7 @@ import java.util.List;
 
 @Stateless(name = "OrderMedicationFacade")
 public class OrderMedicationFacade extends AbstractFacade<OrderMedication> implements OrderMedicationFacadeLocal {
-    @PersistenceContext(unitName = "ssbd01moa")
+    @PersistenceContext(unitName = "ssbd01moaPU")
     private EntityManager em;
 
     @Override
