@@ -5,6 +5,23 @@
              xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence
              http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
 
+    <persistence-unit name="ssbd01adminPU" transaction-type="JTA">
+        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+        <jta-data-source>java:app/jdbc/ssbd01admin</jta-data-source>
+
+        <class>pl.lodz.p.it.ssbd2023.ssbd01.entities.AccessLevel</class>
+        <class>pl.lodz.p.it.ssbd2023.ssbd01.entities.Account</class>
+        <class>pl.lodz.p.it.ssbd2023.ssbd01.entities.AdminData</class>
+        <class>pl.lodz.p.it.ssbd2023.ssbd01.entities.ChemistData</class>
+        <class>pl.lodz.p.it.ssbd2023.ssbd01.entities.PatientData</class>
+        <exclude-unlisted-classes>false</exclude-unlisted-classes>
+
+        <properties>
+            <property name="eclipselink.logging.level" value="FINE"/>
+            <property name="jakarta.persistence.schema-generation.database.action" value="drop-and-create"/>
+        </properties>
+    </persistence-unit>
+
     <persistence-unit name="ssbd01authPU" transaction-type="JTA">
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
         <!--
@@ -13,15 +30,15 @@
         -->
         <jta-data-source>java:app/jdbc/ssbd01authDS</jta-data-source>
 
-        <exclude-unlisted-classes>false</exclude-unlisted-classes>
+        <class>pl.lodz.p.it.ssbd2023.ssbd01.entities.AccessLevel</class>
+        <class>pl.lodz.p.it.ssbd2023.ssbd01.entities.Account</class>
+        <class>pl.lodz.p.it.ssbd2023.ssbd01.entities.AdminData</class>
+        <class>pl.lodz.p.it.ssbd2023.ssbd01.entities.ChemistData</class>
+        <class>pl.lodz.p.it.ssbd2023.ssbd01.entities.PatientData</class>
         <shared-cache-mode>NONE</shared-cache-mode>
         <properties>
             <property name="hibernate.connection.driver_class" value="org.postgresql.Driver"/>
             <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
-            <!--
-            <property name="hibernate.hbm2ddl.auto" value="create"/>
-            <property name="hibernate.hbm2ddl.import_files_sql_extractor" value="org.hibernate.tool.hbm2ddl.MultipleLinesSqlCommandExtractor" />
-            -->
             <property name="hibernate.connection.charSet" value="UTF-8"/>
             <property name="hibernate.show_sql" value="true"/>
             <property name="hibernate.format_sql" value="true"/>
@@ -35,7 +52,11 @@
     <persistence-unit name="ssbd01mokPU" transaction-type="JTA">
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
         <jta-data-source>java:app/jdbc/ssbd01mokDS</jta-data-source>
-        <exclude-unlisted-classes>false</exclude-unlisted-classes>
+        <class>pl.lodz.p.it.ssbd2023.ssbd01.entities.AccessLevel</class>
+        <class>pl.lodz.p.it.ssbd2023.ssbd01.entities.Account</class>
+        <class>pl.lodz.p.it.ssbd2023.ssbd01.entities.AdminData</class>
+        <class>pl.lodz.p.it.ssbd2023.ssbd01.entities.ChemistData</class>
+        <class>pl.lodz.p.it.ssbd2023.ssbd01.entities.PatientData</class>
         <shared-cache-mode>NONE</shared-cache-mode>
         <properties>
             <property name="hibernate.connection.driver_class" value="org.postgresql.Driver"/>
@@ -49,7 +70,6 @@
     <persistence-unit name="ssbd01moaPU" transaction-type="JTA">
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
         <jta-data-source>java:app/jdbc/ssbd01moaDS</jta-data-source>
-        <exclude-unlisted-classes>false</exclude-unlisted-classes>
         <shared-cache-mode>NONE</shared-cache-mode>
         <properties>
             <property name="hibernate.connection.driver_class" value="org.postgresql.Driver"/>
