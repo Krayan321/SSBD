@@ -46,7 +46,6 @@ public class Shipment extends AbstractEntity implements Serializable {
     private Date shipmentDate;
 
     @OneToMany(mappedBy = "shipment", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
-    @JoinColumn(name = "shipment_id")
     private List<ShipmentMedication> shipmentMedications = new ArrayList<>();
 
 }

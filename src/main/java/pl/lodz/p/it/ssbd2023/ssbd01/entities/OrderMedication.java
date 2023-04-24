@@ -28,7 +28,7 @@ public class OrderMedication extends AbstractEntity implements Serializable {
     private Long id;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "patient_order_id", updatable = false, nullable = false)
+    @JoinColumn(name = "order_id", updatable = false, nullable = false)
     private Order order;
 
     @ManyToOne(optional = false)
