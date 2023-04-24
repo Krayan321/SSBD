@@ -15,7 +15,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @Getter
 @Setter
-@DiscriminatorColumn(name = "access_level_role")
+@DiscriminatorColumn(name = "access_level_role", discriminatorType = DiscriminatorType.STRING)
 public abstract class AccessLevel extends AbstractEntity implements Serializable {
 
     public static final Long serialVersionUID = 1L;
@@ -25,13 +25,13 @@ public abstract class AccessLevel extends AbstractEntity implements Serializable
     @Setter(lombok.AccessLevel.NONE)
     private Long id;
 
-    @Getter
-    @Enumerated(EnumType.STRING)
-    @Setter(lombok.AccessLevel.NONE)
-    @Column(name = "access_level_role", insertable = false, nullable = false, updatable = false)
-    private Role role;
+//    @Getter
+//    @Enumerated(EnumType.STRING)
+//    @Setter(lombok.AccessLevel.NONE)
+//    @Column(name = "access_level_role", insertable = false, nullable = false, updatable = false)
+//    private Role role;
 
-    @Column(nullable = false, columnDefinition = "boolean default true")
+    @Column(nullable = false)
     @NotNull
     private Boolean active;
 
