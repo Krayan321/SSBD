@@ -21,29 +21,22 @@
 
     <persistence-unit name="ssbd01authPU" transaction-type="JTA">
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
-        <jta-data-source>java:app/jdbc/ssbd01authDS</jta-data-source>
+        <jta-data-source>java:app/jdbc/ssbd01auth</jta-data-source>
 
-        <class>pl.lodz.p.it.ssbd2023.ssbd01.entities.AccessLevel</class>
-        <class>pl.lodz.p.it.ssbd2023.ssbd01.entities.Account</class>
-        <class>pl.lodz.p.it.ssbd2023.ssbd01.entities.AdminData</class>
-        <class>pl.lodz.p.it.ssbd2023.ssbd01.entities.ChemistData</class>
-        <class>pl.lodz.p.it.ssbd2023.ssbd01.entities.PatientData</class>
+        <exclude-unlisted-classes>false</exclude-unlisted-classes>
 
         <shared-cache-mode>NONE</shared-cache-mode>
         <properties>
-            <property name="hibernate.connection.driver_class" value="org.postgresql.Driver"/>
-            <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
-            <property name="hibernate.connection.charSet" value="UTF-8"/>
             <property name="hibernate.show_sql" value="true"/>
-            <property name="hibernate.format_sql" value="true"/>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
             <property name="hibernate.transaction.jta.platform" value="org.hibernate.service.jta.platform.internal.SunOneJtaPlatform"/>
-            <property name="hibernate.cache.use_second_level_cache" value="false"/>
+
         </properties>
     </persistence-unit>
 
     <persistence-unit name="ssbd01mokPU" transaction-type="JTA">
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
-        <jta-data-source>java:app/jdbc/ssbd01mokDS</jta-data-source>
+        <jta-data-source>java:app/jdbc/ssbd01mok</jta-data-source>
 
         <class>pl.lodz.p.it.ssbd2023.ssbd01.entities.AccessLevel</class>
         <class>pl.lodz.p.it.ssbd2023.ssbd01.entities.Account</class>
@@ -63,7 +56,7 @@
 
     <persistence-unit name="ssbd01moaPU" transaction-type="JTA">
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
-        <jta-data-source>java:app/jdbc/ssbd01moaDS</jta-data-source>
+        <jta-data-source>java:app/jdbc/ssbd01moa</jta-data-source>
 
         <class>pl.lodz.p.it.ssbd2023.ssbd01.entities.Category</class>
         <class>pl.lodz.p.it.ssbd2023.ssbd01.entities.ChemistData</class>
