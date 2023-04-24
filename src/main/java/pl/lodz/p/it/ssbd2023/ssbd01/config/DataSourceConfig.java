@@ -19,7 +19,33 @@ import java.sql.Connection;
         minPoolSize = 0,
         maxPoolSize = 1,
         maxIdleTime = 10)
+@DataSourceDefinition(
+        name = "java:app/jdbc/ssbd01auth",
+        className = "org.postgresql.ds.PGSimpleDataSource",
+        user = "ssbd01glassfish",
+        password = "glassfishpassword",
+        serverName = "ssbd_db",
+        portNumber = 5432,
+        databaseName = "ssbd01")
 
+@DataSourceDefinition(
+        name = "java:app/jdbc/ssbd01mok",
+        className = "org.postgresql.ds.PGSimpleDataSource",
+        user = "ssbd01mok",
+        password = "mokpassword",
+        serverName = "ssbd_db",
+        portNumber = 5432,
+        databaseName = "ssbd01",
+        isolationLevel = Connection.TRANSACTION_READ_COMMITTED)
+@DataSourceDefinition(
+        name = "java:app/jdbc/ssbd01moa",
+        className = "org.postgresql.ds.PGSimpleDataSource",
+        user = "ssbd01moa",
+        password = "moapassword",
+        serverName = "ssbd_db",
+        portNumber = 5432,
+        databaseName = "ssbd01",
+        isolationLevel = Connection.TRANSACTION_READ_COMMITTED)
 @Stateless
 public class DataSourceConfig {
 
