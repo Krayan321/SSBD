@@ -24,7 +24,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Table(name = "prescription",
         indexes = {
-                @Index(name = "patient_data_index", columnList = "patient_data_id", unique = true)},
+                @Index(name = "patient_data_index_perscription", columnList = "patient_data_id", unique = true)},
         uniqueConstraints = {
                 @UniqueConstraint(columnNames = {"patient_data_id", "prescription_number"}),
         })

@@ -15,7 +15,7 @@ import lombok.Setter;
 @Table(name = "order_medication",
         indexes = {
                 @Index(name = "order_index", columnList = "order_id", unique = true),
-                @Index(name = "medication_index", columnList = "medication_id", unique = true)
+                @Index(name = "medication_index_om", columnList = "medication_id", unique = true)
         })
 @NamedQuery(name = "orderMedication.findAll", query = "SELECT o FROM OrderMedication o")
 public class OrderMedication extends AbstractEntity implements Serializable {
@@ -28,7 +28,7 @@ public class OrderMedication extends AbstractEntity implements Serializable {
     private Long id;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "patient_order_id", updatable = false, nullable = false)
+    @JoinColumn(name = "order_id", updatable = false, nullable = false)
     private Order order;
 
     @ManyToOne(optional = false)

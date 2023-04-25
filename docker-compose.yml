@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  db:
+    build: .
+    container_name: ssbd01_postgres
+    environment:
+      POSTGRES_DB: ssbd01
+      POSTGRES_USER: ssbd01admin
+      POSTGRES_PASSWORD: admin
+    ports:
+      - 5432:5432
+    volumes:
+      - pg:/var/lib/postgresql/data
+volumes:
+  pg:
