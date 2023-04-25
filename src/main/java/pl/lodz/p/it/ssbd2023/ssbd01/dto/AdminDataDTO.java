@@ -7,7 +7,6 @@ import lombok.*;
 @Getter
 @Setter
 @AllArgsConstructor
-@NoArgsConstructor
 public class AdminDataDTO extends AccessLevelDTO {
 
 }

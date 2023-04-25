@@ -1,6 +1,10 @@
-create user ssbd01glassfish password 'glassfishpassword';
-create user ssbd01mok password 'mokpassword';
-create user ssbd01moa password 'moapassword';
+CREATE VIEW public.glassfish_auth_view AS
+SELECT account.login,
+       account.password,
+       al.access_level_role
+FROM (public.access_level al
+    JOIN public.account ON ((al.account_id = account.id)))
+WHERE ((account.confirmed = true) AND (account.active = true) AND (al.active = true));
 
 REVOKE USAGE ON SCHEMA public FROM PUBLIC;
 GRANT ALL ON SCHEMA public TO PUBLIC;
@@ -107,8 +111,3 @@ GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.shipment TO ssbd01moa;
 
 GRANT SELECT ON TABLE public.shipment_medication TO ssbd01mok;
 GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.shipment_medication TO ssbd01moa;
-
-
---
--- PostgreSQL database dump complete
---
