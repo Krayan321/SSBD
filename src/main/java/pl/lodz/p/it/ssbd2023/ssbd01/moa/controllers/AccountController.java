@@ -66,12 +66,6 @@ public class AccountController {
     }
 
     @PUT
-    @Path("/user-account")
-    public Response changeUserAccount(@Valid AccountDTO accountDTO) {
-        return Response.status(Response.Status.OK).entity(null).build();
-    }
-
-    @PUT
     @Path("/setNewPassword")
     public Response setNewPassword(@Valid AccountDTO accountDTO, @QueryParam("newPassword") String newPassword) {
         return Response.status(Response.Status.OK).entity(null).build();
