@@ -88,7 +88,8 @@ public class AccountController {
     @Produces(MediaType.APPLICATION_JSON)
     public Response grantPatient(@PathParam("id") Long id, @Valid PatientDataDTO patientDataDTO) {
         return Response.status(Response.Status.OK).entity(
-                null
+                AccountConverter.dtoFromAccount(accountManager.grantPatient(id,
+                        AccountConverter.dtoToPatientData(patientDataDTO)))
         ).build();
     }
 

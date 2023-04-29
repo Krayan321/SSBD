@@ -1,8 +1,10 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.moa.managers;
 
 import jakarta.ejb.*;
+import jakarta.inject.Inject;
 import pl.lodz.p.it.ssbd2023.ssbd01.common.AbstractManager;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.*;
+import pl.lodz.p.it.ssbd2023.ssbd01.mok.facades.AccountFacade;
 
 import java.rmi.RemoteException;
 import java.util.List;
@@ -10,6 +12,10 @@ import java.util.List;
 @Stateful
 @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 public class AccountManager extends AbstractManager implements AccountManagerLocal, SessionSynchronization {
+
+    @Inject
+    private AccountFacade accountFacade;
+
     @Override
     public Account createAccount(Account account, AccessLevel accessLevel) {
         return null;
@@ -32,7 +38,10 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
 
     @Override
     public Account grantPatient(Long id, PatientData patientData) {
-        return null;
+        Account account = accountFacade.find(id);
+        account.getAccessLevels().add(patientData);
+        accountFacade.edit(account);
+        return account;
     }
 
     @Override

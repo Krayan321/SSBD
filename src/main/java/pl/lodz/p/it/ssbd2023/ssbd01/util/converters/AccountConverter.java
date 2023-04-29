@@ -1,26 +1,35 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.util.converters;
 
-import pl.lodz.p.it.ssbd2023.ssbd01.dto.AccountDTO;
-import pl.lodz.p.it.ssbd2023.ssbd01.dto.AdminDataDTO;
-import pl.lodz.p.it.ssbd2023.ssbd01.dto.ChemistDataDTO;
-import pl.lodz.p.it.ssbd2023.ssbd01.dto.PatientDataDTO;
-import pl.lodz.p.it.ssbd2023.ssbd01.entities.Account;
-import pl.lodz.p.it.ssbd2023.ssbd01.entities.AdminData;
-import pl.lodz.p.it.ssbd2023.ssbd01.entities.ChemistData;
-import pl.lodz.p.it.ssbd2023.ssbd01.entities.PatientData;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.*;
+import pl.lodz.p.it.ssbd2023.ssbd01.entities.*;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class AccountConverter {
 
-    public static Account dtoToAccount() {
+    public static Account dtoToAccount(AccountDTO accountDTO) {
         return null;
     }
 
-    public static AccountDTO dtoFromAccount() {
+    public static AccountDTO dtoFromAccount(Account account) {
+        AccountDTO accountDTO = new AccountDTO();
+        accountDTO.setVersion(accountDTO.getVersion());
+        accountDTO.setAccessLevels(new HashSet<>());
+        accountDTO.setLogin(account.getLogin());
+        accountDTO.setActive(account.getActive());
+        accountDTO.setConfirmed(account.getConfirmed());
         return null;
     }
 
     public static PatientData dtoToPatientData(PatientDataDTO patientDataDTO) {
-        return null;
+        PatientData patientData = new PatientData();
+        patientData.setPesel(patientDataDTO.getPesel());
+        patientData.setFirstName(patientDataDTO.getFirstName());
+        patientData.setLastName(patientDataDTO.getLastName());
+        patientData.setPhoneNumber(patientDataDTO.getPhoneNumber());
+        patientData.setNIP(patientDataDTO.getNIP());
+        return patientData;
     }
 
     public static PatientDataDTO dtoFromPatientData() {
