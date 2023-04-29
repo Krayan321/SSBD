@@ -3,23 +3,14 @@ package pl.lodz.p.it.ssbd2023.ssbd01.mok.controllers;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
-import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.POST;
-import jakarta.ws.rs.Path;
+import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import pl.lodz.p.it.ssbd2023.ssbd01.dto.CreatePatientDto;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Account;
 import pl.lodz.p.it.ssbd2023.ssbd01.mok.managers.AccountManagerLocal;
 import pl.lodz.p.it.ssbd2023.ssbd01.util.converters.AccessLevelConverter;
 import pl.lodz.p.it.ssbd2023.ssbd01.util.converters.AccountConverter;
-import jakarta.ws.rs.*;
-import pl.lodz.p.it.ssbd2023.ssbd01.dto.AccountAndAccessLevelsDTO;
-import pl.lodz.p.it.ssbd2023.ssbd01.dto.AdminDataDTO;
-import pl.lodz.p.it.ssbd2023.ssbd01.dto.ChemistDataDTO;
-import pl.lodz.p.it.ssbd2023.ssbd01.dto.PatientDataDTO;
-import pl.lodz.p.it.ssbd2023.ssbd01.mok.managers.AccountManagerLocal;
-import pl.lodz.p.it.ssbd2023.ssbd01.util.converters.AccountConverter;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.*;
 
 @Path("account")
 @RequestScoped

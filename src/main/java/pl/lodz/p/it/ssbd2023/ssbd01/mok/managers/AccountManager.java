@@ -24,11 +24,6 @@ public class AccountManager implements AccountManagerLocal {
     private HashGenerator hashGenerator;
 
     @Override
-    public Account createAccount(Account account, AccessLevel accessLevel) {
-        return null;
-    }
-
-    @Override
     public List<Account> getAllAccounts() {
         return null;
     }
@@ -51,6 +46,7 @@ public class AccountManager implements AccountManagerLocal {
         Account account = optionalAccount.get();
         account.getAccessLevels().add(accessLevel);
         accountFacade.edit(account);
+        return account;
     }
 
 

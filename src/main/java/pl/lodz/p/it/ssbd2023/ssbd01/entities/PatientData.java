@@ -10,11 +10,7 @@ import jakarta.validation.constraints.Pattern;
 import java.io.Serializable;
 
 import jakarta.persistence.NamedQuery;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 @Entity
 @Getter
@@ -25,6 +21,7 @@ import lombok.ToString;
 @Builder
 @ToString(callSuper = true)
 @NamedQuery(name="patientData.findAll", query = "SELECT o FROM PatientData o")
+@AllArgsConstructor
 public class PatientData extends AccessLevel implements Serializable {
 
     private static final long serialVersionUID = 1L;

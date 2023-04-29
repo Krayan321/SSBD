@@ -1,4 +1,4 @@
-package pl.lodz.p.it.ssbd2023.ssbd01.util.converters;
+package pl.lodz.p.it.ssbd2023.ssbd01.util;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import java.nio.charset.StandardCharsets;
@@ -6,7 +6,6 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import pl.lodz.p.it.ssbd2023.ssbd01.util.HashGenerator;
 
 @ApplicationScoped
 public class SHA256HashGenerator implements HashGenerator {
