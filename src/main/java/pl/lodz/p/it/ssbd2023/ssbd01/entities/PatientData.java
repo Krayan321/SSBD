@@ -10,6 +10,7 @@ import jakarta.validation.constraints.Pattern;
 import java.io.Serializable;
 
 import jakarta.persistence.NamedQuery;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -21,6 +22,7 @@ import lombok.ToString;
 @Table(name = "patient_data")
 @DiscriminatorValue("PATIENT")
 @NoArgsConstructor
+@Builder
 @ToString(callSuper = true)
 @NamedQuery(name="patientData.findAll", query = "SELECT o FROM PatientData o")
 public class PatientData extends AccessLevel implements Serializable {
