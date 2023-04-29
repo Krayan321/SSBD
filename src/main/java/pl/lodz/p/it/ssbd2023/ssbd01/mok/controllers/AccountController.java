@@ -1,4 +1,4 @@
-package pl.lodz.p.it.ssbd2023.ssbd01.moa.controllers;
+package pl.lodz.p.it.ssbd2023.ssbd01.mok.controllers;
 
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
@@ -10,10 +10,8 @@ import pl.lodz.p.it.ssbd2023.ssbd01.dto.AccountDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.AdminDataDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.ChemistDataDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.PatientDataDTO;
-import pl.lodz.p.it.ssbd2023.ssbd01.moa.managers.AccountManagerLocal;
+import pl.lodz.p.it.ssbd2023.ssbd01.mok.managers.AccountManagerLocal;
 import pl.lodz.p.it.ssbd2023.ssbd01.util.converters.AccountConverter;
-
-import javax.print.attribute.standard.Media;
 
 @Path("account")
 @RequestScoped

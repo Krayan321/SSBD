@@ -9,8 +9,8 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import java.util.List;
 
-@Stateless(name = "AdminDataFacade")
-public class AdminDataFacade extends AbstractFacade<AdminData> implements AdminDataFacadeLocal {
+@Stateless
+public class AdminDataFacade extends AbstractFacade<AdminData> {
     @PersistenceContext(unitName = "ssbd01mokPU")
     private EntityManager em;
 
@@ -21,10 +21,5 @@ public class AdminDataFacade extends AbstractFacade<AdminData> implements AdminD
 
     public AdminDataFacade() {
         super(AdminData.class);
-    }
-
-    public List<AdminData> findAll() {
-        TypedQuery<AdminData> tq = em.createNamedQuery("adminData.findAll", AdminData.class);
-        return tq.getResultList();
     }
 }

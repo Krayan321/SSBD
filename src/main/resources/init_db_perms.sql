@@ -6,6 +6,12 @@ FROM (public.access_level al
     JOIN public.account ON ((al.account_id = account.id)))
 WHERE ((account.confirmed = true) AND (account.active = true) AND (al.active = true));
 
+
+-- INSERT INTO account (id, creation_date, active, confirmed, email, language,
+--                             last_positive_login, last_negative_login, logical_address)
+-- values
+--     (1, '', true, true, 'test@email.com', '', '', '', '127.0.0.1');
+
 REVOKE USAGE ON SCHEMA public FROM PUBLIC;
 GRANT ALL ON SCHEMA public TO PUBLIC;
 

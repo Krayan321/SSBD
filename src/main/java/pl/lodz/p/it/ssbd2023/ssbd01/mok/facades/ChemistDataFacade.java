@@ -9,9 +9,8 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import java.util.List;
 
-@Stateless(name = "ChemistDataFacadeMok")
-public class ChemistDataFacade extends AbstractFacade<ChemistData> implements ChemistDataFacadeLocal {
-
+@Stateless
+public class ChemistDataFacade extends AbstractFacade<ChemistData> {
     @PersistenceContext(unitName = "ssbd01mokPU")
     private EntityManager em;
 
@@ -22,10 +21,5 @@ public class ChemistDataFacade extends AbstractFacade<ChemistData> implements Ch
 
     public ChemistDataFacade() {
         super(ChemistData.class);
-    }
-
-    public List<ChemistData> findAll() {
-        TypedQuery<ChemistData> tq = em.createNamedQuery("chemistData.findAll", ChemistData.class);
-        return tq.getResultList();
     }
 }

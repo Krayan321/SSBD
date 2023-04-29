@@ -74,11 +74,14 @@ public class Account extends AbstractEntity implements Serializable {
     private Locale language;
 
     @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "last_positive_login")
     private Date lastPositiveLogin;
 
     @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "last_negative_login")
     private Date lastNegativeLogin;
 
+    @Column(name = "logical_address")
     private String logicalAddress;
 
     @Builder
