@@ -54,4 +54,18 @@ public class AccountConverter {
         return null;
     }
 
+
+    private AccountConverter() {
+    }
+
+    public static Account mapAccountDtoToAccount(AccountDTO accountDTO, String password) {
+        return Account.builder()
+                .login(accountDTO.getLogin())
+                .password(password)
+                .build();
+    }
+
+
+
+
 }

@@ -3,6 +3,7 @@ package pl.lodz.p.it.ssbd2023.ssbd01.entities;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -12,6 +13,7 @@ import lombok.ToString;
 @Table(name = "access_level")
 @Inheritance(strategy = InheritanceType.JOINED)
 @ToString(callSuper = true)
+@Builder
 @NoArgsConstructor
 @Getter
 @Setter

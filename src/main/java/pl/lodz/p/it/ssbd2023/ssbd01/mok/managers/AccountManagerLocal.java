@@ -18,4 +18,7 @@ public interface AccountManagerLocal {
     // update, delete, activate, deactivate
 
     Account grantAccessLevel(Long id, AccessLevel accessLevel);
+
+    Account createPatientAccount(Account account, PatientData patientData);
+
 }
