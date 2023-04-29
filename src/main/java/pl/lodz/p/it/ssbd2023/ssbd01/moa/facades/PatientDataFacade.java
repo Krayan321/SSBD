@@ -9,8 +9,8 @@ import pl.lodz.p.it.ssbd2023.ssbd01.common.AbstractFacade;
 
 import java.util.List;
 
-@Stateless(name = "PatientDataFacadeMoa")
-public class PatientDataFacade extends AbstractFacade<PatientData> implements PatientDataFacadeLocal {
+@Stateless
+public class PatientDataFacade extends AbstractFacade<PatientData> {
 
     @PersistenceContext(unitName = "ssbd01moaPU")
     private EntityManager em;

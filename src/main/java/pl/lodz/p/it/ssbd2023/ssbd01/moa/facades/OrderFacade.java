@@ -9,8 +9,8 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import java.util.List;
 
-@Stateless(name = "OrderFacade")
-public class OrderFacade extends AbstractFacade<Order> implements OrderFacadeLocal {
+@Stateless
+public class OrderFacade extends AbstractFacade<Order> {
     @PersistenceContext(unitName = "ssbd01moaPU")
     private EntityManager em;
 

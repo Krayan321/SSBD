@@ -11,7 +11,7 @@ import java.util.Set;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class AccountDTO extends AbstractEntityDTO {
+public class AccountAndAccessLevelsDTO extends AbstractEntityDTO {
 
     Set<AccessLevelDTO> accessLevels;
 

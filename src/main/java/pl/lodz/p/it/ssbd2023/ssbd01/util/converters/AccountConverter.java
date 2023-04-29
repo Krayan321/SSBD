@@ -4,16 +4,15 @@ import pl.lodz.p.it.ssbd2023.ssbd01.dto.*;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.*;
 
 import java.util.HashSet;
-import java.util.Set;
 
 public class AccountConverter {
 
-    public static Account dtoToAccount(AccountDTO accountDTO) {
+    public static Account dtoToAccount(AccountAndAccessLevelsDTO accountDTO) {
         return null;
     }
 
-    public static AccountDTO dtoFromAccount(Account account) {
-        AccountDTO accountDTO = new AccountDTO();
+    public static AccountAndAccessLevelsDTO dtoFromAccount(Account account) {
+        AccountAndAccessLevelsDTO accountDTO = new AccountAndAccessLevelsDTO();
         accountDTO.setVersion(accountDTO.getVersion());
         accountDTO.setAccessLevels(new HashSet<>());
         accountDTO.setLogin(account.getLogin());

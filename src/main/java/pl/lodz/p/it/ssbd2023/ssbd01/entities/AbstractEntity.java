@@ -31,7 +31,7 @@ public abstract class AbstractEntity {
     @Column(name = "modification_date")
     private Date modificationDate;
 
-    @OneToOne(optional = false, cascade = CascadeType.PERSIST)
+    @OneToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "created_by", updatable = false, nullable = false)
     private Account createdBy;
 

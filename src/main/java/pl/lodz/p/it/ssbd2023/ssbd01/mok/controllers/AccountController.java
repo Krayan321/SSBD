@@ -6,7 +6,7 @@ import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import pl.lodz.p.it.ssbd2023.ssbd01.dto.AccountDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.AccountAndAccessLevelsDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.AdminDataDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.ChemistDataDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.PatientDataDTO;
@@ -46,37 +46,37 @@ public class AccountController {
 
     @PUT
     @Path("/deactivate")
-    public Response deactivate(@Valid AccountDTO accountDTO) {
+    public Response deactivate(@Valid AccountAndAccessLevelsDTO accountDTO) {
         return Response.status(Response.Status.OK).entity(null).build();
     }
 
     @PUT
     @Path("/activate")
-    public Response activate(@Valid AccountDTO accountDTO) {
+    public Response activate(@Valid AccountAndAccessLevelsDTO accountDTO) {
         return Response.status(Response.Status.OK).entity(null).build();
     }
 
     @PUT
     @Path("/changeUserPassword")
-    public Response changeUserPassword(@Valid AccountDTO accountDTO, @QueryParam("newPassword") String newPassword) {
+    public Response changeUserPassword(@Valid AccountAndAccessLevelsDTO accountDTO, @QueryParam("newPassword") String newPassword) {
         return Response.status(Response.Status.OK).entity(null).build();
     }
 
     @PUT
     @Path("/changePassword")
-    public Response changePassword(@Valid AccountDTO accountDTO, @QueryParam("newPassword") String newPassword) {
+    public Response changePassword(@Valid AccountAndAccessLevelsDTO accountDTO, @QueryParam("newPassword") String newPassword) {
         return Response.status(Response.Status.OK).entity(null).build();
     }
 
     @PUT
     @Path("/resetPassword")
-    public Response resetPassword(@Valid AccountDTO accountDTO) {
+    public Response resetPassword(@Valid AccountAndAccessLevelsDTO accountDTO) {
         return Response.status(Response.Status.OK).entity(null).build();
     }
 
     @PUT
     @Path("/setNewPassword")
-    public Response setNewPassword(@Valid AccountDTO accountDTO, @QueryParam("newPassword") String newPassword) {
+    public Response setNewPassword(@Valid AccountAndAccessLevelsDTO accountDTO, @QueryParam("newPassword") String newPassword) {
         return Response.status(Response.Status.OK).entity(null).build();
     }
 

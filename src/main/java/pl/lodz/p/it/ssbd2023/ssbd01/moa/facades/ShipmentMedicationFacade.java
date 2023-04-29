@@ -9,8 +9,8 @@ import pl.lodz.p.it.ssbd2023.ssbd01.common.AbstractFacade;
 
 import java.util.List;
 
-@Stateless(name = "ShipmentMedicationFacade")
-public class ShipmentMedicationFacade extends AbstractFacade<ShipmentMedication> implements ShipmentMedicationFacadeLocal {
+@Stateless
+public class ShipmentMedicationFacade extends AbstractFacade<ShipmentMedication> {
     @PersistenceContext(unitName = "ssbd01moaPU")
     private EntityManager em;
 

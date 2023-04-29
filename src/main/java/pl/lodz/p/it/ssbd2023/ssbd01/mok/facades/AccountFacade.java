@@ -25,8 +25,11 @@ public class AccountFacade extends AbstractFacade<Account> {
     }
 
     public List<Account> findAll() {
-        TypedQuery<Account> tq = em.createNamedQuery("account.findAll", Account.class);
-        return tq.getResultList();
+        return super.findAll();
+    }
+
+    public Optional<Account> findAndRefresh(Long id) {
+        return super.findAndRefresh(id);
     }
 
     public Account findByLogin(String login) {
