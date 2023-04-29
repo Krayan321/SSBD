@@ -37,22 +37,10 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
     }
 
     @Override
-    public Account grantPatient(Long id, PatientData patientData) {
+    public Account grantAccessLevel(Long id, AccessLevel accessLevel) {
         Account account = accountFacade.find(id);
-        account.getAccessLevels().add(patientData);
+        account.getAccessLevels().add(accessLevel);
         accountFacade.edit(account);
         return account;
     }
-
-    @Override
-    public Account grantChemist(Long id, ChemistData chemistData) {
-        return null;
-    }
-
-    @Override
-    public Account grantAdmin(Long id, AdminData adminData) {
-        return null;
-    }
-
-
 }

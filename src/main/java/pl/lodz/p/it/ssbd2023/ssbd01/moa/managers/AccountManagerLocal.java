@@ -17,9 +17,5 @@ public interface AccountManagerLocal {
 
     // update, delete, activate, deactivate
 
-    Account grantPatient(Long id, PatientData patientData);
-
-    Account grantChemist(Long id, ChemistData chemistData);
-
-    Account grantAdmin(Long id, AdminData adminData);
+    Account grantAccessLevel(Long id, AccessLevel accessLevel);
 }

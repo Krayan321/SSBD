@@ -36,16 +36,19 @@ public class AccountConverter {
         return null;
     }
 
-    public static ChemistData dtoToChemistData() {
-        return null;
+    public static ChemistData dtoToChemistData(ChemistDataDTO chemistDataDTO) {
+        ChemistData chemistData = new ChemistData();
+        chemistData.setLicenseNumber(chemistDataDTO.getLicenseNumber());
+        return chemistData;
     }
 
     public static ChemistDataDTO dtoFromChemistData() {
         return null;
     }
 
-    public static AdminData dtoToAdminData() {
-        return null;
+    public static AdminData dtoToAdminData(AdminDataDTO adminDataDTO) {
+        AdminData adminData = new AdminData();
+        return adminData;
     }
 
     public static AdminDataDTO dtoFromAdminData() {
