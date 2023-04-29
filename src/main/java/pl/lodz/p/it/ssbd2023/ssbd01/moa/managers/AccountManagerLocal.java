@@ -1,8 +1,7 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.moa.managers;
 
 import jakarta.ejb.Local;
-import pl.lodz.p.it.ssbd2023.ssbd01.entities.AccessLevel;
-import pl.lodz.p.it.ssbd2023.ssbd01.entities.Account;
+import pl.lodz.p.it.ssbd2023.ssbd01.entities.*;
 
 import java.util.List;
 
@@ -17,4 +16,10 @@ public interface AccountManagerLocal {
     Account getAccountAndAccessLevel(Long id);
 
     // update, delete, activate, deactivate
+
+    Account grantPatient(Long id, PatientData patientData);
+
+    Account grantChemist(Long id, ChemistData chemistData);
+
+    Account grantAdmin(Long id, AdminData adminData);
 }

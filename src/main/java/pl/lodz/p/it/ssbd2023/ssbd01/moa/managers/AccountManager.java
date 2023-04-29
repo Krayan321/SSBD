@@ -1,16 +1,15 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.moa.managers;
 
-import jakarta.ejb.Stateful;
-import jakarta.ejb.TransactionAttribute;
-import jakarta.ejb.TransactionAttributeType;
-import pl.lodz.p.it.ssbd2023.ssbd01.entities.AccessLevel;
-import pl.lodz.p.it.ssbd2023.ssbd01.entities.Account;
+import jakarta.ejb.*;
+import pl.lodz.p.it.ssbd2023.ssbd01.common.AbstractManager;
+import pl.lodz.p.it.ssbd2023.ssbd01.entities.*;
 
+import java.rmi.RemoteException;
 import java.util.List;
 
 @Stateful
 @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-public class AccountManager implements AccountManagerLocal {
+public class AccountManager extends AbstractManager implements AccountManagerLocal, SessionSynchronization {
     @Override
     public Account createAccount(Account account, AccessLevel accessLevel) {
         return null;
@@ -30,4 +29,21 @@ public class AccountManager implements AccountManagerLocal {
     public Account getAccountAndAccessLevel(Long id) {
         return null;
     }
+
+    @Override
+    public Account grantPatient(Long id, PatientData patientData) {
+        return null;
+    }
+
+    @Override
+    public Account grantChemist(Long id, ChemistData chemistData) {
+        return null;
+    }
+
+    @Override
+    public Account grantAdmin(Long id, AdminData adminData) {
+        return null;
+    }
+
+
 }
