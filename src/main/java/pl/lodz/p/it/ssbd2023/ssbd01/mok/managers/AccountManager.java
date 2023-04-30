@@ -1,8 +1,6 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.mok.managers;
 
-import jakarta.ejb.*;
 import jakarta.inject.Inject;
-import pl.lodz.p.it.ssbd2023.ssbd01.common.AbstractManager;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.*;
 import pl.lodz.p.it.ssbd2023.ssbd01.mok.facades.AccountFacade;
 import pl.lodz.p.it.ssbd2023.ssbd01.util.HashGenerator;
@@ -53,6 +51,17 @@ public class AccountManager implements AccountManagerLocal {
     @Override
     public Account createPatientAccount(Account account, PatientData patientData) {
         return createPatientAccount(account, patientData);
+    }
+
+    @Override
+    public Account updateUserPassword(Long id,  String newPassword) {
+        Optional<Account> optionalAccount = accountFacade.find(id);
+        if (optionalAccount.isEmpty())
+            return null; // todo throw
+        Account account = optionalAccount.get();
+        account.setPassword(hashGenerator.generateHash(newPassword));
+        accountFacade.edit(account);
+        return account;
     }
 
     @Override

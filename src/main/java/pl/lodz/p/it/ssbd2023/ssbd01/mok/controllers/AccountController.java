@@ -56,9 +56,11 @@ public class AccountController {
     }
 
     @PUT
-    @Path("/changeUserPassword")
-    public Response changeUserPassword(@Valid AccountAndAccessLevelsDTO accountDTO, @QueryParam("newPassword") String newPassword) {
-        return Response.status(Response.Status.OK).entity(null).build();
+    @Path("/{id}/changeUserPassword")
+    public Response changeUserPassword(@PathParam("id") Long id, @QueryParam("newPassword") String newPassword) {
+        return Response.status(Response.Status.OK).entity(
+            accountManager.updateUserPassword(id, newPassword)).build();
+
     }
 
     @PUT
