@@ -22,4 +22,7 @@ public interface AccountManagerLocal {
     Account createPatientAccount(Account account, PatientData patientData);
 
     Account updateUserPassword(Long id, String newPassword);
+
+    Account removeAccessLevel(Long id, AccessLevel accessLevel);
+
 }

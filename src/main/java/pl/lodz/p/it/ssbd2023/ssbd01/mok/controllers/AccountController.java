@@ -129,5 +129,38 @@ public class AccountController {
 
     }
 
+    @DELETE
+    @Path("/{id}/removeRoleAdmin")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response removeRoleAdmin(@PathParam("id") Long id, @Valid AdminDataDTO adminDataDTO) {
+        return Response.status(Response.Status.OK).entity(
+                AccountConverter.dtoFromAccount(accountManager.removeAccessLevel(id,
+                        AccountConverter.dtoToAdminData(adminDataDTO)))
+        ).build();
+    }
+
+    @DELETE
+    @Path("/{id}/removeRoleChemist")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response removeRoleChemist(@PathParam("id") Long id, @Valid ChemistDataDTO chemistDataDTO) {
+        return Response.status(Response.Status.OK).entity(
+                AccountConverter.dtoFromAccount(accountManager.removeAccessLevel(id,
+                        AccountConverter.dtoToChemistData(chemistDataDTO)))
+        ).build();
+    }
+
+    @DELETE
+    @Path("/{id}/removeRolePatient")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response removeRolePatient(@PathParam("id") Long id, @Valid PatientDataDTO patientDataDTO) {
+        return Response.status(Response.Status.OK).entity(
+                AccountConverter.dtoFromAccount(accountManager.removeAccessLevel(id,
+                        AccountConverter.dtoToPatientData(patientDataDTO)))
+        ).build();
+    }
+
 
 }
