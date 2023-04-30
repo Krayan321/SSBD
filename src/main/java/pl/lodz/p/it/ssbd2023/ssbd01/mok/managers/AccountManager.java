@@ -64,4 +64,16 @@ public class AccountManager implements AccountManagerLocal {
         accountFacade.create(account);
         return account;
     }
+
+    @Override
+    public Account removeAccessLevel(Long id, AccessLevel accessLevel){
+        Optional<Account> optionalAccount = accountFacade.find(id);
+        if(optionalAccount.isEmpty())
+            //todo throw
+            return null;
+        Account account = optionalAccount.get();
+        account.getAccessLevels().remove(accessLevel);
+        accountFacade.edit(account);
+        return account;
+    }
 }
