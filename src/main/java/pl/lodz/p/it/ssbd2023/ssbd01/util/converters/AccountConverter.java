@@ -1,11 +1,22 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.util.converters;
 
-import pl.lodz.p.it.ssbd2023.ssbd01.dto.*;
-import pl.lodz.p.it.ssbd2023.ssbd01.entities.*;
-
 import java.util.HashSet;
+import java.util.Locale;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.AccountAndAccessLevelsDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.AccountDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.AdminDataDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.ChemistDataDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.PatientDataDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.RegisterPatientDto;
+import pl.lodz.p.it.ssbd2023.ssbd01.entities.Account;
+import pl.lodz.p.it.ssbd2023.ssbd01.entities.AdminData;
+import pl.lodz.p.it.ssbd2023.ssbd01.entities.ChemistData;
+import pl.lodz.p.it.ssbd2023.ssbd01.entities.PatientData;
 
 public class AccountConverter {
+
+    private AccountConverter() {
+    }
 
     public static Account dtoToAccount(AccountAndAccessLevelsDTO accountDTO) {
         return null;
@@ -54,10 +65,6 @@ public class AccountConverter {
         return null;
     }
 
-
-    private AccountConverter() {
-    }
-
     public static Account mapAccountDtoToAccount(AccountDTO accountDTO, String password) {
         return Account.builder()
                 .login(accountDTO.getLogin())
@@ -65,7 +72,31 @@ public class AccountConverter {
                 .build();
     }
 
+    public static Account accountRegisterDtoToAccount(RegisterPatientDto registerPatientDto) {
 
+        Account account = Account.builder()
+                .login(registerPatientDto.getLogin())
+                .password(registerPatientDto.getPassword())
+                .build();
+        account.setEmail(registerPatientDto.getEmail());
+        account.setActive(false);
+        account.setConfirmed(false);
+        account.setLanguage(Locale.ENGLISH);
+
+        PatientData patientData = PatientData.builder()
+                .firstName(registerPatientDto.getName())
+                .lastName(registerPatientDto.getLastName())
+                .pesel(registerPatientDto.getPesel())
+                .phoneNumber(registerPatientDto.getPhoneNumber())
+                .NIP(registerPatientDto.getNIP())
+                .build();
+
+        patientData.setActive(false);
+        account.getAccessLevels().add(patientData);
+        patientData.setAccount(account);
+
+        return account;
+    }
 
 
 }

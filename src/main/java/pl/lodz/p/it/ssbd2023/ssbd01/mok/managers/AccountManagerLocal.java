@@ -21,4 +21,6 @@ public interface AccountManagerLocal {
 
     Account createPatientAccount(Account account, PatientData patientData);
 
+    Account registerAccount(Account account);
+
 }

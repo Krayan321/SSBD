@@ -1,15 +1,5 @@
-CREATE VIEW public.glassfish_auth_view AS
-SELECT account.login,
-       account.password,
-       al.access_level_role
-FROM (public.access_level al
-    JOIN public.account ON ((al.account_id = account.id)))
-WHERE ((account.confirmed = true) AND (account.active = true) AND (al.active = true));
-
-
-INSERT INTO account (id, creation_date, active, confirmed, login, password, email, language, last_positive_login, last_negative_login, logical_address, created_by) values (1, '2023-01-01', true, true, 'test1', '1', 'test1@email.com', '', '2023-02-01', '2023-01-05', '127.0.0.1', 1);
-INSERT INTO account (id, creation_date, active, confirmed, login, password, email, language, last_positive_login, last_negative_login, logical_address, created_by) values (2, '2023-01-01', true, true, 'test2', '2', 'test2@email.com', '', '2023-02-01', '2023-01-05', '127.0.0.1', 1);
-INSERT INTO account (id, creation_date, active, confirmed, login, password, email, language, last_positive_login, last_negative_login, logical_address, created_by) values (3, '2023-01-01', true, true, 'test3', '3', 'test3@email.com', '', '2023-02-01', '2023-01-05', '127.0.0.1', 1);
+CREATE VIEW public.glassfish_auth_view AS SELECT account.login, account.password, al.access_level_role FROM (public.access_level al JOIN public.account ON ((al.account_id = account.id)));
+-- CREATE VIEW public.glassfish_auth_view AS SELECT account.login, account.password, al.access_level_role FROM (public.access_level al JOIN public.account ON ((al.account_id = account.id))) WHERE ((account.confirmed = true) AND (account.active = true) AND (al.active = true));
 
 REVOKE USAGE ON SCHEMA public FROM PUBLIC;
 GRANT ALL ON SCHEMA public TO PUBLIC;
@@ -116,3 +106,16 @@ GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.shipment TO ssbd01moa;
 
 GRANT SELECT ON TABLE public.shipment_medication TO ssbd01mok;
 GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.shipment_medication TO ssbd01moa;
+
+--
+-- Name: TABLE account_id_seq; Type: ACL; Schema: public; Owner: ssbd01mok
+--
+
+GRANT SELECT, UPDATE ON TABLE public.account_id_seq TO ssbd01mok;
+
+--
+-- Name: TABLE access_level_id_seq; Type: ACL; Schema: public; Owner: ssbd01mok
+--
+
+GRANT SELECT, UPDATE ON TABLE public.access_level_id_seq TO ssbd01mok;
+

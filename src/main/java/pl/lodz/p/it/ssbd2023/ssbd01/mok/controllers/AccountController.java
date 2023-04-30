@@ -1,18 +1,33 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.mok.controllers;
 
+import jakarta.annotation.security.DenyAll;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
-import jakarta.ws.rs.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.AccountAndAccessLevelsDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.AdminDataDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.ChemistDataDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.CreatePatientDto;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.PatientDataDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.RegisterPatientDto;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Account;
 import pl.lodz.p.it.ssbd2023.ssbd01.mok.managers.AccountManagerLocal;
 import pl.lodz.p.it.ssbd2023.ssbd01.util.converters.AccessLevelConverter;
 import pl.lodz.p.it.ssbd2023.ssbd01.util.converters.AccountConverter;
-import pl.lodz.p.it.ssbd2023.ssbd01.dto.*;
 
-@Path("account")
+@Path("/account")
 @RequestScoped
 public class AccountController {
 
@@ -26,8 +41,9 @@ public class AccountController {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"ADMIN", "DOCTOR", "CHEMIST", "PATIENT"})
     public Response readAllClients() {
-        return Response.status(Response.Status.OK).entity(null).build();
+        return Response.status(Response.Status.OK).entity("taniec").build();
     }
 
     @GET
@@ -57,13 +73,15 @@ public class AccountController {
 
     @PUT
     @Path("/changeUserPassword")
-    public Response changeUserPassword(@Valid AccountAndAccessLevelsDTO accountDTO, @QueryParam("newPassword") String newPassword) {
+    public Response changeUserPassword(@Valid AccountAndAccessLevelsDTO accountDTO,
+                                       @QueryParam("newPassword") String newPassword) {
         return Response.status(Response.Status.OK).entity(null).build();
     }
 
     @PUT
     @Path("/changePassword")
-    public Response changePassword(@Valid AccountAndAccessLevelsDTO accountDTO, @QueryParam("newPassword") String newPassword) {
+    public Response changePassword(@Valid AccountAndAccessLevelsDTO accountDTO,
+                                   @QueryParam("newPassword") String newPassword) {
         return Response.status(Response.Status.OK).entity(null).build();
     }
 
@@ -75,7 +93,8 @@ public class AccountController {
 
     @PUT
     @Path("/setNewPassword")
-    public Response setNewPassword(@Valid AccountAndAccessLevelsDTO accountDTO, @QueryParam("newPassword") String newPassword) {
+    public Response setNewPassword(@Valid AccountAndAccessLevelsDTO accountDTO,
+                                   @QueryParam("newPassword") String newPassword) {
         return Response.status(Response.Status.OK).entity(null).build();
     }
 
@@ -113,19 +132,12 @@ public class AccountController {
     }
 
     @POST
-    @Path("/patient")
-    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Response createPatient(@Valid CreatePatientDto createPatientDto) {
-        Account createdAccount = accountManager.createPatientAccount(
-                AccountConverter.mapAccountDtoToAccount(createPatientDto.getAccountDTO(),
-                        createPatientDto.getPassword()),
-                AccessLevelConverter
-                        .mapPatientDataDtoToPatientData(createPatientDto.getPatientDataDTO()));
-        return Response.status(Response.Status.CREATED)
-                .entity(createdAccount)
-                .build();
-
+    @Path("/register")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response registerPatientAccount(@NotNull @Valid RegisterPatientDto registerPatientDto) {
+        Account account = AccountConverter.accountRegisterDtoToAccount(registerPatientDto);
+        accountManager.registerAccount(account);
+        return Response.status(Response.Status.CREATED).build();
     }
-
 
 }

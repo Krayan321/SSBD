@@ -19,6 +19,9 @@ public class AccountDTO extends AbstractEntityDTO {
     private String login;
 
     @NotNull
+    private String email;
+
+    @NotNull
     private Boolean active;
 
     @NotNull
