@@ -28,7 +28,7 @@ public class PatientData extends AccessLevel implements Serializable {
 
     @Column(nullable = false, unique = true)
     @NotNull
-    @Pattern(regexp = "^[0-9]{11}$", message = "Invalid PESEL")
+//    @Pattern(regexp = "^[0-9]{11}$", message = "Invalid PESEL")
     private String pesel;
 
     @Column(nullable = false, name = "first_name")
@@ -41,12 +41,12 @@ public class PatientData extends AccessLevel implements Serializable {
 
     @Column(nullable = false, name = "phone_number")
     @NotNull
-    @Pattern(regexp = "^(\\+48)? ?[0-9]{3} ?[0-9]{3} ?[0-9]{3}$", message = "Invalid phone number")
+//    @Pattern(regexp = "^(\\+48)? ?[0-9]{3} ?[0-9]{3} ?[0-9]{3}$", message = "Invalid phone number")
     private String phoneNumber;
 
     @Column(nullable = false)
     @NotNull
-    @Pattern(regexp = "^[0-9]{3}-[0-9]{3}-[0-9]{2}-[0-9]{2}$", message = "Invalid NIP")
+//    @Pattern(regexp = "^[0-9]{3}-[0-9]{3}-[0-9]{2}-[0-9]{2}$", message = "Invalid NIP")
     private String NIP;
 
 

@@ -53,7 +53,8 @@ public class Account extends AbstractEntity implements Serializable {
 
     @NotNull
     @Column(unique = true, nullable = false)
-    @Pattern(regexp = "^[A-Za-z0-9+_.-]+@(.+)$")
+//    @Pattern(regexp = "^[A-Za-z0-9+_.-]+@(.+)$")
+    @Setter
     private String email;
 
     @ToString.Exclude

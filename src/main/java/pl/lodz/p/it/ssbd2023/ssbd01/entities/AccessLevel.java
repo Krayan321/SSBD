@@ -29,9 +29,9 @@ public abstract class AccessLevel extends AbstractEntity implements Serializable
     @Column(name = "access_level_role", insertable = false, nullable = false, updatable = false)
     private Role role;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "boolean default false")
     @NotNull
-    private Boolean active;
+    private Boolean active = false;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "account_id", referencedColumnName = "id", updatable = false)
