@@ -11,7 +11,7 @@
 <!--    <default-context-path>/</default-context-path>-->
 
     <security-role>
-        <role-name>ADMINISTRATOR</role-name>
+        <role-name>ADMIN</role-name>
     </security-role>
     <security-role>
         <role-name>CHEMIST</role-name>
@@ -20,7 +20,7 @@
         <role-name>PATIENT</role-name>
     </security-role>
     <security-role>
-        <role-name>CLIENT</role-name>
+        <role-name>ANONYMOUS</role-name>
     </security-role>
 
     <security-constraint>
