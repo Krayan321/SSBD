@@ -1,6 +1,8 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.mok.managers;
 
+import jakarta.ejb.*;
 import jakarta.inject.Inject;
+import pl.lodz.p.it.ssbd2023.ssbd01.common.AbstractManager;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.*;
 import pl.lodz.p.it.ssbd2023.ssbd01.mok.facades.AccountFacade;
 import pl.lodz.p.it.ssbd2023.ssbd01.util.HashGenerator;
@@ -8,8 +10,14 @@ import jakarta.ejb.Stateful;
 import jakarta.ejb.TransactionAttribute;
 import jakarta.ejb.TransactionAttributeType;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+import java.util.Properties;
 
 @Stateful
 @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
@@ -20,6 +28,18 @@ public class AccountManager implements AccountManagerLocal {
 
     @Inject
     private HashGenerator hashGenerator;
+
+    private Properties applicationProperties;
+
+    public AccountManager() {
+        try {
+            FileReader fr = new FileReader("META-INF/application.properties");
+            applicationProperties = new Properties();
+            applicationProperties.load(fr);
+        } catch(IOException e) {
+            // todo throw
+        }
+    }
 
     @Override
     public List<Account> getAllAccounts() {
@@ -62,6 +82,22 @@ public class AccountManager implements AccountManagerLocal {
         account.setPassword(hashGenerator.generateHash(newPassword));
         accountFacade.edit(account);
         return account;
+    }
+
+    @Override
+    public void purgeUnactivatedAccounts() {
+        List<Account> accountsToPurge = accountFacade.findConfirmedFalse();
+        int timeout = Integer.parseInt(applicationProperties.getProperty("unconfirmed.account.deletion.timeout.hours"));
+
+        for (Account account : accountsToPurge) {
+            LocalDateTime timeoutThreshold = LocalDateTime.now().minusHours(timeout);
+            LocalDateTime creationDate = Instant.ofEpochMilli(account.getCreationDate().getTime())
+                    .atZone(ZoneId.systemDefault())
+                    .toLocalDateTime();
+            if(creationDate.isBefore(timeoutThreshold)) {
+                accountFacade.remove(account);
+            }
+        }
     }
 
     @Override

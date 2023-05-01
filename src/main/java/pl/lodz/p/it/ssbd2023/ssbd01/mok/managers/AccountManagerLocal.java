@@ -25,4 +25,5 @@ public interface AccountManagerLocal {
 
     Account removeAccessLevel(Long id, AccessLevel accessLevel);
 
+    void purgeUnactivatedAccounts();
 }

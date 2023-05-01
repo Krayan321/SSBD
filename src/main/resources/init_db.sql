@@ -1,10 +1,4 @@
-CREATE VIEW public.glassfish_auth_view AS
-SELECT account.login,
-       account.password,
-       al.access_level_role
-FROM (public.access_level al
-    JOIN public.account ON ((al.account_id = account.id)))
-WHERE ((account.confirmed = true) AND (account.active = true) AND (al.active = true));
+CREATE VIEW public.glassfish_auth_view AS SELECT account.login, account.password, al.access_level_role FROM (public.access_level al JOIN public.account ON ((al.account_id = account.id))) WHERE ((account.confirmed = true) AND (account.active = true) AND (al.active = true));
 
 
 INSERT INTO account (id, creation_date, active, confirmed, login, password, email, language, last_positive_login, last_negative_login, logical_address, created_by) values (1, '2023-01-01', true, true, 'test1', '1', 'test1@email.com', '', '2023-02-01', '2023-01-05', '127.0.0.1', 1);

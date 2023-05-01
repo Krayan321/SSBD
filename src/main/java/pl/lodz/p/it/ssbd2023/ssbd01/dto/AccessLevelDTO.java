@@ -9,9 +9,15 @@ import pl.lodz.p.it.ssbd2023.ssbd01.entities.Role;
 @EqualsAndHashCode(callSuper = true)
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
 public abstract class AccessLevelDTO extends AbstractEntityDTO {
+
+    public AccessLevelDTO(Long id, Long version, Role role, Boolean active, Account account) {
+        super(id, version);
+        this.role = role;
+        this.active = active;
+        this.account = account;
+    }
 
     private Role role;
 

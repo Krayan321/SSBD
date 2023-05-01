@@ -11,49 +11,25 @@ public class AccountConverter {
         return null;
     }
 
-    public static AccountAndAccessLevelsDTO dtoFromAccount(Account account) {
-        AccountAndAccessLevelsDTO accountDTO = new AccountAndAccessLevelsDTO();
+    public static AccountDTO dtoFromAccount(Account account) {
+        AccountDTO accountDTO = new AccountDTO();
         accountDTO.setVersion(accountDTO.getVersion());
-        accountDTO.setAccessLevels(new HashSet<>());
         accountDTO.setLogin(account.getLogin());
         accountDTO.setActive(account.getActive());
         accountDTO.setConfirmed(account.getConfirmed());
-        return null;
+        return accountDTO;
     }
 
-    public static PatientData dtoToPatientData(PatientDataDTO patientDataDTO) {
-        PatientData patientData = new PatientData();
-        patientData.setPesel(patientDataDTO.getPesel());
-        patientData.setFirstName(patientDataDTO.getFirstName());
-        patientData.setLastName(patientDataDTO.getLastName());
-        patientData.setPhoneNumber(patientDataDTO.getPhoneNumber());
-        patientData.setNIP(patientDataDTO.getNIP());
-        return patientData;
+    public static AccountAndAccessLevelsDTO dtoFromAccountAndAccessLevels(Account account) {
+        AccountAndAccessLevelsDTO accountDTO = new AccountAndAccessLevelsDTO();
+        accountDTO.setVersion(accountDTO.getVersion());
+        accountDTO.setAccessLevels(
+                AccessLevelConverter.mapAccessLevelsToAccessLevelsDto(account.getAccessLevels()));
+        accountDTO.setLogin(account.getLogin());
+        accountDTO.setActive(account.getActive());
+        accountDTO.setConfirmed(account.getConfirmed());
+        return accountDTO;
     }
-
-    public static PatientDataDTO dtoFromPatientData() {
-        return null;
-    }
-
-    public static ChemistData dtoToChemistData(ChemistDataDTO chemistDataDTO) {
-        ChemistData chemistData = new ChemistData();
-        chemistData.setLicenseNumber(chemistDataDTO.getLicenseNumber());
-        return chemistData;
-    }
-
-    public static ChemistDataDTO dtoFromChemistData() {
-        return null;
-    }
-
-    public static AdminData dtoToAdminData(AdminDataDTO adminDataDTO) {
-        AdminData adminData = new AdminData();
-        return adminData;
-    }
-
-    public static AdminDataDTO dtoFromAdminData() {
-        return null;
-    }
-
 
     private AccountConverter() {
     }
