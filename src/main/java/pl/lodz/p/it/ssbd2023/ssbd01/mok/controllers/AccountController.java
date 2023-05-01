@@ -136,7 +136,7 @@ public class AccountController {
     public Response removeRoleAdmin(@PathParam("id") Long id, @Valid AdminDataDTO adminDataDTO) {
         return Response.status(Response.Status.OK).entity(
                 AccountConverter.dtoFromAccount(accountManager.removeAccessLevel(id,
-                        AccountConverter.dtoToAdminData(adminDataDTO)))
+                        AccessLevelConverter.dtoToAdminData(adminDataDTO)))
         ).build();
     }
 
@@ -147,7 +147,7 @@ public class AccountController {
     public Response removeRoleChemist(@PathParam("id") Long id, @Valid ChemistDataDTO chemistDataDTO) {
         return Response.status(Response.Status.OK).entity(
                 AccountConverter.dtoFromAccount(accountManager.removeAccessLevel(id,
-                        AccountConverter.dtoToChemistData(chemistDataDTO)))
+                        AccessLevelConverter.dtoToChemistData(chemistDataDTO)))
         ).build();
     }
 
@@ -158,7 +158,7 @@ public class AccountController {
     public Response removeRolePatient(@PathParam("id") Long id, @Valid PatientDataDTO patientDataDTO) {
         return Response.status(Response.Status.OK).entity(
                 AccountConverter.dtoFromAccount(accountManager.removeAccessLevel(id,
-                        AccountConverter.dtoToPatientData(patientDataDTO)))
+                        AccessLevelConverter.dtoToPatientData(patientDataDTO)))
         ).build();
     }
 
