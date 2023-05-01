@@ -56,6 +56,14 @@ public class AccountManager implements AccountManagerLocal {
     }
 
     @Override
+    public void purgeUnactivatedAccounts() {
+        List<Account> accountsToPurge = accountFacade.findActiveFalseLastPositiveLoginNull();
+        for (Account account : accountsToPurge) {
+            accountFacade.remove(account);
+        }
+    }
+
+    @Override
     public Account createAccount(Account account, AccessLevel accessLevel) {
         account.setPassword(hashGenerator.generateHash(account.getPassword()));
         accessLevel.setAccount(account);

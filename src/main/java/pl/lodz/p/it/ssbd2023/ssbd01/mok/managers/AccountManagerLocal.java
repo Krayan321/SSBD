@@ -21,4 +21,5 @@ public interface AccountManagerLocal {
 
     Account createPatientAccount(Account account, PatientData patientData);
 
+    void purgeUnactivatedAccounts();
 }

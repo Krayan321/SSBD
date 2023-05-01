@@ -1,5 +1,8 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.mok.facades;
 
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Account;
 import pl.lodz.p.it.ssbd2023.ssbd01.common.AbstractFacade;
 
@@ -36,6 +39,19 @@ public class AccountFacade extends AbstractFacade<Account> {
         TypedQuery<Account> tq = em.createNamedQuery("account.findByLogin", Account.class);
         tq.setParameter(1, login);
         return tq.getSingleResult();
+    }
+
+    public List<Account> findActiveFalseLastPositiveLoginNull() {
+        CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
+        CriteriaQuery cq = cb.createQuery();
+        Root<Account> root = cq.from(Account.class);
+        cq.select(root).where(
+                cb.and(
+                        cb.isFalse(root.get("active")),
+                        cb.isNull(root.get("lastPositiveLogin"))
+                )
+        );
+        return getEntityManager().createQuery(cq).getResultList();
     }
 
     @Override

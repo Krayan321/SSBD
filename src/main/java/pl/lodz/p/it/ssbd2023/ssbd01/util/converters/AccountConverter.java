@@ -28,7 +28,7 @@ public class AccountConverter {
         accountDTO.setLogin(account.getLogin());
         accountDTO.setActive(account.getActive());
         accountDTO.setConfirmed(account.getConfirmed());
-        return null;
+        return accountDTO;
     }
 
     private AccountConverter() {
