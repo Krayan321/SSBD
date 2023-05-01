@@ -41,16 +41,11 @@ public class AccountFacade extends AbstractFacade<Account> {
         return tq.getSingleResult();
     }
 
-    public List<Account> findActiveFalseLastPositiveLoginNull() {
+    public List<Account> findConfirmedFalse() {
         CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
         CriteriaQuery cq = cb.createQuery();
         Root<Account> root = cq.from(Account.class);
-        cq.select(root).where(
-                cb.and(
-                        cb.isFalse(root.get("active")),
-                        cb.isNull(root.get("lastPositiveLogin"))
-                )
-        );
+        cq.select(root).where(cb.isFalse(root.get("confirmed")));
         return getEntityManager().createQuery(cq).getResultList();
     }
 
