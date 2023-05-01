@@ -17,10 +17,16 @@ public interface AccountManagerLocal {
 
     // update, delete, activate, deactivate
 
+    Account registerAccount(Account account);
+
     Account grantAccessLevel(Long id, AccessLevel accessLevel);
 
     Account createPatientAccount(Account account, PatientData patientData);
 
-    Account registerAccount(Account account);
+    Account updateUserPassword(Long id, String newPassword);
+
+    Account removeAccessLevel(Long id, AccessLevel accessLevel);
+
+    void purgeUnactivatedAccounts();
 
 }

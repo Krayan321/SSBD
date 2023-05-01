@@ -106,16 +106,3 @@ GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.shipment TO ssbd01moa;
 
 GRANT SELECT ON TABLE public.shipment_medication TO ssbd01mok;
 GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.shipment_medication TO ssbd01moa;
-
---
--- Name: TABLE account_id_seq; Type: ACL; Schema: public; Owner: ssbd01mok
---
-
-GRANT SELECT, UPDATE ON TABLE public.account_id_seq TO ssbd01mok;
-
---
--- Name: TABLE access_level_id_seq; Type: ACL; Schema: public; Owner: ssbd01mok
---
-
-GRANT SELECT, UPDATE ON TABLE public.access_level_id_seq TO ssbd01mok;
-
