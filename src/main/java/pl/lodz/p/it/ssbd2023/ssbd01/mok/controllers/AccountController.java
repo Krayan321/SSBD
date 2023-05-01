@@ -29,7 +29,7 @@ public class AccountController {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed({"ADMIN", "DOCTOR", "CHEMIST", "PATIENT"})
+    @RolesAllowed({"ADMIN", "CHEMIST", "PATIENT"})
     public Response readAllClients() {
         return Response.status(Response.Status.OK).entity("taniec").build();
     }
