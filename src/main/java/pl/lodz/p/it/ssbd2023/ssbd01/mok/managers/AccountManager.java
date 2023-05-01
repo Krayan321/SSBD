@@ -26,9 +26,6 @@ public class AccountManager implements AccountManagerLocal {
     @Inject
     private AccountFacade accountFacade;
 
-    @Inject
-    private HashGenerator hashGenerator;
-
     private Properties applicationProperties;
 
     public AccountManager() {
@@ -86,7 +83,7 @@ public class AccountManager implements AccountManagerLocal {
         if (optionalAccount.isEmpty())
             return null; // todo throw
         Account account = optionalAccount.get();
-        account.setPassword(hashGenerator.generateHash(newPassword));
+        account.setPassword(HashAlgorithmImpl.generate(newPassword));
         accountFacade.edit(account);
         return account;
     }
