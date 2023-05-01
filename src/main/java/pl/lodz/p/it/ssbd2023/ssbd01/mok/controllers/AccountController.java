@@ -5,6 +5,7 @@ import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -42,8 +43,11 @@ public class AccountController {
 
     @POST
     @Path("/register")
-    public Response register() {
-        return Response.status(Response.Status.CREATED).entity(null).build();
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response registerPatientAccount(@NotNull @Valid RegisterPatientDto registerPatientDto) {
+        Account account = AccountConverter.accountRegisterDtoToAccount(registerPatientDto);
+        accountManager.registerAccount(account);
+        return Response.status(Response.Status.CREATED).build();
     }
 
     @PUT
@@ -117,21 +121,6 @@ public class AccountController {
                 AccountConverter.dtoFromAccountAndAccessLevels(accountManager.grantAccessLevel(id,
                         AccessLevelConverter.dtoToAdminData(adminDataDTO)))
         ).build();
-    }
-
-    @POST
-    @Path("/patient")
-    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Response createPatient(@Valid CreatePatientDto createPatientDto) {
-        Account createdAccount = accountManager.createPatientAccount(
-                AccountConverter.mapAccountDtoToAccount(createPatientDto.getAccountDTO(),
-                        createPatientDto.getPassword()),
-                AccessLevelConverter
-                        .mapPatientDataDtoToPatientData(createPatientDto.getPatientDataDTO()));
-        return Response.status(Response.Status.CREATED)
-                .entity(createdAccount)
-                .build();
-
     }
 
     @DELETE

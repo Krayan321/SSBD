@@ -20,7 +20,7 @@ public class AuthController {
     private IdentityStoreHandler identityStoreHandler;
 
     @Inject
-    private JwtUtils jwtProvider;
+    private JwtUtils jwtUtils;
 
     @POST
     @Path("/login")
@@ -30,7 +30,7 @@ public class AuthController {
         CredentialValidationResult result = identityStoreHandler.validate(credential);
         log.warning(result.getCallerGroups().toString());
         if (result.getStatus() == CredentialValidationResult.Status.VALID) {
-            return Response.ok(jwtProvider.create(result)).build();
+            return Response.ok(jwtUtils.create(result)).build();
         }
         throw new AuthenticationException("Invalid login or password");
 
