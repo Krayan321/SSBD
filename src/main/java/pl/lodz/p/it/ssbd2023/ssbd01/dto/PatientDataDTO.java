@@ -26,7 +26,7 @@ public class PatientDataDTO extends AccessLevelDTO {
     }
 
     @NotNull
-    @Pattern(regexp = "^[0-9]{11}$", message = "Invalid PESEL")
+//    @Pattern(regexp = "^[0-9]{11}$", message = "Invalid PESEL")
     private String pesel;
 
     @NotNull
@@ -36,10 +36,10 @@ public class PatientDataDTO extends AccessLevelDTO {
     private String lastName;
 
     @NotNull
-    @Pattern(regexp = "^(\\+48)? ?[0-9]{3} ?[0-9]{3} ?[0-9]{3}$", message = "Invalid phone number")
+//    @Pattern(regexp = "^(\\+48)? ?[0-9]{3} ?[0-9]{3} ?[0-9]{3}$", message = "Invalid phone number")
     private String phoneNumber;
 
     @NotNull
-    @Pattern(regexp = "^[0-9]{3}-[0-9]{3}-[0-9]{2}-[0-9]{2}$", message = "Invalid NIP")
+//    @Pattern(regexp = "^[0-9]{3}-[0-9]{3}-[0-9]{2}-[0-9]{2}$", message = "Invalid NIP")
     private String NIP;
 }

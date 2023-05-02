@@ -15,7 +15,6 @@ import lombok.*;
 @Getter
 @Table(name = "chemist_data")
 @Setter
-@Builder
 @DiscriminatorValue("CHEMIST")
 @NoArgsConstructor
 @AllArgsConstructor
@@ -24,6 +23,12 @@ import lombok.*;
 public class ChemistData extends AccessLevel implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
+    @Builder
+    public ChemistData(Long id, String licenseNumber) {
+        super(id);
+        this.licenseNumber = licenseNumber;
+    }
 
     @NotNull
     @Column(nullable = false, unique = true, name = "license_number")

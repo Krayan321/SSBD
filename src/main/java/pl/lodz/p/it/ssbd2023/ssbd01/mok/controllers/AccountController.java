@@ -101,12 +101,29 @@ public class AccountController {
         return Response.status(Response.Status.OK).entity(null).build();
     }
 
-    // todo add modified by
-//    @PUT
-//    @Path("/{id}/patient")
-//    public Account editPatientData(@Valid PatientDataDTO patientDataDTO) {
-//        return accountManager.editAccessLevel(patientDataDTO);
-//    }
+    @PUT
+    @Path("/{id}/patient")
+    public AccountAndAccessLevelsDTO editPatientData(@PathParam("id") Long id, @Valid PatientDataDTO patientDataDTO) {
+        PatientData patientData = AccessLevelConverter.mapPatientDataDtoToPatientData(patientDataDTO);
+        Account account = accountManager.editAccessLevel(id, patientData);
+        return AccountConverter.mapAccountToAccountAndAccessLevelsDto(account);
+    }
+
+    @PUT
+    @Path("/{id}/chemist")
+    public AccountAndAccessLevelsDTO editPatientData(@PathParam("id") Long id, @Valid ChemistDataDTO chemistDataDTO) {
+        ChemistData chemistData = AccessLevelConverter.mapChemistDataDtoToChemistData(chemistDataDTO);
+        Account account = accountManager.editAccessLevel(id, chemistData);
+        return AccountConverter.mapAccountToAccountAndAccessLevelsDto(account);
+    }
+
+    @PUT
+    @Path("/{id}/admin")
+    public AccountAndAccessLevelsDTO editPatientData(@PathParam("id") Long id, @Valid AdminDataDTO adminDataDTO) {
+        AdminData adminData = AccessLevelConverter.mapAdminDataDtoToAdminData(adminDataDTO);
+        Account account = accountManager.editAccessLevel(id, adminData);
+        return AccountConverter.mapAccountToAccountAndAccessLevelsDto(account);
+    }
 
     @PUT
     @Path("/{id}/grantPatient")

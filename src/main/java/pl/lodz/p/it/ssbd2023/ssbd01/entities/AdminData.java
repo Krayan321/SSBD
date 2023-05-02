@@ -20,4 +20,9 @@ public class AdminData extends AccessLevel implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    @Builder
+    public AdminData(Long id) {
+        super(id);
+    }
+
 }

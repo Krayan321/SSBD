@@ -1,6 +1,7 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.mok.managers;
 
 import jakarta.inject.Inject;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import pl.lodz.p.it.ssbd2023.ssbd01.mok.facades.AccountFacade;
 import jakarta.ejb.Stateful;
 import jakarta.ejb.TransactionAttribute;
@@ -18,6 +19,8 @@ import pl.lodz.p.it.ssbd2023.ssbd01.entities.AccessLevel;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Account;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.PatientData;
 import pl.lodz.p.it.ssbd2023.ssbd01.security.HashAlgorithmImpl;
+import pl.lodz.p.it.ssbd2023.ssbd01.util.AccessLevelFinder;
+import pl.lodz.p.it.ssbd2023.ssbd01.util.mergers.AccessLevelMerger;
 
 @Stateful
 @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
@@ -26,17 +29,9 @@ public class AccountManager implements AccountManagerLocal {
     @Inject
     private AccountFacade accountFacade;
 
-    private Properties applicationProperties;
-
-    public AccountManager() {
-        try {
-            FileReader fr = new FileReader("META-INF/application.properties");
-            applicationProperties = new Properties();
-            applicationProperties.load(fr);
-        } catch(IOException e) {
-            // todo throw
-        }
-    }
+    @Inject
+    @ConfigProperty(name = "unconfirmed.account.deletion.timeout.hours")
+    private int UNCONFIRMED_ACCOUNT_DELETION_TIMEOUT_HOURS;
 
     @Override
     public List<Account> getAllAccounts() {
@@ -65,7 +60,7 @@ public class AccountManager implements AccountManagerLocal {
         accessLevel.setAccount(account);
         account.getAccessLevels().add(accessLevel);
         accountFacade.edit(account);
-        return getAccount(account.getId());
+        return account;
     }
 
 
@@ -81,6 +76,16 @@ public class AccountManager implements AccountManagerLocal {
         return account;
     }
 
+    // todo add modified by and modification date
+    @Override
+    public Account editAccessLevel(Long id, AccessLevel accessLevel) {
+        Account account = getAccount(id);
+        AccessLevel found = AccessLevelFinder.findAccessLevel(account, accessLevel);
+        AccessLevelMerger.mergeAccessLevels(found, accessLevel);
+        accountFacade.edit(account);
+        return account;
+    }
+
     @Override
     public Account updateUserPassword(Long id, String newPassword) {
         Account account = getAccount(id);
@@ -92,10 +97,9 @@ public class AccountManager implements AccountManagerLocal {
     @Override
     public void purgeUnactivatedAccounts() {
         List<Account> accountsToPurge = accountFacade.findConfirmedFalse();
-        int timeout = Integer.parseInt(applicationProperties.getProperty("unconfirmed.account.deletion.timeout.hours"));
 
         for (Account account : accountsToPurge) {
-            LocalDateTime timeoutThreshold = LocalDateTime.now().minusHours(timeout);
+            LocalDateTime timeoutThreshold = LocalDateTime.now().minusHours(UNCONFIRMED_ACCOUNT_DELETION_TIMEOUT_HOURS);
             LocalDateTime creationDate = Instant.ofEpochMilli(account.getCreationDate().getTime())
                     .atZone(ZoneId.systemDefault())
                     .toLocalDateTime();
