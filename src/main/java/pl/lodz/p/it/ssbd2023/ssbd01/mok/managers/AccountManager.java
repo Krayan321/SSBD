@@ -93,6 +93,7 @@ public class AccountManager implements AccountManagerLocal {
         // return null;
         // }
         account.setActive(true);
+        account.setConfirmed(true);
         accountFacade.edit(account);
         return account;
     }

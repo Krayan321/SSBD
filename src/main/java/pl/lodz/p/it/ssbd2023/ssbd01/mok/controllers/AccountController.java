@@ -76,7 +76,7 @@ public class AccountController {
     @PUT
     @Path("{id}/activateAccount")
     public Response activateAccount(@PathParam("id") Long id) {
-        return Response.status(Response.Status.OK).entity(accountManager.activateUserAccount(id)).build();
+        return Response.status(Response.Status.OK).entity(AccountConverter.mapAccountToAccountDto(accountManager.activateUserAccount(id))).build();
     }
 
     @PUT
