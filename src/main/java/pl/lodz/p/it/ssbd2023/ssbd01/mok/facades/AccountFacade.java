@@ -1,5 +1,7 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.mok.facades;
 
+import jakarta.ejb.TransactionAttribute;
+import jakarta.ejb.TransactionAttributeType;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Root;
@@ -14,6 +16,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Stateless
+@TransactionAttribute(TransactionAttributeType.MANDATORY)
 public class AccountFacade extends AbstractFacade<Account> {
     @PersistenceContext(unitName = "ssbd01mokPU")
     private EntityManager em;

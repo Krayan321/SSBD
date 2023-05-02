@@ -13,7 +13,7 @@ public interface AccountManagerLocal {
 
     Account getAccount(Long id);
 
-    Account getAccountAndAccessLevel(Long id);
+    Account getAccountAndAccessLevels(Long id);
 
     // update, delete, activate, deactivate
 

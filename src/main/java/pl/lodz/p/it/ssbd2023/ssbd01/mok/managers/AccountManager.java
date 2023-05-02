@@ -45,20 +45,23 @@ public class AccountManager implements AccountManagerLocal {
 
     @Override
     public Account getAccount(Long id) {
-        return null;
+        Optional<Account> optionalAccount = accountFacade.find(id);
+        if(optionalAccount.isEmpty())
+            return null; // todo throw
+        return optionalAccount.get();
     }
 
     @Override
-    public Account getAccountAndAccessLevel(Long id) {
-        return null;
+    public Account getAccountAndAccessLevels(Long id) {
+        Optional<Account> optionalAccount = accountFacade.findAndRefresh(id);
+        if(optionalAccount.isEmpty())
+            return null; // todo throw
+        return optionalAccount.get();
     }
 
     @Override
     public Account grantAccessLevel(Long id, AccessLevel accessLevel) {
-        Optional<Account> optionalAccount = accountFacade.find(id);
-        if (optionalAccount.isEmpty())
-            return null; // todo throw
-        Account account = optionalAccount.get();
+        Account account = getAccount(id);
         account.getAccessLevels().add(accessLevel);
         accountFacade.edit(account);
         return account;
@@ -78,11 +81,8 @@ public class AccountManager implements AccountManagerLocal {
     }
 
     @Override
-    public Account updateUserPassword(Long id,  String newPassword) {
-        Optional<Account> optionalAccount = accountFacade.find(id);
-        if (optionalAccount.isEmpty())
-            return null; // todo throw
-        Account account = optionalAccount.get();
+    public Account updateUserPassword(Long id, String newPassword) {
+        Account account = getAccount(id);
         account.setPassword(HashAlgorithmImpl.generate(newPassword));
         accountFacade.edit(account);
         return account;
