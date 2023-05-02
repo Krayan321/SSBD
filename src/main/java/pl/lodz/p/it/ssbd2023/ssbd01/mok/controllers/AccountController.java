@@ -74,6 +74,12 @@ public class AccountController {
     }
 
     @PUT
+    @Path("{id}/activateAccount")
+    public Response activateAccount(@PathParam("id") Long id) {
+        return Response.status(Response.Status.OK).entity(accountManager.activateUserAccount(id)).build();
+    }
+
+    @PUT
     @Path("/{id}/changeUserPassword")
     public Response changeUserPassword(@PathParam("id") Long id, @QueryParam("newPassword") String newPassword) {
         return Response.status(Response.Status.OK).entity(

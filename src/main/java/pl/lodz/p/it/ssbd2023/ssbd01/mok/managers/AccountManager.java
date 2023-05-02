@@ -87,6 +87,17 @@ public class AccountManager implements AccountManagerLocal {
     }
 
     @Override
+    public Account activateUserAccount(Long id) {
+        Account account = getAccount(id);
+        // if(account.getActive() == true) {
+        // return null;
+        // }
+        account.setActive(true);
+        accountFacade.edit(account);
+        return account;
+    }
+
+    @Override
     public Account updateUserPassword(Long id, String newPassword) {
         Account account = getAccount(id);
         account.setPassword(HashAlgorithmImpl.generate(newPassword));

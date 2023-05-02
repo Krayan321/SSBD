@@ -22,6 +22,8 @@ public interface AccountManagerLocal {
 
     Account grantAccessLevel(Long id, AccessLevel accessLevel);
 
+    Account activateUserAccount(Long id);
+
     Account createPatientAccount(Account account, PatientData patientData);
 
     Account updateUserPassword(Long id, String newPassword);
