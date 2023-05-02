@@ -6,7 +6,6 @@ import pl.lodz.p.it.ssbd2023.ssbd01.entities.AdminData;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.ChemistData;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.PatientData;
 
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -44,6 +43,7 @@ public class AccessLevelConverter {
         return null;
     }
 
+    // PATIENT
     public static PatientDataDTO mapPatientDataToPatientDataDto(PatientData patientData) {
         return PatientDataDTO.builder()
                 .id(patientData.getId())
@@ -70,6 +70,17 @@ public class AccessLevelConverter {
         return patientData;
     }
 
+    public static PatientData mapCreatePatientDataDTOtoPatientData(CreatePatientDataDTO data) {
+        return PatientData.builder()
+                .pesel(data.getPesel())
+                .firstName(data.getFirstName())
+                .lastName(data.getLastName())
+                .phoneNumber(data.getPhoneNumber())
+                .NIP(data.getNIP())
+                .build();
+    }
+
+    // CHEMIST
     public static ChemistDataDTO mapChemistDataToChemistDataDto(ChemistData chemistData) {
         return ChemistDataDTO.builder()
                 .id(chemistData.getId())
@@ -80,13 +91,19 @@ public class AccessLevelConverter {
                 .build();
     }
 
-    // todo builder
-    public static ChemistData dtoToChemistData(ChemistDataDTO chemistDataDTO) {
-        ChemistData chemistData = new ChemistData();
-        chemistData.setLicenseNumber(chemistDataDTO.getLicenseNumber());
-        return chemistData;
+    public static ChemistData mapChemistDataDtoToChemistData(ChemistDataDTO chemistDataDTO) {
+        return ChemistData.builder()
+                .licenseNumber(chemistDataDTO.getLicenseNumber())
+                .build();
     }
 
+    public static ChemistData mapCreateChemistDataDtoToChemistData(CreateChemistDataDTO chemistData) {
+        return ChemistData.builder()
+                .licenseNumber(chemistData.getLicenseNumber())
+                .build();
+    }
+
+    // ADMIN
     public static AdminDataDTO mapAdminDataToAdminDataDto(AdminData adminData) {
         return AdminDataDTO.builder()
                 .id(adminData.getId())
@@ -96,9 +113,11 @@ public class AccessLevelConverter {
                 .build();
     }
 
-    // todo builder
+    public static AdminData mapCreateAdminDataDtoToAdminData(CreateAdminDataDTO createAdminDataDTO) {
+        return new AdminData();
+    }
+
     public static AdminData dtoToAdminData(AdminDataDTO adminDataDTO) {
-        AdminData adminData = new AdminData();
-        return adminData;
+        return new AdminData();
     }
 }

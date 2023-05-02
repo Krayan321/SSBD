@@ -9,6 +9,9 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Account;
+import pl.lodz.p.it.ssbd2023.ssbd01.entities.AdminData;
+import pl.lodz.p.it.ssbd2023.ssbd01.entities.ChemistData;
+import pl.lodz.p.it.ssbd2023.ssbd01.entities.PatientData;
 import pl.lodz.p.it.ssbd2023.ssbd01.mok.managers.AccountManagerLocal;
 import pl.lodz.p.it.ssbd2023.ssbd01.util.converters.AccessLevelConverter;
 import pl.lodz.p.it.ssbd2023.ssbd01.util.converters.AccountConverter;
@@ -98,37 +101,41 @@ public class AccountController {
         return Response.status(Response.Status.OK).entity(null).build();
     }
 
+    // todo add modified by
+//    @PUT
+//    @Path("/{id}/patient")
+//    public Account editPatientData(@Valid PatientDataDTO patientDataDTO) {
+//        return accountManager.editAccessLevel(patientDataDTO);
+//    }
+
     @PUT
     @Path("/{id}/grantPatient")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response grantPatient(@PathParam("id") Long id, @Valid PatientDataDTO patientDataDTO) {
-        return Response.status(Response.Status.OK).entity(
-                AccountConverter.mapAccountToAccountAndAccessLevelsDto(accountManager.grantAccessLevel(id,
-                        AccessLevelConverter.dtoToPatientData(patientDataDTO)))
-        ).build();
+    public AccountAndAccessLevelsDTO grantPatient(@PathParam("id") Long id, @Valid CreatePatientDataDTO patientDataDTO) {
+        PatientData patientData = AccessLevelConverter.mapCreatePatientDataDTOtoPatientData(patientDataDTO);
+        Account account = accountManager.grantAccessLevel(id, patientData);
+        return AccountConverter.mapAccountToAccountAndAccessLevelsDto(account);
     }
 
     @PUT
     @Path("/{id}/grantChemist")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response grantChemist(@PathParam("id") Long id, @Valid ChemistDataDTO chemistDataDTO) {
-        return Response.status(Response.Status.OK).entity(
-                AccountConverter.mapAccountToAccountAndAccessLevelsDto(accountManager.grantAccessLevel(id,
-                        AccessLevelConverter.dtoToChemistData(chemistDataDTO)))
-        ).build();
+    public AccountAndAccessLevelsDTO grantChemist(@PathParam("id") Long id, @Valid CreateChemistDataDTO chemistDataDTO) {
+        ChemistData chemistData = AccessLevelConverter.mapCreateChemistDataDtoToChemistData(chemistDataDTO);
+        Account account = accountManager.grantAccessLevel(id, chemistData);
+        return AccountConverter.mapAccountToAccountAndAccessLevelsDto(account);
     }
 
     @PUT
     @Path("/{id}/grantAdmin")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response grantAdmin(@PathParam("id") Long id, @Valid AdminDataDTO adminDataDTO) {
-        return Response.status(Response.Status.OK).entity(
-                AccountConverter.mapAccountToAccountAndAccessLevelsDto(accountManager.grantAccessLevel(id,
-                        AccessLevelConverter.dtoToAdminData(adminDataDTO)))
-        ).build();
+    public AccountAndAccessLevelsDTO grantAdmin(@PathParam("id") Long id, @Valid CreateAdminDataDTO adminDataDTO) {
+        AdminData adminData = AccessLevelConverter.mapCreateAdminDataDtoToAdminData(adminDataDTO);
+        Account account = accountManager.grantAccessLevel(id, adminData);
+        return AccountConverter.mapAccountToAccountAndAccessLevelsDto(account);
     }
 
     @DELETE
@@ -149,7 +156,7 @@ public class AccountController {
     public Response removeRoleChemist(@PathParam("id") Long id, @Valid ChemistDataDTO chemistDataDTO) {
         return Response.status(Response.Status.OK).entity(
                 AccountConverter.mapAccountToAccountDto(accountManager.removeAccessLevel(id,
-                        AccessLevelConverter.dtoToChemistData(chemistDataDTO)))
+                        AccessLevelConverter.mapChemistDataDtoToChemistData(chemistDataDTO)))
         ).build();
     }
 

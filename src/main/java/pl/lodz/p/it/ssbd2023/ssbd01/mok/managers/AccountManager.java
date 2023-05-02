@@ -62,9 +62,10 @@ public class AccountManager implements AccountManagerLocal {
     @Override
     public Account grantAccessLevel(Long id, AccessLevel accessLevel) {
         Account account = getAccount(id);
+        accessLevel.setAccount(account);
         account.getAccessLevels().add(accessLevel);
         accountFacade.edit(account);
-        return account;
+        return getAccount(account.getId());
     }
 
 

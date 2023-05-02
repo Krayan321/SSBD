@@ -48,6 +48,4 @@ public class PatientData extends AccessLevel implements Serializable {
     @NotNull
 //    @Pattern(regexp = "^[0-9]{3}-[0-9]{3}-[0-9]{2}-[0-9]{2}$", message = "Invalid NIP")
     private String NIP;
-
-
 }

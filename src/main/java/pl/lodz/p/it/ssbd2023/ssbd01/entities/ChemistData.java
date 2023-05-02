@@ -9,16 +9,13 @@ import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
 
 import jakarta.persistence.NamedQuery;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 @Entity
 @Getter
 @Table(name = "chemist_data")
 @Setter
+@Builder
 @DiscriminatorValue("CHEMIST")
 @NoArgsConstructor
 @AllArgsConstructor
