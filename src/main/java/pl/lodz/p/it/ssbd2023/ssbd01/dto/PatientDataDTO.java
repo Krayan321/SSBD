@@ -15,9 +15,9 @@ import pl.lodz.p.it.ssbd2023.ssbd01.entities.Role;
 public class PatientDataDTO extends AccessLevelDTO {
 
     @Builder
-    public PatientDataDTO(Long id, Long version, Role role, Boolean active, Account account, String pesel,
+    public PatientDataDTO(Long id, Long version, Role role, Boolean active, String pesel,
                           String firstName, String lastName, String phoneNumber, String NIP) {
-        super(id, version, role, active, account);
+        super(id, version, role, active);
         this.pesel = pesel;
         this.firstName = firstName;
         this.lastName = lastName;

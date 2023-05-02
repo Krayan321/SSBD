@@ -36,19 +36,17 @@ public class AccountController {
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response readAccount(@PathParam("id") Long id) {
+    public AccountDTO readAccount(@PathParam("id") Long id) {
         Account account = accountManager.getAccount(id);
-        AccountDTO accountDTO = AccountConverter.mapAccountToAccountDto(account);
-        return Response.status(Response.Status.OK).entity(accountDTO).build();
+        return AccountConverter.mapAccountToAccountDto(account);
     }
 
     @GET
     @Path("/{id}/details")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response readAccountAndAccessLevels(@PathParam("id") Long id) {
+    public AccountAndAccessLevelsDTO readAccountAndAccessLevels(@PathParam("id") Long id) {
         Account account = accountManager.getAccountAndAccessLevels(id);
-        AccountAndAccessLevelsDTO accountDTO = AccountConverter.mapAccountToAccountAndAccessLevelsDto(account);
-        return Response.status(Response.Status.OK).entity(accountDTO).build();
+        return AccountConverter.mapAccountToAccountAndAccessLevelsDto(account);
     }
 
     @POST

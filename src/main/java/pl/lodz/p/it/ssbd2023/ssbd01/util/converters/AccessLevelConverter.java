@@ -48,7 +48,6 @@ public class AccessLevelConverter {
         return PatientDataDTO.builder()
                 .id(patientData.getId())
                 .version(patientData.getVersion())
-                .account(patientData.getAccount())
                 .role(patientData.getRole())
                 .active(patientData.getActive())
                 .pesel(patientData.getPesel())
@@ -75,7 +74,6 @@ public class AccessLevelConverter {
         return ChemistDataDTO.builder()
                 .id(chemistData.getId())
                 .version(chemistData.getVersion())
-                .account(chemistData.getAccount())
                 .role(chemistData.getRole())
                 .active(chemistData.getActive())
                 .licenseNumber(chemistData.getLicenseNumber())
@@ -93,7 +91,6 @@ public class AccessLevelConverter {
         return AdminDataDTO.builder()
                 .id(adminData.getId())
                 .version(adminData.getVersion())
-                .account(adminData.getAccount())
                 .role(adminData.getRole())
                 .active(adminData.getActive())
                 .build();

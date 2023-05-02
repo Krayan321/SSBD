@@ -12,7 +12,7 @@ import pl.lodz.p.it.ssbd2023.ssbd01.entities.Role;
 public class AdminDataDTO extends AccessLevelDTO {
 
     @Builder
-    public AdminDataDTO(Long id, Long version, Role role, Boolean active, Account account) {
-        super(id, version, role, active, account);
+    public AdminDataDTO(Long id, Long version, Role role, Boolean active) {
+        super(id, version, role, active);
     }
 }

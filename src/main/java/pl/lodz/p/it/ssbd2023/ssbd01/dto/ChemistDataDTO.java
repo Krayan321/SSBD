@@ -14,8 +14,8 @@ import pl.lodz.p.it.ssbd2023.ssbd01.entities.Role;
 public class ChemistDataDTO extends AccessLevelDTO {
 
     @Builder
-    public ChemistDataDTO(Long id, Long version, Role role, Boolean active, Account account, String licenseNumber) {
-        super(id, version, role, active, account);
+    public ChemistDataDTO(Long id, Long version, Role role, Boolean active, String licenseNumber) {
+        super(id, version, role, active);
         this.licenseNumber = licenseNumber;
     }
 
