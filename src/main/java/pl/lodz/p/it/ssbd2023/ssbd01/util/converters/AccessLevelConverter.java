@@ -6,7 +6,6 @@ import pl.lodz.p.it.ssbd2023.ssbd01.entities.AdminData;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.ChemistData;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.PatientData;
 
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -17,8 +16,8 @@ public class AccessLevelConverter {
     }
 
     public static PatientData mapPatientDataDtoToPatientData(PatientDataDTO patientDataDTO) {
-
         return PatientData.builder()
+                .id(patientDataDTO.getId())
                 .firstName(patientDataDTO.getFirstName())
                 .lastName(patientDataDTO.getLastName())
                 .NIP(patientDataDTO.getNIP())
@@ -44,11 +43,11 @@ public class AccessLevelConverter {
         return null;
     }
 
+    // PATIENT
     public static PatientDataDTO mapPatientDataToPatientDataDto(PatientData patientData) {
         return PatientDataDTO.builder()
                 .id(patientData.getId())
                 .version(patientData.getVersion())
-                .account(patientData.getAccount())
                 .role(patientData.getRole())
                 .active(patientData.getActive())
                 .pesel(patientData.getPesel())
@@ -71,37 +70,61 @@ public class AccessLevelConverter {
         return patientData;
     }
 
+    public static PatientData mapCreatePatientDataDTOtoPatientData(CreatePatientDataDTO data) {
+        return PatientData.builder()
+                .pesel(data.getPesel())
+                .firstName(data.getFirstName())
+                .lastName(data.getLastName())
+                .phoneNumber(data.getPhoneNumber())
+                .NIP(data.getNIP())
+                .build();
+    }
+
+    // CHEMIST
     public static ChemistDataDTO mapChemistDataToChemistDataDto(ChemistData chemistData) {
         return ChemistDataDTO.builder()
                 .id(chemistData.getId())
                 .version(chemistData.getVersion())
-                .account(chemistData.getAccount())
                 .role(chemistData.getRole())
                 .active(chemistData.getActive())
                 .licenseNumber(chemistData.getLicenseNumber())
                 .build();
     }
 
-    // todo builder
-    public static ChemistData dtoToChemistData(ChemistDataDTO chemistDataDTO) {
-        ChemistData chemistData = new ChemistData();
-        chemistData.setLicenseNumber(chemistDataDTO.getLicenseNumber());
-        return chemistData;
+    public static ChemistData mapChemistDataDtoToChemistData(ChemistDataDTO chemistDataDTO) {
+        return ChemistData.builder()
+                .id(chemistDataDTO.getId())
+                .licenseNumber(chemistDataDTO.getLicenseNumber())
+                .build();
     }
 
+    public static ChemistData mapCreateChemistDataDtoToChemistData(CreateChemistDataDTO chemistData) {
+        return ChemistData.builder()
+                .licenseNumber(chemistData.getLicenseNumber())
+                .build();
+    }
+
+    // ADMIN
     public static AdminDataDTO mapAdminDataToAdminDataDto(AdminData adminData) {
         return AdminDataDTO.builder()
                 .id(adminData.getId())
                 .version(adminData.getVersion())
-                .account(adminData.getAccount())
                 .role(adminData.getRole())
                 .active(adminData.getActive())
                 .build();
     }
 
-    // todo builder
+    public static AdminData mapAdminDataDtoToAdminData(AdminDataDTO adminDataDTO) {
+        return AdminData.builder()
+                .id(adminDataDTO.getId())
+                .build();
+    }
+
+    public static AdminData mapCreateAdminDataDtoToAdminData(CreateAdminDataDTO createAdminDataDTO) {
+        return new AdminData();
+    }
+
     public static AdminData dtoToAdminData(AdminDataDTO adminDataDTO) {
-        AdminData adminData = new AdminData();
-        return adminData;
+        return new AdminData();
     }
 }

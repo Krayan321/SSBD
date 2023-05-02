@@ -1,6 +1,5 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.mok.controllers;
 
-import jakarta.annotation.security.DenyAll;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
@@ -10,6 +9,9 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Account;
+import pl.lodz.p.it.ssbd2023.ssbd01.entities.AdminData;
+import pl.lodz.p.it.ssbd2023.ssbd01.entities.ChemistData;
+import pl.lodz.p.it.ssbd2023.ssbd01.entities.PatientData;
 import pl.lodz.p.it.ssbd2023.ssbd01.mok.managers.AccountManagerLocal;
 import pl.lodz.p.it.ssbd2023.ssbd01.util.converters.AccessLevelConverter;
 import pl.lodz.p.it.ssbd2023.ssbd01.util.converters.AccountConverter;
@@ -29,7 +31,7 @@ public class AccountController {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed({"ADMIN", "DOCTOR", "CHEMIST", "PATIENT"})
+    @RolesAllowed({"ADMIN", "CHEMIST", "PATIENT"})
     public Response readAllClients() {
         return Response.status(Response.Status.OK).entity("taniec").build();
     }
@@ -37,15 +39,24 @@ public class AccountController {
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response readClient(@PathParam("id") Long id) {
-        return Response.status(Response.Status.OK).entity(id).build();
+    public AccountDTO readAccount(@PathParam("id") Long id) {
+        Account account = accountManager.getAccount(id);
+        return AccountConverter.mapAccountToAccountDto(account);
+    }
+
+    @GET
+    @Path("/{id}/details")
+    @Produces(MediaType.APPLICATION_JSON)
+    public AccountAndAccessLevelsDTO readAccountAndAccessLevels(@PathParam("id") Long id) {
+        Account account = accountManager.getAccountAndAccessLevels(id);
+        return AccountConverter.mapAccountToAccountAndAccessLevelsDto(account);
     }
 
     @POST
     @Path("/register")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response registerPatientAccount(@NotNull @Valid RegisterPatientDto registerPatientDto) {
-        Account account = AccountConverter.accountRegisterDtoToAccount(registerPatientDto);
+        Account account = AccountConverter.mapRegisterPatientDtoToAccount(registerPatientDto);
         accountManager.registerAccount(account);
         return Response.status(Response.Status.CREATED).build();
     }
@@ -91,36 +102,57 @@ public class AccountController {
     }
 
     @PUT
+    @Path("/{id}/patient")
+    public AccountAndAccessLevelsDTO editPatientData(@PathParam("id") Long id, @Valid PatientDataDTO patientDataDTO) {
+        PatientData patientData = AccessLevelConverter.mapPatientDataDtoToPatientData(patientDataDTO);
+        Account account = accountManager.editAccessLevel(id, patientData);
+        return AccountConverter.mapAccountToAccountAndAccessLevelsDto(account);
+    }
+
+    @PUT
+    @Path("/{id}/chemist")
+    public AccountAndAccessLevelsDTO editPatientData(@PathParam("id") Long id, @Valid ChemistDataDTO chemistDataDTO) {
+        ChemistData chemistData = AccessLevelConverter.mapChemistDataDtoToChemistData(chemistDataDTO);
+        Account account = accountManager.editAccessLevel(id, chemistData);
+        return AccountConverter.mapAccountToAccountAndAccessLevelsDto(account);
+    }
+
+    @PUT
+    @Path("/{id}/admin")
+    public AccountAndAccessLevelsDTO editPatientData(@PathParam("id") Long id, @Valid AdminDataDTO adminDataDTO) {
+        AdminData adminData = AccessLevelConverter.mapAdminDataDtoToAdminData(adminDataDTO);
+        Account account = accountManager.editAccessLevel(id, adminData);
+        return AccountConverter.mapAccountToAccountAndAccessLevelsDto(account);
+    }
+
+    @PUT
     @Path("/{id}/grantPatient")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response grantPatient(@PathParam("id") Long id, @Valid PatientDataDTO patientDataDTO) {
-        return Response.status(Response.Status.OK).entity(
-                AccountConverter.dtoFromAccountAndAccessLevels(accountManager.grantAccessLevel(id,
-                        AccessLevelConverter.dtoToPatientData(patientDataDTO)))
-        ).build();
+    public AccountAndAccessLevelsDTO grantPatient(@PathParam("id") Long id, @Valid CreatePatientDataDTO patientDataDTO) {
+        PatientData patientData = AccessLevelConverter.mapCreatePatientDataDTOtoPatientData(patientDataDTO);
+        Account account = accountManager.grantAccessLevel(id, patientData);
+        return AccountConverter.mapAccountToAccountAndAccessLevelsDto(account);
     }
 
     @PUT
     @Path("/{id}/grantChemist")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response grantChemist(@PathParam("id") Long id, @Valid ChemistDataDTO chemistDataDTO) {
-        return Response.status(Response.Status.OK).entity(
-                AccountConverter.dtoFromAccountAndAccessLevels(accountManager.grantAccessLevel(id,
-                        AccessLevelConverter.dtoToChemistData(chemistDataDTO)))
-        ).build();
+    public AccountAndAccessLevelsDTO grantChemist(@PathParam("id") Long id, @Valid CreateChemistDataDTO chemistDataDTO) {
+        ChemistData chemistData = AccessLevelConverter.mapCreateChemistDataDtoToChemistData(chemistDataDTO);
+        Account account = accountManager.grantAccessLevel(id, chemistData);
+        return AccountConverter.mapAccountToAccountAndAccessLevelsDto(account);
     }
 
     @PUT
     @Path("/{id}/grantAdmin")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response grantAdmin(@PathParam("id") Long id, @Valid AdminDataDTO adminDataDTO) {
-        return Response.status(Response.Status.OK).entity(
-                AccountConverter.dtoFromAccountAndAccessLevels(accountManager.grantAccessLevel(id,
-                        AccessLevelConverter.dtoToAdminData(adminDataDTO)))
-        ).build();
+    public AccountAndAccessLevelsDTO grantAdmin(@PathParam("id") Long id, @Valid CreateAdminDataDTO adminDataDTO) {
+        AdminData adminData = AccessLevelConverter.mapCreateAdminDataDtoToAdminData(adminDataDTO);
+        Account account = accountManager.grantAccessLevel(id, adminData);
+        return AccountConverter.mapAccountToAccountAndAccessLevelsDto(account);
     }
 
     @DELETE
@@ -129,7 +161,7 @@ public class AccountController {
     @Produces(MediaType.APPLICATION_JSON)
     public Response removeRoleAdmin(@PathParam("id") Long id, @Valid AdminDataDTO adminDataDTO) {
         return Response.status(Response.Status.OK).entity(
-                AccountConverter.dtoFromAccount(accountManager.removeAccessLevel(id,
+                AccountConverter.mapAccountToAccountDto(accountManager.removeAccessLevel(id,
                         AccessLevelConverter.dtoToAdminData(adminDataDTO)))
         ).build();
     }
@@ -140,8 +172,8 @@ public class AccountController {
     @Produces(MediaType.APPLICATION_JSON)
     public Response removeRoleChemist(@PathParam("id") Long id, @Valid ChemistDataDTO chemistDataDTO) {
         return Response.status(Response.Status.OK).entity(
-                AccountConverter.dtoFromAccount(accountManager.removeAccessLevel(id,
-                        AccessLevelConverter.dtoToChemistData(chemistDataDTO)))
+                AccountConverter.mapAccountToAccountDto(accountManager.removeAccessLevel(id,
+                        AccessLevelConverter.mapChemistDataDtoToChemistData(chemistDataDTO)))
         ).build();
     }
 
@@ -151,7 +183,7 @@ public class AccountController {
     @Produces(MediaType.APPLICATION_JSON)
     public Response removeRolePatient(@PathParam("id") Long id, @Valid PatientDataDTO patientDataDTO) {
         return Response.status(Response.Status.OK).entity(
-                AccountConverter.dtoFromAccount(accountManager.removeAccessLevel(id,
+                AccountConverter.mapAccountToAccountDto(accountManager.removeAccessLevel(id,
                         AccessLevelConverter.dtoToPatientData(patientDataDTO)))
         ).build();
     }
