@@ -9,14 +9,14 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
-import pl.lodz.p.it.ssbd2023.ssbd01.dto.LoginDto;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.LoginDTO;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class SampleTest extends BaseTest{
 
     static String jwt;
 
-    private static LoginDto loginDto = new LoginDto("admin123", "admin123");
+    private static LoginDTO loginDto = new LoginDTO("admin123", "admin123");
 
 
     @BeforeAll

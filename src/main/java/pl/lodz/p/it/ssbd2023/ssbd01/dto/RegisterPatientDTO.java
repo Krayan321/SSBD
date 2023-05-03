@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class RegisterPatientDto {
+public class RegisterPatientDTO {
 
     @NotNull
     private String login;

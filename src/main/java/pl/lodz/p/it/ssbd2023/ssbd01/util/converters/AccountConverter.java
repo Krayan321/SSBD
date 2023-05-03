@@ -3,7 +3,7 @@ package pl.lodz.p.it.ssbd2023.ssbd01.util.converters;
 import java.util.Locale;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.AccountAndAccessLevelsDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.AccountDTO;
-import pl.lodz.p.it.ssbd2023.ssbd01.dto.RegisterPatientDto;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.RegisterPatientDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Account;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.PatientData;
 
@@ -34,7 +34,7 @@ public class AccountConverter {
                 .build();
     }
 
-    public static Account mapRegisterPatientDtoToAccount(RegisterPatientDto registerPatientDto) {
+    public static Account mapRegisterPatientDtoToAccount(RegisterPatientDTO registerPatientDto) {
 
         Account account = Account.builder()
                 .login(registerPatientDto.getLogin())
