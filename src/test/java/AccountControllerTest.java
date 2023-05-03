@@ -3,15 +3,13 @@ import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.filter.log.LogDetail;
 import io.restassured.http.ContentType;
 import jakarta.ws.rs.core.Response;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.*;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.CreatePatientDataDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.LoginDto;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.RegisterPatientDto;
 
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.CoreMatchers.equalTo;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class AccountControllerTest extends BaseTest {
@@ -35,6 +33,30 @@ public class AccountControllerTest extends BaseTest {
             .pesel("012345678901")
             .nip("444-333-22-11")
             .build();
+
+    private static RegisterPatientDto registerPatientDtoDuplicateLogin =
+            RegisterPatientDto.builder()
+                    .login(patientLoginDto.getLogin())
+                    .password(patientLoginDto.getPassword())
+                    .email("other-patient-email@local.db")
+                    .name("Test")
+                    .lastName("Patient")
+                    .phoneNumber("123 123 123")
+                    .pesel("012345678901")
+                    .nip("444-333-22-11")
+                    .build();
+
+    private static RegisterPatientDto registerPatientDtoDuplicateEmail =
+            RegisterPatientDto.builder()
+                    .login("other-login")
+                    .password(patientLoginDto.getPassword())
+                    .email("patient-email@local.db")
+                    .name("Test")
+                    .lastName("Patient")
+                    .phoneNumber("123 123 123")
+                    .pesel("012345678901")
+                    .nip("444-333-22-11")
+                    .build();
 
     @BeforeAll
     static void setUp() {
@@ -62,6 +84,7 @@ public class AccountControllerTest extends BaseTest {
 
     // todo add verification of internationalised message
     @Test
+    @Order(1)
     public void login_invalidLogin() {
         LoginDto invalidLogin = new LoginDto("nonexistantuser", adminLoginDto.getPassword());
 
@@ -73,6 +96,26 @@ public class AccountControllerTest extends BaseTest {
     }
 
     @Test
+    @Order(2)
+    public void readAccount_correct() {
+        given().header("authorization", "Bearer " + adminJwt)
+                .get(getApiRoot() + "/account/1")
+                .then()
+                .statusCode(Response.Status.OK.getStatusCode())
+                .body("login", equalTo(adminLoginDto.getLogin()));
+    }
+
+    @Test
+    @Order(3)
+    public void readAccount_noSuchUser() {
+        given().header("authorization", "Bearer " + adminJwt)
+                .get(getApiRoot() + "/account/2")
+                .then()
+                .statusCode(Response.Status.NOT_FOUND.getStatusCode());
+    }
+
+    @Test
+    @Order(4)
     public void registerPatient_correct() {
         given().body(registerPatientDto)
                 .post(getApiRoot() + "/account/register")
@@ -82,12 +125,23 @@ public class AccountControllerTest extends BaseTest {
     }
 
     @Test
+    @Order(5)
     public void registerPatient_duplicateLogin() {
-        given().body(registerPatientDto)
+        given().body(registerPatientDtoDuplicateLogin)
                 .post(getApiRoot() + "/account/register")
                 .then()
                 .log().all()
-                .statusCode(Response.Status.CONFLICT.getStatusCode());
+                .statusCode(Response.Status.EXPECTATION_FAILED.getStatusCode());
+    }
+
+    @Test
+    @Order(6)
+    public void registerPatient_duplicateEmail() {
+        given().body(registerPatientDtoDuplicateEmail)
+                .post(getApiRoot() + "/account/register")
+                .then()
+                .log().all()
+                .statusCode(Response.Status.EXPECTATION_FAILED.getStatusCode());
     }
 
 }

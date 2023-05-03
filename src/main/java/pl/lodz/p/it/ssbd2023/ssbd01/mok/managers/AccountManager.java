@@ -3,6 +3,8 @@ package pl.lodz.p.it.ssbd2023.ssbd01.mok.managers;
 import jakarta.inject.Inject;
 import jakarta.interceptor.Interceptors;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
+import pl.lodz.p.it.ssbd2023.ssbd01.exceptions.ApplicationException;
+import pl.lodz.p.it.ssbd2023.ssbd01.interceptors.GenericManagerExceptionsInterceptor;
 import pl.lodz.p.it.ssbd2023.ssbd01.mok.facades.AccountFacade;
 import jakarta.ejb.Stateful;
 import jakarta.ejb.TransactionAttribute;
@@ -11,11 +13,8 @@ import jakarta.ejb.TransactionAttributeType;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
-import java.util.Properties;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.AccessLevel;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Account;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.PatientData;
@@ -25,9 +24,7 @@ import pl.lodz.p.it.ssbd2023.ssbd01.util.mergers.AccessLevelMerger;
 
 @Stateful
 @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-@Interceptors({
-
-})
+@Interceptors({GenericManagerExceptionsInterceptor.class})
 public class AccountManager implements AccountManagerLocal {
 
     @Inject
@@ -46,7 +43,7 @@ public class AccountManager implements AccountManagerLocal {
     public Account getAccount(Long id) {
         Optional<Account> optionalAccount = accountFacade.find(id);
         if(optionalAccount.isEmpty())
-            return null; // todo throw
+            ApplicationException.createEntityNotFoundException();
         return optionalAccount.get();
     }
 
@@ -54,7 +51,7 @@ public class AccountManager implements AccountManagerLocal {
     public Account getAccountAndAccessLevels(Long id) {
         Optional<Account> optionalAccount = accountFacade.findAndRefresh(id);
         if(optionalAccount.isEmpty())
-            return null; // todo throw
+            ApplicationException.createEntityNotFoundException();
         return optionalAccount.get();
     }
 
@@ -137,11 +134,7 @@ public class AccountManager implements AccountManagerLocal {
 
     @Override
     public Account removeAccessLevel(Long id, AccessLevel accessLevel){
-        Optional<Account> optionalAccount = accountFacade.find(id);
-        if(optionalAccount.isEmpty())
-            //todo throw
-            return null;
-        Account account = optionalAccount.get();
+        Account account = getAccount(id);
         account.getAccessLevels().remove(accessLevel);
         accountFacade.edit(account);
         return account;
