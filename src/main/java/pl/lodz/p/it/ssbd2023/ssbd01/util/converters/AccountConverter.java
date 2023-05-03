@@ -50,7 +50,7 @@ public class AccountConverter {
                 .lastName(registerPatientDto.getLastName())
                 .pesel(registerPatientDto.getPesel())
                 .phoneNumber(registerPatientDto.getPhoneNumber())
-                .NIP(registerPatientDto.getNIP())
+                .NIP(registerPatientDto.getNip())
                 .build();
 
         patientData.setActive(false);

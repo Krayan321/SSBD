@@ -66,7 +66,7 @@ public class AccountController {
     @POST
     @Path("/register")
     @Consumes(MediaType.APPLICATION_JSON)
-    @RolesAllowed({"GUEST"})
+//    @RolesAllowed({"GUEST"})
     public Response registerPatientAccount(@NotNull @Valid RegisterPatientDto registerPatientDto) {
         Account account = AccountConverter.mapRegisterPatientDtoToAccount(registerPatientDto);
         accountManager.registerAccount(account);
