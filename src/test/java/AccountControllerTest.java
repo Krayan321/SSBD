@@ -5,9 +5,12 @@ import io.restassured.http.ContentType;
 import jakarta.ws.rs.core.Response;
 import org.junit.jupiter.api.*;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.*;
+import pl.lodz.p.it.ssbd2023.ssbd01.entities.Role;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.Matchers.hasSize;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -156,6 +159,7 @@ public class AccountControllerTest extends BaseTest {
             new CreateChemistDataDTO("1234");
 
 
+    // access level id: 3
     @Test
     @Order(8)
     public void grantChemist_correct() {
@@ -169,6 +173,7 @@ public class AccountControllerTest extends BaseTest {
 
     private static CreateAdminDataDTO createAdminDataDTO = new CreateAdminDataDTO();
 
+    // access level id: 4
     @Test
     @Order(9)
     public void grantAdmin_correct() {
@@ -192,5 +197,47 @@ public class AccountControllerTest extends BaseTest {
                 .body("accessLevels", hasSize(3));
     }
 
+    // todo create this from response
+    ChemistDataDTO chemistDataDTOChangedLiscence = ChemistDataDTO.builder()
+            .id(3L).version(0L).role(Role.CHEMIST)
+            .active(false).licenseNumber("4123123123123")
+            .build();
+
+    @Test
+    @Order(11)
+    public void editChemistData_correct() {
+        given().header("authorization", "Bearer " + adminJwt)
+                .body(chemistDataDTOChangedLiscence)
+                .put(getApiRoot() + "/account/2/chemist")
+                .then()
+                .log().all()
+                .statusCode(Response.Status.OK.getStatusCode())
+                .body("accessLevels", hasItem(hasEntry("licenseNumber",
+                        chemistDataDTOChangedLiscence.getLicenseNumber())));
+    }
+
+    PatientDataDTO patientDataDTOChangedName = PatientDataDTO.builder()
+            .id(2L).version(0L).role(Role.PATIENT).active(false)
+            .pesel(registerPatientDto.getPesel())
+            .firstName("Othername")
+            .lastName(registerPatientDto.getLastName())
+            .phoneNumber(registerPatientDto.getPhoneNumber())
+            .NIP(registerPatientDto.getNip())
+            .build();
+
+    @Test
+    @Order(11)
+    public void editPatientData_correct() {
+        given().header("authorization", "Bearer " + adminJwt)
+                .body(patientDataDTOChangedName)
+                .put(getApiRoot() + "/account/2/patient")
+                .then()
+                .log().all()
+                .statusCode(Response.Status.OK.getStatusCode())
+                .body("accessLevels", hasItem(hasEntry("firstName",
+                        patientDataDTOChangedName.getFirstName())));
+    }
+
+    // todo admin? for now it changes nothing
 
 }
