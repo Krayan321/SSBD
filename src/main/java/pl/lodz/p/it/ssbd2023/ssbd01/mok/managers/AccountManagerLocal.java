@@ -18,6 +18,8 @@ public interface AccountManagerLocal {
 
     Account registerAccount(Account account);
 
+    Account updateAccount(Long id, Account account);
+
     Account editAccessLevel(Long id, AccessLevel accessLevel);
 
     Account grantAccessLevel(Long id, AccessLevel accessLevel);

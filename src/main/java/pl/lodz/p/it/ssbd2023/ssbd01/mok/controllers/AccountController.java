@@ -44,6 +44,15 @@ public class AccountController {
         return AccountConverter.mapAccountToAccountDto(account);
     }
 
+    @PUT
+    @Path("/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response updateAccount(@PathParam("id") Long id, @Valid AccountDTO accountDTO) {
+        Account account = null;
+        return Response.status(Response.Status.OK).entity(AccountConverter.mapAccountToAccountDto(accountManager.updateAccount(id, account))).build();
+    }
+
     @GET
     @Path("/{id}/details")
     @Produces(MediaType.APPLICATION_JSON)

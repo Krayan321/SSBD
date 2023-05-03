@@ -76,6 +76,23 @@ public class AccountManager implements AccountManagerLocal {
         return account;
     }
 
+
+    private static void mergeAccount(Account managed, Account toMerge) {
+        managed.setLogin(toMerge.getLogin());
+        managed.setEmail(toMerge.getEmail());
+        managed.setActive(toMerge.getActive());
+        managed.setConfirmed(toMerge.getConfirmed());
+    }
+
+    @Override
+    public Account updateAccount(Long id, Account account) {
+        Account managed = getAccount(id);
+        mergeAccount(managed, account);
+        accountFacade.edit(managed);
+        return managed;
+    }
+
+
     // todo add modified by and modification date
     @Override
     public Account editAccessLevel(Long id, AccessLevel accessLevel) {
