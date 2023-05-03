@@ -26,7 +26,7 @@ public class BaseTest {
                     .withInitScript("init_accounts.sql")
                     .withUsername("ssbd01admin")
                     .withPassword("admin")
-                    .withNetworkAliases("postgres");
+                    .withNetworkAliases("ssbd_db");
     @Container
     static GenericContainer microContainer = new GenericContainer<>("payara/micro:6.2023.2-jdk17")
             .withExposedPorts(8080, 8181)
