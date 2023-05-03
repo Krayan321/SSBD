@@ -1,6 +1,7 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.mok.managers;
 
 import jakarta.inject.Inject;
+import jakarta.interceptor.Interceptors;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import pl.lodz.p.it.ssbd2023.ssbd01.mok.facades.AccountFacade;
 import jakarta.ejb.Stateful;
@@ -24,6 +25,9 @@ import pl.lodz.p.it.ssbd2023.ssbd01.util.mergers.AccessLevelMerger;
 
 @Stateful
 @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+@Interceptors({
+
+})
 public class AccountManager implements AccountManagerLocal {
 
     @Inject
