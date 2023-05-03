@@ -76,7 +76,7 @@ public class AccessLevelConverter {
                 .firstName(data.getFirstName())
                 .lastName(data.getLastName())
                 .phoneNumber(data.getPhoneNumber())
-                .NIP(data.getNIP())
+                .NIP(data.getNip())
                 .build();
     }
 

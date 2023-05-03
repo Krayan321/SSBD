@@ -11,6 +11,7 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.core.Response;
 import lombok.extern.java.Log;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.LoginDto;
+import pl.lodz.p.it.ssbd2023.ssbd01.exceptions.AuthApplicationException;
 
 @Log
 @Path("/auth")
@@ -32,8 +33,8 @@ public class AuthController {
         if (result.getStatus() == CredentialValidationResult.Status.VALID) {
             return Response.ok(jwtUtils.create(result)).build();
         }
-        throw new AuthenticationException("Invalid login or password");
-
+        AuthApplicationException.createInvalidLoginOrPasswordException();
+        return null;
     }
 
 

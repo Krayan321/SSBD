@@ -16,6 +16,11 @@ public class BaseTest {
     static MountableFile warFile =
             MountableFile.forHostPath(Paths.get("target/ssbd01-0.0.1.war").toAbsolutePath());
 
+    static String getApiRoot() {
+        return String.format("http://%s:%s/api",
+                microContainer.getHost(), microContainer.getMappedPort(8080));
+    }
+
     @Container
     static PostgreSQLContainer postgreSQLContainer =
             new PostgreSQLContainer<>(DockerImageName.parse("postgres:15"))
