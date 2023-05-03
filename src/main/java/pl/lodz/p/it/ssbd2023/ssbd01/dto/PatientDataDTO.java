@@ -1,9 +1,7 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.dto;
 
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
 import lombok.*;
-import pl.lodz.p.it.ssbd2023.ssbd01.entities.Account;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Role;
 
 @ToString
@@ -22,7 +20,7 @@ public class PatientDataDTO extends AccessLevelDTO {
         this.firstName = firstName;
         this.lastName = lastName;
         this.phoneNumber = phoneNumber;
-        this.NIP = NIP;
+        this.nip = NIP;
     }
 
     @NotNull
@@ -41,5 +39,5 @@ public class PatientDataDTO extends AccessLevelDTO {
 
     @NotNull
 //    @Pattern(regexp = "^[0-9]{3}-[0-9]{3}-[0-9]{2}-[0-9]{2}$", message = "Invalid NIP")
-    private String NIP;
+    private String nip;
 }

@@ -20,7 +20,7 @@ public class AccessLevelConverter {
                 .id(patientDataDTO.getId())
                 .firstName(patientDataDTO.getFirstName())
                 .lastName(patientDataDTO.getLastName())
-                .NIP(patientDataDTO.getNIP())
+                .NIP(patientDataDTO.getNip())
                 .phoneNumber(patientDataDTO.getPhoneNumber())
                 .pesel(patientDataDTO.getPesel())
                 .build();
@@ -66,7 +66,7 @@ public class AccessLevelConverter {
         patientData.setFirstName(patientDataDTO.getFirstName());
         patientData.setLastName(patientDataDTO.getLastName());
         patientData.setPhoneNumber(patientDataDTO.getPhoneNumber());
-        patientData.setNIP(patientDataDTO.getNIP());
+        patientData.setNIP(patientDataDTO.getNip());
         return patientData;
     }
 

@@ -5,7 +5,7 @@ import lombok.ToString;
 
 @ToString
 @Data
-public class CreatePatientDto {
+public class CreatePatientDTO {
 
     AccountDTO accountDTO;
 

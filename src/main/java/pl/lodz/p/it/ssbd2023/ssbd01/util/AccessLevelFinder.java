@@ -2,6 +2,7 @@ package pl.lodz.p.it.ssbd2023.ssbd01.util;
 
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.AccessLevel;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Account;
+import pl.lodz.p.it.ssbd2023.ssbd01.exceptions.ApplicationException;
 
 import java.util.Iterator;
 
@@ -11,6 +12,7 @@ public class AccessLevelFinder {
             if (next.equals(accessLevel))
                 return next;
         }
-        return null; // todo throw
+        ApplicationException.createEntityNotFoundException();
+        return null;
     }
 }

@@ -76,7 +76,7 @@ public class AccountController {
     @Path("/register")
     @Consumes(MediaType.APPLICATION_JSON)
 //    @RolesAllowed({"GUEST"})
-    public Response registerPatientAccount(@NotNull @Valid RegisterPatientDto registerPatientDto) {
+    public Response registerPatientAccount(@NotNull @Valid RegisterPatientDTO registerPatientDto) {
         Account account = AccountConverter.mapRegisterPatientDtoToAccount(registerPatientDto);
         accountManager.registerAccount(account);
         return Response.status(Response.Status.CREATED).build();
