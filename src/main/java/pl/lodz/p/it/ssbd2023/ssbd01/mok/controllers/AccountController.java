@@ -148,7 +148,7 @@ public class AccountController {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @RolesAllowed({"ADMIN"})
-    public AccountAndAccessLevelsDTO editPatientData(@PathParam("id") Long id, @Valid ChemistDataDTO chemistDataDTO) {
+    public AccountAndAccessLevelsDTO editChemistData(@PathParam("id") Long id, @Valid ChemistDataDTO chemistDataDTO) {
         ChemistData chemistData = AccessLevelConverter.mapChemistDataDtoToChemistData(chemistDataDTO);
         Account account = accountManager.editAccessLevel(id, chemistData);
         return AccountConverter.mapAccountToAccountAndAccessLevelsDto(account);
