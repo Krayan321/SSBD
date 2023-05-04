@@ -77,13 +77,13 @@ public class AccountManager implements AccountManagerLocal {
         return account;
     }
 
-    // todo add modified by and modification date
+    // todo add modified by
     @Override
     public Account editAccessLevel(Long id, AccessLevel accessLevel) {
         Account account = getAccount(id);
         AccessLevel found = AccessLevelFinder.findAccessLevel(account, accessLevel);
         AccessLevelMerger.mergeAccessLevels(found, accessLevel);
-        accountFacade.edit(account);
+        accountFacade.editAndRefresh(account);
         return account;
     }
 

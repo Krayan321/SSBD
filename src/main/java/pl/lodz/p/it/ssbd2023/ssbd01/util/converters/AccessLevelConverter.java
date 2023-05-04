@@ -5,6 +5,8 @@ import pl.lodz.p.it.ssbd2023.ssbd01.entities.AccessLevel;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.AdminData;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.ChemistData;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.PatientData;
+import pl.lodz.p.it.ssbd2023.ssbd01.exceptions.AccountApplicationException;
+import pl.lodz.p.it.ssbd2023.ssbd01.exceptions.ApplicationException;
 
 import java.util.Objects;
 import java.util.Set;
@@ -40,7 +42,7 @@ public class AccessLevelConverter {
             return mapChemistDataToChemistDataDto((ChemistData) accessLevel);
         if(accessLevel instanceof AdminData)
             return mapAdminDataToAdminDataDto((AdminData) accessLevel);
-        return null;
+        throw AccountApplicationException.createUndefinedAccessLevelException();
     }
 
     // PATIENT
