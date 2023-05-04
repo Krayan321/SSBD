@@ -1,15 +1,15 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.dto;
 
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
-public class LoginDto {
-
-    @NotNull
-    String login;
+@NoArgsConstructor
+@AllArgsConstructor
+public class UpdateOtherUserPasswordDTO {
 
     @NotNull
     String password;
-
 }

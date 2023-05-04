@@ -10,7 +10,8 @@ import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.core.Response;
 import lombok.extern.java.Log;
-import pl.lodz.p.it.ssbd2023.ssbd01.dto.LoginDto;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.LoginDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.exceptions.AuthApplicationException;
 
 @Log
 @Path("/auth")
@@ -24,7 +25,7 @@ public class AuthController {
 
     @POST
     @Path("/login")
-    public Response authenticate(@Valid LoginDto loginDto) throws AuthenticationException {
+    public Response authenticate(@Valid LoginDTO loginDto) throws AuthenticationException {
         UsernamePasswordCredential credential =
                 new UsernamePasswordCredential(loginDto.getLogin(), loginDto.getPassword());
         CredentialValidationResult result = identityStoreHandler.validate(credential);
@@ -32,8 +33,8 @@ public class AuthController {
         if (result.getStatus() == CredentialValidationResult.Status.VALID) {
             return Response.ok(jwtUtils.create(result)).build();
         }
-        throw new AuthenticationException("Invalid login or password");
-
+        AuthApplicationException.createInvalidLoginOrPasswordException();
+        return null;
     }
 
 

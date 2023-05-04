@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class RegisterPatientDto {
+public class RegisterPatientDTO {
 
     @NotNull
     private String login;
@@ -38,6 +38,6 @@ public class RegisterPatientDto {
 
     @NotNull
 //    @Pattern(regexp = "^[0-9]{3}-[0-9]{3}-[0-9]{2}-[0-9]{2}$", message = "Invalid NIP")
-    private String NIP;
+    private String nip;
 
 }

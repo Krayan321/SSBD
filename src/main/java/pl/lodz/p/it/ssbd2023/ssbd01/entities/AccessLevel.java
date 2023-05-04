@@ -18,6 +18,10 @@ public abstract class AccessLevel extends AbstractEntity implements Serializable
 
     public static final Long serialVersionUID = 1L;
 
+    public AccessLevel(Long id) {
+        this.id = id;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Setter(lombok.AccessLevel.NONE)

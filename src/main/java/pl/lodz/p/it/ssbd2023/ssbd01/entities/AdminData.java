@@ -6,6 +6,7 @@ import jakarta.persistence.Table;
 import java.io.Serializable;
 
 import jakarta.persistence.NamedQuery;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
@@ -18,5 +19,10 @@ import lombok.ToString;
 public class AdminData extends AccessLevel implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
+    @Builder
+    public AdminData(Long id) {
+        super(id);
+    }
 
 }

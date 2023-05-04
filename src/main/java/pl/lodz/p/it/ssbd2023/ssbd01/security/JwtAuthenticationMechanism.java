@@ -33,7 +33,7 @@ public class JwtAuthenticationMechanism implements HttpAuthenticationMechanism {
         String authorizationHeader = httpServletRequest.getHeader(HttpHeaders.AUTHORIZATION);
 
         if (authorizationHeader == null || !authorizationHeader.startsWith(BEARER_HEADER)) {
-            CallerPrincipal login = new CallerPrincipal("guest");
+            CallerPrincipal login = new CallerPrincipal("GUEST");
             Set<String> roles = new HashSet<>() {{
                 add(Roles.ANONYMOUS);
             }};

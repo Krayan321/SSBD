@@ -1,5 +1,8 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.mok.facades;
 
+import jakarta.ejb.TransactionAttribute;
+import jakarta.ejb.TransactionAttributeType;
+import jakarta.interceptor.Interceptors;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Root;
@@ -10,10 +13,17 @@ import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
+import pl.lodz.p.it.ssbd2023.ssbd01.interceptors.AccountFacadeExceptionsInterceptor;
+import pl.lodz.p.it.ssbd2023.ssbd01.interceptors.GenericFacadeExceptionsInterceptor;
+
 import java.util.List;
 import java.util.Optional;
 
 @Stateless
+@TransactionAttribute(TransactionAttributeType.MANDATORY)
+@Interceptors({GenericFacadeExceptionsInterceptor.class,
+        AccountFacadeExceptionsInterceptor.class
+})
 public class AccountFacade extends AbstractFacade<Account> {
     @PersistenceContext(unitName = "ssbd01mokPU")
     private EntityManager em;
