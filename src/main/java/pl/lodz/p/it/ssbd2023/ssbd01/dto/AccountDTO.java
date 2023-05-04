@@ -1,25 +1,30 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.dto;
 
-import jakarta.persistence.Basic;
-import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
-import java.util.Locale;
 import java.util.Set;
 
 @ToString
 @EqualsAndHashCode(callSuper = true)
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
 public class AccountDTO extends AbstractEntityDTO {
 
-    Set<AccessLevelDTO> accessLevels;
+    @Builder
+    public AccountDTO(Long id, Long version, String login, Boolean active, Boolean confirmed) {
+        super(id, version);
+        this.login = login;
+        this.active = active;
+        this.confirmed = confirmed;
+    }
 
     @NotNull
     private String login;
+
+    @NotNull
+    private String email;
 
     @NotNull
     private Boolean active;

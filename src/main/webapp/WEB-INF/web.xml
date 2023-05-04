@@ -11,7 +11,7 @@
 <!--    <default-context-path>/</default-context-path>-->
 
     <security-role>
-        <role-name>ADMINISTRATOR</role-name>
+        <role-name>ADMIN</role-name>
     </security-role>
     <security-role>
         <role-name>CHEMIST</role-name>
@@ -20,18 +20,18 @@
         <role-name>PATIENT</role-name>
     </security-role>
     <security-role>
-        <role-name>CLIENT</role-name>
+        <role-name>ANONYMOUS</role-name>
     </security-role>
 
-    <security-constraint>
-        <web-resource-collection>
-            <web-resource-name>ALL</web-resource-name>
-            <url-pattern>/*</url-pattern>
-        </web-resource-collection>
-        <user-data-constraint>
-            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
-        </user-data-constraint>
-    </security-constraint>
+<!--    <security-constraint>-->
+<!--        <web-resource-collection>-->
+<!--            <web-resource-name>ALL</web-resource-name>-->
+<!--            <url-pattern>/*</url-pattern>-->
+<!--        </web-resource-collection>-->
+<!--        <user-data-constraint>-->
+<!--            <transport-guarantee>CONFIDENTIAL</transport-guarantee>-->
+<!--        </user-data-constraint>-->
+<!--    </security-constraint>-->
 
     <!--dodano nazwe przestrzeni uwierzytelniania, odwolanie do stron formularza - na przyszlosc -->
     <login-config>
@@ -45,5 +45,17 @@
         -->
     </login-config>
 
+    <filter>
+        <filter-name>SpaFilter</filter-name>
+        <filter-class>pl.lodz.p.it.ssbd2023.ssbd01.config.SpaFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>SpaFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
 
+    <context-param>
+        <param-name>resteasy.preferJacksonOverJsonB</param-name>
+        <param-value>true</param-value>
+    </context-param>
 </web-app>

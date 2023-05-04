@@ -9,8 +9,8 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import java.util.List;
 
-@Stateless(name = "MedicationFacade")
-public class MedicationFacade extends AbstractFacade<Medication> implements MedicationFacadeLocal {
+@Stateless
+public class MedicationFacade extends AbstractFacade<Medication> {
     @PersistenceContext(unitName = "ssbd01moaPU")
     private EntityManager em;
 

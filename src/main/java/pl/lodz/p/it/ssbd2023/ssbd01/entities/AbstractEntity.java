@@ -23,6 +23,7 @@ public abstract class AbstractEntity {
     @Setter(lombok.AccessLevel.NONE)
     private Long version;
 
+    // todo change type to LocalDate?
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "creation_date", nullable = false, updatable = false)
     private Date creationDate;
@@ -31,8 +32,8 @@ public abstract class AbstractEntity {
     @Column(name = "modification_date")
     private Date modificationDate;
 
-    @OneToOne(optional = false, cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "created_by", updatable = false, nullable = false)
+    @OneToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "created_by", updatable = false)
     private Account createdBy;
 
     @PrePersist

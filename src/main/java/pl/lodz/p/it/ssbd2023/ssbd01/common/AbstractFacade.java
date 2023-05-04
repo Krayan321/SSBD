@@ -1,6 +1,10 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.common;
 
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.criteria.CriteriaQuery;
+
+import java.util.List;
+import java.util.Optional;
 
 public abstract class AbstractFacade<T> {
 
@@ -12,19 +16,31 @@ public abstract class AbstractFacade<T> {
 
     protected abstract EntityManager getEntityManager();
 
-    public void create(T entity) {
+    protected void create(T entity) {
         getEntityManager().persist(entity);
     }
 
-    public void edit(T entity) {
+    protected void edit(T entity) {
         getEntityManager().merge(entity);
     }
 
-    public void remove(T entity) {
+    protected void remove(T entity) {
         getEntityManager().remove(getEntityManager().merge(entity));
     }
 
-    public T find(Object id) {
-        return getEntityManager().find(entityClass, id);
+    protected Optional<T> find(Object id) {
+        return Optional.ofNullable(getEntityManager().find(entityClass, id));
+    }
+
+    protected Optional<T> findAndRefresh(Object id) {
+        Optional<T> optEntity = find(id);
+        optEntity.ifPresent(t -> getEntityManager().refresh(t));
+        return optEntity;
+    }
+
+    protected List<T> findAll() {
+        CriteriaQuery cq = getEntityManager().getCriteriaBuilder().createQuery();
+        cq.select(cq.from(entityClass));
+        return getEntityManager().createQuery(cq).getResultList();
     }
 }

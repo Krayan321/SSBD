@@ -10,7 +10,7 @@ import pl.lodz.p.it.ssbd2023.ssbd01.common.AbstractFacade;
 import java.util.List;
 
 @Stateless(name = "ChemistDataFacadeMoa")
-public class ChemistDataFacade extends AbstractFacade<ChemistData> implements ChemistDataFacadeLocal {
+public class ChemistDataFacade extends AbstractFacade<ChemistData> {
 
     @PersistenceContext(unitName = "ssbd01moaPU")
     private EntityManager em;
@@ -24,8 +24,4 @@ public class ChemistDataFacade extends AbstractFacade<ChemistData> implements Ch
         super(ChemistData.class);
     }
 
-    public List<ChemistData> findAll() {
-        TypedQuery<ChemistData> tq = em.createNamedQuery("chemistData.findAll", ChemistData.class);
-        return tq.getResultList();
-    }
 }

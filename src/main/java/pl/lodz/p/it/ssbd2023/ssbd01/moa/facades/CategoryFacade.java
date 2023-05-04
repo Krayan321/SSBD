@@ -10,7 +10,7 @@ import pl.lodz.p.it.ssbd2023.ssbd01.common.AbstractFacade;
 import java.util.List;
 
 @Stateless(name = "CategoryFacade")
-public class CategoryFacade extends AbstractFacade<Category> implements CategoryFacadeLocal {
+public class CategoryFacade extends AbstractFacade<Category> {
     @PersistenceContext(unitName = "ssbd01moaPU")
     private EntityManager em;
 

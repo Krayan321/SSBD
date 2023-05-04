@@ -9,11 +9,7 @@ import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
 
 import jakarta.persistence.NamedQuery;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 @Entity
 @Getter
@@ -27,6 +23,12 @@ import lombok.ToString;
 public class ChemistData extends AccessLevel implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
+    @Builder
+    public ChemistData(Long id, String licenseNumber) {
+        super(id);
+        this.licenseNumber = licenseNumber;
+    }
 
     @NotNull
     @Column(nullable = false, unique = true, name = "license_number")

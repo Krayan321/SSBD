@@ -38,7 +38,7 @@ public class Account extends AbstractEntity implements Serializable {
 
     public static final long serialVersionUID = 1L;
 
-    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.MERGE}, mappedBy = "account")
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.MERGE, CascadeType.REFRESH}, mappedBy = "account")
     @ToString.Exclude
     Set<AccessLevel> accessLevels = new HashSet<>();
 
@@ -53,7 +53,8 @@ public class Account extends AbstractEntity implements Serializable {
 
     @NotNull
     @Column(unique = true, nullable = false)
-    @Pattern(regexp = "^[A-Za-z0-9+_.-]+@(.+)$")
+//    @Pattern(regexp = "^[A-Za-z0-9+_.-]+@(.+)$")
+    @Setter
     private String email;
 
     @ToString.Exclude
@@ -74,11 +75,14 @@ public class Account extends AbstractEntity implements Serializable {
     private Locale language;
 
     @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "last_positive_login")
     private Date lastPositiveLogin;
 
     @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "last_negative_login")
     private Date lastNegativeLogin;
 
+    @Column(name = "logical_address")
     private String logicalAddress;
 
     @Builder

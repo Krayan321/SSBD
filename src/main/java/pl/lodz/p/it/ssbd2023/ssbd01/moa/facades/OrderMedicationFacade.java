@@ -8,9 +8,10 @@ import pl.lodz.p.it.ssbd2023.ssbd01.entities.OrderMedication;
 import pl.lodz.p.it.ssbd2023.ssbd01.common.AbstractFacade;
 
 import java.util.List;
+import java.util.Optional;
 
-@Stateless(name = "OrderMedicationFacade")
-public class OrderMedicationFacade extends AbstractFacade<OrderMedication> implements OrderMedicationFacadeLocal {
+@Stateless
+public class OrderMedicationFacade extends AbstractFacade<OrderMedication> {
     @PersistenceContext(unitName = "ssbd01moaPU")
     private EntityManager em;
 
@@ -21,10 +22,5 @@ public class OrderMedicationFacade extends AbstractFacade<OrderMedication> imple
 
     public OrderMedicationFacade() {
         super(OrderMedication.class);
-    }
-
-    public List<OrderMedication> findAll() {
-        TypedQuery<OrderMedication> tq = em.createNamedQuery("orderMedication.findAll", OrderMedication.class);
-        return tq.getResultList();
     }
 }
