@@ -77,18 +77,10 @@ public class AccountManager implements AccountManagerLocal {
         return account;
     }
 
-
-    private static void mergeAccount(Account managed, Account toMerge) {
-        managed.setLogin(toMerge.getLogin());
-        managed.setEmail(toMerge.getEmail());
-        managed.setActive(toMerge.getActive());
-        managed.setConfirmed(toMerge.getConfirmed());
-    }
-
     @Override
-    public Account updateAccount(Long id, Account account) {
+    public Account updateEmail(Long id, String email) {
         Account managed = getAccount(id);
-        mergeAccount(managed, account);
+        managed.setEmail(email);
         accountFacade.edit(managed);
         return managed;
     }

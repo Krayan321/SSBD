@@ -18,7 +18,7 @@ public interface AccountManagerLocal {
 
     Account registerAccount(Account account);
 
-    Account updateAccount(Long id, Account account);
+    Account updateEmail(Long id, String email);
 
     Account editAccessLevel(Long id, AccessLevel accessLevel);
 
