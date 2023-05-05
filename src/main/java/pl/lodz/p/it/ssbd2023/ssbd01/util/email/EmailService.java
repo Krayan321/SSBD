@@ -24,7 +24,7 @@ public class EmailService {
         client =  new MailjetClient(options);
     }
 
-    public String sendPussyEmail(String email, String name) throws MailjetException {
+    public String sendCatEmail(String email, String name) throws MailjetException {
         MailjetRequest request = new MailjetRequest(Emailv31.resource)
                 .property(Emailv31.MESSAGES, new JSONArray()
                         .put(new JSONObject()
