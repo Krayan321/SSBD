@@ -65,6 +65,11 @@ public class AccountFacade extends AbstractFacade<Account> {
     }
 
     @Override
+    public void editAndRefresh(Account account) {
+        super.editAndRefresh(account);
+    }
+
+    @Override
     public void create(Account account) {
         super.create(account);
     }

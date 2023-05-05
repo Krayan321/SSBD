@@ -12,7 +12,6 @@ public class AccessLevelFinder {
             if (next.equals(accessLevel))
                 return next;
         }
-        ApplicationException.createEntityNotFoundException();
-        return null;
+        throw ApplicationException.createEntityNotFoundException();
     }
 }
