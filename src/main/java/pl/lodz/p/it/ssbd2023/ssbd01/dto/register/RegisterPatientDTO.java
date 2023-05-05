@@ -1,4 +1,4 @@
-package pl.lodz.p.it.ssbd2023.ssbd01.dto;
+package pl.lodz.p.it.ssbd2023.ssbd01.dto.register;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -7,20 +7,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class RegisterPatientDTO {
-
-    @NotNull
-    private String login;
-
-    @NotNull
-    private String password;
-
-    @NotNull
-//    @Pattern(regexp = "^[A-Za-z0-9+_.-]+@(.+)$")
-    private String email;
+public class RegisterPatientDTO extends BasicAccountDto {
 
     @NotNull
     private String name;
@@ -40,4 +29,16 @@ public class RegisterPatientDTO {
 //    @Pattern(regexp = "^[0-9]{3}-[0-9]{3}-[0-9]{2}-[0-9]{2}$", message = "Invalid NIP")
     private String nip;
 
+    @Builder
+    public RegisterPatientDTO(@NotNull String login,
+                              @NotNull String password,
+                              @NotNull String email, String language, String name,
+                              String lastName, String phoneNumber, String pesel, String nip) {
+        super(login, password, email, language);
+        this.name = name;
+        this.lastName = lastName;
+        this.phoneNumber = phoneNumber;
+        this.pesel = pesel;
+        this.nip = nip;
+    }
 }
