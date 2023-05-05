@@ -1,27 +1,60 @@
-import io.restassured.RestAssured;
-import io.restassured.builder.RequestSpecBuilder;
-import io.restassured.filter.log.LogDetail;
-import io.restassured.http.ContentType;
-import jakarta.ws.rs.core.Response;
-import org.junit.jupiter.api.*;
-import pl.lodz.p.it.ssbd2023.ssbd01.dto.*;
-import pl.lodz.p.it.ssbd2023.ssbd01.entities.Role;
+package controller;
 
+import static controller.dataForTests.addAdminAccountDto;
+import static controller.dataForTests.addAdminAccountDtoMissingField;
+import static controller.dataForTests.addChemistAccountDto;
+import static controller.dataForTests.addChemistAccountDtoMissingField;
+import static controller.dataForTests.adminLoginDto;
+import static controller.dataForTests.chemistDataDTOChangedLiscence;
+import static controller.dataForTests.grantAdminDataDTO;
+import static controller.dataForTests.grantChemistDataDTO;
+import static controller.dataForTests.patientLoginDto;
+import static controller.dataForTests.registerPatientDtoDuplicateEmail;
+import static controller.dataForTests.registerPatientDtoDuplicateLogin;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.Matchers.hasSize;
 
+import io.restassured.RestAssured;
+import io.restassured.builder.RequestSpecBuilder;
+import io.restassured.filter.log.LogDetail;
+import io.restassured.http.ContentType;
+import jakarta.ws.rs.core.Response;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.PatientDataDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.auth.LoginDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.register.RegisterPatientDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.entities.Role;
+
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class AccountControllerTest extends BaseTest {
     static String adminJwt;
 
     static String patientJwt;
-
-    private static LoginDTO adminLoginDto = new LoginDTO("admin123", "admin123");
-
-    private static LoginDTO patientLoginDto = new LoginDTO("test1", "testPatient");
+    private static RegisterPatientDTO registerPatientDto = RegisterPatientDTO.builder()
+            .login(patientLoginDto.getLogin())
+            .password(patientLoginDto.getPassword())
+            .email("patient-email@local.db")
+            .name("Test")
+            .lastName("Patient")
+            .phoneNumber("123 123 123")
+            .pesel("012345678901")
+            .nip("444-333-22-11")
+            .build();
+    PatientDataDTO patientDataDTOChangedName = PatientDataDTO.builder()
+            .id(2L).version(0L).role(Role.PATIENT).active(false)
+            .pesel(registerPatientDto.getPesel())
+            .firstName("Othername")
+            .lastName(registerPatientDto.getLastName())
+            .phoneNumber(registerPatientDto.getPhoneNumber())
+            .NIP(registerPatientDto.getNip())
+            .build();
 
     @BeforeAll
     static void setUp() {
@@ -79,17 +112,6 @@ public class AccountControllerTest extends BaseTest {
                 .statusCode(Response.Status.NOT_FOUND.getStatusCode());
     }
 
-    private static RegisterPatientDTO registerPatientDto = RegisterPatientDTO.builder()
-            .login(patientLoginDto.getLogin())
-            .password(patientLoginDto.getPassword())
-            .email("patient-email@local.db")
-            .name("Test")
-            .lastName("Patient")
-            .phoneNumber("123 123 123")
-            .pesel("012345678901")
-            .nip("444-333-22-11")
-            .build();
-
     @Test
     @Order(4)
     public void registerPatient_correct() {
@@ -100,18 +122,6 @@ public class AccountControllerTest extends BaseTest {
                 .statusCode(Response.Status.CREATED.getStatusCode());
     }
 
-    private static RegisterPatientDTO registerPatientDtoDuplicateLogin =
-            RegisterPatientDTO.builder()
-                    .login(patientLoginDto.getLogin())
-                    .password(patientLoginDto.getPassword())
-                    .email("other-patient-email@local.db")
-                    .name("Test")
-                    .lastName("Patient")
-                    .phoneNumber("123 123 123")
-                    .pesel("012345678901")
-                    .nip("444-333-22-11")
-                    .build();
-
     @Test
     @Order(5)
     public void registerPatient_duplicateLogin() {
@@ -121,18 +131,6 @@ public class AccountControllerTest extends BaseTest {
                 .log().all()
                 .statusCode(Response.Status.EXPECTATION_FAILED.getStatusCode());
     }
-
-    private static RegisterPatientDTO registerPatientDtoDuplicateEmail =
-            RegisterPatientDTO.builder()
-                    .login("other-login")
-                    .password(patientLoginDto.getPassword())
-                    .email("patient-email@local.db")
-                    .name("Test")
-                    .lastName("Patient")
-                    .phoneNumber("123 123 123")
-                    .pesel("012345678901")
-                    .nip("444-333-22-11")
-                    .build();
 
     @Test
     @Order(6)
@@ -155,36 +153,29 @@ public class AccountControllerTest extends BaseTest {
                 .extract().response().asString();
     }
 
-    private static CreateChemistDataDTO createChemistDataDTO =
-            new CreateChemistDataDTO("1234");
-
-
     // access level id: 3
     @Test
     @Order(8)
     public void grantChemist_correct() {
         given().header("authorization", "Bearer " + adminJwt)
-                .body(createChemistDataDTO)
+                .body(grantChemistDataDTO)
                 .put(getApiRoot() + "/account/2/grantChemist")
                 .then()
                 .log().all()
                 .statusCode(Response.Status.OK.getStatusCode());
     }
 
-    private static CreateAdminDataDTO createAdminDataDTO = new CreateAdminDataDTO();
-
     // access level id: 4
     @Test
     @Order(9)
     public void grantAdmin_correct() {
         given().header("authorization", "Bearer " + adminJwt)
-                .body(createAdminDataDTO)
+                .body(grantAdminDataDTO)
                 .put(getApiRoot() + "/account/2/grantAdmin")
                 .then()
                 .log().all()
                 .statusCode(Response.Status.OK.getStatusCode());
     }
-
 
     @Test
     @Order(10)
@@ -196,12 +187,6 @@ public class AccountControllerTest extends BaseTest {
                 .statusCode(Response.Status.OK.getStatusCode())
                 .body("accessLevels", hasSize(3));
     }
-
-    // todo create this from response
-    ChemistDataDTO chemistDataDTOChangedLiscence = ChemistDataDTO.builder()
-            .id(3L).version(0L).role(Role.CHEMIST)
-            .active(false).licenseNumber("4123123123123")
-            .build();
 
     @Test
     @Order(11)
@@ -216,15 +201,6 @@ public class AccountControllerTest extends BaseTest {
                         chemistDataDTOChangedLiscence.getLicenseNumber())));
     }
 
-    PatientDataDTO patientDataDTOChangedName = PatientDataDTO.builder()
-            .id(2L).version(0L).role(Role.PATIENT).active(false)
-            .pesel(registerPatientDto.getPesel())
-            .firstName("Othername")
-            .lastName(registerPatientDto.getLastName())
-            .phoneNumber(registerPatientDto.getPhoneNumber())
-            .NIP(registerPatientDto.getNip())
-            .build();
-
     @Test
     @Order(11)
     public void editPatientData_correct() {
@@ -238,6 +214,72 @@ public class AccountControllerTest extends BaseTest {
                         patientDataDTOChangedName.getFirstName())));
     }
 
+
     // todo admin? for now it changes nothing
+    @Test
+    @Order(12)
+    public void addChemist_correct() {
+        given().header("authorization", "Bearer " + adminJwt)
+                .body(addChemistAccountDto)
+                .post(getApiRoot() + "/account/add-chemist")
+                .then()
+                .log().all()
+                .statusCode(Response.Status.CREATED.getStatusCode());
+    }
+
+    @Test
+    @Order(13)
+    public void addChemist_incorrect_duplicate() {
+        given().header("authorization", "Bearer " + adminJwt)
+                .body(addChemistAccountDto)
+                .post(getApiRoot() + "/account/add-chemist")
+                .then()
+                .log().all()
+                .statusCode(Response.Status.EXPECTATION_FAILED.getStatusCode());
+    }
+
+    @Test
+    @Order(14)
+    public void addChemist_incorrect_missing_field() {
+        given().header("authorization", "Bearer " + adminJwt)
+                .body(addChemistAccountDtoMissingField)
+                .post(getApiRoot() + "/account/add-chemist")
+                .then()
+                .log().all()
+                .statusCode(Response.Status.BAD_REQUEST.getStatusCode());
+    }
+
+    @Test
+    @Order(15)
+    public void addAdmin_correct() {
+        given().header("authorization", "Bearer " + adminJwt)
+                .body(addAdminAccountDto)
+                .post(getApiRoot() + "/account/add-admin")
+                .then()
+                .log().all()
+                .statusCode(Response.Status.CREATED.getStatusCode());
+    }
+
+    @Test
+    @Order(16)
+    public void addAdmin_incorrect_duplicate() {
+        given().header("authorization", "Bearer " + adminJwt)
+                .body(addAdminAccountDto)
+                .post(getApiRoot() + "/account/add-admin")
+                .then()
+                .log().all()
+                .statusCode(Response.Status.EXPECTATION_FAILED.getStatusCode());
+    }
+
+    @Test
+    @Order(17)
+    public void addAdmin_incorrect_missing_field() {
+        given().header("authorization", "Bearer " + adminJwt)
+                .body(addAdminAccountDtoMissingField)
+                .post(getApiRoot() + "/account/add-admin")
+                .then()
+                .log().all()
+                .statusCode(Response.Status.BAD_REQUEST.getStatusCode());
+    }
 
 }
