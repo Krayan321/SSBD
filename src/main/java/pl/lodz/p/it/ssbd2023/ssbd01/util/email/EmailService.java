@@ -6,8 +6,9 @@ import com.mailjet.client.MailjetRequest;
 import com.mailjet.client.MailjetResponse;
 import com.mailjet.client.ClientOptions;
 import com.mailjet.client.resource.Emailv31;
+import jakarta.ejb.Singleton;
 import jakarta.inject.Inject;
-import lombok.extern.java.Log;
+import org.eclipse.microprofile.config.ConfigProvider;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
@@ -18,17 +19,10 @@ public class EmailService {
 
     private MailjetClient client;
 
-    /*@ConfigProperty(name = "mailjet.key")
-    private String MAILJET_KEY;
-
-    @ConfigProperty(name = "mailjet.secret")
-    private String MAILJET_SECRET;*/
-    //todo secret to config
-
     public EmailService() {
         options = ClientOptions.builder()
-                .apiKey("e3ae3249248fece726bdbc7ba42c2d8e")
-                .apiSecretKey("d917e11da8837b0db091dfaab088663e")
+                .apiKey(ConfigProvider.getConfig().getValue("mailjet.key", String.class))
+                .apiSecretKey(ConfigProvider.getConfig().getValue("mailjet.secret", String.class))
                 .build();
 
         client =  new MailjetClient(options);
@@ -40,7 +34,7 @@ public class EmailService {
                         .put(new JSONObject()
                                 .put(Emailv31.Message.FROM, new JSONObject()
                                         .put("Email", "turbokozakapteka@proton.me")
-                                        .put("Name", "PussyDealer"))
+                                        .put("Name", "udalosie"))
                 .put(Emailv31.Message.TO, new JSONArray()
                                         .put(new JSONObject()
                                                 .put("Email", email)
