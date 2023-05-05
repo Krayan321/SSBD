@@ -35,9 +35,9 @@ public class EmailService {
                                         .put(new JSONObject()
                                                 .put("Email", email)
                                                 .put("Name", name)))
-                .put(Emailv31.Message.SUBJECT, "Some good pussies for you!")
-                                .put(Emailv31.Message.TEXTPART, "Dear PussyEnjoyer, welcome to PussyDelievery! May the pussy force be with you!")
-                                .put(Emailv31.Message.HTMLPART, "<h3>Hello stranger, look at some pussies <a href=\"https://wallpapers.com/images/featured/y4upwj5zz45novpx.jpg:*/\">PussyDelievery</a>!</h3><br />May the pussy force be with you!")));
+                .put(Emailv31.Message.SUBJECT, "Some good cats for you!")
+                                .put(Emailv31.Message.TEXTPART, "Dear CatEnjoyer, welcome to CatDelievery! May the cat force be with you!")
+                                .put(Emailv31.Message.HTMLPART, "<h3>Hello stranger, look at some cats <a href=\"https://wallpapers.com/images/featured/y4upwj5zz45novpx.jpg:*/\">CatDelievery</a>!</h3><br />May the cat force be with you!")));
 
         return client.post(request).getData().toString();
     }
