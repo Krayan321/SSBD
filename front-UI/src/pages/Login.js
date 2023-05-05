@@ -27,7 +27,7 @@ const Login = () => {
         </div>
     <div className="form-container">
     <Box sx={{display: "flex", flexDirection: "column", width: "40%" }} onSubmit={handleSubmit}>
-      <TextField
+      <TextField sx={{ width: 300}}
         id="username"
         label="Username"
         value={username}
