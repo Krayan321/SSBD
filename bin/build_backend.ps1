@@ -1,2 +1,2 @@
-Set-Location $PSScriptRoot\..
+Set-Location "$PSScriptRoot\.."
 mvn clean package
