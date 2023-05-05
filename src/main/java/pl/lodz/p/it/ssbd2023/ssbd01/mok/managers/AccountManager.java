@@ -1,5 +1,6 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.mok.managers;
 
+import com.mailjet.client.errors.MailjetException;
 import jakarta.inject.Inject;
 import jakarta.interceptor.Interceptors;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
@@ -20,6 +21,7 @@ import pl.lodz.p.it.ssbd2023.ssbd01.entities.Account;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.PatientData;
 import pl.lodz.p.it.ssbd2023.ssbd01.security.HashAlgorithmImpl;
 import pl.lodz.p.it.ssbd2023.ssbd01.util.AccessLevelFinder;
+import pl.lodz.p.it.ssbd2023.ssbd01.util.email.EmailService;
 import pl.lodz.p.it.ssbd2023.ssbd01.util.mergers.AccessLevelMerger;
 
 @Stateful
@@ -33,6 +35,9 @@ public class AccountManager implements AccountManagerLocal {
     @Inject
     @ConfigProperty(name = "unconfirmed.account.deletion.timeout.hours")
     private int UNCONFIRMED_ACCOUNT_DELETION_TIMEOUT_HOURS;
+
+    @Inject
+    private EmailService emailService;
 
     @Override
     public List<Account> getAllAccounts() {
