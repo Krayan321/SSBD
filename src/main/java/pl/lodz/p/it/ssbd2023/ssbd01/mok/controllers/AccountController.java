@@ -1,6 +1,5 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.mok.controllers;
 
-import com.mailjet.client.errors.MailjetException;
 import jakarta.annotation.security.DenyAll;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.RequestScoped;

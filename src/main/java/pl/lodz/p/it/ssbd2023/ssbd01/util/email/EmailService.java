@@ -3,15 +3,11 @@ package pl.lodz.p.it.ssbd2023.ssbd01.util.email;
 import com.mailjet.client.errors.MailjetException;
 import com.mailjet.client.MailjetClient;
 import com.mailjet.client.MailjetRequest;
-import com.mailjet.client.MailjetResponse;
 import com.mailjet.client.ClientOptions;
 import com.mailjet.client.resource.Emailv31;
-import jakarta.ejb.Singleton;
-import jakarta.inject.Inject;
 import org.eclipse.microprofile.config.ConfigProvider;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 public class EmailService {
 

@@ -1,6 +1,5 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.mok.managers;
 
-import com.mailjet.client.errors.MailjetException;
 import jakarta.inject.Inject;
 import jakarta.interceptor.Interceptors;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
