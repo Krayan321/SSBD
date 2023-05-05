@@ -20,6 +20,7 @@ import pl.lodz.p.it.ssbd2023.ssbd01.entities.Account;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.PatientData;
 import pl.lodz.p.it.ssbd2023.ssbd01.security.HashAlgorithmImpl;
 import pl.lodz.p.it.ssbd2023.ssbd01.util.AccessLevelFinder;
+import pl.lodz.p.it.ssbd2023.ssbd01.util.email.EmailService;
 import pl.lodz.p.it.ssbd2023.ssbd01.util.mergers.AccessLevelMerger;
 
 @Stateful
@@ -33,6 +34,9 @@ public class AccountManager implements AccountManagerLocal {
     @Inject
     @ConfigProperty(name = "unconfirmed.account.deletion.timeout.hours")
     private int UNCONFIRMED_ACCOUNT_DELETION_TIMEOUT_HOURS;
+
+    @Inject
+    private EmailService emailService;
 
     @Override
     public List<Account> getAllAccounts() {
