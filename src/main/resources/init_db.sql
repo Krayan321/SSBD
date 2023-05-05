@@ -123,4 +123,4 @@ insert into account (active, confirmed, created_by, creation_date, email, langua
 
 insert into access_level (account_id, active, created_by, creation_date, modification_date, modified_by, version, access_level_role) values (1, true, null, now(), null, null, 0, 'ADMIN');
 
-insert into admin_data (id) values (1);
+insert into admin_data (id, work_phone_number) values (1, "123456789");
