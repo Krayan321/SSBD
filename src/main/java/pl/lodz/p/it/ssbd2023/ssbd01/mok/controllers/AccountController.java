@@ -9,6 +9,16 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.addAsAdmin.AddAdminAccountDto;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.addAsAdmin.AddChemistAccountDto;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.addAsAdmin.AddPatientAccountDto;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.auth.ResetPasswordDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.auth.SetNewPasswordDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.auth.UpdateOtherUserPasswordDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.grant.GrantAdminDataDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.grant.GrantChemistDataDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.grant.GrantPatientDataDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.register.RegisterPatientDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Account;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.AdminData;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.ChemistData;
@@ -161,8 +171,8 @@ public class AccountController {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({"ADMIN"})
-    public AccountAndAccessLevelsDTO grantPatient(@PathParam("id") Long id, @Valid CreatePatientDataDTO patientDataDTO) {
-        PatientData patientData = AccessLevelConverter.mapCreatePatientDataDTOtoPatientData(patientDataDTO);
+    public AccountAndAccessLevelsDTO grantPatient(@PathParam("id") Long id, @Valid GrantPatientDataDTO patientDataDTO) {
+        PatientData patientData = AccessLevelConverter.mapGrantPatientDataDTOtoPatientData(patientDataDTO);
         Account account = accountManager.grantAccessLevel(id, patientData);
         return AccountConverter.mapAccountToAccountAndAccessLevelsDto(account);
     }
@@ -172,8 +182,8 @@ public class AccountController {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({"ADMIN"})
-    public AccountAndAccessLevelsDTO grantChemist(@PathParam("id") Long id, @Valid CreateChemistDataDTO chemistDataDTO) {
-        ChemistData chemistData = AccessLevelConverter.mapCreateChemistDataDtoToChemistData(chemistDataDTO);
+    public AccountAndAccessLevelsDTO grantChemist(@PathParam("id") Long id, @Valid GrantChemistDataDTO chemistDataDTO) {
+        ChemistData chemistData = AccessLevelConverter.mapGrantChemistDataDtoToChemistData(chemistDataDTO);
         Account account = accountManager.grantAccessLevel(id, chemistData);
         return AccountConverter.mapAccountToAccountAndAccessLevelsDto(account);
     }
@@ -183,10 +193,42 @@ public class AccountController {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({"ADMIN"})
-    public AccountAndAccessLevelsDTO grantAdmin(@PathParam("id") Long id, @Valid CreateAdminDataDTO adminDataDTO) {
-        AdminData adminData = AccessLevelConverter.mapCreateAdminDataDtoToAdminData(adminDataDTO);
+    public AccountAndAccessLevelsDTO grantAdmin(@PathParam("id") Long id, @Valid GrantAdminDataDTO adminDataDTO) {
+        AdminData adminData = AccessLevelConverter.mapGrantAdminDataDtoToAdminData(adminDataDTO);
         Account account = accountManager.grantAccessLevel(id, adminData);
         return AccountConverter.mapAccountToAccountAndAccessLevelsDto(account);
+    }
+
+    @POST
+    @Path("/add-patient")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"ADMIN"})
+    public Response addPatientAccountAsAdmin(
+            @NotNull @Valid AddPatientAccountDto addPatientAccountDto) {
+        Account account = AccountConverter.mapAddPatientDtoToAccount(addPatientAccountDto);
+        accountManager.registerAccount(account);
+        return Response.status(Response.Status.CREATED).build();
+    }
+
+    @POST
+    @Path("/add-chemist")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"ADMIN"})
+    public Response addChemistAccountAsAdmin(
+            @NotNull @Valid AddChemistAccountDto addChemistAccountDto) {
+        Account account = AccountConverter.mapChemistDtoToAccount(addChemistAccountDto);
+        accountManager.registerAccount(account);
+        return Response.status(Response.Status.CREATED).build();
+    }
+
+    @POST
+    @Path("/add-admin")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"ADMIN"})
+    public Response addAdminAccountAsAdmin(@NotNull @Valid AddAdminAccountDto addAdminAccountDto) {
+        Account account = AccountConverter.mapAdminDtoToAccount(addAdminAccountDto);
+        accountManager.registerAccount(account);
+        return Response.status(Response.Status.CREATED).build();
     }
 
     @DELETE
