@@ -57,7 +57,7 @@ public class AccountControllerTest extends BaseTest {
                 .post(getApiRoot() + "/auth/login")
                 .then()
                 .log().all()
-                .statusCode(Response.Status.UNAUTHORIZED.getStatusCode());
+                .statusCode(Response.Status.EXPECTATION_FAILED.getStatusCode());
     }
 
     @Test
@@ -239,5 +239,19 @@ public class AccountControllerTest extends BaseTest {
     }
 
     // todo admin? for now it changes nothing
-
+    @Test
+    @Order(12)
+    public void password_incorrect_block_account() {
+        for (int i = 0; i < 3; i++) {
+            given().body(new LoginDTO("admin123", "invalid_test"))
+                    .post(getApiRoot() + "/auth/login")
+                    .then().statusCode(Response.Status.UNAUTHORIZED.getStatusCode());
+        }
+         given().body(adminLoginDto)
+                .post(getApiRoot() + "/auth/login")
+                .then()
+                .log().all()
+                .statusCode(Response.Status.FORBIDDEN.getStatusCode())
+                .extract().response().asString();
+    }
 }

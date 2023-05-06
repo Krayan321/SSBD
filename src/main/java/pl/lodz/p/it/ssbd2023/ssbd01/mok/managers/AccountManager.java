@@ -43,6 +43,10 @@ public class AccountManager implements AccountManagerLocal {
     private int MAX_INCORRECT_LOGIN_ATTEMPTS;
 
     @Inject
+    @ConfigProperty(name = "temporary.account.block.hours")
+    private int TEMPORARY_ACCOUNT_BLOCK_HOURS;
+
+    @Inject
     private EmailService emailService;
 
     @Override
@@ -136,6 +140,15 @@ public class AccountManager implements AccountManagerLocal {
     @Override
     public void updateAuthInformation(String caller, String remoteAddr, Date now, Boolean isCorrect) throws MailjetException {
         Account account = accountFacade.findByLogin(caller);
+        if (account.getLoginAttempts() >= MAX_INCORRECT_LOGIN_ATTEMPTS){
+            LocalDateTime timeoutThreshold = LocalDateTime.now().minusHours(TEMPORARY_ACCOUNT_BLOCK_HOURS);
+            LocalDateTime lastIncorrectLogin = Instant.ofEpochMilli(account.getLastNegativeLogin().getTime())
+                    .atZone(ZoneId.systemDefault())
+                    .toLocalDateTime();
+            if (lastIncorrectLogin.isBefore(timeoutThreshold)) {
+                account.setActive(true);
+            }
+        }
 
         if (!account.getActive()) accountBlockedException();
         if (isCorrect) {
