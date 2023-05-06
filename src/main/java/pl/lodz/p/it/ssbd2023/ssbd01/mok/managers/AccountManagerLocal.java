@@ -1,12 +1,18 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.mok.managers;
 
+import com.mailjet.client.errors.MailjetException;
 import jakarta.ejb.Local;
-import pl.lodz.p.it.ssbd2023.ssbd01.entities.*;
+import pl.lodz.p.it.ssbd2023.ssbd01.entities.AccessLevel;
+import pl.lodz.p.it.ssbd2023.ssbd01.entities.Account;
+import pl.lodz.p.it.ssbd2023.ssbd01.entities.PatientData;
 
+import java.util.Date;
 import java.util.List;
 
 @Local
 public interface AccountManagerLocal {
+
+
     Account createAccount(Account account, AccessLevel accessLevel);
 
     List<Account> getAllAccounts();
@@ -30,5 +36,8 @@ public interface AccountManagerLocal {
     Account removeAccessLevel(Long id, AccessLevel accessLevel);
 
     void purgeUnactivatedAccounts();
+
+    void updateAuthInformation(String caller, String remoteAddr, Date now, Boolean isCorrect) throws MailjetException;
+
 
 }

@@ -16,4 +16,7 @@ public class AuthApplicationException extends ApplicationException {
     public static AuthApplicationException createInvalidLoginOrPasswordException() {
         throw new AuthApplicationException(Response.Status.UNAUTHORIZED, "Invalid login or password");
     }
+    public static AuthApplicationException accountBlockedException() {
+        throw new AuthApplicationException(Response.Status.UNAUTHORIZED, "Account has been blocked");
+    }
 }
