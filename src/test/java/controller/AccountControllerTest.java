@@ -1,16 +1,6 @@
 package controller;
 
-import static controller.dataForTests.addAdminAccountDto;
-import static controller.dataForTests.addAdminAccountDtoMissingField;
-import static controller.dataForTests.addChemistAccountDto;
-import static controller.dataForTests.addChemistAccountDtoMissingField;
-import static controller.dataForTests.adminLoginDto;
-import static controller.dataForTests.chemistDataDTOChangedLiscence;
-import static controller.dataForTests.grantAdminDataDTO;
-import static controller.dataForTests.grantChemistDataDTO;
-import static controller.dataForTests.patientLoginDto;
-import static controller.dataForTests.registerPatientDtoDuplicateEmail;
-import static controller.dataForTests.registerPatientDtoDuplicateLogin;
+import static controller.dataForTests.*;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.hasItem;
@@ -30,6 +20,7 @@ import org.junit.jupiter.api.TestMethodOrder;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.ChemistDataDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.PatientDataDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.auth.LoginDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccount.EditChemistDataDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.register.RegisterPatientDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Role;
 
@@ -44,24 +35,8 @@ public class AccountControllerTest extends BaseTest {
     static String adminJwt;
 
     static String patientJwt;
-    private static RegisterPatientDTO registerPatientDto = RegisterPatientDTO.builder()
-            .login(patientLoginDto.getLogin())
-            .password(patientLoginDto.getPassword())
-            .email("patient-email@local.db")
-            .name("Test")
-            .lastName("Patient")
-            .phoneNumber("123 123 123")
-            .pesel("012345678901")
-            .nip("444-333-22-11")
-            .build();
-    PatientDataDTO patientDataDTOChangedName = PatientDataDTO.builder()
-            .id(2L).version(0L).role(Role.PATIENT).active(false)
-            .pesel(registerPatientDto.getPesel())
-            .firstName("Othername")
-            .lastName(registerPatientDto.getLastName())
-            .phoneNumber(registerPatientDto.getPhoneNumber())
-            .NIP(registerPatientDto.getNip())
-            .build();
+
+
 
     @BeforeAll
     static void setUp() {
@@ -129,18 +104,6 @@ public class AccountControllerTest extends BaseTest {
                 .statusCode(Response.Status.CREATED.getStatusCode());
     }
 
-    private static RegisterPatientDTO registerPatientDtoDuplicateLogin =
-            RegisterPatientDTO.builder()
-                    .login(patientLoginDto.getLogin())
-                    .password(patientLoginDto.getPassword())
-                    .email("other-patient-email@local.db")
-                    .name("Test")
-                    .lastName("Patient")
-                    .phoneNumber("123 123 123")
-                    .pesel("012345678901")
-                    .nip("444-333-22-11")
-                    .build();
-
     @Test
     @Order(5)
     public void registerPatient_duplicateLogin() {
@@ -150,18 +113,6 @@ public class AccountControllerTest extends BaseTest {
                 .log().all()
                 .statusCode(Response.Status.EXPECTATION_FAILED.getStatusCode());
     }
-
-    private static RegisterPatientDTO registerPatientDtoDuplicateEmail =
-            RegisterPatientDTO.builder()
-                    .login("other-login")
-                    .password(patientLoginDto.getPassword())
-                    .email("patient-email@local.db")
-                    .name("Test")
-                    .lastName("Patient")
-                    .phoneNumber("123 123 123")
-                    .pesel("012345678901")
-                    .nip("444-333-22-11")
-                    .build();
 
     @Test
     @Order(6)
@@ -223,11 +174,18 @@ public class AccountControllerTest extends BaseTest {
                 .body("accessLevels", hasSize(3));
     }
 
-    // todo create this from response
-    ChemistDataDTO chemistDataDTOChangedLiscence = ChemistDataDTO.builder()
-            .id(3L).version(0L).role(Role.CHEMIST)
-            .active(false).licenseNumber("4123123123123")
-            .build();
+    @Test
+    @Order(11)
+    public void editAdminData_correct() {
+        given().header("authorization", "Bearer " + adminJwt)
+                .body(adminDataDTOChangedPhone)
+                .put(getApiRoot() + "/account/2/admin")
+                .then()
+                .log().all()
+                .statusCode(Response.Status.OK.getStatusCode())
+                .body("accessLevels", hasItem(hasEntry("workPhoneNumber",
+                        adminDataDTOChangedPhone.getWorkPhoneNumber())));
+    }
 
     @Test
     @Order(11)
@@ -241,8 +199,6 @@ public class AccountControllerTest extends BaseTest {
                 .body("accessLevels", hasItem(hasEntry("licenseNumber",
                         chemistDataDTOChangedLiscence.getLicenseNumber())));
     }
-
-
 
     @Test
     @Order(11)

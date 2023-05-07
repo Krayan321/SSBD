@@ -7,6 +7,9 @@ import pl.lodz.p.it.ssbd2023.ssbd01.dto.AccessLevelDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.AdminDataDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.ChemistDataDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.PatientDataDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccount.EditAdminDataDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccount.EditChemistDataDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccount.EditPatientDataDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.grant.GrantAdminDataDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.grant.GrantChemistDataDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.grant.GrantPatientDataDTO;
@@ -22,6 +25,17 @@ public class AccessLevelConverter {
     }
 
     public static PatientData mapPatientDataDtoToPatientData(PatientDataDTO patientDataDTO) {
+        return PatientData.builder()
+                .id(patientDataDTO.getId())
+                .firstName(patientDataDTO.getFirstName())
+                .lastName(patientDataDTO.getLastName())
+                .NIP(patientDataDTO.getNip())
+                .phoneNumber(patientDataDTO.getPhoneNumber())
+                .pesel(patientDataDTO.getPesel())
+                .build();
+    }
+
+    public static PatientData mapEditPatientDataDtoToPatientData(EditPatientDataDTO patientDataDTO) {
         return PatientData.builder()
                 .id(patientDataDTO.getId())
                 .firstName(patientDataDTO.getFirstName())
@@ -97,6 +111,13 @@ public class AccessLevelConverter {
                 .build();
     }
 
+    public static ChemistData mapEditChemistDataDtoToChemistData(EditChemistDataDTO chemistData) {
+        return ChemistData.builder()
+                .id(chemistData.getId())
+                .licenseNumber(chemistData.getLicenseNumber())
+                .build();
+    }
+
     public static ChemistData mapChemistDataDtoToChemistData(ChemistDataDTO chemistDataDTO) {
         return ChemistData.builder()
                 .id(chemistDataDTO.getId())
@@ -121,6 +142,13 @@ public class AccessLevelConverter {
     }
 
     public static AdminData mapAdminDataDtoToAdminData(AdminDataDTO adminDataDTO) {
+        return AdminData.builder()
+                .id(adminDataDTO.getId())
+                .workPhoneNumber(adminDataDTO.getWorkPhoneNumber())
+                .build();
+    }
+
+    public static AdminData mapEditAdminDataDtoToAdminData(EditAdminDataDTO adminDataDTO) {
         return AdminData.builder()
                 .id(adminDataDTO.getId())
                 .workPhoneNumber(adminDataDTO.getWorkPhoneNumber())
