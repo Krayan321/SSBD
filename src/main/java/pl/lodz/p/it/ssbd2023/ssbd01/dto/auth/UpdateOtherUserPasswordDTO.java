@@ -1,4 +1,4 @@
-package pl.lodz.p.it.ssbd2023.ssbd01.dto;
+package pl.lodz.p.it.ssbd2023.ssbd01.dto.auth;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;

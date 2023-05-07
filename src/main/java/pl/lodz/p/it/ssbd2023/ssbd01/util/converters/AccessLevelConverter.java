@@ -1,16 +1,20 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.util.converters;
 
-import pl.lodz.p.it.ssbd2023.ssbd01.dto.*;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.AccessLevelDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.AdminDataDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.ChemistDataDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.PatientDataDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.grant.GrantAdminDataDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.grant.GrantChemistDataDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.grant.GrantPatientDataDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.AccessLevel;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.AdminData;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.ChemistData;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.PatientData;
 import pl.lodz.p.it.ssbd2023.ssbd01.exceptions.AccountApplicationException;
-import pl.lodz.p.it.ssbd2023.ssbd01.exceptions.ApplicationException;
-
-import java.util.Objects;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 public class AccessLevelConverter {
 
@@ -72,7 +76,7 @@ public class AccessLevelConverter {
         return patientData;
     }
 
-    public static PatientData mapCreatePatientDataDTOtoPatientData(CreatePatientDataDTO data) {
+    public static PatientData mapGrantPatientDataDTOtoPatientData(GrantPatientDataDTO data) {
         return PatientData.builder()
                 .pesel(data.getPesel())
                 .firstName(data.getFirstName())
@@ -100,7 +104,7 @@ public class AccessLevelConverter {
                 .build();
     }
 
-    public static ChemistData mapCreateChemistDataDtoToChemistData(CreateChemistDataDTO chemistData) {
+    public static ChemistData mapGrantChemistDataDtoToChemistData(GrantChemistDataDTO chemistData) {
         return ChemistData.builder()
                 .licenseNumber(chemistData.getLicenseNumber())
                 .build();
@@ -119,14 +123,19 @@ public class AccessLevelConverter {
     public static AdminData mapAdminDataDtoToAdminData(AdminDataDTO adminDataDTO) {
         return AdminData.builder()
                 .id(adminDataDTO.getId())
+                .workPhoneNumber(adminDataDTO.getWorkPhoneNumber())
                 .build();
     }
 
-    public static AdminData mapCreateAdminDataDtoToAdminData(CreateAdminDataDTO createAdminDataDTO) {
-        return new AdminData();
+    public static AdminData mapGrantAdminDataDtoToAdminData(GrantAdminDataDTO addAdminAccountDto) {
+        return AdminData.builder()
+                .workPhoneNumber(addAdminAccountDto.getWorkPhoneNumber())
+                .build();
     }
 
     public static AdminData dtoToAdminData(AdminDataDTO adminDataDTO) {
-        return new AdminData();
+        return AdminData.builder()
+                .workPhoneNumber(adminDataDTO.getWorkPhoneNumber())
+                .build();
     }
 }

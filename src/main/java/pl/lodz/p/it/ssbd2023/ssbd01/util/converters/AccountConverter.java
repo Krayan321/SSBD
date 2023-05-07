@@ -3,8 +3,13 @@ package pl.lodz.p.it.ssbd2023.ssbd01.util.converters;
 import java.util.Locale;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.AccountAndAccessLevelsDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.AccountDTO;
-import pl.lodz.p.it.ssbd2023.ssbd01.dto.RegisterPatientDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.addAsAdmin.AddAdminAccountDto;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.addAsAdmin.AddChemistAccountDto;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.addAsAdmin.AddPatientAccountDto;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.register.RegisterPatientDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Account;
+import pl.lodz.p.it.ssbd2023.ssbd01.entities.AdminData;
+import pl.lodz.p.it.ssbd2023.ssbd01.entities.ChemistData;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.PatientData;
 
 public class AccountConverter {
@@ -23,7 +28,8 @@ public class AccountConverter {
     }
 
     public static AccountAndAccessLevelsDTO mapAccountToAccountAndAccessLevelsDto(Account account) {
-        var accessLevels = AccessLevelConverter.mapAccessLevelsToAccessLevelsDto(account.getAccessLevels());
+        var accessLevels =
+                AccessLevelConverter.mapAccessLevelsToAccessLevelsDto(account.getAccessLevels());
         return AccountAndAccessLevelsDTO.builder()
                 .id(account.getId())
                 .version(account.getVersion())
@@ -43,7 +49,9 @@ public class AccountConverter {
         account.setEmail(registerPatientDto.getEmail());
         account.setActive(false);
         account.setConfirmed(false);
-        account.setLanguage(Locale.ENGLISH);
+        account.setLanguage(
+                registerPatientDto.getLanguage() == null ? Locale.forLanguageTag("pl") :
+                        Locale.forLanguageTag(registerPatientDto.getLanguage()));
 
         PatientData patientData = PatientData.builder()
                 .firstName(registerPatientDto.getName())
@@ -53,9 +61,80 @@ public class AccountConverter {
                 .NIP(registerPatientDto.getNip())
                 .build();
 
-        patientData.setActive(false);
         account.getAccessLevels().add(patientData);
         patientData.setAccount(account);
+
+        return account;
+    }
+
+    public static Account mapAddPatientDtoToAccount(AddPatientAccountDto addPatientAccountDto) {
+
+        Account account = Account.builder()
+                .login(addPatientAccountDto.getLogin())
+                .password(addPatientAccountDto.getPassword())
+                .build();
+        account.setEmail(addPatientAccountDto.getEmail());
+        account.setActive(addPatientAccountDto.isActive());
+        account.setConfirmed(addPatientAccountDto.isConfirmed());
+        account.setLanguage(addPatientAccountDto.getLanguage() == null ?
+                Locale.forLanguageTag("pl") :
+                Locale.forLanguageTag(addPatientAccountDto.getLanguage()));
+
+        PatientData patientData = PatientData.builder()
+                .firstName(addPatientAccountDto.getName())
+                .lastName(addPatientAccountDto.getLastName())
+                .pesel(addPatientAccountDto.getPesel())
+                .phoneNumber(addPatientAccountDto.getPhoneNumber())
+                .NIP(addPatientAccountDto.getNIP())
+                .build();
+
+        account.getAccessLevels().add(patientData);
+        patientData.setAccount(account);
+
+        return account;
+    }
+
+    public static Account mapChemistDtoToAccount(AddChemistAccountDto addChemistAccountDto) {
+
+        Account account = Account.builder()
+                .login(addChemistAccountDto.getLogin())
+                .password(addChemistAccountDto.getPassword())
+                .build();
+        account.setEmail(addChemistAccountDto.getEmail());
+        account.setActive(true);
+        account.setConfirmed(true);
+        account.setLanguage(addChemistAccountDto.getLanguage() == null ?
+                Locale.forLanguageTag("pl") :
+                Locale.forLanguageTag(addChemistAccountDto.getLanguage()));
+
+        ChemistData chemistData = ChemistData.builder()
+                .licenseNumber(addChemistAccountDto.getLicenseNumber())
+                .build();
+
+        account.getAccessLevels().add(chemistData);
+        chemistData.setAccount(account);
+
+        return account;
+    }
+
+    public static Account mapAdminDtoToAccount(AddAdminAccountDto addAdminAccountDto) {
+
+        Account account = Account.builder()
+                .login(addAdminAccountDto.getLogin())
+                .password(addAdminAccountDto.getPassword())
+                .build();
+        account.setEmail(addAdminAccountDto.getEmail());
+        account.setActive(true);
+        account.setConfirmed(true);
+        account.setLanguage(addAdminAccountDto.getLanguage() == null ?
+                Locale.forLanguageTag("pl") :
+                Locale.forLanguageTag(addAdminAccountDto.getLanguage()));
+
+        AdminData adminData = new AdminData();
+        adminData.setWorkPhoneNumber(addAdminAccountDto.getWorkPhoneNumber());
+
+        account.getAccessLevels().add(adminData);
+        adminData.setAccount(account);
 
         return account;
     }

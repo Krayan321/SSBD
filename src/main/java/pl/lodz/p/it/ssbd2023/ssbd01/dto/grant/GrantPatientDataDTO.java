@@ -1,16 +1,15 @@
-package pl.lodz.p.it.ssbd2023.ssbd01.dto;
+package pl.lodz.p.it.ssbd2023.ssbd01.dto.grant;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;
 
 @ToString
-@EqualsAndHashCode(callSuper = true)
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CreatePatientDataDTO extends CreateAccessLevelDTO {
+public class GrantPatientDataDTO {
 
     @NotNull
     @Pattern(regexp = "^[0-9]{11}$", message = "Invalid PESEL")

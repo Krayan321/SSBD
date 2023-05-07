@@ -1,28 +1,39 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.entities;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
 
 import jakarta.persistence.NamedQuery;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 
 @Entity
 @NoArgsConstructor
 @Table(name = "admin_data")
 @DiscriminatorValue("ADMIN")
+@Getter
+@Setter
 @ToString(callSuper = true)
 @NamedQuery(name="adminData.findAll", query = "SELECT o FROM AdminData o")
 public class AdminData extends AccessLevel implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @Builder
-    public AdminData(Long id) {
-        super(id);
-    }
+    @Column(nullable = false, name = "work_phone_number")
+    @NotNull
+//    @Pattern(regexp = "^(\\+48)? ?[0-9]{3} ?[0-9]{3} ?[0-9]{3}$", message = "Invalid phone number")
+    private String workPhoneNumber;
 
+    @Builder
+    public AdminData(Long id, String workPhoneNumber) {
+        super(id);
+        this.workPhoneNumber = workPhoneNumber;
+    }
 }
