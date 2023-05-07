@@ -39,7 +39,7 @@ public class dataForTests {
                     .name("Test")
                     .lastName("Patient")
                     .phoneNumber("123 123 123")
-                    .pesel("012345678901")
+                    .pesel("12345678901")
                     .nip("444-333-22-11")
                     .build();
 
@@ -51,7 +51,7 @@ public class dataForTests {
                     .name("Test")
                     .lastName("Patient")
                     .phoneNumber("123 123 123")
-                    .pesel("012345678901")
+                    .pesel("12345678901")
                     .nip("444-333-22-11")
                     .build();
 
