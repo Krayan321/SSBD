@@ -14,7 +14,7 @@ import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.Matchers.hasSize;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class AccountControllerTest extends BaseTest {
+public class AccountControllerIT extends BaseTest {
     static String adminJwt;
 
     static String patientJwt;
