@@ -32,6 +32,12 @@ import pl.lodz.p.it.ssbd2023.ssbd01.dto.auth.LoginDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.register.RegisterPatientDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Role;
 
+import static io.restassured.RestAssured.given;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.Matchers.hasEntry;
+import static org.hamcrest.Matchers.hasSize;
+
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class AccountControllerTest extends BaseTest {
     static String adminJwt;
@@ -90,7 +96,7 @@ public class AccountControllerTest extends BaseTest {
                 .post(getApiRoot() + "/auth/login")
                 .then()
                 .log().all()
-                .statusCode(Response.Status.UNAUTHORIZED.getStatusCode());
+                .statusCode(Response.Status.EXPECTATION_FAILED.getStatusCode());
     }
 
     @Test
@@ -112,6 +118,17 @@ public class AccountControllerTest extends BaseTest {
                 .statusCode(Response.Status.NOT_FOUND.getStatusCode());
     }
 
+    private static RegisterPatientDTO registerPatientDto = RegisterPatientDTO.builder()
+            .login(patientLoginDto.getLogin())
+            .password(patientLoginDto.getPassword())
+            .email("patient-email@local.db")
+            .name("Test")
+            .lastName("Patient")
+            .phoneNumber("123 123 123")
+            .pesel("012345678901")
+            .nip("444-333-22-11")
+            .build();
+
     @Test
     @Order(4)
     public void registerPatient_correct() {
@@ -122,6 +139,18 @@ public class AccountControllerTest extends BaseTest {
                 .statusCode(Response.Status.CREATED.getStatusCode());
     }
 
+    private static RegisterPatientDTO registerPatientDtoDuplicateLogin =
+            RegisterPatientDTO.builder()
+                    .login(patientLoginDto.getLogin())
+                    .password(patientLoginDto.getPassword())
+                    .email("other-patient-email@local.db")
+                    .name("Test")
+                    .lastName("Patient")
+                    .phoneNumber("123 123 123")
+                    .pesel("012345678901")
+                    .nip("444-333-22-11")
+                    .build();
+
     @Test
     @Order(5)
     public void registerPatient_duplicateLogin() {
@@ -131,6 +160,18 @@ public class AccountControllerTest extends BaseTest {
                 .log().all()
                 .statusCode(Response.Status.EXPECTATION_FAILED.getStatusCode());
     }
+
+    private static RegisterPatientDTO registerPatientDtoDuplicateEmail =
+            RegisterPatientDTO.builder()
+                    .login("other-login")
+                    .password(patientLoginDto.getPassword())
+                    .email("patient-email@local.db")
+                    .name("Test")
+                    .lastName("Patient")
+                    .phoneNumber("123 123 123")
+                    .pesel("012345678901")
+                    .nip("444-333-22-11")
+                    .build();
 
     @Test
     @Order(6)
@@ -153,6 +194,10 @@ public class AccountControllerTest extends BaseTest {
                 .extract().response().asString();
     }
 
+    private static CreateChemistDataDTO createChemistDataDTO =
+            new CreateChemistDataDTO("1234");
+
+
     // access level id: 3
     @Test
     @Order(8)
@@ -164,6 +209,8 @@ public class AccountControllerTest extends BaseTest {
                 .log().all()
                 .statusCode(Response.Status.OK.getStatusCode());
     }
+
+    private static CreateAdminDataDTO createAdminDataDTO = new CreateAdminDataDTO();
 
     // access level id: 4
     @Test
@@ -177,6 +224,7 @@ public class AccountControllerTest extends BaseTest {
                 .statusCode(Response.Status.OK.getStatusCode());
     }
 
+
     @Test
     @Order(10)
     public void readAccountAndAccessLevels_correct() {
@@ -187,6 +235,12 @@ public class AccountControllerTest extends BaseTest {
                 .statusCode(Response.Status.OK.getStatusCode())
                 .body("accessLevels", hasSize(3));
     }
+
+    // todo create this from response
+    ChemistDataDTO chemistDataDTOChangedLiscence = ChemistDataDTO.builder()
+            .id(3L).version(0L).role(Role.CHEMIST)
+            .active(false).licenseNumber("4123123123123")
+            .build();
 
     @Test
     @Order(11)
@@ -201,6 +255,15 @@ public class AccountControllerTest extends BaseTest {
                         chemistDataDTOChangedLiscence.getLicenseNumber())));
     }
 
+    PatientDataDTO patientDataDTOChangedName = PatientDataDTO.builder()
+            .id(2L).version(0L).role(Role.PATIENT).active(false)
+            .pesel(registerPatientDto.getPesel())
+            .firstName("Othername")
+            .lastName(registerPatientDto.getLastName())
+            .phoneNumber(registerPatientDto.getPhoneNumber())
+            .NIP(registerPatientDto.getNip())
+            .build();
+
     @Test
     @Order(11)
     public void editPatientData_correct() {
@@ -213,7 +276,6 @@ public class AccountControllerTest extends BaseTest {
                 .body("accessLevels", hasItem(hasEntry("firstName",
                         patientDataDTOChangedName.getFirstName())));
     }
-
 
     // todo admin? for now it changes nothing
     @Test
@@ -282,4 +344,19 @@ public class AccountControllerTest extends BaseTest {
                 .statusCode(Response.Status.BAD_REQUEST.getStatusCode());
     }
 
+    @Test
+    @Order(18)
+    public void password_incorrect_block_account() {
+        for (int i = 0; i < 3; i++) {
+            given().body(new LoginDTO("admin123", "invalid_test"))
+                    .post(getApiRoot() + "/auth/login")
+                    .then().statusCode(Response.Status.UNAUTHORIZED.getStatusCode());
+        }
+         given().body(adminLoginDto)
+                .post(getApiRoot() + "/auth/login")
+                .then()
+                .log().all()
+                .statusCode(Response.Status.FORBIDDEN.getStatusCode())
+                .extract().response().asString();
+    }
 }
