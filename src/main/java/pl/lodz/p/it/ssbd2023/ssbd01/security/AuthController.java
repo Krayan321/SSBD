@@ -15,7 +15,6 @@ import jakarta.ws.rs.core.Response;
 import lombok.extern.java.Log;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.auth.LoginDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.exceptions.AuthApplicationException;
-import pl.lodz.p.it.ssbd2023.ssbd01.dto.LoginDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.mok.managers.AccountManagerLocal;
 
 import java.time.Instant;
@@ -52,8 +51,6 @@ public class AuthController {
                                                  Date.from(Instant.now()), true);
             return Response.ok(jwtUtils.create(result)).build();
         }
-        AuthApplicationException.createInvalidLoginOrPasswordException();
-        return null;
     }
 
 

@@ -27,6 +27,7 @@ import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.ChemistDataDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.PatientDataDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.auth.LoginDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.register.RegisterPatientDTO;
@@ -118,17 +119,6 @@ public class AccountControllerTest extends BaseTest {
                 .statusCode(Response.Status.NOT_FOUND.getStatusCode());
     }
 
-    private static RegisterPatientDTO registerPatientDto = RegisterPatientDTO.builder()
-            .login(patientLoginDto.getLogin())
-            .password(patientLoginDto.getPassword())
-            .email("patient-email@local.db")
-            .name("Test")
-            .lastName("Patient")
-            .phoneNumber("123 123 123")
-            .pesel("012345678901")
-            .nip("444-333-22-11")
-            .build();
-
     @Test
     @Order(4)
     public void registerPatient_correct() {
@@ -194,8 +184,6 @@ public class AccountControllerTest extends BaseTest {
                 .extract().response().asString();
     }
 
-    private static CreateChemistDataDTO createChemistDataDTO =
-            new CreateChemistDataDTO("1234");
 
 
     // access level id: 3
@@ -210,7 +198,6 @@ public class AccountControllerTest extends BaseTest {
                 .statusCode(Response.Status.OK.getStatusCode());
     }
 
-    private static CreateAdminDataDTO createAdminDataDTO = new CreateAdminDataDTO();
 
     // access level id: 4
     @Test
@@ -255,14 +242,7 @@ public class AccountControllerTest extends BaseTest {
                         chemistDataDTOChangedLiscence.getLicenseNumber())));
     }
 
-    PatientDataDTO patientDataDTOChangedName = PatientDataDTO.builder()
-            .id(2L).version(0L).role(Role.PATIENT).active(false)
-            .pesel(registerPatientDto.getPesel())
-            .firstName("Othername")
-            .lastName(registerPatientDto.getLastName())
-            .phoneNumber(registerPatientDto.getPhoneNumber())
-            .NIP(registerPatientDto.getNip())
-            .build();
+
 
     @Test
     @Order(11)
