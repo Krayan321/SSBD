@@ -17,6 +17,10 @@ public interface AccountManagerLocal {
 
     List<Account> getAllAccounts();
 
+    Account findByLogin(String login);
+
+    void confirmAccountRegistration(String token);
+
     Account getAccount(Long id);
 
     Account getAccountAndAccessLevels(Long id);
@@ -39,5 +43,5 @@ public interface AccountManagerLocal {
 
     void updateAuthInformation(String caller, String remoteAddr, Date now, Boolean isCorrect) throws MailjetException;
 
-
+    void sendVerificationTokenIfPreviousWasNotSent();
 }
