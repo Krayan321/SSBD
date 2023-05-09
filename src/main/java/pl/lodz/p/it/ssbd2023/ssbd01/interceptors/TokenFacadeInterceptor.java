@@ -6,25 +6,20 @@ import jakarta.persistence.OptimisticLockException;
 import jakarta.persistence.PersistenceException;
 import lombok.extern.java.Log;
 import pl.lodz.p.it.ssbd2023.ssbd01.exceptions.ApplicationException;
-
-import java.sql.SQLException;
+import pl.lodz.p.it.ssbd2023.ssbd01.exceptions.TokenException;
 
 @Log
-public class GenericFacadeExceptionsInterceptor {
+public class TokenFacadeInterceptor {
 
     @AroundInvoke
-    public Object intercept(InvocationContext ictx) throws Exception {
+    public Object intercept(InvocationContext invocationContext) throws Exception {
         try {
-            return ictx.proceed();
+            return invocationContext.proceed();
         } catch(OptimisticLockException e) {
-            throw ApplicationException.createOptimisticLockException();
-        } catch(PersistenceException | SQLException e) {
-            throw ApplicationException.createPersistenceException(e);
-        } catch (ApplicationException e) {
             throw e;
-        } catch (Exception e) {
+        } catch(PersistenceException e) {
             // todo diversify exceptions
-            log.warning(e.getMessage());
+            log.warning( e.getMessage());
             throw ApplicationException.createGeneralException(e);
         }
     }

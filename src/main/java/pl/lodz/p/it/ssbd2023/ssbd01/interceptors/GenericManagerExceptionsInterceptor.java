@@ -4,8 +4,10 @@ import jakarta.ejb.AccessLocalException;
 import jakarta.ejb.EJBAccessException;
 import jakarta.interceptor.AroundInvoke;
 import jakarta.interceptor.InvocationContext;
+import lombok.extern.java.Log;
 import pl.lodz.p.it.ssbd2023.ssbd01.exceptions.ApplicationException;
 
+@Log
 public class GenericManagerExceptionsInterceptor {
 
     @AroundInvoke
@@ -17,6 +19,8 @@ public class GenericManagerExceptionsInterceptor {
         } catch(EJBAccessException | AccessLocalException e) {
             throw ApplicationException.createAccessDeniedException();
         } catch(Exception e) {
+            // todo diversify exceptions
+            log.warning(e.getMessage());
             throw ApplicationException.createGeneralException(e);
         }
     }
