@@ -18,6 +18,7 @@ public abstract class AbstractFacade<T> {
 
     protected void create(T entity) {
         getEntityManager().persist(entity);
+        getEntityManager().flush();
     }
 
     protected void edit(T entity) {
@@ -49,4 +50,5 @@ public abstract class AbstractFacade<T> {
         cq.select(cq.from(entityClass));
         return getEntityManager().createQuery(cq).getResultList();
     }
+
 }
