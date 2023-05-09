@@ -47,7 +47,7 @@ public class AccountConverter {
                 .password(registerPatientDto.getPassword())
                 .build();
         account.setEmail(registerPatientDto.getEmail());
-        account.setActive(false);
+        account.setActive(true);
         account.setConfirmed(false);
         account.setLanguage(
                 registerPatientDto.getLanguage() == null ? Locale.forLanguageTag("pl") :
