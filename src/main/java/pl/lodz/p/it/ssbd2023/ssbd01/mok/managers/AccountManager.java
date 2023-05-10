@@ -133,6 +133,14 @@ public class AccountManager implements AccountManagerLocal {
     }
 
     @Override
+    public Account deactivateUserAccount(Long id) {
+        Account account = getAccount(id);
+        account.setActive(false);
+        accountFacade.edit(account);
+        return account;
+    }
+
+    @Override
     public Account updateUserPassword(Long id, String newPassword) {
         Account account = getAccount(id);
         account.setPassword(HashAlgorithmImpl.generate(newPassword));
