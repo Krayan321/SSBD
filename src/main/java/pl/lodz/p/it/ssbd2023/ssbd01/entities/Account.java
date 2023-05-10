@@ -72,7 +72,7 @@ public class Account extends AbstractEntity implements Serializable {
     private String logicalAddress;
 
     @Column(name = "login_attempts")
-    private Integer loginAttempts ;
+    private int loginAttempts ;
 
     @Builder
     public Account(String login, String password) {

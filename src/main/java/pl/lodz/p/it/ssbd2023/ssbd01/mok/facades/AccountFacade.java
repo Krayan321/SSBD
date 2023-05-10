@@ -37,6 +37,7 @@ public class AccountFacade extends AbstractFacade<Account> {
         super(Account.class);
     }
 
+    @Override
     public List<Account> findAll() {
         return super.findAll();
     }
@@ -51,7 +52,7 @@ public class AccountFacade extends AbstractFacade<Account> {
         return tq.getSingleResult();
     }
 
-    public List<Account> findConfirmedFalse() {
+    public List<Account> findNotConfirmed() {
         CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
         CriteriaQuery cq = cb.createQuery();
         Root<Account> root = cq.from(Account.class);

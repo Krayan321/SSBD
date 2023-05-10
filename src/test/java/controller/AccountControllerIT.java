@@ -120,12 +120,12 @@ public class AccountControllerIT extends BaseTest {
 
     @Test
     @Order(7)
-    public void login_correct() {
+    public void cannotLogin_when_registered_but_account_not_confirmed() {
         patientJwt = given().body(patientLoginDto)
                 .post(getApiRoot() + "/auth/login")
                 .then()
                 .log().all()
-                .statusCode(Response.Status.OK.getStatusCode())
+                .statusCode(Response.Status.EXPECTATION_FAILED.getStatusCode())
                 .extract().response().asString();
     }
 
@@ -289,4 +289,6 @@ public class AccountControllerIT extends BaseTest {
                 .statusCode(Response.Status.FORBIDDEN.getStatusCode())
                 .extract().response().asString();
     }
+
+
 }

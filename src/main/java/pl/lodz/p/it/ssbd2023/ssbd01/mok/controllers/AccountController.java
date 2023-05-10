@@ -6,15 +6,31 @@ import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
-import jakarta.ws.rs.*;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.DELETE;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import java.util.ArrayList;
+import java.util.List;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.AccountAndAccessLevelsDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.AccountDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.AdminDataDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.ChangePasswordDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.ChemistDataDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.PatientDataDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.addAsAdmin.AddAdminAccountDto;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.addAsAdmin.AddChemistAccountDto;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.addAsAdmin.AddPatientAccountDto;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.auth.ResetPasswordDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.auth.SetNewPasswordDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.auth.UpdateOtherUserPasswordDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.auth.VerificationTokenDto;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccount.EditAdminDataDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccount.EditChemistDataDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccount.EditPatientDataDTO;
@@ -29,10 +45,6 @@ import pl.lodz.p.it.ssbd2023.ssbd01.entities.PatientData;
 import pl.lodz.p.it.ssbd2023.ssbd01.mok.managers.AccountManagerLocal;
 import pl.lodz.p.it.ssbd2023.ssbd01.util.converters.AccessLevelConverter;
 import pl.lodz.p.it.ssbd2023.ssbd01.util.converters.AccountConverter;
-import pl.lodz.p.it.ssbd2023.ssbd01.dto.*;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Path("account")
 @RequestScoped
@@ -47,6 +59,13 @@ public class AccountController {
     @RolesAllowed({"ADMIN"})
     public List<AccountDTO> readAllClients() {
         return new ArrayList<>();
+    }
+
+    @POST
+    @Path("/confirm")
+    public Response confirmAccount(@Valid VerificationTokenDto token) {
+        accountManager.confirmAccountRegistration(token.getToken());
+        return Response.ok().build();
     }
 
     @GET
@@ -105,7 +124,8 @@ public class AccountController {
     @PUT
     @Path("/{id}/changeUserPassword")
     @RolesAllowed({"ADMIN"})
-    public AccountDTO changeUserPassword(@PathParam("id") Long id, @Valid UpdateOtherUserPasswordDTO updateOtherUserPasswordDTO) {
+    public AccountDTO changeUserPassword(@PathParam("id") Long id,
+                                         @Valid UpdateOtherUserPasswordDTO updateOtherUserPasswordDTO) {
         String newPassword = updateOtherUserPasswordDTO.getPassword();
         Account account = accountManager.updateUserPassword(id, newPassword);
         return AccountConverter.mapAccountToAccountDto(account);
@@ -141,8 +161,10 @@ public class AccountController {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @RolesAllowed({"ADMIN"})
-    public AccountAndAccessLevelsDTO editPatientData(@PathParam("id") Long id, @Valid EditPatientDataDTO patientDataDTO) {
-        PatientData patientData = AccessLevelConverter.mapEditPatientDataDtoToPatientData(patientDataDTO);
+    public AccountAndAccessLevelsDTO editPatientData(@PathParam("id") Long id,
+                                                     @Valid EditPatientDataDTO patientDataDTO) {
+        PatientData patientData =
+                AccessLevelConverter.mapEditPatientDataDtoToPatientData(patientDataDTO);
         Account account = accountManager.editAccessLevel(id, patientData);
         return AccountConverter.mapAccountToAccountAndAccessLevelsDto(account);
     }
@@ -152,8 +174,10 @@ public class AccountController {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @RolesAllowed({"ADMIN"})
-    public AccountAndAccessLevelsDTO editChemistData(@PathParam("id") Long id, @Valid EditChemistDataDTO chemistDataDTO) {
-        ChemistData chemistData = AccessLevelConverter.mapEditChemistDataDtoToChemistData(chemistDataDTO);
+    public AccountAndAccessLevelsDTO editChemistData(@PathParam("id") Long id,
+                                                     @Valid EditChemistDataDTO chemistDataDTO) {
+        ChemistData chemistData =
+                AccessLevelConverter.mapEditChemistDataDtoToChemistData(chemistDataDTO);
         Account account = accountManager.editAccessLevel(id, chemistData);
         return AccountConverter.mapAccountToAccountAndAccessLevelsDto(account);
     }
@@ -163,7 +187,8 @@ public class AccountController {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @RolesAllowed({"ADMIN"})
-    public AccountAndAccessLevelsDTO editPatientData(@PathParam("id") Long id, @Valid EditAdminDataDTO adminDataDTO) {
+    public AccountAndAccessLevelsDTO editPatientData(@PathParam("id") Long id,
+                                                     @Valid EditAdminDataDTO adminDataDTO) {
         AdminData adminData = AccessLevelConverter.mapEditAdminDataDtoToAdminData(adminDataDTO);
         Account account = accountManager.editAccessLevel(id, adminData);
         return AccountConverter.mapAccountToAccountAndAccessLevelsDto(account);
@@ -174,8 +199,10 @@ public class AccountController {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({"ADMIN"})
-    public AccountAndAccessLevelsDTO grantPatient(@PathParam("id") Long id, @Valid GrantPatientDataDTO patientDataDTO) {
-        PatientData patientData = AccessLevelConverter.mapGrantPatientDataDTOtoPatientData(patientDataDTO);
+    public AccountAndAccessLevelsDTO grantPatient(@PathParam("id") Long id,
+                                                  @Valid GrantPatientDataDTO patientDataDTO) {
+        PatientData patientData =
+                AccessLevelConverter.mapGrantPatientDataDTOtoPatientData(patientDataDTO);
         Account account = accountManager.grantAccessLevel(id, patientData);
         return AccountConverter.mapAccountToAccountAndAccessLevelsDto(account);
     }
@@ -185,8 +212,10 @@ public class AccountController {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({"ADMIN"})
-    public AccountAndAccessLevelsDTO grantChemist(@PathParam("id") Long id, @Valid GrantChemistDataDTO chemistDataDTO) {
-        ChemistData chemistData = AccessLevelConverter.mapGrantChemistDataDtoToChemistData(chemistDataDTO);
+    public AccountAndAccessLevelsDTO grantChemist(@PathParam("id") Long id,
+                                                  @Valid GrantChemistDataDTO chemistDataDTO) {
+        ChemistData chemistData =
+                AccessLevelConverter.mapGrantChemistDataDtoToChemistData(chemistDataDTO);
         Account account = accountManager.grantAccessLevel(id, chemistData);
         return AccountConverter.mapAccountToAccountAndAccessLevelsDto(account);
     }
@@ -196,7 +225,8 @@ public class AccountController {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({"ADMIN"})
-    public AccountAndAccessLevelsDTO grantAdmin(@PathParam("id") Long id, @Valid GrantAdminDataDTO adminDataDTO) {
+    public AccountAndAccessLevelsDTO grantAdmin(@PathParam("id") Long id,
+                                                @Valid GrantAdminDataDTO adminDataDTO) {
         AdminData adminData = AccessLevelConverter.mapGrantAdminDataDtoToAdminData(adminDataDTO);
         Account account = accountManager.grantAccessLevel(id, adminData);
         return AccountConverter.mapAccountToAccountAndAccessLevelsDto(account);
@@ -251,7 +281,8 @@ public class AccountController {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({"ADMIN"})
-    public Response removeRoleChemist(@PathParam("id") Long id, @Valid ChemistDataDTO chemistDataDTO) {
+    public Response removeRoleChemist(@PathParam("id") Long id,
+                                      @Valid ChemistDataDTO chemistDataDTO) {
         return Response.status(Response.Status.OK).entity(
                 AccountConverter.mapAccountToAccountDto(accountManager.removeAccessLevel(id,
                         AccessLevelConverter.mapChemistDataDtoToChemistData(chemistDataDTO)))
@@ -263,7 +294,8 @@ public class AccountController {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({"ADMIN"})
-    public Response removeRolePatient(@PathParam("id") Long id, @Valid PatientDataDTO patientDataDTO) {
+    public Response removeRolePatient(@PathParam("id") Long id,
+                                      @Valid PatientDataDTO patientDataDTO) {
         return Response.status(Response.Status.OK).entity(
                 AccountConverter.mapAccountToAccountDto(accountManager.removeAccessLevel(id,
                         AccessLevelConverter.dtoToPatientData(patientDataDTO)))

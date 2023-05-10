@@ -1,15 +1,26 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.mok.managers;
 
+import static pl.lodz.p.it.ssbd2023.ssbd01.exceptions.AuthApplicationException.accountBlockedException;
+
 import com.mailjet.client.errors.MailjetException;
 import jakarta.ejb.Stateful;
 import jakarta.ejb.TransactionAttribute;
 import jakarta.ejb.TransactionAttributeType;
 import jakarta.inject.Inject;
 import jakarta.interceptor.Interceptors;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.AccessLevel;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Account;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.PatientData;
+import pl.lodz.p.it.ssbd2023.ssbd01.entities.Token;
+import pl.lodz.p.it.ssbd2023.ssbd01.entities.TokenType;
 import pl.lodz.p.it.ssbd2023.ssbd01.exceptions.ApplicationException;
 import pl.lodz.p.it.ssbd2023.ssbd01.interceptors.GenericManagerExceptionsInterceptor;
 import pl.lodz.p.it.ssbd2023.ssbd01.mok.facades.AccountFacade;
@@ -18,15 +29,6 @@ import pl.lodz.p.it.ssbd2023.ssbd01.util.AccessLevelFinder;
 import pl.lodz.p.it.ssbd2023.ssbd01.util.email.EmailService;
 import pl.lodz.p.it.ssbd2023.ssbd01.util.mergers.AccessLevelMerger;
 
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-
-import static pl.lodz.p.it.ssbd2023.ssbd01.exceptions.AuthApplicationException.accountBlockedException;
-
 @Stateful
 @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 @Interceptors({GenericManagerExceptionsInterceptor.class})
@@ -34,6 +36,9 @@ public class AccountManager implements AccountManagerLocal {
 
     @Inject
     private AccountFacade accountFacade;
+
+    @Inject
+    private TokenManagerLocal verificationManager;
 
     @Inject
     @ConfigProperty(name = "unconfirmed.account.deletion.timeout.hours")
@@ -55,18 +60,17 @@ public class AccountManager implements AccountManagerLocal {
     }
 
     @Override
-    public Account getAccount(Long id) {
-        Optional<Account> optionalAccount = accountFacade.find(id);
-        if (optionalAccount.isEmpty())
-            ApplicationException.createEntityNotFoundException();
-        return optionalAccount.get();
+    public Account findByLogin(String login) {
+//        return accountFacade.findByLogin(login).orElseThrow(() -> ApplicationException.createEntityNotFoundException());
+        return accountFacade.findByLogin(login);
     }
 
     @Override
     public Account getAccountAndAccessLevels(Long id) {
         Optional<Account> optionalAccount = accountFacade.findAndRefresh(id);
-        if (optionalAccount.isEmpty())
+        if (optionalAccount.isEmpty()) {
             ApplicationException.createEntityNotFoundException();
+        }
         return optionalAccount.get();
     }
 
@@ -79,6 +83,14 @@ public class AccountManager implements AccountManagerLocal {
         return account;
     }
 
+    @Override
+    public Account getAccount(Long id) {
+        Optional<Account> optionalAccount = accountFacade.find(id);
+        if (optionalAccount.isEmpty()) {
+            ApplicationException.createEntityNotFoundException();
+        }
+        return optionalAccount.get();
+    }
 
     @Override
     public Account createPatientAccount(Account account, PatientData patientData) {
@@ -86,9 +98,15 @@ public class AccountManager implements AccountManagerLocal {
     }
 
     @Override
+    public void confirmAccountRegistration(String verificationToken) {
+        verificationManager.verifyAccount(verificationToken);
+    }
+
+    @Override
     public Account registerAccount(Account account) {
         account.setPassword(HashAlgorithmImpl.generate(account.getPassword()));
         accountFacade.create(account);
+        verificationManager.sendVerificationToken(account, null);
         return account;
     }
 
@@ -124,33 +142,41 @@ public class AccountManager implements AccountManagerLocal {
 
     @Override
     public void purgeUnactivatedAccounts() {
-        List<Account> accountsToPurge = accountFacade.findConfirmedFalse();
+        List<Account> accountsToPurge = accountFacade.findNotConfirmed();
 
         for (Account account : accountsToPurge) {
-            LocalDateTime timeoutThreshold = LocalDateTime.now().minusHours(UNCONFIRMED_ACCOUNT_DELETION_TIMEOUT_HOURS);
+            LocalDateTime timeoutThreshold =
+                    LocalDateTime.now().minusHours(UNCONFIRMED_ACCOUNT_DELETION_TIMEOUT_HOURS);
             LocalDateTime creationDate = Instant.ofEpochMilli(account.getCreationDate().getTime())
                     .atZone(ZoneId.systemDefault())
                     .toLocalDateTime();
             if (creationDate.isBefore(timeoutThreshold)) {
+                emailService.sendEmailWhenRemovedDueToNotConfirmed(account.getEmail(),
+                        account.getLogin());
                 accountFacade.remove(account);
             }
         }
     }
 
     @Override
-    public void updateAuthInformation(String caller, String remoteAddr, Date now, Boolean isCorrect) throws MailjetException {
+    public void updateAuthInformation(String caller, String remoteAddr, Date now, Boolean isCorrect)
+            throws MailjetException {
         Account account = accountFacade.findByLogin(caller);
-        if (account.getLoginAttempts() >= MAX_INCORRECT_LOGIN_ATTEMPTS){
-            LocalDateTime timeoutThreshold = LocalDateTime.now().minusHours(TEMPORARY_ACCOUNT_BLOCK_HOURS);
-            LocalDateTime lastIncorrectLogin = Instant.ofEpochMilli(account.getLastNegativeLogin().getTime())
-                    .atZone(ZoneId.systemDefault())
-                    .toLocalDateTime();
+        if (account.getLoginAttempts() >= MAX_INCORRECT_LOGIN_ATTEMPTS) {
+            LocalDateTime timeoutThreshold =
+                    LocalDateTime.now().minusHours(TEMPORARY_ACCOUNT_BLOCK_HOURS);
+            LocalDateTime lastIncorrectLogin =
+                    Instant.ofEpochMilli(account.getLastNegativeLogin().getTime())
+                            .atZone(ZoneId.systemDefault())
+                            .toLocalDateTime();
             if (lastIncorrectLogin.isBefore(timeoutThreshold)) {
                 account.setActive(true);
             }
         }
 
-        if (!account.getActive()) accountBlockedException();
+        if (!account.getActive()) {
+            accountBlockedException();
+        }
         if (isCorrect) {
             account.setLastPositiveLogin(now);
             account.setLogicalAddress(remoteAddr);
@@ -166,7 +192,25 @@ public class AccountManager implements AccountManagerLocal {
 
         }
 
+    }
 
+    @Override
+    public void sendVerificationTokenIfPreviousWasNotSent() {
+
+        Date halfExpirationDate = Date.from(
+                Instant.now()
+                        .minus(UNCONFIRMED_ACCOUNT_DELETION_TIMEOUT_HOURS / 2, ChronoUnit.HOURS));
+
+        List<Token> tokensToResend =
+                verificationManager.findTokensByTokenTypeAndExpirationDateBefore(
+                        TokenType.VERIFICATION, halfExpirationDate);
+
+        tokensToResend
+                .forEach(token -> {
+                            token.setWasPreviousTokenSent(true);
+                            verificationManager.sendVerificationToken(token.getAccount(), token.getCode());
+                        }
+                );
     }
 
 
