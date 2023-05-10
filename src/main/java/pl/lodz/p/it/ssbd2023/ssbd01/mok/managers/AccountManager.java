@@ -141,6 +141,18 @@ public class AccountManager implements AccountManagerLocal {
     }
 
     @Override
+    public Account updateOwnPassword(Long id, String oldPassword, String newPassword) {
+        Account account = getAccount(id);
+        if (HashAlgorithmImpl.check(oldPassword, account.getPassword())) {
+            account.setPassword(HashAlgorithmImpl.generate(newPassword));
+            accountFacade.edit(account);
+            return account;
+        } else {
+            return null;
+        }
+    }
+
+    @Override
     public void purgeUnactivatedAccounts() {
         List<Account> accountsToPurge = accountFacade.findNotConfirmed();
 
