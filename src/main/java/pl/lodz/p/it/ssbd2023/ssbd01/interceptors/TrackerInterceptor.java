@@ -8,7 +8,7 @@ import lombok.extern.java.Log;
 import java.util.Arrays;
 
 @Log
-public class LoggerInterceptor {
+public class TrackerInterceptor {
 
     @Resource
     private SessionContext sctx;
