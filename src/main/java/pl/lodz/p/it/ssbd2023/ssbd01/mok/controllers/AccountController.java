@@ -42,6 +42,7 @@ import pl.lodz.p.it.ssbd2023.ssbd01.entities.Account;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.AdminData;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.ChemistData;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.PatientData;
+import pl.lodz.p.it.ssbd2023.ssbd01.mok.managers.AccountManager;
 import pl.lodz.p.it.ssbd2023.ssbd01.mok.managers.AccountManagerLocal;
 import pl.lodz.p.it.ssbd2023.ssbd01.util.converters.AccessLevelConverter;
 import pl.lodz.p.it.ssbd2023.ssbd01.util.converters.AccountConverter;
@@ -302,5 +303,15 @@ public class AccountController {
         ).build();
     }
 
+    @GET
+    @Path("/{login}")
+    @RolesAllowed({"ADMIN"})
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response displayAccountInfo(@PathParam("login") String login){
+        AccountManager accountManager = new AccountManager();
+        Account account = accountManager.findByLogin(login);
 
+        AccountDTO av = AccountConverter.mapAccountToAccountDto(account);
+        return Response.ok(av).build();
+    }
 }
