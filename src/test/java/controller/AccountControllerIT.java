@@ -17,6 +17,7 @@ import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.ChangePasswordDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.auth.LoginDTO;
 
 import static io.restassured.RestAssured.given;
@@ -290,5 +291,15 @@ public class AccountControllerIT extends BaseTest {
                 .extract().response().asString();
     }
 
+    @Test
+    @Order(19)
+    public void changeOwnPassword_correct() {
+        given().header("authorization", "Bearer " + adminJwt)
+                .body(new ChangePasswordDTO("admin123", "admin321"))
+                .put(getApiRoot() + "/account/1/change-password")
+                .then()
+                .log().all()
+                .statusCode(Response.Status.OK.getStatusCode());
+    }
 
 }

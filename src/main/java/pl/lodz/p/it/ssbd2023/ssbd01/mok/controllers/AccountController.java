@@ -132,11 +132,13 @@ public class AccountController {
     }
 
     @PUT
-    @Path("/changePassword")
+    @Path("{id}/changePassword")
     @RolesAllowed({"PATIENT", "CHEMIST", "ADMIN"})
-    public Response changePassword(@Valid ChangePasswordDTO changePasswordDTO) {
-        // todo
-        return Response.status(Response.Status.OK).entity(null).build();
+    public Response changePassword(@PathParam("id") Long id, @Valid ChangePasswordDTO changePasswordDTO) {
+        String oldPassword = changePasswordDTO.getOldPassword();
+        String newPassword = changePasswordDTO.getNewPassword();
+        accountManager.updateOwnPassword(id, oldPassword, newPassword);
+        return Response.status(Response.Status.OK).build();
     }
 
     @PUT

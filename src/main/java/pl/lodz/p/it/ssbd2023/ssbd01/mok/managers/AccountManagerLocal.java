@@ -39,6 +39,8 @@ public interface AccountManagerLocal {
 
     Account removeAccessLevel(Long id, AccessLevel accessLevel);
 
+    Account updateOwnPassword(Long id, String oldPassword, String newPassword);
+
     void purgeUnactivatedAccounts();
 
     void updateAuthInformation(String caller, String remoteAddr, Date now, Boolean isCorrect) throws MailjetException;
