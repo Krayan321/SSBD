@@ -14,6 +14,7 @@ public class AbstractController {
     private int TRANSACTION_REPEAT_COUNT;
 
     protected <T> T repeatTransaction(CommonManagerLocalInterface service, Supplier<T> method) {
+        int retryTXCounter = TRANSACTION_REPEAT_COUNT;
         boolean rollbackTX = false;
 
         T result = null;
@@ -21,12 +22,12 @@ public class AbstractController {
             try {
                 result = method.get();
                 rollbackTX = service.isLastTransactionRollback();
-            } catch (EJBTransactionRolledbackException e) {
+            } catch (EJBTransactionRolledbackException | ApplicationExceptionOptimisticLock e) {
                 rollbackTX = true;
             }
-        } while (rollbackTX && --TRANSACTION_REPEAT_COUNT > 0);
+        } while (rollbackTX && --retryTXCounter > 0);
 
-        if (rollbackTX && TRANSACTION_REPEAT_COUNT == 0) {
+        if (rollbackTX && retryTXCounter == 0) {
             throw new TransactionException("Transaction failed");
         }
         return result;
