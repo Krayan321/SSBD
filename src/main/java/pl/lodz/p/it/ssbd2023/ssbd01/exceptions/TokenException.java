@@ -3,6 +3,7 @@ package pl.lodz.p.it.ssbd2023.ssbd01.exceptions;
 import static jakarta.ws.rs.core.Response.Status.BAD_REQUEST;
 import static jakarta.ws.rs.core.Response.Status.EXPECTATION_FAILED;
 import static jakarta.ws.rs.core.Response.Status.NOT_FOUND;
+import static pl.lodz.p.it.ssbd2023.ssbd01.common.i18n.*;
 
 import jakarta.ws.rs.core.Response;
 
@@ -18,19 +19,19 @@ public class TokenException extends ApplicationException {
     }
 
     public static TokenException tokenExpiredException() {
-        throw new TokenException(EXPECTATION_FAILED, "Token expired");
+        return new TokenException(EXPECTATION_FAILED, EXCEPTION_TOKEN_EXPIRED);
     }
 
     public static TokenException tokenAlreadyUsedException() {
-        throw new TokenException(EXPECTATION_FAILED, "Token already used");
+        return new TokenException(EXPECTATION_FAILED, EXCEPTION_TOKEN_ALREADY_USED);
     }
 
     public static TokenException tokenNotFoundException() {
-        throw new TokenException(NOT_FOUND, "Token not found");
+        return new TokenException(NOT_FOUND, EXCEPTION_TOKEN_NOT_FOUND);
     }
 
     public static TokenException incorrectTokenTypeException() {
-        throw new TokenException(EXPECTATION_FAILED, "Incorrect token type");
+        return new TokenException(EXPECTATION_FAILED, EXCEPTION_TOKEN_BAD_TYPE);
     }
 
 }

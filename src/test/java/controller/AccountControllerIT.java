@@ -302,4 +302,14 @@ public class AccountControllerIT extends BaseTest {
                 .statusCode(Response.Status.OK.getStatusCode());
     }
 
+    @Test
+    @Order(19)
+    public void deactivateUserAccount_correct() {
+        given().header("authorization", "Bearer " + adminJwt)
+                .put(getApiRoot() + "/account/2/deactivate")
+                .then()
+                .log().all()
+                .statusCode(Response.Status.OK.getStatusCode());
+    }
+
 }

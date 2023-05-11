@@ -4,6 +4,7 @@ import jakarta.ws.rs.core.Response;
 
 import static jakarta.ws.rs.core.Response.Status.BAD_REQUEST;
 import static jakarta.ws.rs.core.Response.Status.EXPECTATION_FAILED;
+import static pl.lodz.p.it.ssbd2023.ssbd01.common.i18n.*;
 
 @jakarta.ejb.ApplicationException(rollback = true)
 public class AccountApplicationException extends ApplicationException {
@@ -17,14 +18,14 @@ public class AccountApplicationException extends ApplicationException {
     }
 
     public static AccountApplicationException createAccountConstraintViolationException(Exception e) {
-        return new AccountApplicationException(EXPECTATION_FAILED, "Violated account constraints", e);
+        return new AccountApplicationException(EXPECTATION_FAILED, EXCEPTION_ACCOUNT_CONSTRAINT_VIOLATION, e);
     }
 
     public static AccountApplicationException createConfirmedAccountDeletionException() {
-        return new AccountApplicationException(EXPECTATION_FAILED, "Trying to delete confirmed account");
+        return new AccountApplicationException(EXPECTATION_FAILED, EXCEPTION_ACCOUNT_DELETION_CONFIRMED);
     }
 
     public static AccountApplicationException createUndefinedAccessLevelException() {
-        return new AccountApplicationException(BAD_REQUEST, "Given access level was ill-defined");
+        return new AccountApplicationException(BAD_REQUEST, EXCEPTION_ACCOUNT_NO_SUCH_ACCESS_LEVEL);
     }
 }

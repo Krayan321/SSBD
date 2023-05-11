@@ -7,6 +7,7 @@ import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.ExceptionMapper;
 import jakarta.ws.rs.ext.Provider;
 import lombok.extern.java.Log;
+import pl.lodz.p.it.ssbd2023.ssbd01.common.i18n;
 import pl.lodz.p.it.ssbd2023.ssbd01.exceptions.ApplicationException;
 
 import java.util.logging.Level;
@@ -23,7 +24,7 @@ public class WebApplicationThrowableMapper implements ExceptionMapper<Throwable>
         } catch (EJBAccessException | AccessLocalException e) {
             return ApplicationException.createAccessDeniedException().getResponse();
         } catch (Throwable e) {
-            log.log(Level.SEVERE, "Unknown error", throwable);
+            log.log(Level.SEVERE, i18n.EXCEPTION_UNKNOWN, throwable);
             return ApplicationException.createGeneralException(e).getResponse();
         }
     }
