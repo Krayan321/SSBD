@@ -23,6 +23,7 @@ import pl.lodz.p.it.ssbd2023.ssbd01.entities.Token;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.TokenType;
 import pl.lodz.p.it.ssbd2023.ssbd01.exceptions.ApplicationException;
 import pl.lodz.p.it.ssbd2023.ssbd01.interceptors.GenericManagerExceptionsInterceptor;
+import pl.lodz.p.it.ssbd2023.ssbd01.interceptors.TrackerInterceptor;
 import pl.lodz.p.it.ssbd2023.ssbd01.mok.facades.AccountFacade;
 import pl.lodz.p.it.ssbd2023.ssbd01.security.HashAlgorithmImpl;
 import pl.lodz.p.it.ssbd2023.ssbd01.util.AccessLevelFinder;
@@ -31,7 +32,9 @@ import pl.lodz.p.it.ssbd2023.ssbd01.util.mergers.AccessLevelMerger;
 
 @Stateful
 @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-@Interceptors({GenericManagerExceptionsInterceptor.class})
+@Interceptors({GenericManagerExceptionsInterceptor.class,
+        TrackerInterceptor.class
+})
 public class AccountManager implements AccountManagerLocal {
 
     @Inject

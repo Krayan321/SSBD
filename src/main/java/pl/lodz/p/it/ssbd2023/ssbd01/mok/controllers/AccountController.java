@@ -4,6 +4,7 @@ import jakarta.annotation.security.DenyAll;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
+import jakarta.interceptor.Interceptors;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.ws.rs.*;
@@ -11,9 +12,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
-import pl.lodz.p.it.ssbd2023.ssbd01.common.i18n;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.AccountAndAccessLevelsDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.AccountDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.AdminDataDTO;
@@ -42,9 +41,6 @@ import pl.lodz.p.it.ssbd2023.ssbd01.mok.managers.AccountManagerLocal;
 import pl.lodz.p.it.ssbd2023.ssbd01.util.converters.AccessLevelConverter;
 import pl.lodz.p.it.ssbd2023.ssbd01.util.converters.AccountConverter;
 
-import static pl.lodz.p.it.ssbd2023.ssbd01.common.i18n.EXCEPTION_TOKEN_BAD_TYPE;
-import static pl.lodz.p.it.ssbd2023.ssbd01.common.i18n.MAIL_ACCOUNT_BLOCKED_SUBJECT;
-
 @Path("account")
 @RequestScoped
 @DenyAll
@@ -52,12 +48,6 @@ public class AccountController {
 
     @Inject
     private AccountManagerLocal accountManager;
-
-    @GET
-    @Path("test")
-    public String test() {
-        return i18n.getMessage(MAIL_ACCOUNT_BLOCKED_SUBJECT, Locale.getDefault());
-    }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
