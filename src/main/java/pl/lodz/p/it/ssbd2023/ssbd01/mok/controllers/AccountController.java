@@ -109,8 +109,8 @@ public class AccountController {
     @Path("/{id}/deactivate")
     @RolesAllowed({"ADMIN"})
     public AccountDTO deactivateAccount(@PathParam("id") Long id) {
-        // todo
-        return null;
+        Account account = accountManager.deactivateUserAccount(id);
+        return AccountConverter.mapAccountToAccountDto(account);
     }
 
     @PUT
