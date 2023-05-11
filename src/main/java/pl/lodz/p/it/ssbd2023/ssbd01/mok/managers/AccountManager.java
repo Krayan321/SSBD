@@ -3,6 +3,7 @@ package pl.lodz.p.it.ssbd2023.ssbd01.mok.managers;
 import static pl.lodz.p.it.ssbd2023.ssbd01.exceptions.AuthApplicationException.accountBlockedException;
 
 import com.mailjet.client.errors.MailjetException;
+import jakarta.ejb.SessionSynchronization;
 import jakarta.ejb.Stateful;
 import jakarta.ejb.TransactionAttribute;
 import jakarta.ejb.TransactionAttributeType;
@@ -33,7 +34,8 @@ import pl.lodz.p.it.ssbd2023.ssbd01.util.mergers.AccessLevelMerger;
 @Stateful
 @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 @Interceptors({GenericManagerExceptionsInterceptor.class})
-public class AccountManager extends AbstractManager implements AccountManagerLocal {
+public class AccountManager extends AbstractManager implements AccountManagerLocal,
+        SessionSynchronization {
 
     @Inject
     private AccountFacade accountFacade;

@@ -4,6 +4,7 @@ import static pl.lodz.p.it.ssbd2023.ssbd01.exceptions.TokenException.incorrectTo
 import static pl.lodz.p.it.ssbd2023.ssbd01.exceptions.TokenException.tokenAlreadyUsedException;
 import static pl.lodz.p.it.ssbd2023.ssbd01.exceptions.TokenException.tokenExpiredException;
 
+import jakarta.ejb.SessionSynchronization;
 import jakarta.ejb.Stateful;
 import jakarta.ejb.TransactionAttribute;
 import jakarta.ejb.TransactionAttributeType;
@@ -28,7 +29,8 @@ import pl.lodz.p.it.ssbd2023.ssbd01.util.email.EmailService;
 @Log
 @TransactionAttribute(TransactionAttributeType.MANDATORY)
 @Interceptors({GenericManagerExceptionsInterceptor.class})
-public class TokenManager extends AbstractManager implements TokenManagerLocal {
+public class TokenManager extends AbstractManager implements TokenManagerLocal,
+        SessionSynchronization {
 
     @Inject
     TokenFacade tokenFacade;
