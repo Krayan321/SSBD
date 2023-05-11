@@ -1,11 +1,16 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.exceptions;
 
 import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.core.Request;
 import jakarta.ws.rs.core.Response;
 import lombok.Getter;
 
+import java.util.Locale;
+import pl.lodz.p.it.ssbd2023.ssbd01.common.i18n;
+
 import static jakarta.ws.rs.core.Response.Status.FORBIDDEN;
 import static jakarta.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR;
+import static pl.lodz.p.it.ssbd2023.ssbd01.common.i18n.*;
 
 @jakarta.ejb.ApplicationException(rollback = true)
 public class ApplicationException extends WebApplicationException {
@@ -26,28 +31,28 @@ public class ApplicationException extends WebApplicationException {
 
 
     public static ApplicationException createGeneralException(Throwable cause) {
-        return new ApplicationException(INTERNAL_SERVER_ERROR, "General exception occurred");
+        return new ApplicationException(INTERNAL_SERVER_ERROR, EXCEPTION_GENERAL);
     }
 
     public static ApplicationException createPersistenceException(Exception cause) {
-        return new ApplicationException(INTERNAL_SERVER_ERROR, "Persistence exception occurred");
+        return new ApplicationException(INTERNAL_SERVER_ERROR, EXCEPTION_PERSISTENCE);
     }
 
     public static ApplicationException createAccessDeniedException() {
-        return new ApplicationException(FORBIDDEN, "Access denied");
+        return new ApplicationException(FORBIDDEN, EXCEPTION_ACCESS_DENIED);
     }
 
     public static ApplicationException createTransactionRolledBackException() {
-        return new ApplicationException(INTERNAL_SERVER_ERROR, "Transaction rolled back");
+        return new ApplicationException(INTERNAL_SERVER_ERROR, EXCEPTION_TRANSACTION_ROLLBACK);
     }
 
 
 
     public static ApplicationException createEntityNotFoundException() {
-        throw new ApplicationExceptionEntityNotFound();
+        return new ApplicationExceptionEntityNotFound();
     }
 
     public static ApplicationException createOptimisticLockException() {
-        throw new ApplicationExceptionOptimisticLock();
+        return new ApplicationExceptionOptimisticLock();
     }
 }

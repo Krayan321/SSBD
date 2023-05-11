@@ -20,11 +20,12 @@ public class i18n {
     public static final String EXCEPTION_AUTH_BLOCKED_ACCOUNT = "exception.auth.blocked-account";
 
     public static final String EXCEPTION_TOKEN_EXPIRED = "exception.token.expired";
+    public static final String EXCEPTION_TOKEN_NOT_FOUND = "exception.token.not-found";
     public static final String EXCEPTION_TOKEN_ALREADY_USED = "exception.token.already-used";
     public static final String EXCEPTION_TOKEN_BAD_TYPE = "exception.token.bad-type";
 
-    public String getMessage(String message, Locale locale) {
-        ResourceBundle bundle = ResourceBundle.getBundle("messages", locale);
+    public static String getMessage(String message, Locale locale) {
+        ResourceBundle bundle = ResourceBundle.getBundle("i18n.messages", locale);
         return bundle.getString(message);
     }
 }

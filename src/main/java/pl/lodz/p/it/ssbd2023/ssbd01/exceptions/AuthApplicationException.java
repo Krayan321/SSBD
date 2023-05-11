@@ -2,6 +2,9 @@ package pl.lodz.p.it.ssbd2023.ssbd01.exceptions;
 
 import jakarta.ws.rs.core.Response;
 
+import static pl.lodz.p.it.ssbd2023.ssbd01.common.i18n.EXCEPTION_AUTH_BAD_CREDENTIALS;
+import static pl.lodz.p.it.ssbd2023.ssbd01.common.i18n.EXCEPTION_AUTH_BLOCKED_ACCOUNT;
+
 @jakarta.ejb.ApplicationException(rollback = true)
 public class AuthApplicationException extends ApplicationException {
     private AuthApplicationException(Response.Status status, String key) {
@@ -14,9 +17,9 @@ public class AuthApplicationException extends ApplicationException {
 
     // todo split for login and password
     public static AuthApplicationException createInvalidLoginOrPasswordException() {
-        throw new AuthApplicationException(Response.Status.UNAUTHORIZED, "Invalid login or password");
+        return new AuthApplicationException(Response.Status.UNAUTHORIZED, EXCEPTION_AUTH_BAD_CREDENTIALS);
     }
     public static AuthApplicationException accountBlockedException() {
-        throw new AuthApplicationException(Response.Status.FORBIDDEN, "Account has been blocked");
+        return new AuthApplicationException(Response.Status.FORBIDDEN, EXCEPTION_AUTH_BLOCKED_ACCOUNT);
     }
 }
