@@ -15,6 +15,8 @@ import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+
+import lombok.extern.java.Log;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.AccessLevel;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Account;
@@ -35,6 +37,7 @@ import pl.lodz.p.it.ssbd2023.ssbd01.util.mergers.AccessLevelMerger;
 @Interceptors({GenericManagerExceptionsInterceptor.class,
         TrackerInterceptor.class
 })
+@Log
 public class AccountManager implements AccountManagerLocal {
 
     @Inject

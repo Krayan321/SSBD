@@ -20,6 +20,8 @@ import org.junit.jupiter.api.TestMethodOrder;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.ChangePasswordDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.auth.LoginDTO;
 
+import java.util.concurrent.TimeUnit;
+
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.Matchers.hasEntry;
@@ -34,7 +36,7 @@ public class AccountControllerIT extends BaseTest {
 
 
     @BeforeAll
-    static void setUp() {
+    static void setUp() throws InterruptedException {
         System.out.println(getApiRoot());
         adminJwt = given()
                 .contentType("application/json")
