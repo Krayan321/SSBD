@@ -43,6 +43,7 @@ import pl.lodz.p.it.ssbd2023.ssbd01.util.converters.AccessLevelConverter;
 import pl.lodz.p.it.ssbd2023.ssbd01.util.converters.AccountConverter;
 
 import static pl.lodz.p.it.ssbd2023.ssbd01.common.i18n.EXCEPTION_TOKEN_BAD_TYPE;
+import static pl.lodz.p.it.ssbd2023.ssbd01.common.i18n.MAIL_ACCOUNT_BLOCKED_SUBJECT;
 
 @Path("account")
 @RequestScoped
@@ -51,6 +52,12 @@ public class AccountController {
 
     @Inject
     private AccountManagerLocal accountManager;
+
+    @GET
+    @Path("test")
+    public String test() {
+        return i18n.getMessage(MAIL_ACCOUNT_BLOCKED_SUBJECT, Locale.getDefault());
+    }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)

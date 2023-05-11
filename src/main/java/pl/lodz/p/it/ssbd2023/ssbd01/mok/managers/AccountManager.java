@@ -69,7 +69,7 @@ public class AccountManager implements AccountManagerLocal {
     public Account getAccountAndAccessLevels(Long id) {
         Optional<Account> optionalAccount = accountFacade.findAndRefresh(id);
         if (optionalAccount.isEmpty()) {
-            ApplicationException.createEntityNotFoundException();
+            throw ApplicationException.createEntityNotFoundException();
         }
         return optionalAccount.get();
     }
@@ -87,7 +87,7 @@ public class AccountManager implements AccountManagerLocal {
     public Account getAccount(Long id) {
         Optional<Account> optionalAccount = accountFacade.find(id);
         if (optionalAccount.isEmpty()) {
-            ApplicationException.createEntityNotFoundException();
+            throw ApplicationException.createEntityNotFoundException();
         }
         return optionalAccount.get();
     }
@@ -203,7 +203,7 @@ public class AccountManager implements AccountManagerLocal {
         }
 
         if (!account.getActive()) {
-            accountBlockedException();
+            throw accountBlockedException();
         }
         if (isCorrect) {
             account.setLastPositiveLogin(now);
