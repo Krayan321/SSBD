@@ -21,23 +21,22 @@ public class WebApplicationThrowableMapper implements ExceptionMapper<Throwable>
         try {
             throw throwable;
         } catch (WebApplicationException e) {
-            return Response
-                    .status(e.getResponse().getStatus())
-                    .entity(new ExceptionDTO(e.getMessage()))
-                    .build();
+            return getResponseFromWAException(e);
         } catch (EJBAccessException | AccessLocalException e) {
             WebApplicationException ex = ApplicationException.createAccessDeniedException();
-            return Response
-                    .status(ex.getResponse().getStatus())
-                    .entity(new ExceptionDTO(e.getMessage()))
-                    .build();
+            return getResponseFromWAException(ex);
         } catch (Throwable e) {
             log.log(Level.SEVERE, i18n.EXCEPTION_UNKNOWN, throwable);
             WebApplicationException ex = ApplicationException.createGeneralException(e);
-            return Response
-                    .status(ex.getResponse().getStatus())
-                    .entity(new ExceptionDTO(e.getMessage()))
-                    .build();
+            return getResponseFromWAException(ex);
         }
+    }
+
+    private Response getResponseFromWAException(WebApplicationException e) {
+        return Response
+                .status(e.getResponse().getStatus())
+                .entity(new ExceptionDTO(e.getMessage()))
+                .header("Content-Type", "application/json")
+                .build();
     }
 }
