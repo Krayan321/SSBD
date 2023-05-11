@@ -8,9 +8,10 @@ import pl.lodz.p.it.ssbd2023.ssbd01.entities.PatientData;
 
 import java.util.Date;
 import java.util.List;
+import pl.lodz.p.it.ssbd2023.ssbd01.common.CommonManagerLocalInterface;
 
 @Local
-public interface AccountManagerLocal {
+public interface AccountManagerLocal extends CommonManagerLocalInterface {
 
 
     Account createAccount(Account account, AccessLevel accessLevel);

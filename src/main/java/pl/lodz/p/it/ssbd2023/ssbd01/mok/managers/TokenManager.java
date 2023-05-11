@@ -4,6 +4,7 @@ import static pl.lodz.p.it.ssbd2023.ssbd01.exceptions.TokenException.incorrectTo
 import static pl.lodz.p.it.ssbd2023.ssbd01.exceptions.TokenException.tokenAlreadyUsedException;
 import static pl.lodz.p.it.ssbd2023.ssbd01.exceptions.TokenException.tokenExpiredException;
 
+import jakarta.ejb.SessionSynchronization;
 import jakarta.ejb.Stateful;
 import jakarta.ejb.TransactionAttribute;
 import jakarta.ejb.TransactionAttributeType;
@@ -15,6 +16,7 @@ import java.util.List;
 import lombok.extern.java.Log;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
+import pl.lodz.p.it.ssbd2023.ssbd01.common.AbstractManager;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Account;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Token;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.TokenType;
@@ -27,7 +29,8 @@ import pl.lodz.p.it.ssbd2023.ssbd01.util.email.EmailService;
 @Log
 @TransactionAttribute(TransactionAttributeType.MANDATORY)
 @Interceptors({GenericManagerExceptionsInterceptor.class})
-public class TokenManager implements TokenManagerLocal {
+public class TokenManager extends AbstractManager implements TokenManagerLocal,
+        SessionSynchronization {
 
     @Inject
     TokenFacade tokenFacade;

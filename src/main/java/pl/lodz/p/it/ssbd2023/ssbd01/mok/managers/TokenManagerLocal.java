@@ -7,9 +7,10 @@ import java.util.List;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Account;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Token;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.TokenType;
+import pl.lodz.p.it.ssbd2023.ssbd01.common.CommonManagerLocalInterface;
 
 @Local
-public interface TokenManagerLocal {
+public interface TokenManagerLocal extends CommonManagerLocalInterface {
 
     void sendVerificationToken(Account account, String code);
 
