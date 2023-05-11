@@ -106,11 +106,19 @@ public class AccountController {
     }
 
     @PUT
-    @Path("/{id}/deactivate")
+    @Path("/{id}/block")
     @RolesAllowed({"ADMIN"})
-    public AccountDTO deactivateAccount(@PathParam("id") Long id) {
-        // todo
-        return null;
+    public Response blockAccount(@PathParam("id") Long id) {
+        accountManager.blockAccount(id);
+        return Response.status(Response.Status.OK).build();
+    }
+
+    @PUT
+    @Path("/{id}/unblock")
+    @RolesAllowed({"ADMIN"})
+    public Response unblockAccount(@PathParam("id") Long id) {
+        accountManager.unblockAccount(id);
+        return Response.status(Response.Status.OK).build();
     }
 
     @PUT

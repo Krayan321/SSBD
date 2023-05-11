@@ -93,11 +93,6 @@ public class AccountManager implements AccountManagerLocal {
     }
 
     @Override
-    public Account createPatientAccount(Account account, PatientData patientData) {
-        return createPatientAccount(account, patientData);
-    }
-
-    @Override
     public void confirmAccountRegistration(String verificationToken) {
         verificationManager.verifyAccount(verificationToken);
     }
@@ -126,10 +121,31 @@ public class AccountManager implements AccountManagerLocal {
         // if(account.getActive() == true) {
         // return null;
         // }
-        account.setActive(true);
         account.setConfirmed(true);
         accountFacade.edit(account);
         return account;
+    }
+
+    @Override
+    public void blockAccount(Long id) {
+        Account account = getAccount(id);
+        if(!account.getActive())
+            return;
+        account.setActive(false);
+        accountFacade.edit(account);
+        emailService.sendEmailAccountBlocked(account.getEmail(), account.getLogin(),
+                account.getLanguage());
+    }
+
+    @Override
+    public void unblockAccount(Long id) {
+        Account account = getAccount(id);
+        if(account.getActive())
+            return;
+        account.setActive(true);
+        accountFacade.edit(account);
+        emailService.sendEmailAccountUnblocked(account.getEmail(), account.getLogin(),
+                account.getLanguage());
     }
 
     @Override
@@ -226,6 +242,7 @@ public class AccountManager implements AccountManagerLocal {
     }
 
 
+    // fixme? Is this really necessary
     @Override
     public Account createAccount(Account account, AccessLevel accessLevel) {
         account.setPassword(HashAlgorithmImpl.generate(account.getPassword()));

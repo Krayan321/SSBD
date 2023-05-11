@@ -33,7 +33,9 @@ public interface AccountManagerLocal {
 
     Account activateUserAccount(Long id);
 
-    Account createPatientAccount(Account account, PatientData patientData);
+    void blockAccount(Long id);
+
+    void unblockAccount(Long id);
 
     Account updateUserPassword(Long id, String newPassword);
 
