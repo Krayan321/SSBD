@@ -1,25 +1,22 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.mok.facades;
 
-import pl.lodz.p.it.ssbd2023.ssbd01.entities.ChemistData;
-import pl.lodz.p.it.ssbd2023.ssbd01.common.AbstractFacade;
-
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.TypedQuery;
-import java.util.List;
+import pl.lodz.p.it.ssbd2023.ssbd01.common.AbstractFacade;
+import pl.lodz.p.it.ssbd2023.ssbd01.entities.ChemistData;
 
 @Stateless
 public class ChemistDataFacade extends AbstractFacade<ChemistData> {
-    @PersistenceContext(unitName = "ssbd01mokPU")
-    private EntityManager em;
+  @PersistenceContext(unitName = "ssbd01mokPU")
+  private EntityManager em;
 
-    @Override
-    protected EntityManager getEntityManager() {
-        return em;
-    }
+  @Override
+  protected EntityManager getEntityManager() {
+    return em;
+  }
 
-    public ChemistDataFacade() {
-        super(ChemistData.class);
-    }
+  public ChemistDataFacade() {
+    super(ChemistData.class);
+  }
 }

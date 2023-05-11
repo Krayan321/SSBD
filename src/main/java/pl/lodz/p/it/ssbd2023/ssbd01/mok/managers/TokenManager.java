@@ -29,87 +29,81 @@ import pl.lodz.p.it.ssbd2023.ssbd01.util.email.EmailService;
 @Log
 @TransactionAttribute(TransactionAttributeType.MANDATORY)
 @Interceptors({GenericManagerExceptionsInterceptor.class})
-public class TokenManager extends AbstractManager implements TokenManagerLocal,
-        SessionSynchronization {
+public class TokenManager extends AbstractManager
+    implements TokenManagerLocal, SessionSynchronization {
 
-    @Inject
-    TokenFacade tokenFacade;
+  @Inject TokenFacade tokenFacade;
 
-    @Inject
-    EmailService emailService;
+  @Inject EmailService emailService;
 
-    @Inject
-    @ConfigProperty(name = "verification.token.expiration.hours")
-    private int VERIFICATION_TOKEN_EXPIRATION_HOURS;
+  @Inject
+  @ConfigProperty(name = "verification.token.expiration.hours")
+  private int VERIFICATION_TOKEN_EXPIRATION_HOURS;
 
-    @Override
-    public void sendVerificationToken(Account account, String code) {
-        Token token = Token.builder()
-                .account(account)
-                .code(code == null ? RandomStringUtils.randomAlphanumeric(8) : code)
-                .tokenType(TokenType.VERIFICATION)
-                .wasPreviousTokenSent(false)
-                .expirationDate(new Date(
-                        Instant.now().plusSeconds(
-                                (long) VERIFICATION_TOKEN_EXPIRATION_HOURS * 60 * 60)
-                                .toEpochMilli()))
-                .build();
-        //todo czy napewno createdby/modifiedby przez account?
-        token.setCreatedBy(account);
-        token.setModifiedBy(account);
+  @Override
+  public void sendVerificationToken(Account account, String code) {
+    Token token =
+        Token.builder()
+            .account(account)
+            .code(code == null ? RandomStringUtils.randomAlphanumeric(8) : code)
+            .tokenType(TokenType.VERIFICATION)
+            .wasPreviousTokenSent(false)
+            .expirationDate(
+                new Date(
+                    Instant.now()
+                        .plusSeconds((long) VERIFICATION_TOKEN_EXPIRATION_HOURS * 60 * 60)
+                        .toEpochMilli()))
+            .build();
+    // todo czy napewno createdby/modifiedby przez account?
+    token.setCreatedBy(account);
+    token.setModifiedBy(account);
 
-        tokenFacade.create(token);
-        emailService.sendRegistrationEmail(
-                account.getEmail(),
-                account.getLogin(),
-                token.getCode()
-        );
+    tokenFacade.create(token);
+    emailService.sendRegistrationEmail(account.getEmail(), account.getLogin(), token.getCode());
+  }
+
+  @Override
+  public void verifyAccount(String code) {
+    Token token = tokenFacade.findByCode(code);
+    checkIfTokenIsValid(token);
+    token.getAccount().setConfirmed(true);
+    token.getAccount().setCreatedBy(token.getAccount());
+    token.getAccount().setModifiedBy(token.getAccount());
+    token.setUsed(true);
+    tokenFacade.edit(token);
+  }
+
+  private void checkIfTokenIsValid(Token token) {
+    if (token == null) {
+      TokenException.tokenNotFoundException();
     }
+    Account account = token.getAccount();
 
-    @Override
-    public void verifyAccount(String code) {
-        Token token = tokenFacade.findByCode(code);
-        checkIfTokenIsValid(token);
-        token.getAccount().setConfirmed(true);
-        token.getAccount().setCreatedBy(token.getAccount());
-        token.getAccount().setModifiedBy(token.getAccount());
-        token.setUsed(true);
-        tokenFacade.edit(token);
+    if (token.getExpirationDate().before(new java.util.Date())) {
+      tokenExpiredException();
     }
-
-    private void checkIfTokenIsValid(Token token) {
-        if (token == null) {
-            TokenException.tokenNotFoundException();
-        }
-        Account account = token.getAccount();
-
-        if (token.getExpirationDate().before(new java.util.Date())) {
-            tokenExpiredException();
-        }
-        if (token.isUsed() || account.getConfirmed()) {
-            log.warning("MAGNO MANGO ZET Token already used");
-            tokenAlreadyUsedException();
-        }
-        if (token.getTokenType() != TokenType.VERIFICATION) {
-            incorrectTokenTypeException();
-        }
+    if (token.isUsed() || account.getConfirmed()) {
+      log.warning("MAGNO MANGO ZET Token already used");
+      tokenAlreadyUsedException();
     }
-
-    @Override
-    public Token findByAccountId(Long id) {
-        return tokenFacade.findByAccount(id);
+    if (token.getTokenType() != TokenType.VERIFICATION) {
+      incorrectTokenTypeException();
     }
+  }
 
-    @Override
-    public void removeVerificationCode(Token token) {
-        tokenFacade.remove(token);
-    }
+  @Override
+  public Token findByAccountId(Long id) {
+    return tokenFacade.findByAccount(id);
+  }
 
-    @Override
-    public List<Token> findTokensByTokenTypeAndExpirationDateBefore(TokenType verification,
-                                                                    Date halfExpirationDate) {
-        return tokenFacade.findByTypeAndBeforeGivenData(verification,
-                halfExpirationDate);
-    }
+  @Override
+  public void removeVerificationCode(Token token) {
+    tokenFacade.remove(token);
+  }
 
+  @Override
+  public List<Token> findTokensByTokenTypeAndExpirationDateBefore(
+      TokenType verification, Date halfExpirationDate) {
+    return tokenFacade.findByTypeAndBeforeGivenData(verification, halfExpirationDate);
+  }
 }

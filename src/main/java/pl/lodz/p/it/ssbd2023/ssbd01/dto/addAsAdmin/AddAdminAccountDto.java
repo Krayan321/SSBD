@@ -12,15 +12,19 @@ import pl.lodz.p.it.ssbd2023.ssbd01.dto.register.BasicAccountDto;
 @AllArgsConstructor
 public class AddAdminAccountDto extends BasicAccountDto {
 
-    @NotNull
-    //    @Pattern(regexp = "^(\\+48)? ?[0-9]{3} ?[0-9]{3} ?[0-9]{3}$", message = "Invalid phone number")
-    private String workPhoneNumber;
+  @NotNull
+  //    @Pattern(regexp = "^(\\+48)? ?[0-9]{3} ?[0-9]{3} ?[0-9]{3}$", message = "Invalid phone
+  // number")
+  private String workPhoneNumber;
 
-    @Builder
-    public AddAdminAccountDto(@NotNull String login,
-                              @NotNull String password,
-                              @NotNull String email, String language, String workPhoneNumber) {
-        super(login, password, email, language);
-        this.workPhoneNumber = workPhoneNumber;
-    }
+  @Builder
+  public AddAdminAccountDto(
+      @NotNull String login,
+      @NotNull String password,
+      @NotNull String email,
+      String language,
+      String workPhoneNumber) {
+    super(login, password, email, language);
+    this.workPhoneNumber = workPhoneNumber;
+  }
 }

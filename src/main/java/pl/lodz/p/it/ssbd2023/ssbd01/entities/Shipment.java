@@ -7,7 +7,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Index;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.NamedQuery;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -26,26 +25,29 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-@Table(name = "shipment",
-        indexes = {
-                @Index(name = "shipment_index", columnList = "id", unique = true),
-        })
+@Table(
+    name = "shipment",
+    indexes = {
+      @Index(name = "shipment_index", columnList = "id", unique = true),
+    })
 @NamedQuery(name = "shipment.findAll", query = "SELECT o FROM Shipment o")
 public class Shipment extends AbstractEntity implements Serializable {
 
-    public static final long serialVersionUID = 1L;
+  public static final long serialVersionUID = 1L;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Setter(lombok.AccessLevel.NONE)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Setter(lombok.AccessLevel.NONE)
+  private Long id;
 
-    @NotNull
-    @Column(nullable = false, name = "shipment_date", updatable = false)
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date shipmentDate;
+  @NotNull
+  @Column(nullable = false, name = "shipment_date", updatable = false)
+  @Temporal(TemporalType.TIMESTAMP)
+  private Date shipmentDate;
 
-    @OneToMany(mappedBy = "shipment", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
-    private List<ShipmentMedication> shipmentMedications = new ArrayList<>();
-
+  @OneToMany(
+      mappedBy = "shipment",
+      cascade = {CascadeType.PERSIST, CascadeType.REMOVE},
+      orphanRemoval = true)
+  private List<ShipmentMedication> shipmentMedications = new ArrayList<>();
 }

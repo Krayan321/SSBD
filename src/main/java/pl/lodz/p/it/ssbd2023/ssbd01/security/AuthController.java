@@ -23,53 +23,49 @@ import pl.lodz.p.it.ssbd2023.ssbd01.mok.managers.AccountManagerLocal;
 @Path("/auth")
 public class AuthController {
 
-    @Inject
-    private IdentityStoreHandler identityStoreHandler;
+  @Inject private IdentityStoreHandler identityStoreHandler;
 
-    @Inject
-    private JwtUtils jwtUtils;
-    @Context
-    private HttpServletRequest httpServletRequest;
-    @Inject
-    private AccountManagerLocal accountManager;
+  @Inject private JwtUtils jwtUtils;
+  @Context private HttpServletRequest httpServletRequest;
+  @Inject private AccountManagerLocal accountManager;
 
-    @POST
-    @Path("/login")
-    public Response authenticate(@Valid LoginDTO loginDto)
-            throws MailjetException, AuthenticationException {
+  @POST
+  @Path("/login")
+  public Response authenticate(@Valid LoginDTO loginDto)
+      throws MailjetException, AuthenticationException {
 
-        UsernamePasswordCredential credential =
-                new UsernamePasswordCredential(loginDto.getLogin(), loginDto.getPassword());
-        CredentialValidationResult result = identityStoreHandler.validate(credential);
+    UsernamePasswordCredential credential =
+        new UsernamePasswordCredential(loginDto.getLogin(), loginDto.getPassword());
+    CredentialValidationResult result = identityStoreHandler.validate(credential);
 
-        Account account = accountManager.findByLogin(loginDto.getLogin());
+    Account account = accountManager.findByLogin(loginDto.getLogin());
 
-        if (!account.getConfirmed()) {
-            return Response.status(Response.Status.UNAUTHORIZED).entity("Account not confirmed")
-                    .build();
-        }
-
-        if (!account.getActive()) {
-            return Response.status(Response.Status.UNAUTHORIZED).entity("Account not active")
-                    .build();
-        }
-
-        log.warning(result.getCallerGroups().toString());
-        if (result.getStatus() != CredentialValidationResult.Status.VALID) {
-
-
-            accountManager.updateAuthInformation(credential.getCaller(),
-                    httpServletRequest.getRemoteAddr(),
-                    Date.from(Instant.now()), false);
-            return Response.status(Response.Status.UNAUTHORIZED).entity("Invalid login or password")
-                    .build();
-        } else {
-            accountManager.updateAuthInformation(credential.getCaller(),
-                    httpServletRequest.getRemoteAddr(),
-                    Date.from(Instant.now()), true);
-            return Response.ok(jwtUtils.create(result)).build();
-        }
+    if (!account.getConfirmed()) {
+      return Response.status(Response.Status.UNAUTHORIZED).entity("Account not confirmed").build();
     }
 
+    if (!account.getActive()) {
+      return Response.status(Response.Status.UNAUTHORIZED).entity("Account not active").build();
+    }
 
+    log.warning(result.getCallerGroups().toString());
+    if (result.getStatus() != CredentialValidationResult.Status.VALID) {
+
+      accountManager.updateAuthInformation(
+          credential.getCaller(),
+          httpServletRequest.getRemoteAddr(),
+          Date.from(Instant.now()),
+          false);
+      return Response.status(Response.Status.UNAUTHORIZED)
+          .entity("Invalid login or password")
+          .build();
+    } else {
+      accountManager.updateAuthInformation(
+          credential.getCaller(),
+          httpServletRequest.getRemoteAddr(),
+          Date.from(Instant.now()),
+          true);
+      return Response.ok(jwtUtils.create(result)).build();
+    }
+  }
 }

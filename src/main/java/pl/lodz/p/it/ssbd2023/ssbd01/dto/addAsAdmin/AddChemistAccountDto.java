@@ -12,14 +12,16 @@ import pl.lodz.p.it.ssbd2023.ssbd01.dto.register.BasicAccountDto;
 @AllArgsConstructor
 public class AddChemistAccountDto extends BasicAccountDto {
 
-    @NotNull
-    private String licenseNumber;
+  @NotNull private String licenseNumber;
 
-    @Builder
-    public AddChemistAccountDto(@NotNull String login,
-                                @NotNull String password,
-                                @NotNull String email, String language, String licenseNumber) {
-        super(login, password, email, language);
-        this.licenseNumber = licenseNumber;
-    }
+  @Builder
+  public AddChemistAccountDto(
+      @NotNull String login,
+      @NotNull String password,
+      @NotNull String email,
+      String language,
+      String licenseNumber) {
+    super(login, password, email, language);
+    this.licenseNumber = licenseNumber;
+  }
 }

@@ -13,10 +13,9 @@ import lombok.Setter;
 import lombok.ToString;
 
 @Entity
-@Table(name = "medication",
-        indexes = {
-                @Index(name = "category_index", columnList = "category_id", unique = true)
-        })
+@Table(
+    name = "medication",
+    indexes = {@Index(name = "category_index", columnList = "category_id", unique = true)})
 @ToString
 @Getter
 @Setter
@@ -24,36 +23,37 @@ import lombok.ToString;
 @NamedQuery(name = "medication.findAll", query = "SELECT o FROM Medication o")
 public class Medication extends AbstractEntity implements Serializable {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Setter(lombok.AccessLevel.NONE)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Setter(lombok.AccessLevel.NONE)
+  private Long id;
 
-    @NotNull
-    @Column(nullable = false, unique = true, name = "medication_name")
-    private String name;
+  @NotNull
+  @Column(nullable = false, unique = true, name = "medication_name")
+  private String name;
 
-    @Column(nullable = false)
-    @NotNull
-    @Min(value = 0, message = "Stock must be greater than or equal to 0")
-    private Integer stock;
+  @Column(nullable = false)
+  @NotNull
+  @Min(value = 0, message = "Stock must be greater than or equal to 0")
+  private Integer stock;
 
-    @Column(nullable = false)
-    @NotNull
-    @Digits(integer = 10, fraction = 2)
-    @Min(value = 0, message = "Price must be greater than or equal 0")
-    private BigDecimal price;
+  @Column(nullable = false)
+  @NotNull
+  @Digits(integer = 10, fraction = 2)
+  @Min(value = 0, message = "Price must be greater than or equal 0")
+  private BigDecimal price;
 
-    @ManyToOne(optional = false, cascade = {CascadeType.PERSIST, CascadeType.REFRESH})
-    @JoinColumn(name = "category_id", nullable = false)
-    private Category category;
+  @ManyToOne(
+      optional = false,
+      cascade = {CascadeType.PERSIST, CascadeType.REFRESH})
+  @JoinColumn(name = "category_id", nullable = false)
+  private Category category;
 
-    @Builder
-    public Medication(String name, Integer stock, BigDecimal price,
-                      Category category) {
-        this.name = name;
-        this.stock = stock;
-        this.price = price;
-        this.category = category;
-    }
+  @Builder
+  public Medication(String name, Integer stock, BigDecimal price, Category category) {
+    this.name = name;
+    this.stock = stock;
+    this.price = price;
+    this.category = category;
+  }
 }

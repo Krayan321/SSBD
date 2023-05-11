@@ -10,8 +10,8 @@ import lombok.*;
 @AllArgsConstructor
 public class GrantAdminDataDTO {
 
-    @NotNull
-    //    @Pattern(regexp = "^(\\+48)? ?[0-9]{3} ?[0-9]{3} ?[0-9]{3}$", message = "Invalid phone number")
-    private String workPhoneNumber;
-
+  @NotNull
+  //    @Pattern(regexp = "^(\\+48)? ?[0-9]{3} ?[0-9]{3} ?[0-9]{3}$", message = "Invalid phone
+  // number")
+  private String workPhoneNumber;
 }

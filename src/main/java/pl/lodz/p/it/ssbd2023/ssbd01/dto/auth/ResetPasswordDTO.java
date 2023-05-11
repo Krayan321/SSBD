@@ -10,6 +10,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ResetPasswordDTO {
 
-    @NotNull
-    String email;
+  @NotNull String email;
 }

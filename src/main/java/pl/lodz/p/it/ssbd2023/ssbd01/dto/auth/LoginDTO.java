@@ -10,10 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class LoginDTO {
 
-    @NotNull
-    String login;
+  @NotNull String login;
 
-    @NotNull
-    String password;
-
+  @NotNull String password;
 }

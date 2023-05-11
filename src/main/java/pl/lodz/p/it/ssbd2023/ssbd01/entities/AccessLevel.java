@@ -31,28 +31,28 @@ import lombok.ToString;
 @DiscriminatorColumn(name = "access_level_role", discriminatorType = DiscriminatorType.STRING)
 public abstract class AccessLevel extends AbstractEntity implements Serializable {
 
-    public static final Long serialVersionUID = 1L;
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Setter(lombok.AccessLevel.NONE)
-    private Long id;
+  public static final Long serialVersionUID = 1L;
 
-    @Getter
-    @Enumerated(EnumType.STRING)
-    @Setter(lombok.AccessLevel.NONE)
-    @Column(name = "access_level_role", insertable = false, nullable = false, updatable = false)
-    private Role role;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Setter(lombok.AccessLevel.NONE)
+  private Long id;
 
-    @Column(nullable = false, columnDefinition = "boolean default true")
-    @NotNull
-    private Boolean active = true;
+  @Getter
+  @Enumerated(EnumType.STRING)
+  @Setter(lombok.AccessLevel.NONE)
+  @Column(name = "access_level_role", insertable = false, nullable = false, updatable = false)
+  private Role role;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "account_id", referencedColumnName = "id", updatable = false)
-    private Account account;
+  @Column(nullable = false, columnDefinition = "boolean default true")
+  @NotNull
+  private Boolean active = true;
 
-    public AccessLevel(Long id) {
-        this.id = id;
-    }
+  @ManyToOne(optional = false)
+  @JoinColumn(name = "account_id", referencedColumnName = "id", updatable = false)
+  private Account account;
 
+  public AccessLevel(Long id) {
+    this.id = id;
+  }
 }

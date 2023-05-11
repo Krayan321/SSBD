@@ -10,8 +10,7 @@ import lombok.*;
 @NoArgsConstructor
 public abstract class AbstractEntityDTO {
 
-    private Long id;
+  private Long id;
 
-    private Long version;
-
+  private Long version;
 }
