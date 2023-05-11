@@ -8,6 +8,7 @@ import jakarta.ws.rs.ext.ExceptionMapper;
 import jakarta.ws.rs.ext.Provider;
 import lombok.extern.java.Log;
 import pl.lodz.p.it.ssbd2023.ssbd01.common.i18n;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.ExceptionDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.exceptions.ApplicationException;
 
 import java.util.logging.Level;
@@ -20,12 +21,23 @@ public class WebApplicationThrowableMapper implements ExceptionMapper<Throwable>
         try {
             throw throwable;
         } catch (WebApplicationException e) {
-            return e.getResponse();
+            return Response
+                    .status(e.getResponse().getStatus())
+                    .entity(new ExceptionDTO(e.getMessage()))
+                    .build();
         } catch (EJBAccessException | AccessLocalException e) {
-            return ApplicationException.createAccessDeniedException().getResponse();
+            WebApplicationException ex = ApplicationException.createAccessDeniedException();
+            return Response
+                    .status(ex.getResponse().getStatus())
+                    .entity(new ExceptionDTO(e.getMessage()))
+                    .build();
         } catch (Throwable e) {
             log.log(Level.SEVERE, i18n.EXCEPTION_UNKNOWN, throwable);
-            return ApplicationException.createGeneralException(e).getResponse();
+            WebApplicationException ex = ApplicationException.createGeneralException(e);
+            return Response
+                    .status(ex.getResponse().getStatus())
+                    .entity(new ExceptionDTO(e.getMessage()))
+                    .build();
         }
     }
 }
