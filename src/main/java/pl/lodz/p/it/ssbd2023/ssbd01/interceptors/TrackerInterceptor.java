@@ -20,13 +20,7 @@ public class TrackerInterceptor {
       message
           .append(context.getMethod().toString())
           .append(" user: ")
-          .append(sessionContext.getCallerPrincipal().getName())
-          .append(" with parameters: ");
-      if (null != context.getParameters()) {
-        for (Object param : context.getParameters()) {
-          message.append(param).append(" ");
-        }
-      }
+          .append(sessionContext.getCallerPrincipal().getName()).append(" ");
       log.fine(message.toString());
 
       result = context.proceed();

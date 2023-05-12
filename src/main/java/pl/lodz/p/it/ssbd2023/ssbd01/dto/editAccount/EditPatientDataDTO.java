@@ -3,17 +3,26 @@ package pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccount;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.AbstractEntityDTO;
 
 @ToString
-@EqualsAndHashCode
+@EqualsAndHashCode(callSuper = true)
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-public class EditPatientDataDTO {
+public class EditPatientDataDTO extends AbstractEntityDTO {
 
-  @NotNull private Long id;
+  @Builder
+  public EditPatientDataDTO(Long id, Long version, String pesel, String firstName,
+                            String lastName, String phoneNumber, String nip) {
+    super(id, version);
+    this.pesel = pesel;
+    this.firstName = firstName;
+    this.lastName = lastName;
+    this.phoneNumber = phoneNumber;
+    this.nip = nip;
+  }
 
   @NotNull
   @Pattern(regexp = "^[0-9]{11}$", message = "Invalid PESEL")

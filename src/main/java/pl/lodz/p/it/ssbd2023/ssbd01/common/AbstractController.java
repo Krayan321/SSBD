@@ -3,11 +3,13 @@ package pl.lodz.p.it.ssbd2023.ssbd01.common;
 import jakarta.ejb.EJBTransactionRolledbackException;
 import jakarta.inject.Inject;
 import java.util.function.Supplier;
+import lombok.extern.java.Log;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.hibernate.TransactionException;
 import pl.lodz.p.it.ssbd2023.ssbd01.exceptions.ApplicationExceptionOptimisticLock;
 
-public class AbstractController {
+@Log
+public abstract class AbstractController {
 
   @Inject
   @ConfigProperty(name = "transaction.repeat.count")

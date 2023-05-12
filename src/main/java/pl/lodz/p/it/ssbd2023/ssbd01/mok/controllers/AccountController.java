@@ -177,7 +177,7 @@ public class AccountController extends AbstractController {
       @PathParam("id") Long id, @Valid EditPatientDataDTO patientDataDTO) {
     PatientData patientData =
         AccessLevelConverter.mapEditPatientDataDtoToPatientData(patientDataDTO);
-    Account account = accountManager.editAccessLevel(id, patientData);
+    Account account = accountManager.editAccessLevel(id, patientData, patientDataDTO.getVersion());
 //        repeatTransaction(accountManager, () -> accountManager.editAccessLevel(id, patientData));
     return AccountConverter.mapAccountToAccountAndAccessLevelsDto(account);
   }
@@ -187,10 +187,10 @@ public class AccountController extends AbstractController {
   @Produces(MediaType.APPLICATION_JSON)
   @Consumes(MediaType.APPLICATION_JSON)
   @RolesAllowed({"ADMIN"})
-  public AccountAndAccessLevelsDTO editPatientData(
+  public AccountAndAccessLevelsDTO editAdminData(
       @PathParam("id") Long id, @Valid EditAdminDataDTO adminDataDTO) {
     AdminData adminData = AccessLevelConverter.mapEditAdminDataDtoToAdminData(adminDataDTO);
-    Account account = accountManager.editAccessLevel(id, adminData);
+    Account account = accountManager.editAccessLevel(id, adminData, adminDataDTO.getVersion());
 //        repeatTransaction(accountManager, () -> accountManager.editAccessLevel(id, adminData));
     return AccountConverter.mapAccountToAccountAndAccessLevelsDto(account);
   }
@@ -204,7 +204,7 @@ public class AccountController extends AbstractController {
       @PathParam("id") Long id, @Valid EditChemistDataDTO chemistDataDTO) {
     ChemistData chemistData =
         AccessLevelConverter.mapEditChemistDataDtoToChemistData(chemistDataDTO);
-    Account account = accountManager.editAccessLevel(id, chemistData);
+    Account account = accountManager.editAccessLevel(id, chemistData, chemistDataDTO.getVersion());
 //        repeatTransaction(accountManager, () -> accountManager.editAccessLevel(id, chemistData));
     return AccountConverter.mapAccountToAccountAndAccessLevelsDto(account);
   }
