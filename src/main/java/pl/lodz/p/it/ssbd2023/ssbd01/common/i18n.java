@@ -31,6 +31,8 @@ public class i18n {
   public static final String MAIL_ACCOUNT_BLOCKED_BODY = "mail.account.blocked.body";
   public static final String MAIL_ACCOUNT_UNBLOCKED_SUBJECT = "mail.account.unblocked.subject";
   public static final String MAIL_ACCOUNT_UNBLOCKED_BODY = "mail.account.unblocked.body";
+  public static final String MAIL_ACCOUNT_ACTIVATED_SUBJECT = "mail.account.activated.subject";
+  public static final String MAIL_ACCOUNT_ACTIVATED_BODY = "mail.account.activated.body";
 
   public static String getMessage(String message, Locale locale) {
     ResourceBundle bundle = ResourceBundle.getBundle("i18n.messages", locale);
