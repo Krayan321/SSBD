@@ -140,6 +140,7 @@ public class AccessLevelConverter {
         .version(adminData.getVersion())
         .role(adminData.getRole())
         .active(adminData.getActive())
+        .workPhoneNumber(adminData.getWorkPhoneNumber())
         .build();
   }
 

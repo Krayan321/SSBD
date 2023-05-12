@@ -54,7 +54,6 @@ public class AccountControllerIT extends BaseTest {
             .build();
   }
 
-  // todo add verification of internationalised message
   @Test
   @Order(1)
   public void login_invalidLogin() {
