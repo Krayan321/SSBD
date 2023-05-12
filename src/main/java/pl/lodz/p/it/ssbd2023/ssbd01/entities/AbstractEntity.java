@@ -19,53 +19,53 @@ import lombok.Setter;
 @Setter
 public abstract class AbstractEntity {
 
-    @Version
-    @Setter(lombok.AccessLevel.NONE)
-    private Long version;
+  @Version
+  @Setter(lombok.AccessLevel.NONE)
+  private Long version;
 
-    // todo change type to LocalDate?
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "creation_date", nullable = false, updatable = false)
-    private Date creationDate;
+  // todo change type to LocalDate?
+  @Temporal(TemporalType.TIMESTAMP)
+  @Column(name = "creation_date", nullable = false, updatable = false)
+  private Date creationDate;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "modification_date")
-    private Date modificationDate;
+  @Temporal(TemporalType.TIMESTAMP)
+  @Column(name = "modification_date")
+  private Date modificationDate;
 
-    @OneToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "created_by")
-    private Account createdBy;
+  @OneToOne(cascade = CascadeType.PERSIST)
+  @JoinColumn(name = "created_by")
+  private Account createdBy;
 
-    @PrePersist
-    public void prePersist() {
-        this.creationDate = new Date();
+  @PrePersist
+  public void prePersist() {
+    this.creationDate = new Date();
+  }
+
+  @PreUpdate
+  public void preUpdate() {
+    this.modificationDate = new Date();
+  }
+
+  @OneToOne
+  @JoinColumn(name = "modified_by")
+  private Account modifiedBy;
+
+  @Override
+  public int hashCode() {
+    int hash = 0;
+    hash += (this.getId() != null ? this.getId().hashCode() : 0);
+    return hash;
+  }
+
+  public abstract Long getId();
+
+  @Override
+  public boolean equals(Object object) {
+    if (object.getClass() != this.getClass()) {
+      return false;
     }
-
-    @PreUpdate
-    public void preUpdate() {
-        this.modificationDate = new Date();
-    }
-
-    @OneToOne
-    @JoinColumn(name = "modified_by")
-    private Account modifiedBy;
-
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (this.getId() != null ? this.getId().hashCode() : 0);
-        return hash;
-    }
-
-    public abstract Long getId();
-
-    @Override
-    public boolean equals(Object object) {
-        if (object.getClass() != this.getClass()) {
-            return false;
-        }
-        AbstractEntity other = (AbstractEntity) object;
-        return (this.getId() != null || other.getId() == null) &&
-                (this.getId() == null || this.getId().equals(other.getId()));
-    }
+    AbstractEntity other = (AbstractEntity) object;
+    return (this.getId() != null || other.getId() == null)
+        && (this.getId() == null || this.getId().equals(other.getId()));
+  }
 }

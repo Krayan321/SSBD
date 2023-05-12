@@ -13,24 +13,21 @@ import lombok.*;
 @Builder
 public class EditPatientDataDTO {
 
-    @NotNull
-    private Long id;
+  @NotNull private Long id;
 
-    @NotNull
-    @Pattern(regexp = "^[0-9]{11}$", message = "Invalid PESEL")
-    private String pesel;
+  @NotNull
+  @Pattern(regexp = "^[0-9]{11}$", message = "Invalid PESEL")
+  private String pesel;
 
-    @NotNull
-    private String firstName;
+  @NotNull private String firstName;
 
-    @NotNull
-    private String lastName;
+  @NotNull private String lastName;
 
-    @NotNull
-    @Pattern(regexp = "^(\\+48)? ?[0-9]{3} ?[0-9]{3} ?[0-9]{3}$", message = "Invalid phone number")
-    private String phoneNumber;
+  @NotNull
+  @Pattern(regexp = "^(\\+48)? ?[0-9]{3} ?[0-9]{3} ?[0-9]{3}$", message = "Invalid phone number")
+  private String phoneNumber;
 
-    @NotNull
-    @Pattern(regexp = "^[0-9]{3}-[0-9]{3}-[0-9]{2}-[0-9]{2}$", message = "Invalid NIP")
-    private String nip;
+  @NotNull
+  @Pattern(regexp = "^[0-9]{3}-[0-9]{3}-[0-9]{2}-[0-9]{2}$", message = "Invalid NIP")
+  private String nip;
 }

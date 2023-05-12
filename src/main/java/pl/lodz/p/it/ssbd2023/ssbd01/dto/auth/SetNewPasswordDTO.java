@@ -10,8 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class SetNewPasswordDTO {
 
-    // todo refactor
+  // todo refactor
 
-    @NotNull
-    String password;
+  @NotNull String password;
 }

@@ -13,10 +13,9 @@ import lombok.*;
 @Builder
 public class EditAdminDataDTO {
 
-    @NotNull
-    private Long id;
+  @NotNull private Long id;
 
-    @NotNull
-    @Pattern(regexp = "^(\\+48)? ?[0-9]{3} ?[0-9]{3} ?[0-9]{3}$", message = "Invalid phone number")
-    private String workPhoneNumber;
+  @NotNull
+  @Pattern(regexp = "^(\\+48)? ?[0-9]{3} ?[0-9]{3} ?[0-9]{3}$", message = "Invalid phone number")
+  private String workPhoneNumber;
 }

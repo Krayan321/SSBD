@@ -4,17 +4,15 @@ import lombok.Getter;
 
 @Getter
 public enum Role {
+  ADMIN("ADMIN", "Administrator"),
+  PATIENT("PATIENT", "Pacjent"),
+  CHEMIST("CHEMIST", "Farmaceuta");
 
-    ADMIN("ADMIN", "Administrator"),
-    PATIENT("PATIENT", "Pacjent"),
-    CHEMIST("CHEMIST", "Farmaceuta");
+  private String roleName;
+  private String roleDescription;
 
-    private String roleName;
-    private String roleDescription;
-
-    Role(String roleName, String roleDescription) {
-        this.roleName = roleName;
-        this.roleDescription = roleDescription;
-    }
-
+  Role(String roleName, String roleDescription) {
+    this.roleName = roleName;
+    this.roleDescription = roleDescription;
+  }
 }

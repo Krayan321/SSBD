@@ -27,42 +27,49 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name = "patient_order",
-        indexes = {
-                @Index(name = "order_index", columnList = "id", unique = true),
-                @Index(name = "prescription_index", columnList = "prescription_id", unique = true),
-                @Index(name = "patient_data_index", columnList = "patient_data_id", unique = true),
-                @Index(name = "chemist_data_index", columnList = "chemist_data_id", unique = true),
-        })
+@Table(
+    name = "patient_order",
+    indexes = {
+      @Index(name = "order_index", columnList = "id", unique = true),
+      @Index(name = "prescription_index", columnList = "prescription_id", unique = true),
+      @Index(name = "patient_data_index", columnList = "patient_data_id", unique = true),
+      @Index(name = "chemist_data_index", columnList = "chemist_data_id", unique = true),
+    })
 public class Order extends AbstractEntity implements Serializable {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Setter(lombok.AccessLevel.NONE)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Setter(lombok.AccessLevel.NONE)
+  private Long id;
 
-    @Column(nullable = false, name = "in_queue")
-    @NotNull
-    private Boolean inQueue;
+  @Column(nullable = false, name = "in_queue")
+  @NotNull
+  private Boolean inQueue;
 
-    @NotNull
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(nullable = false, name = "order_date")
-    private Date orderDate;
+  @NotNull
+  @Temporal(TemporalType.TIMESTAMP)
+  @Column(nullable = false, name = "order_date")
+  private Date orderDate;
 
-    @OneToMany(mappedBy = "order", cascade = {CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.MERGE}, orphanRemoval = true)
-    private List<OrderMedication> orderMedications = new ArrayList<>();
+  @OneToMany(
+      mappedBy = "order",
+      cascade = {CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.MERGE},
+      orphanRemoval = true)
+  private List<OrderMedication> orderMedications = new ArrayList<>();
 
-    @OneToOne(cascade = {CascadeType.PERSIST})
-    @JoinColumn(name = "prescription_id", referencedColumnName = "id", updatable = false)
-    private Prescription prescription;
+  @OneToOne(cascade = {CascadeType.PERSIST})
+  @JoinColumn(name = "prescription_id", referencedColumnName = "id", updatable = false)
+  private Prescription prescription;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "patient_data_id", referencedColumnName = "id", nullable = false, updatable = false)
-    private PatientData patientData;
+  @ManyToOne(optional = false)
+  @JoinColumn(
+      name = "patient_data_id",
+      referencedColumnName = "id",
+      nullable = false,
+      updatable = false)
+  private PatientData patientData;
 
-    @ManyToOne
-    @JoinColumn(name = "chemist_data_id", referencedColumnName = "id", updatable = false)
-    private ChemistData chemistData;
-
+  @ManyToOne
+  @JoinColumn(name = "chemist_data_id", referencedColumnName = "id", updatable = false)
+  private ChemistData chemistData;
 }

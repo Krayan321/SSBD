@@ -12,9 +12,7 @@ import lombok.*;
 @Builder
 public class EditChemistDataDTO {
 
-    @NotNull
-    private Long id;
+  @NotNull private Long id;
 
-    @NotNull
-    private String licenseNumber;
+  @NotNull private String licenseNumber;
 }

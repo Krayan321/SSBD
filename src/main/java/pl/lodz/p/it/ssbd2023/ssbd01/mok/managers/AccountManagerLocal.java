@@ -2,51 +2,49 @@ package pl.lodz.p.it.ssbd2023.ssbd01.mok.managers;
 
 import com.mailjet.client.errors.MailjetException;
 import jakarta.ejb.Local;
-import pl.lodz.p.it.ssbd2023.ssbd01.entities.AccessLevel;
-import pl.lodz.p.it.ssbd2023.ssbd01.entities.Account;
-import pl.lodz.p.it.ssbd2023.ssbd01.entities.PatientData;
-
 import java.util.Date;
 import java.util.List;
 import pl.lodz.p.it.ssbd2023.ssbd01.common.CommonManagerLocalInterface;
+import pl.lodz.p.it.ssbd2023.ssbd01.entities.AccessLevel;
+import pl.lodz.p.it.ssbd2023.ssbd01.entities.Account;
 
 @Local
 public interface AccountManagerLocal extends CommonManagerLocalInterface {
 
+  Account createAccount(Account account, AccessLevel accessLevel);
 
-    Account createAccount(Account account, AccessLevel accessLevel);
+  List<Account> getAllAccounts();
 
-    List<Account> getAllAccounts();
+  Account findByLogin(String login);
 
-    Account findByLogin(String login);
+  void confirmAccountRegistration(String token);
 
-    void confirmAccountRegistration(String token);
+  Account getAccount(Long id);
 
-    Account getAccount(Long id);
+  Account getAccountAndAccessLevels(Long id);
 
-    Account getAccountAndAccessLevels(Long id);
+  Account registerAccount(Account account);
 
-    Account registerAccount(Account account);
+  Account editAccessLevel(Long id, AccessLevel accessLevel);
 
-    Account editAccessLevel(Long id, AccessLevel accessLevel);
+  Account grantAccessLevel(Long id, AccessLevel accessLevel);
 
-    Account grantAccessLevel(Long id, AccessLevel accessLevel);
+  Account activateUserAccount(Long id);
 
-    Account activateUserAccount(Long id);
+  void blockAccount(Long id);
 
-    void blockAccount(Long id);
+  void unblockAccount(Long id);
 
-    void unblockAccount(Long id);
+  Account updateUserPassword(Long id, String newPassword);
 
-    Account updateUserPassword(Long id, String newPassword);
+  Account removeAccessLevel(Long id, AccessLevel accessLevel);
 
-    Account removeAccessLevel(Long id, AccessLevel accessLevel);
+  Account updateOwnPassword(Long id, String oldPassword, String newPassword);
 
-    Account updateOwnPassword(Long id, String oldPassword, String newPassword);
+  void purgeUnactivatedAccounts();
 
-    void purgeUnactivatedAccounts();
+  void updateAuthInformation(String caller, String remoteAddr, Date now, Boolean isCorrect)
+      throws MailjetException;
 
-    void updateAuthInformation(String caller, String remoteAddr, Date now, Boolean isCorrect) throws MailjetException;
-
-    void sendVerificationTokenIfPreviousWasNotSent();
+  void sendVerificationTokenIfPreviousWasNotSent();
 }

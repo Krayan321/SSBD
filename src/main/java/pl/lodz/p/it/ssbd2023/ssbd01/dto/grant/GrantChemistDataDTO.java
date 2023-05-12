@@ -14,6 +14,5 @@ import lombok.ToString;
 @AllArgsConstructor
 public class GrantChemistDataDTO {
 
-    @NotNull
-    private String licenseNumber;
+  @NotNull private String licenseNumber;
 }

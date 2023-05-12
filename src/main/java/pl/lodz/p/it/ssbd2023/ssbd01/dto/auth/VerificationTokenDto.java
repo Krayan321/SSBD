@@ -10,7 +10,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class VerificationTokenDto {
 
-    @NotNull
-    private String token;
-
+  @NotNull private String token;
 }

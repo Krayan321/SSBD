@@ -22,33 +22,38 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name = "prescription",
-        indexes = {
-                @Index(name = "patient_data_index_perscription", columnList = "patient_data_id", unique = true)},
-        uniqueConstraints = {
-                @UniqueConstraint(columnNames = {"patient_data_id", "prescription_number"}),
-        })
-
-
+@Table(
+    name = "prescription",
+    indexes = {
+      @Index(
+          name = "patient_data_index_perscription",
+          columnList = "patient_data_id",
+          unique = true)
+    },
+    uniqueConstraints = {
+      @UniqueConstraint(columnNames = {"patient_data_id", "prescription_number"}),
+    })
 public class Prescription extends AbstractEntity implements Serializable {
 
-    private static final long serialVersionUID = 1L;
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Setter(lombok.AccessLevel.NONE)
-    private Long id;
+  private static final long serialVersionUID = 1L;
 
-    @ManyToOne(optional = false, cascade = {CascadeType.REFRESH})
-    @JoinColumn(name = "patient_data_id", nullable = false, updatable = false)
-    private PatientData patientData;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Setter(lombok.AccessLevel.NONE)
+  private Long id;
 
-    @Column(nullable = false, name = "prescription_number")
-    @NotNull
-    private String prescriptionNumber;
+  @ManyToOne(
+      optional = false,
+      cascade = {CascadeType.REFRESH})
+  @JoinColumn(name = "patient_data_id", nullable = false, updatable = false)
+  private PatientData patientData;
 
-    @Builder
-    public Prescription(String prescriptionNumber) {
-        this.prescriptionNumber = prescriptionNumber;
-    }
+  @Column(nullable = false, name = "prescription_number")
+  @NotNull
+  private String prescriptionNumber;
 
+  @Builder
+  public Prescription(String prescriptionNumber) {
+    this.prescriptionNumber = prescriptionNumber;
+  }
 }

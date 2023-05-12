@@ -10,5 +10,5 @@ import lombok.*;
 @NoArgsConstructor
 public class ExceptionDTO {
 
-    private String message;
+  private String message;
 }

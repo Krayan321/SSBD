@@ -4,33 +4,30 @@ import jakarta.ejb.Schedule;
 import jakarta.ejb.Singleton;
 import jakarta.ejb.Startup;
 import jakarta.inject.Inject;
-import org.eclipse.microprofile.config.inject.ConfigProperty;
 import pl.lodz.p.it.ssbd2023.ssbd01.mok.managers.AccountManagerLocal;
 
 @Startup
 @Singleton
 public class AccountScheduledTask {
 
-    @Inject
-    AccountManagerLocal accountManager;
+  @Inject AccountManagerLocal accountManager;
 
-//    @Schedule(hour = "*/24", minute = "0", second = "0", info = "Each day")
-//    public void sendVerificationToken() {
-//        accountManager.getAllAccounts().forEach(accountManager::sendVerificationToken);
-//    }
-//
-//    public void purgeUnconfirmedAccounts() {
-//        accountManager.purgeUnconfirmedAccounts();
-//    }
+  //    @Schedule(hour = "*/24", minute = "0", second = "0", info = "Each day")
+  //    public void sendVerificationToken() {
+  //        accountManager.getAllAccounts().forEach(accountManager::sendVerificationToken);
+  //    }
+  //
+  //    public void purgeUnconfirmedAccounts() {
+  //        accountManager.purgeUnconfirmedAccounts();
+  //    }
 
-    @Schedule(hour = "*", minute = "0", second = "0", info = "Each hour")
-    public void purgeUnactivatedAccounts() {
-        accountManager.purgeUnactivatedAccounts();
-    }
+  @Schedule(hour = "*", minute = "0", second = "0", info = "Each hour")
+  public void purgeUnactivatedAccounts() {
+    accountManager.purgeUnactivatedAccounts();
+  }
 
-
-    @Schedule(hour = "*", minute = "0", second = "0", info = "Each hour")
-    public void sendVerificationTokenIfPreviousWasNotConfirmed() {
-        accountManager.sendVerificationTokenIfPreviousWasNotSent();
-    }
+  @Schedule(hour = "*", minute = "0", second = "0", info = "Each hour")
+  public void sendVerificationTokenIfPreviousWasNotConfirmed() {
+    accountManager.sendVerificationTokenIfPreviousWasNotSent();
+  }
 }

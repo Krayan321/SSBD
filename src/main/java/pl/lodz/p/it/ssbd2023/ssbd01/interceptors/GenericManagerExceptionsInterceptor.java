@@ -10,18 +10,18 @@ import pl.lodz.p.it.ssbd2023.ssbd01.exceptions.ApplicationException;
 @Log
 public class GenericManagerExceptionsInterceptor {
 
-    @AroundInvoke
-    public Object intercept(InvocationContext context) {
-        try {
-            return context.proceed();
-        } catch(ApplicationException e) {
-            throw e;
-        } catch(EJBAccessException | AccessLocalException e) {
-            throw ApplicationException.createAccessDeniedException();
-        } catch(Exception e) {
-            // todo diversify exceptions
-            log.warning(e.getMessage());
-            throw ApplicationException.createGeneralException(e);
-        }
+  @AroundInvoke
+  public Object intercept(InvocationContext context) {
+    try {
+      return context.proceed();
+    } catch (ApplicationException e) {
+      throw e;
+    } catch (EJBAccessException | AccessLocalException e) {
+      throw ApplicationException.createAccessDeniedException();
+    } catch (Exception e) {
+      // todo diversify exceptions
+      log.warning(e.getMessage());
+      throw ApplicationException.createGeneralException(e);
     }
+  }
 }

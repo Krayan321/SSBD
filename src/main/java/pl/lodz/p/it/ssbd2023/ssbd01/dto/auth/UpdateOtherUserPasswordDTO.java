@@ -10,6 +10,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class UpdateOtherUserPasswordDTO {
 
-    @NotNull
-    String password;
+  @NotNull String password;
 }

@@ -7,11 +7,9 @@ import lombok.ToString;
 @Data
 public class CreatePatientDTO {
 
-    AccountDTO accountDTO;
+  AccountDTO accountDTO;
 
-    PatientDataDTO patientDataDTO;
+  PatientDataDTO patientDataDTO;
 
-    @ToString.Exclude
-    private String password;
-
+  @ToString.Exclude private String password;
 }
