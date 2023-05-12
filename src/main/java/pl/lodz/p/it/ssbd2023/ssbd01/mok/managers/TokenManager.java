@@ -66,10 +66,13 @@ public class TokenManager extends AbstractManager
   public void verifyAccount(String code) {
     Token token = tokenFacade.findByCode(code);
     checkIfTokenIsValid(token);
-    token.getAccount().setConfirmed(true);
-    token.getAccount().setCreatedBy(token.getAccount());
-    token.getAccount().setModifiedBy(token.getAccount());
+    Account account = token.getAccount();
+    account.setConfirmed(true);
+    account.setModifiedBy(account);
+    account.setCreatedBy(account);
     token.setUsed(true);
+    emailService.sendEmailAccountActivated(
+            account.getEmail(), account.getLogin(), account.getLanguage());
     tokenFacade.edit(token);
   }
 
