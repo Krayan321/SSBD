@@ -170,18 +170,18 @@ public class AccountControllerIT extends BaseTest {
   }
 
 // todo this shouldn't pass
-//  @Test
-//  @Order(10)
-//  public void grantAdmin_secondGrant() {
-//    given()
-//            .header("authorization", "Bearer " + adminJwt)
-//            .body(grantAdminDataDTO)
-//            .put(getApiRoot() + "/account/2/grantAdmin")
-//            .then()
-//            .log()
-//            .all()
-//            .statusCode(Response.Status.OK.getStatusCode());
-//  }
+  @Test
+  @Order(10)
+  public void grantAdmin_secondGrant() {
+    given()
+            .header("authorization", "Bearer " + adminJwt)
+            .body(grantAdminDataDTO)
+            .put(getApiRoot() + "/account/2/grantAdmin")
+            .then()
+            .log()
+            .all()
+            .statusCode(Response.Status.CONFLICT.getStatusCode());
+  }
 
 
   @Test

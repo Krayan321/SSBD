@@ -1,7 +1,6 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.exceptions;
 
-import static jakarta.ws.rs.core.Response.Status.BAD_REQUEST;
-import static jakarta.ws.rs.core.Response.Status.EXPECTATION_FAILED;
+import static jakarta.ws.rs.core.Response.Status.*;
 import static pl.lodz.p.it.ssbd2023.ssbd01.common.i18n.*;
 
 import jakarta.ws.rs.core.Response;
@@ -29,5 +28,9 @@ public class AccountApplicationException extends ApplicationException {
 
   public static AccountApplicationException createUndefinedAccessLevelException() {
     return new AccountApplicationException(BAD_REQUEST, EXCEPTION_ACCOUNT_NO_SUCH_ACCESS_LEVEL);
+  }
+
+  public static AccountApplicationException createDuplicateAccessLevelException() {
+    return new AccountApplicationException(CONFLICT, EXCEPTION_DUPLICATE_ACCESS_LEVEL);
   }
 }

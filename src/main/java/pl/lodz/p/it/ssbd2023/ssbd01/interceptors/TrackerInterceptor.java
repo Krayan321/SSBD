@@ -31,7 +31,7 @@ public class TrackerInterceptor {
       throw e;
     }
 
-    message.append("finished with value: ").append(result);
+    message.append("finished successfully");
 
     log.info(message.toString());
 

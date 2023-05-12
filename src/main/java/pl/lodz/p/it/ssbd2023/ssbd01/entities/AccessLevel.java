@@ -1,19 +1,6 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.DiscriminatorColumn;
-import jakarta.persistence.DiscriminatorType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Inheritance;
-import jakarta.persistence.InheritanceType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
 import lombok.Getter;
@@ -22,7 +9,9 @@ import lombok.Setter;
 import lombok.ToString;
 
 @Entity
-@Table(name = "access_level")
+@Table(name = "access_level", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"access_level_role", "account_id"})
+})
 @Inheritance(strategy = InheritanceType.JOINED)
 @ToString(callSuper = true)
 @NoArgsConstructor

@@ -6,6 +6,8 @@ import jakarta.persistence.OptimisticLockException;
 import jakarta.persistence.PersistenceException;
 import java.sql.SQLException;
 import lombok.extern.java.Log;
+import org.hibernate.exception.ConstraintViolationException;
+import pl.lodz.p.it.ssbd2023.ssbd01.exceptions.AccountApplicationException;
 import pl.lodz.p.it.ssbd2023.ssbd01.exceptions.ApplicationException;
 
 @Log
