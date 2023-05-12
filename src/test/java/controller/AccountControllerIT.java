@@ -136,7 +136,7 @@ public class AccountControllerIT extends BaseTest {
             .then()
             .log()
             .all()
-            .statusCode(Response.Status.EXPECTATION_FAILED.getStatusCode())
+            .statusCode(Response.Status.UNAUTHORIZED.getStatusCode())
             .extract()
             .response()
             .asString();
@@ -326,7 +326,7 @@ public class AccountControllerIT extends BaseTest {
         .then()
         .log()
         .all()
-        .statusCode(Response.Status.FORBIDDEN.getStatusCode())
+        .statusCode(Response.Status.UNAUTHORIZED.getStatusCode())
         .extract()
         .response()
         .asString();
@@ -338,7 +338,7 @@ public class AccountControllerIT extends BaseTest {
     given()
         .header("authorization", "Bearer " + adminJwt)
         .body(new ChangePasswordDTO("admin123", "admin321"))
-        .put(getApiRoot() + "/account/1/change-password")
+        .put(getApiRoot() + "/account/1/changePassword")
         .then()
         .log()
         .all()

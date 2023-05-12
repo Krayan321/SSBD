@@ -120,10 +120,9 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
   @Override
   public Account activateUserAccount(Long id) {
     Account account = getAccount(id);
-    // if(account.getActive() == true) {
-    // return null;
-    // }
     account.setConfirmed(true);
+    emailService.sendEmailAccountActivated(
+            account.getEmail(), account.getLogin(), account.getLanguage());
     accountFacade.edit(account);
     return account;
   }
