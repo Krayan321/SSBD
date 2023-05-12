@@ -91,6 +91,18 @@ public class EmailService {
     }
   }
 
+  public void sendEmailAccountActivated(String email, String name, Locale locale) {
+    String subject = i18n.getMessage(i18n.MAIL_ACCOUNT_ACTIVATED_SUBJECT, locale);
+    String body = i18n.getMessage(i18n.MAIL_ACCOUNT_ACTIVATED_BODY, locale);
+
+    MailjetRequest request = getMailjetRequest(email, name, subject, body);
+    try {
+      client.post(request);
+    } catch (MailjetException e) {
+      e.printStackTrace();
+    }
+  }
+
   public void sendRegistrationEmail(String email, String name, String token) {
     MailjetRequest request =
         new MailjetRequest(Emailv31.resource)
