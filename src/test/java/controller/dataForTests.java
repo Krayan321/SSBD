@@ -58,8 +58,6 @@ public class dataForTests {
 
   public static GrantAdminDataDTO grantAdminDataDTO = new GrantAdminDataDTO("1234");
 
-  // todo create this from response
-
   // edit data
   public static EditAdminDataDTO adminDataDTOChangedPhone =
       EditAdminDataDTO.builder().id(4L).version(0L).workPhoneNumber("102938129").build();

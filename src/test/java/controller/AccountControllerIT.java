@@ -169,6 +169,21 @@ public class AccountControllerIT extends BaseTest {
         .statusCode(Response.Status.OK.getStatusCode());
   }
 
+// todo this shouldn't pass
+//  @Test
+//  @Order(10)
+//  public void grantAdmin_secondGrant() {
+//    given()
+//            .header("authorization", "Bearer " + adminJwt)
+//            .body(grantAdminDataDTO)
+//            .put(getApiRoot() + "/account/2/grantAdmin")
+//            .then()
+//            .log()
+//            .all()
+//            .statusCode(Response.Status.OK.getStatusCode());
+//  }
+
+
   @Test
   @Order(10)
   public void readAccountAndAccessLevels_correct() {
@@ -230,7 +245,19 @@ public class AccountControllerIT extends BaseTest {
             hasItem(hasEntry("firstName", patientDataDTOChangedName.getFirstName())));
   }
 
-  // todo admin? for now it changes nothing
+  @Test
+  @Order(12)
+  public void editPatientData_badVersion() {
+    given()
+            .header("authorization", "Bearer " + adminJwt)
+            .body(patientDataDTOChangedName)
+            .put(getApiRoot() + "/account/2/patient")
+            .then()
+            .log()
+            .all()
+            .statusCode(Response.Status.CONFLICT.getStatusCode());
+  }
+
   @Test
   @Order(12)
   public void addChemist_correct() {
