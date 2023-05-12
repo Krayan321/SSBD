@@ -38,16 +38,6 @@ public class AuthController {
         new UsernamePasswordCredential(loginDto.getLogin(), loginDto.getPassword());
     CredentialValidationResult result = identityStoreHandler.validate(credential);
 
-    Account account = accountManager.findByLogin(loginDto.getLogin());
-
-    if (!account.getConfirmed()) {
-      return Response.status(Response.Status.UNAUTHORIZED).entity("Account not confirmed").build();
-    }
-
-    if (!account.getActive()) {
-      return Response.status(Response.Status.UNAUTHORIZED).entity("Account not active").build();
-    }
-
     log.warning(result.getCallerGroups().toString());
     if (result.getStatus() != CredentialValidationResult.Status.VALID) {
 
@@ -60,10 +50,19 @@ public class AuthController {
           .entity("Invalid login or password")
           .build();
     } else {
+      Account account = accountManager.findByLogin(loginDto.getLogin());
+
+      if (!account.getConfirmed()) {
+        return Response.status(Response.Status.UNAUTHORIZED).entity("Account not confirmed").build();
+      }
+
+      if (!account.getActive()) {
+        return Response.status(Response.Status.UNAUTHORIZED).entity("Account not active").build();
+      }
       // fixme nie działa w testach!!!
       // drugie odwołanie się do accountManager rzuca
       // "jakarta.enterprise.ejb.container: sfsb checkpoint error."
-      accountManager.findByLogin("admin123");
+//      accountManager.findByLogin("admin123");
       //            accountManager.updateAuthInformation(
       //                    credential.getCaller(),
       //                    httpServletRequest.getRemoteAddr(),
