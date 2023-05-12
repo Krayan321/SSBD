@@ -16,10 +16,15 @@ import pl.lodz.p.it.ssbd2023.ssbd01.common.AbstractFacade;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Account;
 import pl.lodz.p.it.ssbd2023.ssbd01.interceptors.AccountFacadeExceptionsInterceptor;
 import pl.lodz.p.it.ssbd2023.ssbd01.interceptors.GenericFacadeExceptionsInterceptor;
+import pl.lodz.p.it.ssbd2023.ssbd01.interceptors.TrackerInterceptor;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.MANDATORY)
-@Interceptors({GenericFacadeExceptionsInterceptor.class, AccountFacadeExceptionsInterceptor.class})
+@Interceptors({
+  GenericFacadeExceptionsInterceptor.class,
+  AccountFacadeExceptionsInterceptor.class,
+  TrackerInterceptor.class
+})
 public class AccountFacade extends AbstractFacade<Account> {
   @PersistenceContext(unitName = "ssbd01mokPU")
   private EntityManager em;

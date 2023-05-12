@@ -25,6 +25,7 @@ import pl.lodz.p.it.ssbd2023.ssbd01.dto.auth.ResetPasswordDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.auth.SetNewPasswordDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.auth.UpdateOtherUserPasswordDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.auth.VerificationTokenDto;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccount.EditAdminDataDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccount.EditChemistDataDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccount.EditPatientDataDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.grant.GrantAdminDataDTO;
@@ -100,12 +101,19 @@ public class AccountController extends AbstractController {
   }
 
   @PUT
-  @Path("/{id}/deactivate")
+  @Path("/{id}/block")
   @RolesAllowed({"ADMIN"})
-  public AccountDTO deactivateAccount(@PathParam("id") Long id) {
-    Account account =
-        repeatTransaction(accountManager, () -> accountManager.deactivateUserAccount(id));
-    return AccountConverter.mapAccountToAccountDto(account);
+  public Response blockAccount(@PathParam("id") Long id) {
+    accountManager.blockAccount(id);
+    return Response.status(Response.Status.OK).build();
+  }
+
+  @PUT
+  @Path("/{id}/unblock")
+  @RolesAllowed({"ADMIN"})
+  public Response unblockAccount(@PathParam("id") Long id) {
+    accountManager.unblockAccount(id);
+    return Response.status(Response.Status.OK).build();
   }
 
   @PUT
@@ -168,6 +176,19 @@ public class AccountController extends AbstractController {
         AccessLevelConverter.mapEditPatientDataDtoToPatientData(patientDataDTO);
     Account account =
         repeatTransaction(accountManager, () -> accountManager.editAccessLevel(id, patientData));
+    return AccountConverter.mapAccountToAccountAndAccessLevelsDto(account);
+  }
+
+  @PUT
+  @Path("/{id}/admin")
+  @Produces(MediaType.APPLICATION_JSON)
+  @Consumes(MediaType.APPLICATION_JSON)
+  @RolesAllowed({"ADMIN"})
+  public AccountAndAccessLevelsDTO editPatientData(
+      @PathParam("id") Long id, @Valid EditAdminDataDTO adminDataDTO) {
+    AdminData adminData = AccessLevelConverter.mapEditAdminDataDtoToAdminData(adminDataDTO);
+    Account account =
+        repeatTransaction(accountManager, () -> accountManager.editAccessLevel(id, adminData));
     return AccountConverter.mapAccountToAccountAndAccessLevelsDto(account);
   }
 

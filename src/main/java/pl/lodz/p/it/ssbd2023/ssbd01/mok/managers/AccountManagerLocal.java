@@ -7,7 +7,6 @@ import java.util.List;
 import pl.lodz.p.it.ssbd2023.ssbd01.common.CommonManagerLocalInterface;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.AccessLevel;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Account;
-import pl.lodz.p.it.ssbd2023.ssbd01.entities.PatientData;
 
 @Local
 public interface AccountManagerLocal extends CommonManagerLocalInterface {
@@ -32,9 +31,9 @@ public interface AccountManagerLocal extends CommonManagerLocalInterface {
 
   Account activateUserAccount(Long id);
 
-  Account createPatientAccount(Account account, PatientData patientData);
+  void blockAccount(Long id);
 
-  Account deactivateUserAccount(Long id);
+  void unblockAccount(Long id);
 
   Account updateUserPassword(Long id, String newPassword);
 

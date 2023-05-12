@@ -43,14 +43,12 @@ public class BaseTest {
           .dependsOn(postgreSQLContainer)
           .withNetwork(NETWORK)
           .withCopyToContainer(warFile, "/opt/payara/deployments/app.war")
-          //            .waitingFor(Wait.forHttp("/api/account").forStatusCode(401))
           //            .waitingFor(Wait.defaultWaitStrategy())
           .waitingFor(Wait.forLogMessage(".* Payara Micro .* ready in .*\\s", 1))
 
           //            .waitingFor(Wait.forLogMessage(
           //                    ".* Payara Micro .* ready in .*\\s", 1))
 
-          .withCommand(
-              "--deploy /opt/payara/deployments/app.war --sslPort 8181 --autoBindHttp"
-                  + " --autoBindSsl");
+          .withCommand("--deploy /opt/payara/deployments/app.war"); // --sslPort 8181 --autoBindHttp
+  // --autoBindSsl
 }

@@ -6,16 +6,22 @@ import com.mailjet.client.MailjetRequest;
 import com.mailjet.client.errors.MailjetException;
 import com.mailjet.client.resource.Emailv31;
 import jakarta.inject.Inject;
+import java.util.Locale;
 import org.eclipse.microprofile.config.ConfigProvider;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import pl.lodz.p.it.ssbd2023.ssbd01.common.i18n;
 
 public class EmailService {
 
   @Inject
   @ConfigProperty(name = "unconfirmed.account.deletion.timeout.hours")
   private int UNCONFIRMED_ACCOUNT_DELETION_TIMEOUT_HOURS;
+
+  @Inject
+  @ConfigProperty(name = "email.address")
+  private String EMAIL_ADDRESS;
 
   private ClientOptions options;
 
@@ -40,8 +46,7 @@ public class EmailService {
                     .put(
                         new JSONObject()
                             .put(
-                                Emailv31.Message.FROM,
-                                new JSONObject().put("Email", "turbokozakapteka@proton.me"))
+                                Emailv31.Message.FROM, new JSONObject().put("Email", EMAIL_ADDRESS))
                             .put(
                                 Emailv31.Message.TO,
                                 new JSONArray()
@@ -62,6 +67,30 @@ public class EmailService {
     }
   }
 
+  public void sendEmailAccountBlocked(String email, String name, Locale locale) {
+    String subject = i18n.getMessage(i18n.MAIL_ACCOUNT_BLOCKED_SUBJECT, locale);
+    String body = i18n.getMessage(i18n.MAIL_ACCOUNT_BLOCKED_BODY, locale);
+
+    MailjetRequest request = getMailjetRequest(email, name, subject, body);
+    try {
+      client.post(request);
+    } catch (MailjetException e) {
+      e.printStackTrace();
+    }
+  }
+
+  public void sendEmailAccountUnblocked(String email, String name, Locale locale) {
+    String subject = i18n.getMessage(i18n.MAIL_ACCOUNT_UNBLOCKED_SUBJECT, locale);
+    String body = i18n.getMessage(i18n.MAIL_ACCOUNT_UNBLOCKED_BODY, locale);
+
+    MailjetRequest request = getMailjetRequest(email, name, subject, body);
+    try {
+      client.post(request);
+    } catch (MailjetException e) {
+      e.printStackTrace();
+    }
+  }
+
   public void sendRegistrationEmail(String email, String name, String token) {
     MailjetRequest request =
         new MailjetRequest(Emailv31.resource)
@@ -71,8 +100,7 @@ public class EmailService {
                     .put(
                         new JSONObject()
                             .put(
-                                Emailv31.Message.FROM,
-                                new JSONObject().put("Email", "turbokozakapteka@proton.me"))
+                                Emailv31.Message.FROM, new JSONObject().put("Email", EMAIL_ADDRESS))
                             .put(
                                 Emailv31.Message.TO,
                                 new JSONArray()
@@ -103,7 +131,7 @@ public class EmailService {
                             .put(
                                 Emailv31.Message.FROM,
                                 new JSONObject()
-                                    .put("Email", "turbokozakapteka@proton.me")
+                                    .put("Email", EMAIL_ADDRESS)
                                     .put("Name", "udalosie"))
                             .put(
                                 Emailv31.Message.TO,
@@ -121,5 +149,25 @@ public class EmailService {
                                     + " />May the cat force be with you!")));
 
     return client.post(request).getData().toString();
+  }
+
+  private MailjetRequest getMailjetRequest(
+      String email, String recipientName, String subject, String body) {
+    return new MailjetRequest(Emailv31.resource)
+        .property(
+            Emailv31.MESSAGES,
+            new JSONArray()
+                .put(
+                    new JSONObject()
+                        .put(Emailv31.Message.FROM, new JSONObject().put("Email", EMAIL_ADDRESS))
+                        .put(
+                            Emailv31.Message.TO,
+                            new JSONArray()
+                                .put(
+                                    new JSONObject()
+                                        .put("Email", email)
+                                        .put("Name", recipientName)))
+                        .put(Emailv31.Message.SUBJECT, subject)
+                        .put(Emailv31.Message.TEXTPART, body)));
   }
 }
