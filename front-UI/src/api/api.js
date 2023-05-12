@@ -1,5 +1,5 @@
 import axios from "axios";
-const BASE_URL = "http://";
+const BASE_URL = "http://localhost:8080/api/account";
 
 
 const defaultHeaders = {
@@ -53,7 +53,7 @@ export async function post(stringUrl, body) {
     try {
       const response = await axios.post(url, body, {
         headers: defaultHeaders,
-        withCredentials: true,
+        withCredentials: false,
       });
       return response.status;
     } catch (error) {

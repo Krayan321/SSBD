@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Grid, Paper, TextField, Button , Box} from '@mui/material';
 import { useTranslation } from "react-i18next";
+import { post } from '../api/api.js';
 
 function SignUp() {
     const paperStyle = { padding: '30px 20px', width: 300, margin: "20px auto" }
@@ -16,6 +17,16 @@ function SignUp() {
 
     const { t } = useTranslation();
     const handleSubmit = (event) => {
+        post("/api/account/register", {
+            name: name,
+            lastName: lastName,
+            login: login,
+            email: email,
+            password: password,
+            phoneNumber: phoneNumber,
+            pesel: pesel,
+            nip: nip
+        })
         event.preventDefault();
       };
 
@@ -72,7 +83,7 @@ function SignUp() {
                         //placeholder="Enter your NIP number"
                         onChange={(event) => setNip(event.target.value)}
                         />
-                    <Button type='submit' variant='contained' color='primary'>Sign up</Button>
+                    <Button onClick={handleSubmit} type='submit' variant='contained' color='primary'>Sign up</Button>
                 </Box>
             </Paper>
         </Grid>
