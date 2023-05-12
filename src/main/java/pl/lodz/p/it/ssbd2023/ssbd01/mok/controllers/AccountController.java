@@ -4,6 +4,7 @@ import jakarta.annotation.security.DenyAll;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
+import jakarta.interceptor.Interceptors;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.ws.rs.*;
@@ -104,12 +105,19 @@ public class AccountController extends AbstractController {
     }
 
     @PUT
-    @Path("/{id}/deactivate")
+    @Path("/{id}/block")
     @RolesAllowed({"ADMIN"})
-    public AccountDTO deactivateAccount(@PathParam("id") Long id) {
-        Account account =
-                repeatTransaction(accountManager, () -> accountManager.deactivateUserAccount(id));
-        return AccountConverter.mapAccountToAccountDto(account);
+    public Response blockAccount(@PathParam("id") Long id) {
+        accountManager.blockAccount(id);
+        return Response.status(Response.Status.OK).build();
+    }
+
+    @PUT
+    @Path("/{id}/unblock")
+    @RolesAllowed({"ADMIN"})
+    public Response unblockAccount(@PathParam("id") Long id) {
+        accountManager.unblockAccount(id);
+        return Response.status(Response.Status.OK).build();
     }
 
     @PUT

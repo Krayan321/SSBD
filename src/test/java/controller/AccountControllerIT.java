@@ -20,6 +20,8 @@ import org.junit.jupiter.api.TestMethodOrder;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.ChangePasswordDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.auth.LoginDTO;
 
+import java.util.concurrent.TimeUnit;
+
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.Matchers.hasEntry;
@@ -34,7 +36,7 @@ public class AccountControllerIT extends BaseTest {
 
 
     @BeforeAll
-    static void setUp() {
+    static void setUp() throws InterruptedException {
         System.out.println(getApiRoot());
         adminJwt = given()
                 .contentType("application/json")
@@ -303,13 +305,63 @@ public class AccountControllerIT extends BaseTest {
     }
 
     @Test
-    @Order(19)
-    public void deactivateUserAccount_correct() {
+    @Order(20)
+    public void unblockAccount_alreadyUnblocked() {
         given().header("authorization", "Bearer " + adminJwt)
-                .put(getApiRoot() + "/account/2/deactivate")
+                .put(getApiRoot() + "/account/2/unblock")
                 .then()
                 .log().all()
                 .statusCode(Response.Status.OK.getStatusCode());
+        given().header("authorization", "Bearer " + adminJwt)
+                .get(getApiRoot() + "/account/2")
+                .then()
+                .log().all()
+                .body("active", equalTo(true));
+    }
+
+    @Test
+    @Order(21)
+    public void blockAccount_correct() {
+        given().header("authorization", "Bearer " + adminJwt)
+                .put(getApiRoot() + "/account/2/block")
+                .then()
+                .log().all()
+                .statusCode(Response.Status.OK.getStatusCode());
+        given().header("authorization", "Bearer " + adminJwt)
+                .get(getApiRoot() + "/account/2")
+                .then()
+                .log().all()
+                .body("active", equalTo(false));
+    }
+
+    @Test
+    @Order(22)
+    public void blockAccount_alreadyBlocked() {
+        given().header("authorization", "Bearer " + adminJwt)
+                .put(getApiRoot() + "/account/2/block")
+                .then()
+                .log().all()
+                .statusCode(Response.Status.OK.getStatusCode());
+        given().header("authorization", "Bearer " + adminJwt)
+                .get(getApiRoot() + "/account/2")
+                .then()
+                .log().all()
+                .body("active", equalTo(false));
+    }
+
+    @Test
+    @Order(23)
+    public void unblockAccount_correct() {
+        given().header("authorization", "Bearer " + adminJwt)
+                .put(getApiRoot() + "/account/2/unblock")
+                .then()
+                .log().all()
+                .statusCode(Response.Status.OK.getStatusCode());
+        given().header("authorization", "Bearer " + adminJwt)
+                .get(getApiRoot() + "/account/2")
+                .then()
+                .log().all()
+                .body("active", equalTo(true));
     }
 
 }

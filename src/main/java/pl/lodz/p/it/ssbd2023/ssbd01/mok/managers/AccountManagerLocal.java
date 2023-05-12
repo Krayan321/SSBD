@@ -34,9 +34,9 @@ public interface AccountManagerLocal extends CommonManagerLocalInterface {
 
     Account activateUserAccount(Long id);
 
-    Account createPatientAccount(Account account, PatientData patientData);
+    void blockAccount(Long id);
 
-    Account deactivateUserAccount(Long id);
+    void unblockAccount(Long id);
 
     Account updateUserPassword(Long id, String newPassword);
 

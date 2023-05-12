@@ -15,6 +15,7 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import pl.lodz.p.it.ssbd2023.ssbd01.interceptors.AccountFacadeExceptionsInterceptor;
 import pl.lodz.p.it.ssbd2023.ssbd01.interceptors.GenericFacadeExceptionsInterceptor;
+import pl.lodz.p.it.ssbd2023.ssbd01.interceptors.TrackerInterceptor;
 
 import java.util.List;
 import java.util.Optional;
@@ -22,7 +23,8 @@ import java.util.Optional;
 @Stateless
 @TransactionAttribute(TransactionAttributeType.MANDATORY)
 @Interceptors({GenericFacadeExceptionsInterceptor.class,
-        AccountFacadeExceptionsInterceptor.class
+        AccountFacadeExceptionsInterceptor.class,
+        TrackerInterceptor.class
 })
 public class AccountFacade extends AbstractFacade<Account> {
     @PersistenceContext(unitName = "ssbd01mokPU")

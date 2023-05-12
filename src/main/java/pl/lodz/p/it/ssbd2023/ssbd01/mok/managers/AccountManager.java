@@ -16,6 +16,8 @@ import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+
+import lombok.extern.java.Log;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import pl.lodz.p.it.ssbd2023.ssbd01.common.AbstractManager;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.AccessLevel;
@@ -25,6 +27,7 @@ import pl.lodz.p.it.ssbd2023.ssbd01.entities.Token;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.TokenType;
 import pl.lodz.p.it.ssbd2023.ssbd01.exceptions.ApplicationException;
 import pl.lodz.p.it.ssbd2023.ssbd01.interceptors.GenericManagerExceptionsInterceptor;
+import pl.lodz.p.it.ssbd2023.ssbd01.interceptors.TrackerInterceptor;
 import pl.lodz.p.it.ssbd2023.ssbd01.mok.facades.AccountFacade;
 import pl.lodz.p.it.ssbd2023.ssbd01.security.HashAlgorithmImpl;
 import pl.lodz.p.it.ssbd2023.ssbd01.util.AccessLevelFinder;
@@ -33,9 +36,11 @@ import pl.lodz.p.it.ssbd2023.ssbd01.util.mergers.AccessLevelMerger;
 
 @Stateful
 @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-@Interceptors({GenericManagerExceptionsInterceptor.class})
-public class AccountManager extends AbstractManager implements AccountManagerLocal,
-        SessionSynchronization {
+@Interceptors({GenericManagerExceptionsInterceptor.class,
+        TrackerInterceptor.class
+})
+@Log
+public class AccountManager extends AbstractManager implements AccountManagerLocal {
 
     @Inject
     private AccountFacade accountFacade;
@@ -72,7 +77,7 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
     public Account getAccountAndAccessLevels(Long id) {
         Optional<Account> optionalAccount = accountFacade.findAndRefresh(id);
         if (optionalAccount.isEmpty()) {
-            ApplicationException.createEntityNotFoundException();
+            throw ApplicationException.createEntityNotFoundException();
         }
         return optionalAccount.get();
     }
@@ -90,14 +95,9 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
     public Account getAccount(Long id) {
         Optional<Account> optionalAccount = accountFacade.find(id);
         if (optionalAccount.isEmpty()) {
-            ApplicationException.createEntityNotFoundException();
+            throw ApplicationException.createEntityNotFoundException();
         }
         return optionalAccount.get();
-    }
-
-    @Override
-    public Account createPatientAccount(Account account, PatientData patientData) {
-        return createPatientAccount(account, patientData);
     }
 
     @Override
@@ -129,18 +129,31 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
         // if(account.getActive() == true) {
         // return null;
         // }
-        account.setActive(true);
         account.setConfirmed(true);
         accountFacade.edit(account);
         return account;
     }
 
     @Override
-    public Account deactivateUserAccount(Long id) {
+    public void blockAccount(Long id) {
         Account account = getAccount(id);
+        if(!account.getActive())
+            return;
         account.setActive(false);
         accountFacade.edit(account);
-        return account;
+        emailService.sendEmailAccountBlocked(account.getEmail(), account.getLogin(),
+                account.getLanguage());
+    }
+
+    @Override
+    public void unblockAccount(Long id) {
+        Account account = getAccount(id);
+        if(account.getActive())
+            return;
+        account.setActive(true);
+        accountFacade.edit(account);
+        emailService.sendEmailAccountUnblocked(account.getEmail(), account.getLogin(),
+                account.getLanguage());
     }
 
     @Override
@@ -198,7 +211,7 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
         }
 
         if (!account.getActive()) {
-            accountBlockedException();
+            throw accountBlockedException();
         }
         if (isCorrect) {
             account.setLastPositiveLogin(now);
@@ -237,6 +250,7 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
     }
 
 
+    // fixme? Is this really necessary
     @Override
     public Account createAccount(Account account, AccessLevel accessLevel) {
         account.setPassword(HashAlgorithmImpl.generate(account.getPassword()));
@@ -254,5 +268,4 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
         accountFacade.edit(account);
         return account;
     }
-
 }

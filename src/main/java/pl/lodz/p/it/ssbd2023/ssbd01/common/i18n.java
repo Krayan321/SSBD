@@ -24,6 +24,12 @@ public class i18n {
     public static final String EXCEPTION_TOKEN_ALREADY_USED = "exception.token.already-used";
     public static final String EXCEPTION_TOKEN_BAD_TYPE = "exception.token.bad-type";
 
+    public static final String MAIL_ACCOUNT_BLOCKED_SUBJECT = "mail.account.blocked.subject";
+    public static final String MAIL_ACCOUNT_BLOCKED_BODY = "mail.account.blocked.body";
+    public static final String MAIL_ACCOUNT_UNBLOCKED_SUBJECT = "mail.account.unblocked.subject";
+    public static final String MAIL_ACCOUNT_UNBLOCKED_BODY = "mail.account.unblocked.body";
+
+
     public static String getMessage(String message, Locale locale) {
         ResourceBundle bundle = ResourceBundle.getBundle("i18n.messages", locale);
         return bundle.getString(message);
