@@ -20,6 +20,7 @@ public interface AccountManagerLocal extends CommonManagerLocalInterface {
   void confirmAccountRegistration(String token);
 
   Account getAccount(Long id);
+  Account getCurrentUser();
 
   Account getAccountAndAccessLevels(Long id);
 

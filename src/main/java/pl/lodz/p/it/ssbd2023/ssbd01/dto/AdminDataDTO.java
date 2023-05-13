@@ -17,7 +17,9 @@ public class AdminDataDTO extends AccessLevelDTO {
   private String workPhoneNumber;
 
   @Builder
-  public AdminDataDTO(Long id, Long version, Role role, Boolean active) {
+  public AdminDataDTO(Long id, Long version, Role role, Boolean active, String workPhoneNumber) {
+
     super(id, version, role, active);
+    this.workPhoneNumber = workPhoneNumber;
   }
 }

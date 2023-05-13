@@ -38,8 +38,8 @@ public class AccountControllerIT extends BaseTest {
             .post(getApiRoot() + "/auth/login")
             .then()
             .log()
-            .all()
-            .statusCode(Response.Status.OK.getStatusCode())
+                .all()
+                .statusCode(Response.Status.OK.getStatusCode())
             .extract()
             .response()
             .asString();
@@ -419,5 +419,17 @@ public class AccountControllerIT extends BaseTest {
         .log()
         .all()
         .body("active", equalTo(true));
+  }
+
+  @Test
+  @Order(24)
+  public void getSelfInfoCorrect(){
+    given()
+            .header("authorization", "Bearer " + adminJwt)
+            .get(getApiRoot() + "/account/details")
+            .then()
+            .log()
+            .all()
+            .statusCode(Response.Status.OK.getStatusCode());
   }
 }
