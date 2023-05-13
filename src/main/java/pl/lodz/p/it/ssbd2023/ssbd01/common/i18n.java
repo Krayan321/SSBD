@@ -18,8 +18,12 @@ public class i18n {
       "exception.account.deletion-confirmed";
   public static final String EXCEPTION_ACCOUNT_NO_SUCH_ACCESS_LEVEL =
       "exception.account.no-such-access-level";
-  public static final String EXCEPTION_DUPLICATE_ACCESS_LEVEL =
-      "exception.account.duplicate-access-level";
+  public static final String EXCEPTION_ACCOUNT_DUPLICATE_ACCESS_LEVEL =
+      "exception.account.duplicate.access-level";
+  public static final String EXCEPTION_ACCOUNT_DUPLICATE_EMAIL =
+          "exception.account.duplicate.email";
+  public static final String EXCEPTION_ACCOUNT_DUPLICATE_LOGIN =
+          "exception.account.duplicate.login";
 
   public static final String EXCEPTION_AUTH_BAD_CREDENTIALS = "exception.auth.bad-credentials";
   public static final String EXCEPTION_AUTH_BLOCKED_ACCOUNT = "exception.auth.blocked-account";

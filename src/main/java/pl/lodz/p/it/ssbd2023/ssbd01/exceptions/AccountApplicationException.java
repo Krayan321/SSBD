@@ -31,6 +31,14 @@ public class AccountApplicationException extends ApplicationException {
   }
 
   public static AccountApplicationException createDuplicateAccessLevelException() {
-    return new AccountApplicationException(CONFLICT, EXCEPTION_DUPLICATE_ACCESS_LEVEL);
+    return new AccountApplicationException(CONFLICT, EXCEPTION_ACCOUNT_DUPLICATE_ACCESS_LEVEL);
+  }
+
+  public static AccountApplicationException createDuplicateEmailException() {
+    return new AccountApplicationException(CONFLICT, EXCEPTION_ACCOUNT_DUPLICATE_EMAIL);
+  }
+
+  public static AccountApplicationException createDuplicateLoginException() {
+    return new AccountApplicationException(CONFLICT, EXCEPTION_ACCOUNT_DUPLICATE_LOGIN);
   }
 }
