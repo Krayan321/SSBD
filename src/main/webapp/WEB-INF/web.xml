@@ -53,9 +53,19 @@
         <filter-name>SpaFilter</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
+    <filter>
+        <filter-name>CorsFilter</filter-name>
+        <filter-class>pl.lodz.p.it.ssbd2023.ssbd01.config.CORSFilter</filter-class>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>CorsFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
 
     <context-param>
         <param-name>resteasy.preferJacksonOverJsonB</param-name>
         <param-value>true</param-value>
     </context-param>
+
 </web-app>
