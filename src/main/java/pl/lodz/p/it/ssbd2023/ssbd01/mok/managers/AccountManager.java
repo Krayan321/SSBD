@@ -122,7 +122,7 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
     Account account = getAccount(id);
     account.setConfirmed(true);
     emailService.sendEmailAccountActivated(
-            account.getEmail(), account.getLogin(), account.getLanguage());
+        account.getEmail(), account.getLogin(), account.getLanguage());
     accountFacade.edit(account);
     return account;
   }
@@ -169,6 +169,14 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
     } else {
       return null;
     }
+  }
+
+  @Override
+  public Account updateOwnEmail(Long id, String email) {
+    Account account = getAccount(id);
+    account.setEmail(email); // check validity??
+    accountFacade.edit(account);
+    return account;
   }
 
   @Override

@@ -4,6 +4,8 @@
   <!-- why? -->
   <suppress checks="MissingJavadocTypeCheck" files=".*\.java" />
   <suppress checks="MissingJavadocMethodCheck" files=".*\.java" />
+  <!-- who cares -->
+  <suppress checks="CommentsIndentationCheck" files=".*\.java" />
   <!-- current situation is already tragic, why not add several more screenfuls
    of imports?-->
   <suppress checks="AvoidStarImportCheck" files=".*\.java" />

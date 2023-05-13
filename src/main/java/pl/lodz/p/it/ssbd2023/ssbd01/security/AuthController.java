@@ -53,7 +53,9 @@ public class AuthController {
       Account account = accountManager.findByLogin(loginDto.getLogin());
 
       if (!account.getConfirmed()) {
-        return Response.status(Response.Status.UNAUTHORIZED).entity("Account not confirmed").build();
+        return Response.status(Response.Status.UNAUTHORIZED)
+            .entity("Account not confirmed")
+            .build();
       }
 
       if (!account.getActive()) {
@@ -62,7 +64,7 @@ public class AuthController {
       // fixme nie działa w testach!!!
       // drugie odwołanie się do accountManager rzuca
       // "jakarta.enterprise.ejb.container: sfsb checkpoint error."
-//      accountManager.findByLogin("admin123");
+      //      accountManager.findByLogin("admin123");
       //            accountManager.updateAuthInformation(
       //                    credential.getCaller(),
       //                    httpServletRequest.getRemoteAddr(),

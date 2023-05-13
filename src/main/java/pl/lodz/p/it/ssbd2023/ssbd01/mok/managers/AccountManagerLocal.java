@@ -41,6 +41,8 @@ public interface AccountManagerLocal extends CommonManagerLocalInterface {
 
   Account updateOwnPassword(Long id, String oldPassword, String newPassword);
 
+  Account updateOwnEmail(Long id, String email);
+
   void purgeUnactivatedAccounts();
 
   void updateAuthInformation(String caller, String remoteAddr, Date now, Boolean isCorrect)

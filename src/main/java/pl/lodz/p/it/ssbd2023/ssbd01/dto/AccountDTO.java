@@ -11,11 +11,13 @@ import lombok.*;
 public class AccountDTO extends AbstractEntityDTO {
 
   @Builder
-  public AccountDTO(Long id, Long version, String login, Boolean active, Boolean confirmed) {
+  public AccountDTO(
+      Long id, Long version, String login, Boolean active, Boolean confirmed, String email) {
     super(id, version);
     this.login = login;
     this.active = active;
     this.confirmed = confirmed;
+    this.email = email;
   }
 
   @NotNull private String login;

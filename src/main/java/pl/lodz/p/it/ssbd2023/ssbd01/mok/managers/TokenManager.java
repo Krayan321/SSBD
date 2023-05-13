@@ -72,7 +72,7 @@ public class TokenManager extends AbstractManager
     account.setCreatedBy(account);
     token.setUsed(true);
     emailService.sendEmailAccountActivated(
-            account.getEmail(), account.getLogin(), account.getLanguage());
+        account.getEmail(), account.getLogin(), account.getLanguage());
     tokenFacade.edit(token);
   }
 
