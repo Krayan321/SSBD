@@ -122,7 +122,7 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
     Account account = getAccount(id);
     account.setConfirmed(true);
     emailService.sendEmailAccountActivated(
-            account.getEmail(), account.getLogin(), account.getLanguage());
+        account.getEmail(), account.getLogin(), account.getLanguage());
     accountFacade.edit(account);
     return account;
   }
@@ -178,7 +178,7 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
     accountFacade.edit(account);
     return account;
   }
-  
+
   @Override
   public void purgeUnactivatedAccounts() {
     List<Account> accountsToPurge = accountFacade.findNotConfirmed();
