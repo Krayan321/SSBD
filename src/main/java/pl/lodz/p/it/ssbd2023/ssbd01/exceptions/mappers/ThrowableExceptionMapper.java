@@ -2,6 +2,9 @@ package pl.lodz.p.it.ssbd2023.ssbd01.exceptions.mappers;
 
 import jakarta.ejb.AccessLocalException;
 import jakarta.ejb.EJBAccessException;
+import jakarta.ws.rs.ForbiddenException;
+import jakarta.ws.rs.NotFoundException;
+import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.ExceptionMapper;
 import jakarta.ws.rs.ext.Provider;
@@ -23,7 +26,10 @@ public class ThrowableExceptionMapper implements ExceptionMapper<Throwable> {
             throw throwable;
         } catch (ApplicationException e) {
             return getResponseFromApplicationException(e);
-        } catch (EJBAccessException | AccessLocalException e) {
+        } catch (NotFoundException e) {
+            ApplicationException ex = ApplicationException.createNotFoundException();
+            return getResponseFromApplicationException(ex);
+        } catch(ForbiddenException | EJBAccessException | AccessLocalException e) {
             ApplicationException ex = ApplicationException.createAccessDeniedException();
             return getResponseFromApplicationException(ex);
         } catch (Throwable e) {

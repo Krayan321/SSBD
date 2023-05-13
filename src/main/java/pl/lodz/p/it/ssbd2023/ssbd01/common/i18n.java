@@ -8,6 +8,8 @@ public class i18n {
   public static final String EXCEPTION_GENERAL = "exception.general";
   public static final String EXCEPTION_PERSISTENCE = "exception.persistence";
   public static final String EXCEPTION_ACCESS_DENIED = "exception.access-denied";
+  public static final String EXCEPTION_UNAUTHORISED = "exception.unauthorised";
+  public static final String EXCEPTION_NOT_FOUND = "exception.not-found";
   public static final String EXCEPTION_TRANSACTION_ROLLBACK = "exception.transaction-rollback";
   public static final String EXCEPTION_OPTIMISTIC_LOCK = "exception.optimistic-lock";
   public static final String EXCEPTION_ENTITY_NOT_FOUND = "exception.entity-not-found";
@@ -16,6 +18,10 @@ public class i18n {
       "exception.account.constraint-violation";
   public static final String EXCEPTION_ACCOUNT_DELETION_CONFIRMED =
       "exception.account.deletion-confirmed";
+  public static final String EXCEPTION_ACCOUNT_NOT_CONFIRMED =
+          "exception.account.not-confirmed";
+  public static final String EXCEPTION_ACCOUNT_BLOCKED =
+          "exception.account.blocked";
   public static final String EXCEPTION_ACCOUNT_NO_SUCH_ACCESS_LEVEL =
       "exception.account.no-such-access-level";
   public static final String EXCEPTION_ACCOUNT_DUPLICATE_ACCESS_LEVEL =
@@ -37,6 +43,8 @@ public class i18n {
   public static final String MAIL_ACCOUNT_BLOCKED_BODY = "mail.account.blocked.body";
   public static final String MAIL_ACCOUNT_UNBLOCKED_SUBJECT = "mail.account.unblocked.subject";
   public static final String MAIL_ACCOUNT_UNBLOCKED_BODY = "mail.account.unblocked.body";
+  public static final String MAIL_ACCOUNT_BLOCKED_TOO_MANY_LOGINS_BODY =
+          "mail.account.unblocked.too-many-logins.body";
   public static final String MAIL_ACCOUNT_ACTIVATED_SUBJECT = "mail.account.activated.subject";
   public static final String MAIL_ACCOUNT_ACTIVATED_BODY = "mail.account.activated.body";
 

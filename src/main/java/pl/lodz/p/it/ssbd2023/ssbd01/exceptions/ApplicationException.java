@@ -1,7 +1,6 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.exceptions;
 
-import static jakarta.ws.rs.core.Response.Status.FORBIDDEN;
-import static jakarta.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR;
+import static jakarta.ws.rs.core.Response.Status.*;
 import static pl.lodz.p.it.ssbd2023.ssbd01.common.i18n.*;
 
 import jakarta.ws.rs.WebApplicationException;
@@ -37,6 +36,14 @@ public class ApplicationException extends WebApplicationException {
 
   public static ApplicationException createAccessDeniedException() {
     return new ApplicationException(FORBIDDEN, EXCEPTION_ACCESS_DENIED);
+  }
+
+  public static ApplicationException createUnauthorisedException() {
+    return new ApplicationException(UNAUTHORIZED, EXCEPTION_UNAUTHORISED);
+  }
+
+  public static ApplicationException createNotFoundException() {
+    return new ApplicationException(NOT_FOUND, EXCEPTION_NOT_FOUND);
   }
 
   public static ApplicationException createTransactionRolledBackException() {
