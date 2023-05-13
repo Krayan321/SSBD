@@ -11,7 +11,7 @@ import pl.lodz.p.it.ssbd2023.ssbd01.exceptions.ApplicationException;
 public class GenericManagerExceptionsInterceptor {
 
   @AroundInvoke
-  public Object intercept(InvocationContext context) {
+  public Object intercept(InvocationContext context) throws ApplicationException {
     try {
       return context.proceed();
     } catch (ApplicationException e) {

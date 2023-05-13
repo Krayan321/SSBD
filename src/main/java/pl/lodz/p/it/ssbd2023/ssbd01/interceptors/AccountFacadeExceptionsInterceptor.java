@@ -8,7 +8,6 @@ import lombok.extern.java.Log;
 import org.hibernate.exception.ConstraintViolationException;
 import org.postgresql.util.PSQLException;
 import pl.lodz.p.it.ssbd2023.ssbd01.exceptions.AccountApplicationException;
-import pl.lodz.p.it.ssbd2023.ssbd01.exceptions.ApplicationException;
 
 @Log
 public class AccountFacadeExceptionsInterceptor {

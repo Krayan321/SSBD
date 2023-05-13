@@ -14,21 +14,25 @@ public class ApplicationException extends WebApplicationException {
   // todo add internationalisation
   @Getter private Throwable cause;
 
+  @Getter private final String key;
+
   protected ApplicationException(Response.Status status, String key, Throwable cause) {
-    super(Response.status(status).entity(key).build());
+    super(status);
+    this.key = key;
     this.cause = cause;
   }
 
   protected ApplicationException(Response.Status status, String key) {
-    super(Response.status(status).entity(key).build());
+    super(status);
+    this.key = key;
   }
 
   public static ApplicationException createGeneralException(Throwable cause) {
-    return new ApplicationException(INTERNAL_SERVER_ERROR, EXCEPTION_GENERAL);
+    return new ApplicationException(INTERNAL_SERVER_ERROR, EXCEPTION_GENERAL, cause);
   }
 
   public static ApplicationException createPersistenceException(Exception cause) {
-    return new ApplicationException(INTERNAL_SERVER_ERROR, EXCEPTION_PERSISTENCE);
+    return new ApplicationException(INTERNAL_SERVER_ERROR, EXCEPTION_PERSISTENCE, cause);
   }
 
   public static ApplicationException createAccessDeniedException() {
