@@ -6,6 +6,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.Matchers.hasSize;
+import static pl.lodz.p.it.ssbd2023.ssbd01.common.i18n.*;
 
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
@@ -110,7 +111,8 @@ public class AccountControllerIT extends BaseTest {
         .then()
         .log()
         .all()
-        .statusCode(Response.Status.EXPECTATION_FAILED.getStatusCode());
+        .statusCode(Response.Status.CONFLICT.getStatusCode())
+        .body(equalTo(EXCEPTION_ACCOUNT_DUPLICATE_LOGIN));
   }
 
   @Test
@@ -122,7 +124,8 @@ public class AccountControllerIT extends BaseTest {
         .then()
         .log()
         .all()
-        .statusCode(Response.Status.EXPECTATION_FAILED.getStatusCode());
+        .statusCode(Response.Status.CONFLICT.getStatusCode())
+        .body(equalTo(EXCEPTION_ACCOUNT_DUPLICATE_EMAIL));
   }
 
   @Test
@@ -281,7 +284,8 @@ public class AccountControllerIT extends BaseTest {
         .then()
         .log()
         .all()
-        .statusCode(Response.Status.EXPECTATION_FAILED.getStatusCode());
+        .statusCode(Response.Status.CONFLICT.getStatusCode())
+        .body(equalTo(EXCEPTION_ACCOUNT_DUPLICATE_EMAIL));
   }
 
   @Test
@@ -320,7 +324,8 @@ public class AccountControllerIT extends BaseTest {
         .then()
         .log()
         .all()
-        .statusCode(Response.Status.EXPECTATION_FAILED.getStatusCode());
+        .statusCode(Response.Status.CONFLICT.getStatusCode())
+        .body(equalTo(EXCEPTION_ACCOUNT_DUPLICATE_EMAIL));
   }
 
   @Test
