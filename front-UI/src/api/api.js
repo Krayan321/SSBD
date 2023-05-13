@@ -67,7 +67,7 @@ export async function put(stringUrl, body) {
     try {
       const response = await axios.put(url, body, {
         headers: defaultHeaders,
-        withCredentials: true,
+        withCredentials: false,
       });
       return response.status;
     } catch (error) {

@@ -2,11 +2,14 @@ import React, { useState } from "react";
 import { TextField, Button, Box } from "@mui/material";
 import "./Login.css";
 import { useTranslation } from "react-i18next";
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 
 
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [passwordShown, setPasswordShown] = useState(false);
 
   const { t } = useTranslation();
 
@@ -30,7 +33,7 @@ const Login = () => {
         </div>
     <div className="form-container">
     <Box sx={{display: "flex", flexDirection: "column", width: "40%" }} onSubmit={handleSubmit}>
-      <TextField sx={{ width: 300}}
+      <TextField sx={{ width: 9/10}}
         id="username"
         label={t("username")}
         value={username}
@@ -42,6 +45,7 @@ const Login = () => {
         type="password"
         value={password}
         onChange={handlePasswordChange}
+        InputProps={{endAdornment: <Button onClick={() => setPasswordShown(!passwordShown)}>{passwordShown ? <VisibilityOffIcon fontSize="small" sx={{color: 'black'}}/> : <VisibilityIcon fontSize="small" sx={{color: 'black'}}/>}</Button>}}
       />
       <Button variant="contained" color="primary" type="submit">
         {t("sign_in")}

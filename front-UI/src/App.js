@@ -16,6 +16,7 @@ import HttpApi from 'i18next-http-backend';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.js';
 import LinearProgress from '@mui/material/LinearProgress';
+import EditChemist from './pages/EditChemist';
 
 
 i18n
@@ -56,6 +57,10 @@ function App() {
         <Route path="/accounts:id" element={<SingleAccount />} />
         <Route path="/accounts/self" element={<AccountInfo />} />
         <Route path="/accounts/edit/:id" element={<EditSingleAccount />} />
+        <Route path="*" element={<h1>Not Found</h1>} />
+        <Route path="/edit-chemist/:id" element={<EditChemist />} />
+        <Route path="/edit-admin/:id" element={<EditChemist />} />
+        <Route path="/edit-patient/:id" element={<EditChemist />} />
       </Routes>
     </Router>
     </Suspense>

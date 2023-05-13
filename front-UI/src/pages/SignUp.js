@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import { Grid, Paper, TextField, Button , Box} from '@mui/material';
 import { useTranslation } from "react-i18next";
-import { post } from '../api/api.js';
+import {signUpAccount }from "../api/mok/accountApi";
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+
 
 function SignUp() {
     const paperStyle = { padding: '30px 20px', width: 300, margin: "20px auto" }
@@ -15,18 +18,11 @@ function SignUp() {
     const [pesel, setPesel] = useState("");
     const [nip, setNip] = useState("");
 
+    const [passwordShown, setPasswordShown] = useState(false);
+
     const { t } = useTranslation();
     const handleSubmit = (event) => {
-        post("/api/account/register", {
-            name: name,
-            lastName: lastName,
-            login: login,
-            email: email,
-            password: password,
-            phoneNumber: phoneNumber,
-            pesel: pesel,
-            nip: nip
-        })
+        signUpAccount(name, lastName, login, email, password, phoneNumber, pesel, nip);
         event.preventDefault();
       };
 
@@ -34,7 +30,7 @@ function SignUp() {
         <Grid>
             <Paper elevation={20} sx={paperStyle}>
                 <h2 style={headerStyle}>{t("sign_up")} </h2>
-                <Box sx={{display: "flex", flexDirection: "column", width: "60%" }} onSubmit={handleSubmit}>
+                <Box sx={{display: "flex", flexDirection: "column", width: "60%" }}>
                     <TextField sx={{ width: 300}}
                         fullWidth 
                         label={t("name")} 
@@ -61,10 +57,13 @@ function SignUp() {
                         />
                     <TextField sx={{ width: 300}}
                         fullWidth 
+                        type={passwordShown ? "text" : "password"}
                         label={t("password")}
                         //placeholder="Enter your password"
                         onChange={(event) => setPassword(event.target.value)}
+                        InputProps={{endAdornment: <Button onClick={() => setPasswordShown(!passwordShown)}>{passwordShown ? <VisibilityOffIcon fontSize="small" sx={{color: 'black'}}/> : <VisibilityIcon fontSize="small" sx={{color: 'black'}}/>}</Button>}}
                         />
+                    
                     <TextField sx={{ width: 300}}
                         fullWidth 
                         label={t("phone_number")} 
