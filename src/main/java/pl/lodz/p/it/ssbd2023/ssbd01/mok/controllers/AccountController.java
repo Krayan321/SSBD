@@ -48,10 +48,13 @@ public class AccountController extends AbstractController {
   @Inject private AccountManagerLocal accountManager;
 
   @GET
+  @Path("/")
   @Produces(MediaType.APPLICATION_JSON)
   @RolesAllowed({"ADMIN"})
   public List<AccountDTO> readAllClients() {
-    return new ArrayList<>();
+    List<Account> accounts = accountManager.getAllAccounts();
+//            repeatTransaction(accountManager, () -> accountManager.getAccount(id));
+return accounts.stream().map(AccountConverter::mapAccountToAccountDto).toList();
   }
 
   @POST

@@ -4,8 +4,7 @@ import static controller.dataForTests.*;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.hasItem;
-import static org.hamcrest.Matchers.hasEntry;
-import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.*;
 
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
@@ -419,5 +418,18 @@ public class AccountControllerIT extends BaseTest {
         .log()
         .all()
         .body("active", equalTo(true));
+  }
+
+  @Test
+  @Order(24)
+  public void readAccounts_returns_something() {
+    given()
+        .header("authorization", "Bearer " + adminJwt)
+        .get(getApiRoot() + "/account/")
+        .then()
+        .statusCode(Response.Status.OK.getStatusCode())
+        .body("$", hasSize(greaterThan(3)))
+        .body("$", hasItem(hasKey("login")))
+        .body("$", hasItem(hasEntry("login", adminLoginDto.getLogin())));
   }
 }
