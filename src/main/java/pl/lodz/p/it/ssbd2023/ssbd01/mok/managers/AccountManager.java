@@ -172,6 +172,14 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
   }
 
   @Override
+  public Account updateOwnEmail(Long id, String email) {
+    Account account = getAccount(id);
+    account.setEmail(email); // check validity??
+    accountFacade.edit(account);
+    return account;
+  }
+  
+  @Override
   public void purgeUnactivatedAccounts() {
     List<Account> accountsToPurge = accountFacade.findNotConfirmed();
 

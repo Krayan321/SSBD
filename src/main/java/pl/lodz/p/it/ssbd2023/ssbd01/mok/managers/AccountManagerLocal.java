@@ -40,6 +40,8 @@ public interface AccountManagerLocal extends CommonManagerLocalInterface {
   Account removeAccessLevel(Long id, AccessLevel accessLevel);
 
   Account updateOwnPassword(Long id, String oldPassword, String newPassword);
+  
+  Account updateOwnEmail(Long id, String email);
 
   void purgeUnactivatedAccounts();
 

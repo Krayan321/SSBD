@@ -24,6 +24,7 @@ import pl.lodz.p.it.ssbd2023.ssbd01.dto.addAsAdmin.AddPatientAccountDto;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.auth.ResetPasswordDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.auth.SetNewPasswordDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.auth.UpdateOtherUserPasswordDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.auth.EditAccountDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.auth.VerificationTokenDto;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccount.EditAdminDataDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccount.EditChemistDataDTO;
@@ -148,6 +149,18 @@ public class AccountController extends AbstractController {
     accountManager.updateOwnPassword(id, oldPassword, newPassword);
 //    repeatTransaction(
 //        accountManager, () -> accountManager.updateOwnPassword(id, oldPassword, newPassword));
+    return Response.status(Response.Status.OK).build();
+  }
+
+  @PUT
+  @Path("{id}/editAccount")
+  @RolesAllowed({"PATIENT", "CHEMIST", "ADMIN"})
+  public Response editAccount(
+          @PathParam("id") Long id, @Valid EditAccountDTO editAccountDTO) {
+    String email = editAccountDTO.getEmail();
+    accountManager.updateOwnEmail(id, email);
+//    repeatTransaction(
+//        accountManager, () -> accountManager.updateOwnEmail(id, email));
     return Response.status(Response.Status.OK).build();
   }
 
