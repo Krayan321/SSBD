@@ -47,11 +47,12 @@ public class AuthController {
         new UsernamePasswordCredential(loginDto.getLogin(), loginDto.getPassword());
     CredentialValidationResult result = identityStoreHandler.validate(credential);
     if (result.getStatus() != CredentialValidationResult.Status.VALID) {
-      accountManager.updateAuthInformation(
-          credential.getCaller(),
-          httpServletRequest.getRemoteAddr(),
-          Date.from(Instant.now()),
-          false);
+      // fixme
+      //      accountManager.updateAuthInformation(
+      //          credential.getCaller(),
+      //          httpServletRequest.getRemoteAddr(),
+      //          Date.from(Instant.now()),
+      //          false);
       throw ApplicationException.createUnauthorisedException();
     }
 
@@ -61,11 +62,11 @@ public class AuthController {
     if (!account.getActive()) {
       throw AccountApplicationException.createAccountBlockedException();
     }
-
-    accountManager.updateAuthInformation(
-            credential.getCaller(),
-            httpServletRequest.getRemoteAddr(),
-            Date.from(Instant.now()), true);
+    // fixme
+    //    accountManager.updateAuthInformation(
+    //            credential.getCaller(),
+    //            httpServletRequest.getRemoteAddr(),
+    //            Date.from(Instant.now()), true);
     return Response.ok(jwtUtils.create(result)).build();
   }
 }

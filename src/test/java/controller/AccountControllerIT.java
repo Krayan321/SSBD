@@ -68,7 +68,8 @@ public class AccountControllerIT extends BaseTest {
         .then()
         .log()
         .all()
-        .statusCode(Response.Status.EXPECTATION_FAILED.getStatusCode());
+        .statusCode(Response.Status.UNAUTHORIZED.getStatusCode())
+        .body("message", equalTo(EXCEPTION_UNAUTHORISED));
   }
 
   @Test
@@ -114,7 +115,7 @@ public class AccountControllerIT extends BaseTest {
         .log()
         .all()
         .statusCode(Response.Status.CONFLICT.getStatusCode())
-        .body(equalTo(EXCEPTION_ACCOUNT_DUPLICATE_LOGIN));
+        .body("message", equalTo(EXCEPTION_ACCOUNT_DUPLICATE_LOGIN));
   }
 
   @Test
@@ -127,7 +128,7 @@ public class AccountControllerIT extends BaseTest {
         .log()
         .all()
         .statusCode(Response.Status.CONFLICT.getStatusCode())
-        .body(equalTo(EXCEPTION_ACCOUNT_DUPLICATE_EMAIL));
+        .body("message", equalTo(EXCEPTION_ACCOUNT_DUPLICATE_EMAIL));
   }
 
   @Test
@@ -287,7 +288,7 @@ public class AccountControllerIT extends BaseTest {
         .log()
         .all()
         .statusCode(Response.Status.CONFLICT.getStatusCode())
-        .body(equalTo(EXCEPTION_ACCOUNT_DUPLICATE_EMAIL));
+        .body("message", equalTo(EXCEPTION_ACCOUNT_DUPLICATE_EMAIL));
   }
 
   @Test
@@ -327,7 +328,7 @@ public class AccountControllerIT extends BaseTest {
         .log()
         .all()
         .statusCode(Response.Status.CONFLICT.getStatusCode())
-        .body(equalTo(EXCEPTION_ACCOUNT_DUPLICATE_EMAIL));
+        .body("message", equalTo(EXCEPTION_ACCOUNT_DUPLICATE_EMAIL));
   }
 
   @Test
@@ -348,7 +349,7 @@ public class AccountControllerIT extends BaseTest {
   public void password_incorrect_block_account() {
     for (int i = 0; i < 3; i++) {
       given()
-          .body(new LoginDTO("admin123", "invalid_test"))
+          .body(new LoginDTO(patientLoginDto.getLogin(), "invalid_test"))
           .post(getApiRoot() + "/auth/login")
           .then()
           .statusCode(Response.Status.UNAUTHORIZED.getStatusCode());
