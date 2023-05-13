@@ -32,6 +32,6 @@ public class AccessLevelMerger {
   }
 
   public static void mergeAdminData(AdminData managed, AdminData toMerge) {
-    // todo
+    managed.setWorkPhoneNumber(toMerge.getWorkPhoneNumber());
   }
 }

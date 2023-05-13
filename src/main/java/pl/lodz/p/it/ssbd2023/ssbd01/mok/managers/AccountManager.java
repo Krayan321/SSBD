@@ -14,6 +14,7 @@ import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import lombok.extern.java.Log;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
@@ -107,11 +108,13 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
     return account;
   }
 
-  // todo add modified by
   @Override
-  public Account editAccessLevel(Long id, AccessLevel accessLevel) {
+  public Account editAccessLevel(Long id, AccessLevel accessLevel, Long version) {
     Account account = getAccount(id);
     AccessLevel found = AccessLevelFinder.findAccessLevel(account, accessLevel);
+    if(!Objects.equals(found.getVersion(), version)) {
+      throw ApplicationException.createOptimisticLockException();
+    }
     AccessLevelMerger.mergeAccessLevels(found, accessLevel);
     accountFacade.edit(account);
     return account;

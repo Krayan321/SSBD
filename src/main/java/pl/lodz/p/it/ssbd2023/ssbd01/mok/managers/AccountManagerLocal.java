@@ -25,7 +25,7 @@ public interface AccountManagerLocal extends CommonManagerLocalInterface {
 
   Account registerAccount(Account account);
 
-  Account editAccessLevel(Long id, AccessLevel accessLevel);
+  Account editAccessLevel(Long id, AccessLevel accessLevel, Long version);
 
   Account grantAccessLevel(Long id, AccessLevel accessLevel);
 

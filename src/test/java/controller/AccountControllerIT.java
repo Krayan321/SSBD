@@ -4,6 +4,9 @@ import static controller.dataForTests.*;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.Matchers.hasEntry;
+import static org.hamcrest.Matchers.hasSize;
+import static pl.lodz.p.it.ssbd2023.ssbd01.common.i18n.*;
 import static org.hamcrest.Matchers.*;
 
 import io.restassured.RestAssured;
@@ -54,7 +57,6 @@ public class AccountControllerIT extends BaseTest {
             .build();
   }
 
-  // todo add verification of internationalised message
   @Test
   @Order(1)
   public void login_invalidLogin() {
@@ -111,7 +113,8 @@ public class AccountControllerIT extends BaseTest {
         .then()
         .log()
         .all()
-        .statusCode(Response.Status.EXPECTATION_FAILED.getStatusCode());
+        .statusCode(Response.Status.CONFLICT.getStatusCode())
+        .body(equalTo(EXCEPTION_ACCOUNT_DUPLICATE_LOGIN));
   }
 
   @Test
@@ -123,7 +126,8 @@ public class AccountControllerIT extends BaseTest {
         .then()
         .log()
         .all()
-        .statusCode(Response.Status.EXPECTATION_FAILED.getStatusCode());
+        .statusCode(Response.Status.CONFLICT.getStatusCode())
+        .body(equalTo(EXCEPTION_ACCOUNT_DUPLICATE_EMAIL));
   }
 
   @Test
@@ -169,6 +173,21 @@ public class AccountControllerIT extends BaseTest {
         .all()
         .statusCode(Response.Status.OK.getStatusCode());
   }
+
+// todo this shouldn't pass
+  @Test
+  @Order(10)
+  public void grantAdmin_secondGrant() {
+    given()
+            .header("authorization", "Bearer " + adminJwt)
+            .body(grantAdminDataDTO)
+            .put(getApiRoot() + "/account/2/grantAdmin")
+            .then()
+            .log()
+            .all()
+            .statusCode(Response.Status.CONFLICT.getStatusCode());
+  }
+
 
   @Test
   @Order(10)
@@ -231,7 +250,19 @@ public class AccountControllerIT extends BaseTest {
             hasItem(hasEntry("firstName", patientDataDTOChangedName.getFirstName())));
   }
 
-  // todo admin? for now it changes nothing
+  @Test
+  @Order(12)
+  public void editPatientData_badVersion() {
+    given()
+            .header("authorization", "Bearer " + adminJwt)
+            .body(patientDataDTOChangedName)
+            .put(getApiRoot() + "/account/2/patient")
+            .then()
+            .log()
+            .all()
+            .statusCode(Response.Status.CONFLICT.getStatusCode());
+  }
+
   @Test
   @Order(12)
   public void addChemist_correct() {
@@ -255,7 +286,8 @@ public class AccountControllerIT extends BaseTest {
         .then()
         .log()
         .all()
-        .statusCode(Response.Status.EXPECTATION_FAILED.getStatusCode());
+        .statusCode(Response.Status.CONFLICT.getStatusCode())
+        .body(equalTo(EXCEPTION_ACCOUNT_DUPLICATE_EMAIL));
   }
 
   @Test
@@ -294,7 +326,8 @@ public class AccountControllerIT extends BaseTest {
         .then()
         .log()
         .all()
-        .statusCode(Response.Status.EXPECTATION_FAILED.getStatusCode());
+        .statusCode(Response.Status.CONFLICT.getStatusCode())
+        .body(equalTo(EXCEPTION_ACCOUNT_DUPLICATE_EMAIL));
   }
 
   @Test
