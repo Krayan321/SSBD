@@ -18,6 +18,7 @@ import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.ChangePasswordDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.auth.EditAccountDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.auth.LoginDTO;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -50,7 +51,7 @@ public class AccountControllerIT extends BaseTest {
             .setContentType(ContentType.JSON)
             .setAccept(ContentType.JSON)
             .log(LogDetail.ALL)
-            //                        .addHeader("authorization", "Bearer " + adminJwt)
+            // .addHeader("authorization", "Bearer " + adminJwt)
             .build();
   }
 
@@ -419,5 +420,25 @@ public class AccountControllerIT extends BaseTest {
         .log()
         .all()
         .body("active", equalTo(true));
+  }
+
+  @Test
+  @Order(25)
+  public void editAccount() {
+    given()
+        .header("authorization", "Bearer " + adminJwt)
+        .body(new EditAccountDTO("kitty@meow.com"))
+        .put(getApiRoot() + "/account/1/editAccount")
+        .then()
+        .log()
+        .all()
+        .statusCode(Response.Status.OK.getStatusCode());
+    given()
+        .header("authorization", "Bearer " + adminJwt)
+        .get(getApiRoot() + "/account/1")
+        .then()
+        .log()
+        .all()
+        .body("email", equalTo("kitty@meow.com"));
   }
 }

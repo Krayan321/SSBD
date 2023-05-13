@@ -23,6 +23,7 @@ public class AccountConverter {
         .confirmed(account.getConfirmed())
         .active(account.getActive())
         .login(account.getLogin())
+        .email(account.getEmail())
         .build();
   }
 
