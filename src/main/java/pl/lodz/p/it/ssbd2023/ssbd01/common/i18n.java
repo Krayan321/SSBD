@@ -48,6 +48,11 @@ public class i18n {
           "mail.account.unblocked.too-many-logins.body";
   public static final String MAIL_ACCOUNT_ACTIVATED_SUBJECT = "mail.account.activated.subject";
   public static final String MAIL_ACCOUNT_ACTIVATED_BODY = "mail.account.activated.body";
+  public static final String MAIL_ACCOUNT_REGISTER_SUBJECT = "mail.account.register.subject";
+  public static final String MAIL_ACCOUNT_REGISTER_BODY = "mail.account.register.body";
+
+  public static final String MAIL_PASSWORD_RESET_SUBJECT = "mail.password.reset.subject";
+  public static final String MAIL_PASSWORD_RESET_BODY = "mail.password.reset.body";
 
   public static String getMessage(String message, Locale locale) {
     ResourceBundle bundle = ResourceBundle.getBundle("i18n.messages", locale);

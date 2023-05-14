@@ -157,7 +157,7 @@ return accounts.stream().map(AccountConverter::mapAccountToAccountDto).toList();
   @Path("/resetPassword")
   public Response resetPassword(@Valid ResetPasswordDTO resetPasswordDTO) {
     String email = resetPasswordDTO.getEmail();
-    // todo
+    accountManager.sendResetPasswordToken(email);
     return Response.status(Response.Status.OK).build();
   }
 

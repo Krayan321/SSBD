@@ -13,6 +13,8 @@ public interface TokenManagerLocal extends CommonManagerLocalInterface {
 
   void sendVerificationToken(Account account, String code);
 
+  void sendResetPasswordToken(Account account);
+
   void verifyAccount(String token);
 
   Token findByAccountId(Long id);

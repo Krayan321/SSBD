@@ -103,6 +103,19 @@ public class EmailService {
     }
   }
 
+  public void sendEmailResetPassword(String email, String name, Locale locale, String token) {
+    String subject = i18n.getMessage(i18n.MAIL_PASSWORD_RESET_SUBJECT, locale);
+    String body = i18n.getMessage(i18n.MAIL_PASSWORD_RESET_BODY, locale);
+    body += " " + token;
+
+    MailjetRequest request = getMailjetRequest(email, name, subject, body);
+    try {
+      client.post(request);
+    } catch (MailjetException e) {
+      e.printStackTrace();
+    }
+  }
+
   public void sendEmailAccountActivated(String email, String name, Locale locale) {
     String subject = i18n.getMessage(i18n.MAIL_ACCOUNT_ACTIVATED_SUBJECT, locale);
     String body = i18n.getMessage(i18n.MAIL_ACCOUNT_ACTIVATED_BODY, locale);
@@ -115,28 +128,12 @@ public class EmailService {
     }
   }
 
-  public void sendRegistrationEmail(String email, String name, String token) {
-    MailjetRequest request =
-        new MailjetRequest(Emailv31.resource)
-            .property(
-                Emailv31.MESSAGES,
-                new JSONArray()
-                    .put(
-                        new JSONObject()
-                            .put(
-                                Emailv31.Message.FROM, new JSONObject().put("Email", EMAIL_ADDRESS))
-                            .put(
-                                Emailv31.Message.TO,
-                                new JSONArray()
-                                    .put(new JSONObject().put("Email", email).put("Name", name)))
-                            .put(Emailv31.Message.SUBJECT, "Account activation")
-                            .put(
-                                Emailv31.Message.TEXTPART,
-                                "Dear "
-                                    + name
-                                    + ", welcome to Online Pharmacy! To activate your account click"
-                                    + " copy token below: "
-                                    + token)));
+  public void sendRegistrationEmail(String email, String name, Locale locale, String token) {
+    String subject = i18n.getMessage(i18n.MAIL_ACCOUNT_REGISTER_SUBJECT, locale);
+    String body = i18n.getMessage(i18n.MAIL_ACCOUNT_REGISTER_BODY, locale);
+    body += " " + token;
+
+    MailjetRequest request = getMailjetRequest(email, name, subject, body);
     try {
       client.post(request);
     } catch (MailjetException e) {

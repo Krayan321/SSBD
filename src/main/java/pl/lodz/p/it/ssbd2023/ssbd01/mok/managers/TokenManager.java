@@ -40,6 +40,10 @@ public class TokenManager extends AbstractManager
   @ConfigProperty(name = "verification.token.expiration.hours")
   private int VERIFICATION_TOKEN_EXPIRATION_HOURS;
 
+  @Inject
+  @ConfigProperty(name = "reset-password.token.expiration.hours")
+  private int RESET_PASSWORD_TOKEN_EXPIRATION_HOURS;
+
   @Override
   public void sendVerificationToken(Account account, String code) {
     Token token =
@@ -56,10 +60,29 @@ public class TokenManager extends AbstractManager
             .build();
     // todo czy napewno createdby/modifiedby przez account?
     token.setCreatedBy(account);
-    token.setModifiedBy(account);
 
     tokenFacade.create(token);
-    emailService.sendRegistrationEmail(account.getEmail(), account.getLogin(), token.getCode());
+    emailService.sendRegistrationEmail(account.getEmail(), account.getLogin(),
+            account.getLanguage(), token.getCode());
+  }
+
+  @Override
+  public void sendResetPasswordToken(Account account) {
+    Token token = Token.builder()
+            .account(account)
+            .code(RandomStringUtils.randomAlphanumeric(28))
+            .tokenType(TokenType.PASSWORD_RESET)
+            .wasPreviousTokenSent(false)
+            .expirationDate(new Date(Instant.now()
+                    .plusSeconds((long) RESET_PASSWORD_TOKEN_EXPIRATION_HOURS * 60 * 60)
+                    .toEpochMilli()))
+            .build();
+
+    token.setCreatedBy(account);
+
+    tokenFacade.create(token);
+    emailService.sendEmailResetPassword(account.getEmail(), account.getLogin(),
+            account.getLanguage(), token.getCode());
   }
 
   @Override

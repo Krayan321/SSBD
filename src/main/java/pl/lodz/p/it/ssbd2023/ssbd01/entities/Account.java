@@ -18,6 +18,7 @@ import lombok.*;
 @Setter
 @NamedQuery(name = "account.findAll", query = "SELECT o FROM Account o")
 @NamedQuery(name = "account.findByLogin", query = "SELECT o FROM Account o WHERE o.login = ?1")
+@NamedQuery(name = "account.findByEmail", query = "SELECT o FROM Account o WHERE o.email = ?1")
 public class Account extends AbstractEntity implements Serializable {
 
   public static final long serialVersionUID = 1L;

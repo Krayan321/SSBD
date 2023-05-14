@@ -36,6 +36,8 @@ public interface AccountManagerLocal extends CommonManagerLocalInterface {
 
   void unblockAccount(Long id);
 
+  void sendResetPasswordToken(String email);
+
   Account updateUserPassword(Long id, String newPassword);
 
   Account removeAccessLevel(Long id, AccessLevel accessLevel);

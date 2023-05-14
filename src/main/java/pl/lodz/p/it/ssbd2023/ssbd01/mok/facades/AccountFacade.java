@@ -60,6 +60,13 @@ public class AccountFacade extends AbstractFacade<Account> {
     return tq.getSingleResult();
   }
 
+  @PermitAll
+  public Account findByEmail(String email) {
+    TypedQuery<Account> tq = em.createNamedQuery("account.findByEmail", Account.class);
+    tq.setParameter(1, email);
+    return tq.getSingleResult();
+  }
+
   @DenyAll
   public List<Account> findNotConfirmed() {
     CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();

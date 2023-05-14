@@ -182,6 +182,13 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
   }
 
   @Override
+  @PermitAll
+  public void sendResetPasswordToken(String email) {
+    Account account = accountFacade.findByEmail(email);
+    verificationManager.sendResetPasswordToken(account);
+  }
+
+  @Override
   @RolesAllowed("updateUserPassword")
   public Account updateUserPassword(Long id, String newPassword) {
     Account account = getAccount(id);
