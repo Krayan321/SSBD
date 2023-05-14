@@ -3,6 +3,7 @@ package pl.lodz.p.it.ssbd2023.ssbd01.util.converters;
 import java.util.Locale;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.AccountAndAccessLevelsDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.AccountDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.SelfAccountWithAccessLevelDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.addAsAdmin.AddAdminAccountDto;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.addAsAdmin.AddChemistAccountDto;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.addAsAdmin.AddPatientAccountDto;
@@ -38,6 +39,21 @@ public class AccountConverter {
         .active(account.getActive())
         .confirmed(account.getConfirmed())
         .build();
+  }
+
+  public static SelfAccountWithAccessLevelDTO mapAccountToSelfAccountWithAccessLevelsDto(Account account) {
+    var accessLevels =
+            AccessLevelConverter.mapAccessLevelsToAccessLevelsDto(account.getAccessLevels());
+    return SelfAccountWithAccessLevelDTO.childBuilder()
+            .id(account.getId())
+            .version(account.getVersion())
+            .accessLevels(accessLevels)
+            .login(account.getLogin())
+            .active(account.getActive())
+            .confirmed(account.getConfirmed())
+            .email(account.getEmail())
+            .language(account.getLanguage())
+            .build();
   }
 
   public static Account mapRegisterPatientDtoToAccount(RegisterPatientDTO registerPatientDto) {

@@ -487,4 +487,20 @@ public class AccountControllerIT extends BaseTest {
         .all()
         .body("email", equalTo("kitty@meow.com"));
   }
+
+  @Test
+  @Order(24)
+  public void getSelfInfoCorrect(){
+    given()
+            .header("authorization", "Bearer " + adminJwt)
+            .get(getApiRoot() + "/account/details")
+            .then()
+            .log()
+            .all()
+            .statusCode(Response.Status.OK.getStatusCode())
+            .body("accessLevels",
+                    hasItem(hasEntry("role", "ADMIN")))
+            .body("login", equalTo(adminLoginDto.getLogin()) );
+  }
+
 }
