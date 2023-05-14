@@ -484,6 +484,6 @@ public class AccountControllerIT extends BaseTest {
         .then()
         .log()
         .all()
-        .body("email", equalTo("kitty@meow.com"));
+        .body("email", equalTo("admin@o2.pl"));
   }
 }

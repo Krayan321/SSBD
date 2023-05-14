@@ -9,7 +9,6 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import java.util.ArrayList;
 import java.util.List;
 import pl.lodz.p.it.ssbd2023.ssbd01.common.AbstractController;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.AccountAndAccessLevelsDTO;
@@ -54,8 +53,8 @@ public class AccountController extends AbstractController {
   @RolesAllowed({"ADMIN"})
   public List<AccountDTO> readAllClients() {
     List<Account> accounts = accountManager.getAllAccounts();
-//            repeatTransaction(accountManager, () -> accountManager.getAccount(id));
-return accounts.stream().map(AccountConverter::mapAccountToAccountDto).toList();
+    //            repeatTransaction(accountManager, () -> accountManager.getAccount(id));
+    return accounts.stream().map(AccountConverter::mapAccountToAccountDto).toList();
   }
 
   @POST
@@ -64,6 +63,15 @@ return accounts.stream().map(AccountConverter::mapAccountToAccountDto).toList();
     accountManager.confirmAccountRegistration(token.getToken());
     //    repeatTransactionVoid(
     //        accountManager, () -> accountManager.confirmAccountRegistration(token.getToken()));
+    return Response.ok().build();
+  }
+
+  @POST
+  @Path("/confirmEmailChange")
+  public Response confirmEmailChange(@Valid VerificationTokenDto token) {
+    accountManager.confirmEmailChange(token.getToken());
+    //    repeatTransactionVoid(
+    //        accountManager, () -> accountManager.confirmEmailChange(token.getToken()));
     return Response.ok().build();
   }
 
@@ -194,7 +202,8 @@ return accounts.stream().map(AccountConverter::mapAccountToAccountDto).toList();
     PatientData patientData =
         AccessLevelConverter.mapEditPatientDataDtoToPatientData(patientDataDTO);
     Account account = accountManager.editAccessLevel(id, patientData, patientDataDTO.getVersion());
-//        repeatTransaction(accountManager, () -> accountManager.editAccessLevel(id, patientData));
+    //        repeatTransaction(accountManager, () -> accountManager.editAccessLevel(id,
+    // patientData));
     return AccountConverter.mapAccountToAccountAndAccessLevelsDto(account);
   }
 
@@ -207,7 +216,8 @@ return accounts.stream().map(AccountConverter::mapAccountToAccountDto).toList();
       @PathParam("id") Long id, @Valid EditAdminDataDTO adminDataDTO) {
     AdminData adminData = AccessLevelConverter.mapEditAdminDataDtoToAdminData(adminDataDTO);
     Account account = accountManager.editAccessLevel(id, adminData, adminDataDTO.getVersion());
-//        repeatTransaction(accountManager, () -> accountManager.editAccessLevel(id, adminData));
+    //        repeatTransaction(accountManager, () -> accountManager.editAccessLevel(id,
+    // adminData));
     return AccountConverter.mapAccountToAccountAndAccessLevelsDto(account);
   }
 
@@ -221,7 +231,8 @@ return accounts.stream().map(AccountConverter::mapAccountToAccountDto).toList();
     ChemistData chemistData =
         AccessLevelConverter.mapEditChemistDataDtoToChemistData(chemistDataDTO);
     Account account = accountManager.editAccessLevel(id, chemistData, chemistDataDTO.getVersion());
-//        repeatTransaction(accountManager, () -> accountManager.editAccessLevel(id, chemistData));
+    //        repeatTransaction(accountManager, () -> accountManager.editAccessLevel(id,
+    // chemistData));
     return AccountConverter.mapAccountToAccountAndAccessLevelsDto(account);
   }
 

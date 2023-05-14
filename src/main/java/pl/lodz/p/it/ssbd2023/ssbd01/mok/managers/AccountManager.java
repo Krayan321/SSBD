@@ -27,6 +27,7 @@ import pl.lodz.p.it.ssbd2023.ssbd01.exceptions.ApplicationException;
 import pl.lodz.p.it.ssbd2023.ssbd01.interceptors.GenericManagerExceptionsInterceptor;
 import pl.lodz.p.it.ssbd2023.ssbd01.interceptors.TrackerInterceptor;
 import pl.lodz.p.it.ssbd2023.ssbd01.mok.facades.AccountFacade;
+import pl.lodz.p.it.ssbd2023.ssbd01.mok.facades.PendingEmailChangeFacade;
 import pl.lodz.p.it.ssbd2023.ssbd01.security.HashAlgorithmImpl;
 import pl.lodz.p.it.ssbd2023.ssbd01.util.AccessLevelFinder;
 import pl.lodz.p.it.ssbd2023.ssbd01.util.email.EmailService;
@@ -39,6 +40,8 @@ import pl.lodz.p.it.ssbd2023.ssbd01.util.mergers.AccessLevelMerger;
 public class AccountManager extends AbstractManager implements AccountManagerLocal {
 
   @Inject private AccountFacade accountFacade;
+
+  @Inject private PendingEmailChangeFacade pendingEmailChangeFacade;
 
   @Inject private TokenManagerLocal verificationManager;
 
@@ -112,7 +115,7 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
   public Account editAccessLevel(Long id, AccessLevel accessLevel, Long version) {
     Account account = getAccount(id);
     AccessLevel found = AccessLevelFinder.findAccessLevel(account, accessLevel);
-    if(!Objects.equals(found.getVersion(), version)) {
+    if (!Objects.equals(found.getVersion(), version)) {
       throw ApplicationException.createOptimisticLockException();
     }
     AccessLevelMerger.mergeAccessLevels(found, accessLevel);
@@ -177,8 +180,7 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
   @Override
   public Account updateOwnEmail(Long id, String email) {
     Account account = getAccount(id);
-    account.setEmail(email); // check validity??
-    accountFacade.edit(account);
+    verificationManager.sendEmailChangeEmail(account, email);
     return account;
   }
 
@@ -269,5 +271,10 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
     account.getAccessLevels().remove(accessLevel);
     accountFacade.edit(account);
     return account;
+  }
+
+  @Override
+  public void confirmEmailChange(String code) {
+    verificationManager.confirmEmailChange(code);
   }
 }

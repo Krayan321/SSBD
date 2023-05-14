@@ -132,6 +132,35 @@ public class EmailService {
     }
   }
 
+  public void sendEmailChangeEmail(String email, String name, String token) {
+    MailjetRequest request =
+        new MailjetRequest(Emailv31.resource)
+            .property(
+                Emailv31.MESSAGES,
+                new JSONArray()
+                    .put(
+                        new JSONObject()
+                            .put(
+                                Emailv31.Message.FROM, new JSONObject().put("Email", EMAIL_ADDRESS))
+                            .put(
+                                Emailv31.Message.TO,
+                                new JSONArray()
+                                    .put(new JSONObject().put("Email", email).put("Name", name)))
+                            .put(Emailv31.Message.SUBJECT, "Email change")
+                            .put(
+                                Emailv31.Message.TEXTPART,
+                                "Dear "
+                                    + name
+                                    + ", welcome to Online Pharmacy! To change confirm changing"
+                                    + " your email click copy token below: "
+                                    + token)));
+    try {
+      client.post(request);
+    } catch (MailjetException e) {
+      e.printStackTrace();
+    }
+  }
+
   public String sendCatEmail(String email, String name) throws MailjetException {
     MailjetRequest request =
         new MailjetRequest(Emailv31.resource)

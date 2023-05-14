@@ -11,6 +11,7 @@ import jakarta.ejb.TransactionAttributeType;
 import jakarta.inject.Inject;
 import jakarta.interceptor.Interceptors;
 import java.time.Instant;
+import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 import lombok.extern.java.Log;
@@ -48,11 +49,7 @@ public class TokenManager extends AbstractManager
             .code(code == null ? RandomStringUtils.randomAlphanumeric(8) : code)
             .tokenType(TokenType.VERIFICATION)
             .wasPreviousTokenSent(false)
-            .expirationDate(
-                new Date(
-                    Instant.now()
-                        .plusSeconds((long) VERIFICATION_TOKEN_EXPIRATION_HOURS * 60 * 60)
-                        .toEpochMilli()))
+            .expirationDate(createExpirationDate())
             .build();
     // todo czy napewno createdby/modifiedby przez account?
     token.setCreatedBy(account);
@@ -62,10 +59,17 @@ public class TokenManager extends AbstractManager
     emailService.sendRegistrationEmail(account.getEmail(), account.getLogin(), token.getCode());
   }
 
+  private Date createExpirationDate() {
+    return new Date(
+        Instant.now()
+            .plusSeconds((long) VERIFICATION_TOKEN_EXPIRATION_HOURS * 60 * 60)
+            .toEpochMilli());
+  }
+
   @Override
   public void verifyAccount(String code) {
     Token token = tokenFacade.findByCode(code);
-    checkIfTokenIsValid(token);
+    checkIfTokenIsValid(token, TokenType.VERIFICATION);
     Account account = token.getAccount();
     account.setConfirmed(true);
     account.setModifiedBy(account);
@@ -76,7 +80,48 @@ public class TokenManager extends AbstractManager
     tokenFacade.edit(token);
   }
 
-  private void checkIfTokenIsValid(Token token) {
+  @Override
+  public void sendEmailChangeEmail(Account account, String new_email) {
+    Token token =
+        Token.builder()
+            .account(account)
+            .code(encodeEmail(new_email))
+            .expirationDate(createExpirationDate())
+            .wasPreviousTokenSent(false)
+            .tokenType(TokenType.EMAIL_CHANGE_CONFIRM)
+            .build();
+
+    token.setCreatedBy(account);
+    token.setModifiedBy(account);
+
+    tokenFacade.create(token);
+    emailService.sendEmailChangeEmail(new_email, account.getLogin(), token.getCode());
+  }
+
+  private String encodeEmail(String new_email) {
+    return RandomStringUtils.randomAlphanumeric(8)
+        + Base64.getEncoder().encodeToString(new_email.getBytes());
+  }
+
+  private String decodeEmail(String code) {
+    return Base64.getDecoder().decode((code.substring(8, code.length())).getBytes()).toString();
+  }
+
+  @Override
+  public void confirmEmailChange(String code) {
+    Token token = tokenFacade.findByCode(code);
+    checkIfTokenIsValid(token, TokenType.EMAIL_CHANGE_CONFIRM);
+    Account account = token.getAccount();
+    account.setEmail(decodeEmail(code));
+    account.setModifiedBy(account);
+    account.setCreatedBy(account);
+    token.setUsed(true);
+    emailService.sendEmailAccountActivated(
+        account.getEmail(), account.getLogin(), account.getLanguage());
+    tokenFacade.edit(token);
+  }
+
+  private void checkIfTokenIsValid(Token token, TokenType tokenType) {
     if (token == null) {
       TokenException.tokenNotFoundException();
     }
@@ -89,7 +134,7 @@ public class TokenManager extends AbstractManager
       log.warning("MAGNO MANGO ZET Token already used");
       tokenAlreadyUsedException();
     }
-    if (token.getTokenType() != TokenType.VERIFICATION) {
+    if (token.getTokenType() != tokenType) {
       incorrectTokenTypeException();
     }
   }

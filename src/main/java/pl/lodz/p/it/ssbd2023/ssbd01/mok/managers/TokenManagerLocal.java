@@ -15,6 +15,10 @@ public interface TokenManagerLocal extends CommonManagerLocalInterface {
 
   void verifyAccount(String token);
 
+  void sendEmailChangeEmail(Account account, String new_email);
+
+  void confirmEmailChange(String token);
+
   Token findByAccountId(Long id);
 
   void removeVerificationCode(Token token);
