@@ -45,8 +45,7 @@ public interface AccountManagerLocal extends CommonManagerLocalInterface {
 
   void purgeUnactivatedAccounts();
 
-  void updateAuthInformation(String caller, String remoteAddr, Date now, Boolean isCorrect)
-      throws MailjetException;
+  void updateAuthInformation(String caller, String remoteAddr, Date now, Boolean isCorrect);
 
   void sendVerificationTokenIfPreviousWasNotSent();
 }

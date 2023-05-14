@@ -201,8 +201,7 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
   }
 
   @Override
-  public void updateAuthInformation(String caller, String remoteAddr, Date now, Boolean isCorrect)
-      throws MailjetException {
+  public void updateAuthInformation(String caller, String remoteAddr, Date now, Boolean isCorrect) {
     Account account = accountFacade.findByLogin(caller);
     if (account.getLoginAttempts() >= MAX_INCORRECT_LOGIN_ATTEMPTS) {
       LocalDateTime timeoutThreshold =
@@ -229,7 +228,8 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
       account.setLoginAttempts(account.getLoginAttempts() + 1);
       if (account.getLoginAttempts() >= MAX_INCORRECT_LOGIN_ATTEMPTS) {
         account.setActive(false);
-        emailService.sendCatEmail(account.getEmail(), account.getLogin());
+        emailService.sendEmailAccountBlockedTooManyLogins(account.getEmail(), account.getLogin(),
+                account.getLanguage());
       }
     }
   }

@@ -26,6 +26,16 @@ public class AccountApplicationException extends ApplicationException {
         EXPECTATION_FAILED, EXCEPTION_ACCOUNT_DELETION_CONFIRMED);
   }
 
+  public static AccountApplicationException createAccountNotConfirmedException() {
+    return new AccountApplicationException(
+            UNAUTHORIZED, EXCEPTION_ACCOUNT_NOT_CONFIRMED);
+  }
+
+  public static AccountApplicationException createAccountBlockedException() {
+    return new AccountApplicationException(
+            UNAUTHORIZED, EXCEPTION_ACCOUNT_BLOCKED);
+  }
+
   public static AccountApplicationException createUndefinedAccessLevelException() {
     return new AccountApplicationException(BAD_REQUEST, EXCEPTION_ACCOUNT_NO_SUCH_ACCESS_LEVEL);
   }

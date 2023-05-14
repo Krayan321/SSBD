@@ -6,15 +6,13 @@ import jakarta.persistence.OptimisticLockException;
 import jakarta.persistence.PersistenceException;
 import java.sql.SQLException;
 import lombok.extern.java.Log;
-import org.hibernate.exception.ConstraintViolationException;
-import pl.lodz.p.it.ssbd2023.ssbd01.exceptions.AccountApplicationException;
 import pl.lodz.p.it.ssbd2023.ssbd01.exceptions.ApplicationException;
 
 @Log
 public class GenericFacadeExceptionsInterceptor {
 
   @AroundInvoke
-  public Object intercept(InvocationContext ictx) throws Exception {
+  public Object intercept(InvocationContext ictx) throws ApplicationException {
     try {
       return ictx.proceed();
     } catch (OptimisticLockException e) {
