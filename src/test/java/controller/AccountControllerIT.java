@@ -430,6 +430,10 @@ public class AccountControllerIT extends BaseTest {
             .then()
             .log()
             .all()
-            .statusCode(Response.Status.OK.getStatusCode());
+            .statusCode(Response.Status.OK.getStatusCode())
+            .body("accessLevels",
+                    hasItem(hasEntry("role", "ADMIN")))
+            .body("login", equalTo(adminLoginDto.getLogin()) );
   }
+  
 }
