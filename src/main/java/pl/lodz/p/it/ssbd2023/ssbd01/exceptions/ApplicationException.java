@@ -10,7 +10,6 @@ import lombok.Getter;
 @jakarta.ejb.ApplicationException(rollback = true)
 public class ApplicationException extends WebApplicationException {
 
-  // todo add internationalisation
   @Getter private Throwable cause;
 
   @Getter private final String key;

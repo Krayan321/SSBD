@@ -175,7 +175,6 @@ public class AccountControllerIT extends BaseTest {
         .statusCode(Response.Status.OK.getStatusCode());
   }
 
-// todo this shouldn't pass
   @Test
   @Order(10)
   public void grantAdmin_secondGrant() {
@@ -344,6 +343,7 @@ public class AccountControllerIT extends BaseTest {
         .statusCode(Response.Status.BAD_REQUEST.getStatusCode());
   }
 
+  // nie przechodzi przez wykomentowane bloki w AuthController
   @Test
   @Order(18)
   public void password_incorrect_block_account() {

@@ -69,7 +69,6 @@ return accounts.stream().map(AccountConverter::mapAccountToAccountDto).toList();
   @GET
   @Path("/{id}")
   @Produces(MediaType.APPLICATION_JSON)
-  @RolesAllowed({"ADMIN"})
   public AccountDTO readAccount(@PathParam("id") Long id) {
     Account account = accountManager.getAccount(id);
     //            repeatTransaction(accountManager, () -> accountManager.getAccount(id));
@@ -79,7 +78,6 @@ return accounts.stream().map(AccountConverter::mapAccountToAccountDto).toList();
   @GET
   @Path("/details")
   @Produces(MediaType.APPLICATION_JSON)
-  @RolesAllowed({"PATIENT", "CHEMIST", "ADMIN"})
   public AccountAndAccessLevelsDTO readOwnAccount() {
     // read information about user own account
     return null;
@@ -97,7 +95,6 @@ return accounts.stream().map(AccountConverter::mapAccountToAccountDto).toList();
   @POST
   @Path("/register")
   @Consumes(MediaType.APPLICATION_JSON)
-  //    @RolesAllowed({"GUEST"})
   public Response registerPatientAccount(@NotNull @Valid RegisterPatientDTO registerPatientDto) {
     Account account = AccountConverter.mapRegisterPatientDtoToAccount(registerPatientDto);
     accountManager.registerAccount(account);
@@ -139,9 +136,9 @@ return accounts.stream().map(AccountConverter::mapAccountToAccountDto).toList();
 
   @PUT
   @Path("{id}/changePassword")
-  @RolesAllowed({"PATIENT", "CHEMIST", "ADMIN"})
   public Response changePassword(
       @PathParam("id") Long id, @Valid ChangePasswordDTO changePasswordDTO) {
+    // todo get login from security context
     String oldPassword = changePasswordDTO.getOldPassword();
     String newPassword = changePasswordDTO.getNewPassword();
     accountManager.updateOwnPassword(id, oldPassword, newPassword); //todo
@@ -152,7 +149,6 @@ return accounts.stream().map(AccountConverter::mapAccountToAccountDto).toList();
 
   @PUT
   @Path("{id}/editAccount")
-  @RolesAllowed({"PATIENT", "CHEMIST", "ADMIN"})
   public Response editAccount(@PathParam("id") Long id, @Valid EditAccountDTO editAccountDTO) {
     String email = editAccountDTO.getEmail();
     accountManager.updateOwnEmail(id, email);
@@ -163,7 +159,6 @@ return accounts.stream().map(AccountConverter::mapAccountToAccountDto).toList();
 
   @PUT
   @Path("/resetPassword")
-  @RolesAllowed({"GUEST"})
   public Response resetPassword(@Valid ResetPasswordDTO resetPasswordDTO) {
     String email = resetPasswordDTO.getEmail();
     // todo
@@ -172,7 +167,6 @@ return accounts.stream().map(AccountConverter::mapAccountToAccountDto).toList();
 
   @PUT
   @Path("/setNewPassword")
-  @RolesAllowed({"GUEST"})
   public Response setNewPassword(@Valid SetNewPasswordDTO setNewPasswordDTO) {
     // todo
     return Response.status(Response.Status.OK).entity(null).build();
@@ -260,7 +254,6 @@ return accounts.stream().map(AccountConverter::mapAccountToAccountDto).toList();
   @POST
   @Path("/add-patient")
   @Consumes(MediaType.APPLICATION_JSON)
-  @RolesAllowed({"ADMIN"})
   public Response addPatientAccountAsAdmin(
       @NotNull @Valid AddPatientAccountDto addPatientAccountDto) {
     Account account = AccountConverter.mapAddPatientDtoToAccount(addPatientAccountDto);
@@ -272,7 +265,6 @@ return accounts.stream().map(AccountConverter::mapAccountToAccountDto).toList();
   @POST
   @Path("/add-chemist")
   @Consumes(MediaType.APPLICATION_JSON)
-  @RolesAllowed({"ADMIN"})
   public Response addChemistAccountAsAdmin(
       @NotNull @Valid AddChemistAccountDto addChemistAccountDto) {
     Account account = AccountConverter.mapChemistDtoToAccount(addChemistAccountDto);
@@ -284,7 +276,6 @@ return accounts.stream().map(AccountConverter::mapAccountToAccountDto).toList();
   @POST
   @Path("/add-admin")
   @Consumes(MediaType.APPLICATION_JSON)
-  @RolesAllowed({"ADMIN"})
   public Response addAdminAccountAsAdmin(@NotNull @Valid AddAdminAccountDto addAdminAccountDto) {
     Account account = AccountConverter.mapAdminDtoToAccount(addAdminAccountDto);
     accountManager.registerAccount(account);

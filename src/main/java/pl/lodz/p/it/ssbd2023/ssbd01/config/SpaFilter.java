@@ -22,6 +22,7 @@ public class SpaFilter implements Filter {
     HttpServletRequest request = (HttpServletRequest) servletRequest;
     String uri = request.getRequestURI();
 
+    // fixme
     if (uri.matches("^/[a-zA-Z0-9\\-_]+$")) {
       RequestDispatcher dispatcher = request.getRequestDispatcher("index.html");
       dispatcher.forward(servletRequest, servletResponse);
