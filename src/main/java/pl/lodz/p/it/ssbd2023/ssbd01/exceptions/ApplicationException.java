@@ -45,6 +45,10 @@ public class ApplicationException extends WebApplicationException {
     return new ApplicationException(NOT_FOUND, EXCEPTION_NOT_FOUND);
   }
 
+  public static ApplicationException createMethodNotAllowedException() {
+    return new ApplicationException(METHOD_NOT_ALLOWED, EXCEPTION_METHOD_NOT_ALLOWED);
+  }
+
   public static ApplicationException createTransactionRolledBackException() {
     return new ApplicationException(INTERNAL_SERVER_ERROR, EXCEPTION_TRANSACTION_ROLLBACK);
   }
