@@ -80,6 +80,7 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
   }
 
   @Override
+  @RolesAllowed("getCurrentUser")
   public Account getCurrentUser(){
     Long id = accountFacade.findByLogin(context.getUserPrincipal().getName()).getId();
     return getAccountAndAccessLevels(id);

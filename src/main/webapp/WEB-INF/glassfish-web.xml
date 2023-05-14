@@ -9,6 +9,13 @@
     </security-role-mapping>
 
     <security-role-mapping>
+        <role-name>getCurrentUser</role-name>
+        <group-name>PATIENT</group-name>
+        <group-name>CHEMIST</group-name>
+        <group-name>ADMIN</group-name>
+    </security-role-mapping>
+
+    <security-role-mapping>
         <role-name>getAccountAndAccessLevels</role-name>
         <group-name>ADMIN</group-name>
     </security-role-mapping>
@@ -18,9 +25,6 @@
         <group-name>ADMIN</group-name>
     </security-role-mapping>
 
-    <!-- todo
-    readOwnAccount
-    -->
     <security-role-mapping>
         <role-name>getAccount</role-name>
         <group-name>PATIENT</group-name>
