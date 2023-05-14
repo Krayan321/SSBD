@@ -3,6 +3,9 @@ package pl.lodz.p.it.ssbd2023.ssbd01.mok.managers;
 import static pl.lodz.p.it.ssbd2023.ssbd01.exceptions.AuthApplicationException.accountBlockedException;
 
 import com.mailjet.client.errors.MailjetException;
+import jakarta.annotation.security.DenyAll;
+import jakarta.annotation.security.PermitAll;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.ejb.Stateful;
 import jakarta.ejb.TransactionAttribute;
 import jakarta.ejb.TransactionAttributeType;
@@ -36,6 +39,7 @@ import pl.lodz.p.it.ssbd2023.ssbd01.util.mergers.AccessLevelMerger;
 @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 @Interceptors({GenericManagerExceptionsInterceptor.class, TrackerInterceptor.class})
 @Log
+@DenyAll
 public class AccountManager extends AbstractManager implements AccountManagerLocal {
 
   @Inject private AccountFacade accountFacade;
@@ -57,11 +61,13 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
   @Inject private EmailService emailService;
 
   @Override
+  @RolesAllowed("getAllAccounts")
   public List<Account> getAllAccounts() {
     return accountFacade.findAll();
   }
 
   @Override
+  @PermitAll
   public Account findByLogin(String login) {
     // return accountFacade.findByLogin(login).orElseThrow(() ->
     // ApplicationException.createEntityNotFoundException());
@@ -69,6 +75,7 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
   }
 
   @Override
+  @RolesAllowed("getAccountAndAccessLevels")
   public Account getAccountAndAccessLevels(Long id) {
     Optional<Account> optionalAccount = accountFacade.findAndRefresh(id);
     if (optionalAccount.isEmpty()) {
@@ -78,6 +85,7 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
   }
 
   @Override
+  @RolesAllowed("grantAccessLevel")
   public Account grantAccessLevel(Long id, AccessLevel accessLevel) {
     Account account = getAccount(id);
     accessLevel.setAccount(account);
@@ -87,6 +95,7 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
   }
 
   @Override
+  @RolesAllowed("getAccount")
   public Account getAccount(Long id) {
     Optional<Account> optionalAccount = accountFacade.find(id);
     if (optionalAccount.isEmpty()) {
@@ -96,11 +105,13 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
   }
 
   @Override
+  @PermitAll
   public void confirmAccountRegistration(String verificationToken) {
     verificationManager.verifyAccount(verificationToken);
   }
 
   @Override
+  @PermitAll
   public Account registerAccount(Account account) {
     account.setPassword(HashAlgorithmImpl.generate(account.getPassword()));
     accountFacade.create(account);
@@ -109,6 +120,7 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
   }
 
   @Override
+  @RolesAllowed("editAccessLevel")
   public Account editAccessLevel(Long id, AccessLevel accessLevel, Long version) {
     Account account = getAccount(id);
     AccessLevel found = AccessLevelFinder.findAccessLevel(account, accessLevel);
@@ -121,6 +133,7 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
   }
 
   @Override
+  @RolesAllowed("activateUserAccount")
   public Account activateUserAccount(Long id) {
     Account account = getAccount(id);
     account.setConfirmed(true);
@@ -131,6 +144,7 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
   }
 
   @Override
+  @RolesAllowed("blockAccount")
   public void blockAccount(Long id) {
     Account account = getAccount(id);
     if (!account.getActive()) {
@@ -143,6 +157,7 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
   }
 
   @Override
+  @RolesAllowed("unblockAccount")
   public void unblockAccount(Long id) {
     Account account = getAccount(id);
     if (account.getActive()) {
@@ -155,6 +170,7 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
   }
 
   @Override
+  @RolesAllowed("updateUserPassword")
   public Account updateUserPassword(Long id, String newPassword) {
     Account account = getAccount(id);
     account.setPassword(HashAlgorithmImpl.generate(newPassword));
@@ -163,6 +179,7 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
   }
 
   @Override
+  @RolesAllowed("updateOwnPassword")
   public Account updateOwnPassword(Long id, String oldPassword, String newPassword) {
     Account account = getAccount(id);
     if (HashAlgorithmImpl.check(oldPassword, account.getPassword())) {
@@ -175,6 +192,7 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
   }
 
   @Override
+  @RolesAllowed("updateOwnEmail")
   public Account updateOwnEmail(Long id, String email) {
     Account account = getAccount(id);
     account.setEmail(email); // check validity??
@@ -183,6 +201,7 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
   }
 
   @Override
+  @DenyAll
   public void purgeUnactivatedAccounts() {
     List<Account> accountsToPurge = accountFacade.findNotConfirmed();
 
@@ -201,6 +220,7 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
   }
 
   @Override
+  @PermitAll
   public void updateAuthInformation(String caller, String remoteAddr, Date now, Boolean isCorrect) {
     Account account = accountFacade.findByLogin(caller);
     if (account.getLoginAttempts() >= MAX_INCORRECT_LOGIN_ATTEMPTS) {
@@ -235,6 +255,7 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
   }
 
   @Override
+  @DenyAll
   public void sendVerificationTokenIfPreviousWasNotSent() {
 
     Date halfExpirationDate =
@@ -254,6 +275,7 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
 
   // fixme? Is this really necessary
   @Override
+  //todo
   public Account createAccount(Account account, AccessLevel accessLevel) {
     account.setPassword(HashAlgorithmImpl.generate(account.getPassword()));
     accessLevel.setAccount(account);
@@ -264,6 +286,7 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
   }
 
   @Override
+  @RolesAllowed("removeAccessLevel")
   public Account removeAccessLevel(Long id, AccessLevel accessLevel) {
     Account account = getAccount(id);
     account.getAccessLevels().remove(accessLevel);

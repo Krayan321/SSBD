@@ -1,5 +1,6 @@
 $PROJECT_ROOT = "$PSScriptRoot\.."
 
+Remove-item "$PROJECT_ROOT\src\main\webapp\assets" -Recurse -ErrorAction:SilentlyContinue
 Remove-item "$PROJECT_ROOT\src\main\webapp\static" -Recurse -ErrorAction:SilentlyContinue
 Remove-item "$PROJECT_ROOT\src\main\webapp\*.*"
 

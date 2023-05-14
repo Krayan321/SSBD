@@ -51,7 +51,6 @@ public class AccountController extends AbstractController {
   @GET
   @Path("/")
   @Produces(MediaType.APPLICATION_JSON)
-  @RolesAllowed({"ADMIN"})
   public List<AccountDTO> readAllClients() {
     List<Account> accounts = accountManager.getAllAccounts();
 //            repeatTransaction(accountManager, () -> accountManager.getAccount(id));
@@ -89,7 +88,6 @@ return accounts.stream().map(AccountConverter::mapAccountToAccountDto).toList();
   @GET
   @Path("/{id}/details")
   @Produces(MediaType.APPLICATION_JSON)
-  @RolesAllowed({"ADMIN"})
   public AccountAndAccessLevelsDTO readAccountAndAccessLevels(@PathParam("id") Long id) {
     Account account = accountManager.getAccountAndAccessLevels(id);
     //        repeatTransaction(accountManager, () -> accountManager.getAccountAndAccessLevels(id));
@@ -108,7 +106,6 @@ return accounts.stream().map(AccountConverter::mapAccountToAccountDto).toList();
 
   @PUT
   @Path("/{id}/block")
-  @RolesAllowed({"ADMIN"})
   public Response blockAccount(@PathParam("id") Long id) {
     accountManager.blockAccount(id);
     return Response.status(Response.Status.OK).build();
@@ -116,7 +113,6 @@ return accounts.stream().map(AccountConverter::mapAccountToAccountDto).toList();
 
   @PUT
   @Path("/{id}/unblock")
-  @RolesAllowed({"ADMIN"})
   public Response unblockAccount(@PathParam("id") Long id) {
     accountManager.unblockAccount(id);
     return Response.status(Response.Status.OK).build();
@@ -124,7 +120,6 @@ return accounts.stream().map(AccountConverter::mapAccountToAccountDto).toList();
 
   @PUT
   @Path("{id}/activate")
-  @RolesAllowed({"ADMIN"})
   public AccountDTO activateAccount(@PathParam("id") Long id) {
     Account account = accountManager.activateUserAccount(id);
     //        repeatTransaction(accountManager, () -> accountManager.activateUserAccount(id));
@@ -133,7 +128,6 @@ return accounts.stream().map(AccountConverter::mapAccountToAccountDto).toList();
 
   @PUT
   @Path("/{id}/changeUserPassword")
-  @RolesAllowed({"ADMIN"})
   public AccountDTO changeUserPassword(
       @PathParam("id") Long id, @Valid UpdateOtherUserPasswordDTO updateOtherUserPasswordDTO) {
     String newPassword = updateOtherUserPasswordDTO.getPassword();
@@ -150,7 +144,7 @@ return accounts.stream().map(AccountConverter::mapAccountToAccountDto).toList();
       @PathParam("id") Long id, @Valid ChangePasswordDTO changePasswordDTO) {
     String oldPassword = changePasswordDTO.getOldPassword();
     String newPassword = changePasswordDTO.getNewPassword();
-    accountManager.updateOwnPassword(id, oldPassword, newPassword);
+    accountManager.updateOwnPassword(id, oldPassword, newPassword); //todo
     //    repeatTransaction(
     //        accountManager, () -> accountManager.updateOwnPassword(id, oldPassword, newPassword));
     return Response.status(Response.Status.OK).build();
@@ -188,7 +182,6 @@ return accounts.stream().map(AccountConverter::mapAccountToAccountDto).toList();
   @Path("/{id}/patient")
   @Produces(MediaType.APPLICATION_JSON)
   @Consumes(MediaType.APPLICATION_JSON)
-  @RolesAllowed({"ADMIN"})
   public AccountAndAccessLevelsDTO editPatientData(
       @PathParam("id") Long id, @Valid EditPatientDataDTO patientDataDTO) {
     PatientData patientData =
@@ -202,7 +195,6 @@ return accounts.stream().map(AccountConverter::mapAccountToAccountDto).toList();
   @Path("/{id}/admin")
   @Produces(MediaType.APPLICATION_JSON)
   @Consumes(MediaType.APPLICATION_JSON)
-  @RolesAllowed({"ADMIN"})
   public AccountAndAccessLevelsDTO editAdminData(
       @PathParam("id") Long id, @Valid EditAdminDataDTO adminDataDTO) {
     AdminData adminData = AccessLevelConverter.mapEditAdminDataDtoToAdminData(adminDataDTO);
@@ -215,7 +207,6 @@ return accounts.stream().map(AccountConverter::mapAccountToAccountDto).toList();
   @Path("/{id}/chemist")
   @Produces(MediaType.APPLICATION_JSON)
   @Consumes(MediaType.APPLICATION_JSON)
-  @RolesAllowed({"ADMIN"})
   public AccountAndAccessLevelsDTO editChemistData(
       @PathParam("id") Long id, @Valid EditChemistDataDTO chemistDataDTO) {
     ChemistData chemistData =
@@ -229,7 +220,6 @@ return accounts.stream().map(AccountConverter::mapAccountToAccountDto).toList();
   @Path("/{id}/grantPatient")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
-  @RolesAllowed({"ADMIN"})
   public AccountAndAccessLevelsDTO grantPatient(
       @PathParam("id") Long id, @Valid GrantPatientDataDTO patientDataDTO) {
     PatientData patientData =
@@ -244,7 +234,6 @@ return accounts.stream().map(AccountConverter::mapAccountToAccountDto).toList();
   @Path("/{id}/grantChemist")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
-  @RolesAllowed({"ADMIN"})
   public AccountAndAccessLevelsDTO grantChemist(
       @PathParam("id") Long id, @Valid GrantChemistDataDTO chemistDataDTO) {
     ChemistData chemistData =
@@ -259,7 +248,6 @@ return accounts.stream().map(AccountConverter::mapAccountToAccountDto).toList();
   @Path("/{id}/grantAdmin")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
-  @RolesAllowed({"ADMIN"})
   public AccountAndAccessLevelsDTO grantAdmin(
       @PathParam("id") Long id, @Valid GrantAdminDataDTO adminDataDTO) {
     AdminData adminData = AccessLevelConverter.mapGrantAdminDataDtoToAdminData(adminDataDTO);
@@ -308,7 +296,6 @@ return accounts.stream().map(AccountConverter::mapAccountToAccountDto).toList();
   @Path("/{id}/removeRoleAdmin")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
-  @RolesAllowed({"ADMIN"})
   public Response removeRoleAdmin(@PathParam("id") Long id, @Valid AdminDataDTO adminDataDTO) {
     Account account =
         accountManager.removeAccessLevel(
@@ -327,7 +314,6 @@ return accounts.stream().map(AccountConverter::mapAccountToAccountDto).toList();
   @Path("/{id}/removeRoleChemist")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
-  @RolesAllowed({"ADMIN"})
   public Response removeRoleChemist(
       @PathParam("id") Long id, @Valid ChemistDataDTO chemistDataDTO) {
     Account account =
@@ -347,7 +333,6 @@ return accounts.stream().map(AccountConverter::mapAccountToAccountDto).toList();
   @Path("/{id}/removeRolePatient")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
-  @RolesAllowed({"ADMIN"})
   public Response removeRolePatient(
       @PathParam("id") Long id, @Valid PatientDataDTO patientDataDTO) {
     Account account =
