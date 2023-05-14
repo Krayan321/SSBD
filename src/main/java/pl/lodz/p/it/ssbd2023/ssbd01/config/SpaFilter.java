@@ -41,8 +41,7 @@ public class SpaFilter implements Filter {
     HttpServletRequest request = (HttpServletRequest) servletRequest;
     String uri = request.getRequestURI();
 
-    // fixme
-    if (uri.matches("^/((api)|(.*\\.(" + listIgnoredExtensionsRegex + ")$))")) {
+    if (uri.contains("/api") || uri.matches(".*\\.(" + listIgnoredExtensionsRegex + ")$")) {
       filterChain.doFilter(servletRequest, servletResponse);
     } else {
       RequestDispatcher dispatcher = request.getRequestDispatcher("index.html");
