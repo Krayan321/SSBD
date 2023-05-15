@@ -170,7 +170,7 @@ public class AccountControllerIT extends BaseTest {
     given()
         .header("authorization", "Bearer " + adminJwt)
         .body(grantChemistDataDTO)
-        .put(getApiRoot() + "/account/2/grantChemist")
+        .post(getApiRoot() + "/account/2/chemist")
         .then()
         .log()
         .all()
@@ -184,7 +184,7 @@ public class AccountControllerIT extends BaseTest {
     given()
         .header("authorization", "Bearer " + adminJwt)
         .body(grantAdminDataDTO)
-        .put(getApiRoot() + "/account/2/grantAdmin")
+        .post(getApiRoot() + "/account/2/admin")
         .then()
         .log()
         .all()
@@ -197,7 +197,7 @@ public class AccountControllerIT extends BaseTest {
     given()
         .header("authorization", "Bearer " + adminJwt)
         .body(grantAdminDataDTO)
-        .put(getApiRoot() + "/account/2/grantAdmin")
+        .post(getApiRoot() + "/account/2/admin")
         .then()
         .log()
         .all()
@@ -267,15 +267,39 @@ public class AccountControllerIT extends BaseTest {
 
   @Test
   @Order(12)
-  public void editPatientData_badVersion() {
+  public void blockRoleChemist_correct() {
     given()
         .header("authorization", "Bearer " + adminJwt)
         .body(patientDataDTOChangedName)
-        .put(getApiRoot() + "/account/2/patient")
+        .put(getApiRoot() + "/account/2/chemist/block")
         .then()
         .log()
         .all()
-        .statusCode(Response.Status.CONFLICT.getStatusCode());
+        .statusCode(Response.Status.NO_CONTENT.getStatusCode());
+//    given()
+//            .header("authorization", "Bearer " + adminJwt)
+//            .body(chemistDataDTOChangedLiscence)
+//            .put(getApiRoot() + "/account/2/chemist")
+//            .then()
+//            .log()
+//            .all()
+//            .statusCode(Response.Status.OK.getStatusCode())
+//            .body(
+//                    "accessLevels",
+//                    hasItem());
+  }
+
+  @Test
+  @Order(12)
+  public void editPatientData_badVersion() {
+    given()
+            .header("authorization", "Bearer " + adminJwt)
+            .body(patientDataDTOChangedName)
+            .put(getApiRoot() + "/account/2/patient")
+            .then()
+            .log()
+            .all()
+            .statusCode(Response.Status.CONFLICT.getStatusCode());
   }
 
   @Test
@@ -488,7 +512,7 @@ public class AccountControllerIT extends BaseTest {
     given()
         .header("authorization", "Bearer " + adminJwt)
         .body(new EditAccountDTO("kitty@meow.com"))
-        .put(getApiRoot() + "/account/1/editAccount")
+        .put(getApiRoot() + "/account/1/account")
         .then()
         .log()
         .all()

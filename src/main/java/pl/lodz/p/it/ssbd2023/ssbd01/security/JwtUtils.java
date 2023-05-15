@@ -9,6 +9,7 @@ import jakarta.security.enterprise.identitystore.CredentialValidationResult;
 import java.time.ZonedDateTime;
 import java.util.Base64;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 import javax.crypto.SecretKey;
 import lombok.extern.java.Log;
@@ -28,9 +29,6 @@ public class JwtUtils {
   public String create(CredentialValidationResult result) {
     String principal = result.getCallerPrincipal().getName();
     Set<String> authorities = result.getCallerGroups();
-
-    System.out.println(SECRET);
-    log.warning(SECRET);
 
     return Jwts.builder()
         .setSubject(principal)

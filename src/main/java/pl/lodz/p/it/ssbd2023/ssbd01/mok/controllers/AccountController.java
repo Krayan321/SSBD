@@ -136,7 +136,7 @@ public class AccountController extends AbstractController {
   }
 
   @PUT
-  @Path("{id}/editAccount")
+  @Path("{id}/account")
   public Response editAccount(@PathParam("id") Long id, @Valid EditAccountDTO editAccountDTO) {
     String email = editAccountDTO.getEmail();
     repeatTransaction(accountManager, () -> accountManager.updateOwnEmail(id, email));
@@ -205,44 +205,6 @@ public class AccountController extends AbstractController {
     return AccountConverter.mapAccountToAccountAndAccessLevelsDto(account);
   }
 
-  @PUT
-  @Path("/{id}/grantPatient")
-  @Consumes(MediaType.APPLICATION_JSON)
-  @Produces(MediaType.APPLICATION_JSON)
-  public AccountAndAccessLevelsDTO grantPatient(
-      @PathParam("id") Long id, @Valid GrantPatientDataDTO patientDataDTO) {
-    PatientData patientData =
-        AccessLevelConverter.mapGrantPatientDataDTOtoPatientData(patientDataDTO);
-    Account account =
-        repeatTransaction(accountManager, () -> accountManager.grantAccessLevel(id, patientData));
-    return AccountConverter.mapAccountToAccountAndAccessLevelsDto(account);
-  }
-
-  @PUT
-  @Path("/{id}/grantChemist")
-  @Consumes(MediaType.APPLICATION_JSON)
-  @Produces(MediaType.APPLICATION_JSON)
-  public AccountAndAccessLevelsDTO grantChemist(
-      @PathParam("id") Long id, @Valid GrantChemistDataDTO chemistDataDTO) {
-    ChemistData chemistData =
-        AccessLevelConverter.mapGrantChemistDataDtoToChemistData(chemistDataDTO);
-    Account account =
-        repeatTransaction(accountManager, () -> accountManager.grantAccessLevel(id, chemistData));
-    return AccountConverter.mapAccountToAccountAndAccessLevelsDto(account);
-  }
-
-  @PUT
-  @Path("/{id}/grantAdmin")
-  @Consumes(MediaType.APPLICATION_JSON)
-  @Produces(MediaType.APPLICATION_JSON)
-  public AccountAndAccessLevelsDTO grantAdmin(
-      @PathParam("id") Long id, @Valid GrantAdminDataDTO adminDataDTO) {
-    AdminData adminData = AccessLevelConverter.mapGrantAdminDataDtoToAdminData(adminDataDTO);
-    Account account =
-        repeatTransaction(accountManager, () -> accountManager.grantAccessLevel(id, adminData));
-    return AccountConverter.mapAccountToAccountAndAccessLevelsDto(account);
-  }
-
   @POST
   @Path("/add-patient")
   @Consumes(MediaType.APPLICATION_JSON)
@@ -272,49 +234,87 @@ public class AccountController extends AbstractController {
     return Response.status(Response.Status.CREATED).build();
   }
 
-  @DELETE
+  @POST
+  @Path("/{id}/patient")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  public AccountAndAccessLevelsDTO grantPatient(
+          @PathParam("id") Long id, @Valid GrantPatientDataDTO patientDataDTO) {
+    PatientData patientData =
+            AccessLevelConverter.mapGrantPatientDataDTOtoPatientData(patientDataDTO);
+    Account account =
+            repeatTransaction(accountManager, () -> accountManager.grantAccessLevel(id, patientData));
+    return AccountConverter.mapAccountToAccountAndAccessLevelsDto(account);
+  }
+
+  @POST
+  @Path("/{id}/chemist")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  public AccountAndAccessLevelsDTO grantChemist(
+          @PathParam("id") Long id, @Valid GrantChemistDataDTO chemistDataDTO) {
+    ChemistData chemistData =
+            AccessLevelConverter.mapGrantChemistDataDtoToChemistData(chemistDataDTO);
+    Account account =
+            repeatTransaction(accountManager, () -> accountManager.grantAccessLevel(id, chemistData));
+    return AccountConverter.mapAccountToAccountAndAccessLevelsDto(account);
+  }
+
+  @POST
   @Path("/{id}/admin")
-  public Response removeRoleAdmin(@PathParam("id") Long id) {
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  public AccountAndAccessLevelsDTO grantAdmin(
+          @PathParam("id") Long id, @Valid GrantAdminDataDTO adminDataDTO) {
+    AdminData adminData = AccessLevelConverter.mapGrantAdminDataDtoToAdminData(adminDataDTO);
+    Account account =
+            repeatTransaction(accountManager, () -> accountManager.grantAccessLevel(id, adminData));
+    return AccountConverter.mapAccountToAccountAndAccessLevelsDto(account);
+  }
+
+  @PUT
+  @Path("/{id}/admin/block")
+  public Response blockRoleAdmin(@PathParam("id") Long id) {
     repeatTransactionVoid(accountManager,
             () -> accountManager.deactivateAccessLevel(id, Role.ADMIN));
     return Response.status(Response.Status.NO_CONTENT).build();
   }
 
-  @DELETE
-  @Path("/{id}/chemist")
-  public Response removeRoleChemist(@PathParam("id") Long id) {
+  @PUT
+  @Path("/{id}/chemist/block")
+  public Response blockRoleChemist(@PathParam("id") Long id) {
     repeatTransactionVoid(accountManager,
             () -> accountManager.deactivateAccessLevel(id, Role.CHEMIST));
     return Response.status(Response.Status.NO_CONTENT).build();
   }
 
-  @DELETE
-  @Path("/{id}/patient")
-  public Response removeRolePatient(@PathParam("id") Long id) {
+  @PUT
+  @Path("/{id}/patient/block")
+  public Response blockRolePatient(@PathParam("id") Long id) {
     repeatTransactionVoid(accountManager,
             () -> accountManager.deactivateAccessLevel(id, Role.PATIENT));
     return Response.status(Response.Status.NO_CONTENT).build();
   }
 
   @PUT
-  @Path("/{id}/admin")
-  public Response activateRoleAdmin(@PathParam("id") Long id) {
+  @Path("/{id}/admin/unblock")
+  public Response unblockRoleAdmin(@PathParam("id") Long id) {
     repeatTransactionVoid(accountManager,
             () -> accountManager.activateAccessLevel(id, Role.ADMIN));
     return Response.status(Response.Status.NO_CONTENT).build();
   }
 
   @PUT
-  @Path("/{id}/chemist")
-  public Response activateRoleChemist(@PathParam("id") Long id) {
+  @Path("/{id}/chemist/unblock")
+  public Response unblockRoleChemist(@PathParam("id") Long id) {
     repeatTransactionVoid(accountManager,
             () -> accountManager.activateAccessLevel(id, Role.CHEMIST));
     return Response.status(Response.Status.NO_CONTENT).build();
   }
 
   @PUT
-  @Path("/{id}/patient")
-  public Response activateRolePatient(@PathParam("id") Long id) {
+  @Path("/{id}/patient/unblock")
+  public Response unblockRolePatient(@PathParam("id") Long id) {
     repeatTransactionVoid(accountManager,
             () -> accountManager.activateAccessLevel(id, Role.PATIENT));
     return Response.status(Response.Status.NO_CONTENT).build();
