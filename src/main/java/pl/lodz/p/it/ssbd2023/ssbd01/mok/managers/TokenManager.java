@@ -88,29 +88,31 @@ public class TokenManager extends AbstractManager
   @Override
   public void verifyAccount(String code) {
     Token token = tokenFacade.findByCode(code);
-    checkIfTokenIsValid(token);
+    checkIfTokenIsValid(token, TokenType.VERIFICATION);
     Account account = token.getAccount();
     account.setConfirmed(true);
     account.setModifiedBy(account);
     account.setCreatedBy(account);
     token.setUsed(true);
+    tokenFacade.edit(token);
     emailService.sendEmailAccountActivated(
         account.getEmail(), account.getLogin(), account.getLanguage());
-    tokenFacade.edit(token);
   }
 
   @Override
   public void setNewPassword(String token, String newPassword) {
     Token foundToken = tokenFacade.findByCode(token);
-    checkIfTokenIsValid(foundToken);
+    checkIfTokenIsValid(foundToken, TokenType.PASSWORD_RESET);
 
     Account account = foundToken.getAccount();
     account.setPassword(newPassword);
+    account.setModifiedBy(account);
+    foundToken.setUsed(true);
 
     tokenFacade.edit(foundToken);
   }
 
-  private void checkIfTokenIsValid(Token token) {
+  private void checkIfTokenIsValid(Token token, TokenType type) {
     if (token == null) {
       throw TokenException.tokenNotFoundException();
     }
@@ -119,11 +121,14 @@ public class TokenManager extends AbstractManager
     if (token.getExpirationDate().before(new java.util.Date())) {
       throw tokenExpiredException();
     }
-    if (token.isUsed() || account.getConfirmed()) {
-      log.warning("MAGNO MANGO ZET Token already used");
+    if (token.isUsed()) {
+      log.warning("MAGNO MANGO ZET Token already used"); // todo huh?
       throw tokenAlreadyUsedException();
     }
-    if (token.getTokenType() != TokenType.VERIFICATION) {
+    if(type == TokenType.VERIFICATION && account.getConfirmed()) { // todo czy to jest na pewno potrzebne?
+      throw tokenAlreadyUsedException();
+    }
+    if (token.getTokenType() != type) {
       throw incorrectTokenTypeException();
     }
   }
