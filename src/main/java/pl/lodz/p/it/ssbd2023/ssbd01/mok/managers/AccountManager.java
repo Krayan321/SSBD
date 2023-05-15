@@ -140,7 +140,7 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
   public Account editAccessLevel(Long id, AccessLevel accessLevel, Long version) {
     Account account = getAccount(id);
     AccessLevel found = AccessLevelFinder.findAccessLevel(account, accessLevel);
-    if(!Objects.equals(found.getVersion(), version)) {
+    if (!Objects.equals(found.getVersion(), version)) {
       throw ApplicationException.createOptimisticLockException();
     }
     AccessLevelMerger.mergeAccessLevels(found, accessLevel);
@@ -225,8 +225,7 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
   @RolesAllowed("updateOwnEmail")
   public Account updateOwnEmail(Long id, String email) {
     Account account = getAccount(id);
-    account.setEmail(email); // check validity??
-    accountFacade.edit(account);
+    verificationManager.sendEmailChangeEmail(account, email);
     return account;
   }
 
@@ -343,5 +342,10 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
     account.getAccessLevels().remove(accessLevel);
     accountFacade.edit(account);
     return account;
+  }
+
+  @Override
+  public void confirmEmailChange(String code) {
+    verificationManager.confirmEmailChange(code);
   }
 }

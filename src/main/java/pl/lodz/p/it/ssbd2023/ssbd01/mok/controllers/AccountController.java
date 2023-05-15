@@ -8,7 +8,6 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-
 import java.util.List;
 import pl.lodz.p.it.ssbd2023.ssbd01.common.AbstractController;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.*;
@@ -16,8 +15,8 @@ import pl.lodz.p.it.ssbd2023.ssbd01.dto.addAsAdmin.AddAdminAccountDto;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.addAsAdmin.AddChemistAccountDto;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.addAsAdmin.AddPatientAccountDto;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.auth.EditAccountDTO;
-import pl.lodz.p.it.ssbd2023.ssbd01.dto.auth.ResetPasswordDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.auth.NewPasswordDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.auth.ResetPasswordDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.auth.UpdateOtherUserPasswordDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.auth.VerificationTokenDto;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccount.EditAdminDataDTO;
@@ -56,6 +55,15 @@ public class AccountController extends AbstractController {
   public Response confirmAccount(@Valid VerificationTokenDto token) {
     repeatTransactionVoid(
         accountManager, () -> accountManager.confirmAccountRegistration(token.getToken()));
+    return Response.ok().build();
+  }
+
+  @POST
+  @Path("/confirmEmailChange")
+  public Response confirmEmailChange(@Valid VerificationTokenDto token) {
+    accountManager.confirmEmailChange(token.getToken());
+    //    repeatTransactionVoid(
+    //        accountManager, () -> accountManager.confirmEmailChange(token.getToken()));
     return Response.ok().build();
   }
 

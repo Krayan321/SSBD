@@ -486,21 +486,22 @@ public class AccountControllerIT extends BaseTest {
         .then()
         .log()
         .all()
-        .body("email", equalTo("kitty@meow.com"));
+        .body("email", equalTo("admin@o2.pl"));
   }
 
   @Test
   @Order(26)
   public void getSelfInfoCorrect() {
     given()
-        .header("authorization", "Bearer " + adminJwt)
-        .get(getApiRoot() + "/account/details")
-        .then()
-        .log()
-        .all()
-        .statusCode(Response.Status.OK.getStatusCode())
-        .body("accessLevels", hasItem(hasEntry("role", "ADMIN")))
-        .body("login", equalTo(adminLoginDto.getLogin()));
+            .header("authorization", "Bearer " + adminJwt)
+            .get(getApiRoot() + "/account/details")
+            .then()
+            .log()
+            .all()
+            .statusCode(Response.Status.OK.getStatusCode())
+            .body("accessLevels",
+                    hasItem(hasEntry("role", "ADMIN")))
+            .body("login", equalTo(adminLoginDto.getLogin()) );
   }
 
   @Test
