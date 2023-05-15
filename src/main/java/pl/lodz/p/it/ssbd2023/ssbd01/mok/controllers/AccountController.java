@@ -140,13 +140,14 @@ return accounts.stream().map(AccountConverter::mapAccountToAccountDto).toList();
   }
 
   @PUT
-  @Path("{id}/changePassword")
+  @Path("/changePassword")
   @RolesAllowed({"PATIENT", "CHEMIST", "ADMIN"})
   public Response changePassword(
-      @PathParam("id") Long id, @Valid ChangePasswordDTO changePasswordDTO) {
+          @Valid ChangePasswordDTO changePasswordDTO) {
+    Account account = accountManager.getCurrentUser();
     String oldPassword = changePasswordDTO.getOldPassword();
     String newPassword = changePasswordDTO.getNewPassword();
-    accountManager.updateOwnPassword(id, oldPassword, newPassword);
+    accountManager.updateOwnPassword(account.getId(), oldPassword, newPassword);
     //    repeatTransaction(
     //        accountManager, () -> accountManager.updateOwnPassword(id, oldPassword, newPassword));
     return Response.status(Response.Status.OK).build();

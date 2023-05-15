@@ -367,12 +367,12 @@ public class AccountControllerIT extends BaseTest {
   }
 
   @Test
-  @Order(19)
+  @Order(1)
   public void changeOwnPassword_correct() {
     given()
         .header("authorization", "Bearer " + adminJwt)
         .body(new ChangePasswordDTO("admin123", "admin321"))
-        .put(getApiRoot() + "/account/1/changePassword")
+        .put(getApiRoot() + "/account/changePassword")
         .then()
         .log()
         .all()
