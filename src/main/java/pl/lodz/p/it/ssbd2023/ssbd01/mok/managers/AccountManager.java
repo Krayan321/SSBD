@@ -275,12 +275,23 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
       return null;
     }
   }
-
   @Override
   @RolesAllowed("updateOwnEmail")
-  public Account updateOwnEmail(Long id, String email) {
+  public Account updateOwnEmail(String email) {
+    Account account = getCurrentUser();
+    account.setEmail(email);
+    account.setModifiedBy(getCurrentUserLogin());
+    accountFacade.edit(account);
+    // todo wysyłanie maila
+    return account;
+  }
+
+  @Override
+  @RolesAllowed("updateUserEmail")
+  public Account updateUserEmail(Long id, String email) {
     Account account = getAccount(id);
     account.setEmail(email);
+    account.setConfirmed(true);
     account.setModifiedBy(getCurrentUserLogin());
     accountFacade.edit(account);
     return account;

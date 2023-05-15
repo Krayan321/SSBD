@@ -136,11 +136,19 @@ public class AccountController extends AbstractController {
   }
 
   @PUT
-  @Path("{id}/account")
-  public Response editAccount(@PathParam("id") Long id, @Valid EditAccountDTO editAccountDTO) {
+  @Path("/")
+  public AccountDTO editOwnAccount(@Valid EditAccountDTO editAccountDTO) {
     String email = editAccountDTO.getEmail();
-    repeatTransaction(accountManager, () -> accountManager.updateOwnEmail(id, email));
-    return Response.status(Response.Status.OK).build();
+    Account account = repeatTransaction(accountManager, () -> accountManager.updateOwnEmail(email));
+    return AccountConverter.mapAccountToAccountDto(account);
+  }
+
+  @PUT
+  @Path("/{id}")
+  public AccountDTO editUserAccount(@PathParam("id") Long id, @Valid EditAccountDTO editAccountDTO) {
+    String email = editAccountDTO.getEmail();
+    Account account = repeatTransaction(accountManager, () -> accountManager.updateUserEmail(id, email));
+    return AccountConverter.mapAccountToAccountDto(account);
   }
 
   @PUT

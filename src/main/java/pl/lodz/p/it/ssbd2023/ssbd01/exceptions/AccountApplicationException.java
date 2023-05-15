@@ -46,7 +46,7 @@ public class AccountApplicationException extends ApplicationException {
 
   public static AccountApplicationException createDeactivationOfSelf() {
     return new AccountApplicationException(
-            CONFLICT, EXCEPTION_ACCOUNT_DEACTIVATE_SELF);
+            BAD_REQUEST, EXCEPTION_ACCOUNT_DEACTIVATE_SELF);
   }
 
   public static AccountApplicationException createDeactivateLastAccessLevel() {

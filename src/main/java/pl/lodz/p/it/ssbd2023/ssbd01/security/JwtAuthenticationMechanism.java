@@ -1,6 +1,7 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.security;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.security.enterprise.AuthenticationException;
@@ -52,7 +53,7 @@ public class JwtAuthenticationMechanism implements HttpAuthenticationMechanism {
 
       List<String> roles = Arrays.asList(claims.get("roles", String.class).split(","));
       return httpMessageContext.notifyContainerAboutLogin(login, new HashSet<>(roles));
-    } catch (Exception e) {
+    } catch (JwtException e) {
       return httpMessageContext.responseUnauthorized();
     }
   }

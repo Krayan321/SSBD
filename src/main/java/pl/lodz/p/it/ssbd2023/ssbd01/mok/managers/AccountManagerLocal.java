@@ -52,7 +52,9 @@ public interface AccountManagerLocal extends CommonManagerLocalInterface {
 
   Account updateOwnPassword(Long id, String oldPassword, String newPassword);
 
-  Account updateOwnEmail(Long id, String email);
+  Account updateOwnEmail(String email);
+
+  Account updateUserEmail(Long id, String email);
 
   void purgeUnactivatedAccounts();
 
