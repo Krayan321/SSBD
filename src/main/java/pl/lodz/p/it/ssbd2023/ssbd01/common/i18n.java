@@ -27,6 +27,10 @@ public class i18n {
       "exception.account.no-such-access-level";
   public static final String EXCEPTION_ACCOUNT_DUPLICATE_ACCESS_LEVEL =
       "exception.account.duplicate.access-level";
+  public static final String EXCEPTION_ACCOUNT_DEACTIVATE_LAST_ACCESS_LEVEL =
+      "exception.account.deactivate.last-access-level";
+  public static final String EXCEPTION_ACCOUNT_DEACTIVATE_SELF =
+      "exception.account.deactivate.self";
   public static final String EXCEPTION_ACCOUNT_DUPLICATE_EMAIL =
           "exception.account.duplicate.email";
   public static final String EXCEPTION_ACCOUNT_DUPLICATE_LOGIN =

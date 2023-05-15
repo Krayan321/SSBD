@@ -25,10 +25,8 @@ import jakarta.ws.rs.core.SecurityContext;
 import lombok.extern.java.Log;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import pl.lodz.p.it.ssbd2023.ssbd01.common.AbstractManager;
-import pl.lodz.p.it.ssbd2023.ssbd01.entities.AccessLevel;
-import pl.lodz.p.it.ssbd2023.ssbd01.entities.Account;
-import pl.lodz.p.it.ssbd2023.ssbd01.entities.Token;
-import pl.lodz.p.it.ssbd2023.ssbd01.entities.TokenType;
+import pl.lodz.p.it.ssbd2023.ssbd01.entities.*;
+import pl.lodz.p.it.ssbd2023.ssbd01.exceptions.AccountApplicationException;
 import pl.lodz.p.it.ssbd2023.ssbd01.exceptions.ApplicationException;
 import pl.lodz.p.it.ssbd2023.ssbd01.interceptors.GenericManagerExceptionsInterceptor;
 import pl.lodz.p.it.ssbd2023.ssbd01.interceptors.TrackerInterceptor;
@@ -119,6 +117,37 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
     account.setModifiedBy(getCurrentUserLogin());
     accountFacade.editAndRefresh(account);
     return account;
+  }
+
+  @Override
+  @RolesAllowed("deactivateAccessLevel")
+  public void deactivateAccessLevel(Long id, Role role) {
+    Account account = getAccountAndAccessLevels(id);
+    if(Objects.equals(account.getLogin(), getCurrentUserLogin()) && role == Role.ADMIN)
+      throw AccountApplicationException.createDeactivationOfSelf();
+    AccessLevel accessLevel = AccessLevelFinder.findAccessLevel(account, role);
+    if(!accessLevel.getActive()) return;
+    int numberActive = 0;
+    for(AccessLevel l : account.getAccessLevels())
+      if(l.getActive()) numberActive++;
+    if(numberActive <= 1)
+      throw AccountApplicationException.createDeactivateLastAccessLevel();
+    accessLevel.setActive(false);
+    account.setModifiedBy(getCurrentUserLogin());
+    accessLevel.setModifiedBy(getCurrentUserLogin());
+    accountFacade.edit(account);
+  }
+
+  @Override
+  @RolesAllowed("activateAccessLevel")
+  public void activateAccessLevel(Long id, Role role) {
+    Account account = getAccountAndAccessLevels(id);
+    AccessLevel accessLevel = AccessLevelFinder.findAccessLevel(account, role);
+    if(accessLevel.getActive()) return;
+    accessLevel.setActive(true);
+    account.setModifiedBy(getCurrentUserLogin());
+    accessLevel.setModifiedBy(getCurrentUserLogin());
+    accountFacade.edit(account);
   }
 
   @Override
@@ -351,13 +380,5 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
         });
   }
 
-  @Override
-  @RolesAllowed("removeAccessLevel")
-  public Account removeAccessLevel(Long id, AccessLevel accessLevel) {
-    Account account = getAccount(id);
-    account.getAccessLevels().remove(accessLevel);
-    account.setModifiedBy(getCurrentUserLogin());
-    accountFacade.edit(account);
-    return account;
-  }
+
 }

@@ -27,10 +27,7 @@ import pl.lodz.p.it.ssbd2023.ssbd01.dto.grant.GrantAdminDataDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.grant.GrantChemistDataDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.grant.GrantPatientDataDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.register.RegisterPatientDTO;
-import pl.lodz.p.it.ssbd2023.ssbd01.entities.Account;
-import pl.lodz.p.it.ssbd2023.ssbd01.entities.AdminData;
-import pl.lodz.p.it.ssbd2023.ssbd01.entities.ChemistData;
-import pl.lodz.p.it.ssbd2023.ssbd01.entities.PatientData;
+import pl.lodz.p.it.ssbd2023.ssbd01.entities.*;
 import pl.lodz.p.it.ssbd2023.ssbd01.mok.managers.AccountManagerLocal;
 import pl.lodz.p.it.ssbd2023.ssbd01.util.converters.AccessLevelConverter;
 import pl.lodz.p.it.ssbd2023.ssbd01.util.converters.AccountConverter;
@@ -276,52 +273,50 @@ public class AccountController extends AbstractController {
   }
 
   @DELETE
-  @Path("/{id}/removeRoleAdmin")
-  @Consumes(MediaType.APPLICATION_JSON)
-  @Produces(MediaType.APPLICATION_JSON)
-  public Response removeRoleAdmin(@PathParam("id") Long id, @Valid AdminDataDTO adminDataDTO) {
-    Account account =
-        repeatTransaction(
-            accountManager,
-            () ->
-                accountManager.removeAccessLevel(
-                    id, AccessLevelConverter.mapAdminDataDtoToAdminData(adminDataDTO)));
-    return Response.status(Response.Status.OK)
-        .entity(AccountConverter.mapAccountToAccountDto(account))
-        .build();
+  @Path("/{id}/admin")
+  public Response removeRoleAdmin(@PathParam("id") Long id) {
+    repeatTransactionVoid(accountManager,
+            () -> accountManager.deactivateAccessLevel(id, Role.ADMIN));
+    return Response.status(Response.Status.NO_CONTENT).build();
   }
 
   @DELETE
-  @Path("/{id}/removeRoleChemist")
-  @Consumes(MediaType.APPLICATION_JSON)
-  @Produces(MediaType.APPLICATION_JSON)
-  public Response removeRoleChemist(
-      @PathParam("id") Long id, @Valid ChemistDataDTO chemistDataDTO) {
-    Account account =
-        repeatTransaction(
-            accountManager,
-            () ->
-                accountManager.removeAccessLevel(
-                    id, AccessLevelConverter.mapChemistDataDtoToChemistData(chemistDataDTO)));
-    return Response.status(Response.Status.OK)
-        .entity(AccountConverter.mapAccountToAccountDto(account))
-        .build();
+  @Path("/{id}/chemist")
+  public Response removeRoleChemist(@PathParam("id") Long id) {
+    repeatTransactionVoid(accountManager,
+            () -> accountManager.deactivateAccessLevel(id, Role.CHEMIST));
+    return Response.status(Response.Status.NO_CONTENT).build();
   }
 
   @DELETE
-  @Path("/{id}/removeRolePatient")
-  @Consumes(MediaType.APPLICATION_JSON)
-  @Produces(MediaType.APPLICATION_JSON)
-  public Response removeRolePatient(
-      @PathParam("id") Long id, @Valid PatientDataDTO patientDataDTO) {
-    Account account =
-        repeatTransaction(
-            accountManager,
-            () ->
-                accountManager.removeAccessLevel(
-                    id, AccessLevelConverter.mapPatientDataDtoToPatientData(patientDataDTO)));
-    return Response.status(Response.Status.OK)
-        .entity(AccountConverter.mapAccountToAccountDto(account))
-        .build();
+  @Path("/{id}/patient")
+  public Response removeRolePatient(@PathParam("id") Long id) {
+    repeatTransactionVoid(accountManager,
+            () -> accountManager.deactivateAccessLevel(id, Role.PATIENT));
+    return Response.status(Response.Status.NO_CONTENT).build();
+  }
+
+  @PUT
+  @Path("/{id}/admin")
+  public Response activateRoleAdmin(@PathParam("id") Long id) {
+    repeatTransactionVoid(accountManager,
+            () -> accountManager.activateAccessLevel(id, Role.ADMIN));
+    return Response.status(Response.Status.NO_CONTENT).build();
+  }
+
+  @PUT
+  @Path("/{id}/chemist")
+  public Response activateRoleChemist(@PathParam("id") Long id) {
+    repeatTransactionVoid(accountManager,
+            () -> accountManager.activateAccessLevel(id, Role.CHEMIST));
+    return Response.status(Response.Status.NO_CONTENT).build();
+  }
+
+  @PUT
+  @Path("/{id}/patient")
+  public Response activateRolePatient(@PathParam("id") Long id) {
+    repeatTransactionVoid(accountManager,
+            () -> accountManager.activateAccessLevel(id, Role.PATIENT));
+    return Response.status(Response.Status.NO_CONTENT).build();
   }
 }

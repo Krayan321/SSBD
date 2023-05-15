@@ -1,12 +1,12 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.mok.managers;
 
-import com.mailjet.client.errors.MailjetException;
 import jakarta.ejb.Local;
 import java.util.Date;
 import java.util.List;
 import pl.lodz.p.it.ssbd2023.ssbd01.common.CommonManagerLocalInterface;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.AccessLevel;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Account;
+import pl.lodz.p.it.ssbd2023.ssbd01.entities.Role;
 
 @Local
 public interface AccountManagerLocal extends CommonManagerLocalInterface {
@@ -34,6 +34,10 @@ public interface AccountManagerLocal extends CommonManagerLocalInterface {
 
   Account grantAccessLevel(Long id, AccessLevel accessLevel);
 
+  void deactivateAccessLevel(Long id, Role role);
+
+  void activateAccessLevel(Long id, Role role);
+
   Account activateUserAccount(Long id);
 
   void blockAccount(Long id);
@@ -45,8 +49,6 @@ public interface AccountManagerLocal extends CommonManagerLocalInterface {
   void setNewPassword(String token, String newPassword);
 
   Account updateUserPassword(Long id, String newPassword);
-
-  Account removeAccessLevel(Long id, AccessLevel accessLevel);
 
   Account updateOwnPassword(Long id, String oldPassword, String newPassword);
 

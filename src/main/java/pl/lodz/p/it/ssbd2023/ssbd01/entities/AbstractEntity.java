@@ -23,7 +23,6 @@ public abstract class AbstractEntity {
   @Setter(lombok.AccessLevel.NONE)
   private Long version;
 
-  // todo change type to LocalDate?
   @Temporal(TemporalType.TIMESTAMP)
   @Column(name = "creation_date", nullable = false, updatable = false)
   private Date creationDate;
