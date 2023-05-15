@@ -22,6 +22,7 @@ import org.junit.jupiter.api.TestMethodOrder;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.ChangePasswordDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.auth.EditAccountDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.auth.LoginDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.auth.UpdateOtherUserPasswordDTO;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class AccountControllerIT extends BaseTest {
@@ -489,7 +490,7 @@ public class AccountControllerIT extends BaseTest {
   }
 
   @Test
-  @Order(24)
+  @Order(26)
   public void getSelfInfoCorrect() {
     given()
         .header("authorization", "Bearer " + adminJwt)
@@ -500,5 +501,25 @@ public class AccountControllerIT extends BaseTest {
         .statusCode(Response.Status.OK.getStatusCode())
         .body("accessLevels", hasItem(hasEntry("role", "ADMIN")))
         .body("login", equalTo(adminLoginDto.getLogin()));
+  }
+
+  @Test
+  @Order(27)
+  public void changeUserPassword() {
+    given()
+            .header("authorization", "Bearer " + adminJwt)
+            .body(new UpdateOtherUserPasswordDTO("test_password"))
+            .put(getApiRoot() + "/account/1/changeUserPassword")
+            .then()
+            .log()
+            .all()
+            .statusCode(Response.Status.OK.getStatusCode());
+    given()
+            .body(changedLoginDto)
+            .post(getApiRoot() + "/auth/login")
+            .then()
+            .log()
+            .all()
+            .statusCode(Response.Status.OK.getStatusCode());
   }
 }

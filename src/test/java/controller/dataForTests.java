@@ -13,7 +13,7 @@ import pl.lodz.p.it.ssbd2023.ssbd01.dto.register.RegisterPatientDTO;
 public class dataForTests {
 
   public static LoginDTO adminLoginDto = new LoginDTO("admin123", "admin123");
-
+  public static LoginDTO changedLoginDto = new LoginDTO("admin123", "test_password");
   public static LoginDTO patientLoginDto = new LoginDTO("test1", "testPatient");
 
   // register
