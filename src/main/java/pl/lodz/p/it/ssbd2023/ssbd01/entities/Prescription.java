@@ -49,7 +49,6 @@ public class Prescription extends AbstractEntity implements Serializable {
   private PatientData patientData;
 
   @Column(nullable = false, name = "prescription_number")
-  @NotNull
   private String prescriptionNumber;
 
   @Builder

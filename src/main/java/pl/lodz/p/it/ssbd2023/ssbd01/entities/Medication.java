@@ -28,17 +28,14 @@ public class Medication extends AbstractEntity implements Serializable {
   @Setter(lombok.AccessLevel.NONE)
   private Long id;
 
-  @NotNull
   @Column(nullable = false, unique = true, name = "medication_name")
   private String name;
 
   @Column(nullable = false)
-  @NotNull
   @Min(value = 0, message = "Stock must be greater than or equal to 0")
   private Integer stock;
 
   @Column(nullable = false)
-  @NotNull
   @Digits(integer = 10, fraction = 2)
   @Min(value = 0, message = "Price must be greater than or equal 0")
   private BigDecimal price;

@@ -39,7 +39,6 @@ public class ShipmentMedication extends AbstractEntity implements Serializable {
   private Medication medication;
 
   @Column(nullable = false)
-  @NotNull
   @Min(value = 1, message = "Quantity must be greater than 0")
   private Integer quantity;
 }

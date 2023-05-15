@@ -1,6 +1,7 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.dto.grant;
 
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import lombok.*;
 
 @ToString
@@ -11,7 +12,6 @@ import lombok.*;
 public class GrantAdminDataDTO {
 
   @NotNull
-  //    @Pattern(regexp = "^(\\+48)? ?[0-9]{3} ?[0-9]{3} ?[0-9]{3}$", message = "Invalid phone
-  // number")
+  @Pattern(regexp = "^\\d{9}$", message = "Invalid phone number")
   private String workPhoneNumber;
 }

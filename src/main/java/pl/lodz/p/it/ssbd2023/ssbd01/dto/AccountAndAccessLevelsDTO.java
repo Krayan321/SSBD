@@ -2,6 +2,9 @@ package pl.lodz.p.it.ssbd2023.ssbd01.dto;
 
 import jakarta.validation.constraints.NotNull;
 import java.util.Set;
+
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 @ToString
@@ -29,9 +32,13 @@ public class AccountAndAccessLevelsDTO extends AbstractEntityDTO {
 
   @ToString.Exclude Set<AccessLevelDTO> accessLevels;
 
-  @NotNull private String login;
+  @Size(max = 50, min = 5)
+  @NotNull
+  private String login;
 
-  @NotNull private Boolean active;
+  @NotNull
+  private Boolean active;
 
-  @NotNull private Boolean confirmed;
+  @NotNull
+  private Boolean confirmed;
 }

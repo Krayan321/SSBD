@@ -7,6 +7,9 @@ import jakarta.persistence.NamedQuery;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
+
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 @Entity
@@ -34,26 +37,22 @@ public class PatientData extends AccessLevel implements Serializable {
   }
 
   @Column(nullable = false, unique = true)
-  @NotNull
-  //    @Pattern(regexp = "^[0-9]{11}$", message = "Invalid PESEL")
+  @Pattern(regexp = "^[0-9]{11}$", message = "Invalid PESEL")
   private String pesel;
 
   @Column(nullable = false, name = "first_name")
-  @NotNull
+  @Size(max = 50, min = 2)
   private String firstName;
 
   @Column(nullable = false, name = "last_name")
-  @NotNull
+  @Size(max = 50, min = 2)
   private String lastName;
 
   @Column(nullable = false, name = "phone_number")
-  @NotNull
-  //    @Pattern(regexp = "^(\\+48)? ?[0-9]{3} ?[0-9]{3} ?[0-9]{3}$", message = "Invalid phone
-  // number")
+  @Pattern(regexp = "^\\d{9}$", message = "Invalid phone number")
   private String phoneNumber;
 
   @Column(nullable = false)
-  @NotNull
-  //    @Pattern(regexp = "^[0-9]{3}-[0-9]{3}-[0-9]{2}-[0-9]{2}$", message = "Invalid NIP")
+  @Pattern(regexp = "^\\d{10}$", message = "Invalid NIP")
   private String NIP;
 }

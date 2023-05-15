@@ -54,11 +54,9 @@ public class Token extends AbstractEntity {
   @Column(name = "code", nullable = false, updatable = false, unique = true)
   private String code;
 
-  @NotNull
   @Column(name = "used", nullable = false, columnDefinition = "boolean default false")
   private boolean isUsed;
 
-  @NotNull
   @Column(
       name = "was_previous_token_sent",
       nullable = false,
