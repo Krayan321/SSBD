@@ -22,13 +22,17 @@ import pl.lodz.p.it.ssbd2023.ssbd01.entities.Token;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.TokenType;
 import pl.lodz.p.it.ssbd2023.ssbd01.exceptions.TokenException;
 import pl.lodz.p.it.ssbd2023.ssbd01.interceptors.GenericManagerExceptionsInterceptor;
+import pl.lodz.p.it.ssbd2023.ssbd01.interceptors.TrackerInterceptor;
 import pl.lodz.p.it.ssbd2023.ssbd01.mok.facades.TokenFacade;
 import pl.lodz.p.it.ssbd2023.ssbd01.util.email.EmailService;
 
 @Stateful
 @Log
 @TransactionAttribute(TransactionAttributeType.MANDATORY)
-@Interceptors({GenericManagerExceptionsInterceptor.class})
+@Interceptors({
+        GenericManagerExceptionsInterceptor.class,
+        TrackerInterceptor.class
+})
 public class TokenManager extends AbstractManager
     implements TokenManagerLocal, SessionSynchronization {
 
@@ -58,8 +62,8 @@ public class TokenManager extends AbstractManager
                         .plusSeconds((long) VERIFICATION_TOKEN_EXPIRATION_HOURS * 60 * 60)
                         .toEpochMilli()))
             .build();
-    // todo czy napewno createdby/modifiedby przez account?
-    token.setCreatedBy(account);
+
+    token.setCreatedBy(account.getLogin());
 
     tokenFacade.create(token);
     emailService.sendRegistrationEmail(account.getEmail(), account.getLogin(),
@@ -78,7 +82,7 @@ public class TokenManager extends AbstractManager
                     .toEpochMilli()))
             .build();
 
-    token.setCreatedBy(account);
+    token.setCreatedBy(account.getLogin());
 
     tokenFacade.create(token);
     emailService.sendEmailResetPassword(account.getEmail(), account.getLogin(),
@@ -91,9 +95,9 @@ public class TokenManager extends AbstractManager
     checkIfTokenIsValid(token, TokenType.VERIFICATION);
     Account account = token.getAccount();
     account.setConfirmed(true);
-    account.setModifiedBy(account);
-    account.setCreatedBy(account);
+    account.setModifiedBy(account.getLogin());
     token.setUsed(true);
+    token.setModifiedBy(account.getLogin());
     tokenFacade.edit(token);
     emailService.sendEmailAccountActivated(
         account.getEmail(), account.getLogin(), account.getLanguage());
@@ -106,8 +110,9 @@ public class TokenManager extends AbstractManager
 
     Account account = foundToken.getAccount();
     account.setPassword(newPassword);
-    account.setModifiedBy(account);
+    account.setModifiedBy(account.getLogin());
     foundToken.setUsed(true);
+    foundToken.setModifiedBy(account.getLogin());
 
     tokenFacade.edit(foundToken);
   }

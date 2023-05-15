@@ -22,6 +22,8 @@ public interface AccountManagerLocal extends CommonManagerLocalInterface {
   Account getAccount(Long id);
   Account getCurrentUser();
 
+  String getCurrentUserLogin();
+
   Account getCurrentUserWithAccessLevels();
 
   Account getAccountAndAccessLevels(Long id);
