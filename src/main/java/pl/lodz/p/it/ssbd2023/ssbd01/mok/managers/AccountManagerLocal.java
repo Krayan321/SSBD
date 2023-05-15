@@ -20,6 +20,7 @@ public interface AccountManagerLocal extends CommonManagerLocalInterface {
   void confirmAccountRegistration(String token);
 
   Account getAccount(Long id);
+  Account getCurrentUser();
 
   Account getAccountAndAccessLevels(Long id);
 
@@ -47,8 +48,7 @@ public interface AccountManagerLocal extends CommonManagerLocalInterface {
 
   void purgeUnactivatedAccounts();
 
-  void updateAuthInformation(String caller, String remoteAddr, Date now, Boolean isCorrect)
-      throws MailjetException;
+  void updateAuthInformation(String caller, String remoteAddr, Date now, Boolean isCorrect);
 
   void sendVerificationTokenIfPreviousWasNotSent();
 }

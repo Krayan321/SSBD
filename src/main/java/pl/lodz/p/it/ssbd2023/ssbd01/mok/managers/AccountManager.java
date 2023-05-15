@@ -16,6 +16,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.SecurityContext;
 import lombok.extern.java.Log;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import pl.lodz.p.it.ssbd2023.ssbd01.common.AbstractManager;
@@ -55,6 +58,8 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
   private int TEMPORARY_ACCOUNT_BLOCK_HOURS;
 
   @Inject private EmailService emailService;
+  @Context
+  private SecurityContext context;
 
   @Override
   public List<Account> getAllAccounts() {
@@ -66,6 +71,12 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
     // return accountFacade.findByLogin(login).orElseThrow(() ->
     // ApplicationException.createEntityNotFoundException());
     return accountFacade.findByLogin(login);
+  }
+
+  @Override
+  public Account getCurrentUser(){
+    Long id = accountFacade.findByLogin(context.getUserPrincipal().getName()).getId();
+    return getAccountAndAccessLevels(id);
   }
 
   @Override
@@ -200,8 +211,7 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
   }
 
   @Override
-  public void updateAuthInformation(String caller, String remoteAddr, Date now, Boolean isCorrect)
-      throws MailjetException {
+  public void updateAuthInformation(String caller, String remoteAddr, Date now, Boolean isCorrect) {
     Account account = accountFacade.findByLogin(caller);
     if (account.getLoginAttempts() >= MAX_INCORRECT_LOGIN_ATTEMPTS) {
       LocalDateTime timeoutThreshold =
@@ -228,7 +238,8 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
       account.setLoginAttempts(account.getLoginAttempts() + 1);
       if (account.getLoginAttempts() >= MAX_INCORRECT_LOGIN_ATTEMPTS) {
         account.setActive(false);
-        emailService.sendCatEmail(account.getEmail(), account.getLogin());
+        emailService.sendEmailAccountBlockedTooManyLogins(account.getEmail(), account.getLogin(),
+                account.getLanguage());
       }
     }
   }

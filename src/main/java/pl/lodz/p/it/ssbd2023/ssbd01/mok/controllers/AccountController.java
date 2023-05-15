@@ -11,12 +11,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import java.util.List;
 import pl.lodz.p.it.ssbd2023.ssbd01.common.AbstractController;
-import pl.lodz.p.it.ssbd2023.ssbd01.dto.AccountAndAccessLevelsDTO;
-import pl.lodz.p.it.ssbd2023.ssbd01.dto.AccountDTO;
-import pl.lodz.p.it.ssbd2023.ssbd01.dto.AdminDataDTO;
-import pl.lodz.p.it.ssbd2023.ssbd01.dto.ChangePasswordDTO;
-import pl.lodz.p.it.ssbd2023.ssbd01.dto.ChemistDataDTO;
-import pl.lodz.p.it.ssbd2023.ssbd01.dto.PatientDataDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.*;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.addAsAdmin.AddAdminAccountDto;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.addAsAdmin.AddChemistAccountDto;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.addAsAdmin.AddPatientAccountDto;
@@ -89,9 +84,10 @@ public class AccountController extends AbstractController {
   @Path("/details")
   @Produces(MediaType.APPLICATION_JSON)
   @RolesAllowed({"PATIENT", "CHEMIST", "ADMIN"})
-  public AccountAndAccessLevelsDTO readOwnAccount() {
-    // read information about user own account
-    return null;
+  public SelfAccountWithAccessLevelDTO readOwnAccount() {
+    Account account = accountManager.getCurrentUser();
+//            repeatTransaction(accountManager, () -> accountManager.getCurrentUser());
+    return  AccountConverter.mapAccountToSelfAccountWithAccessLevelsDto(account);
   }
 
   @GET

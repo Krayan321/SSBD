@@ -2,6 +2,7 @@ package pl.lodz.p.it.ssbd2023.ssbd01.interceptors;
 
 import jakarta.interceptor.AroundInvoke;
 import jakarta.interceptor.InvocationContext;
+import jakarta.persistence.NoResultException;
 import jakarta.persistence.OptimisticLockException;
 import jakarta.persistence.PersistenceException;
 import lombok.extern.java.Log;
@@ -19,6 +20,8 @@ public class AccountFacadeExceptionsInterceptor {
       return invocationContext.proceed();
     } catch (OptimisticLockException e) {
       throw e;
+    } catch(NoResultException e) {
+      throw ApplicationException.createEntityNotFoundException();
     } catch (PersistenceException | java.sql.SQLException e) {
       if (e.getCause() instanceof ConstraintViolationException csv) {
         PSQLException cause = (PSQLException) csv.getCause();

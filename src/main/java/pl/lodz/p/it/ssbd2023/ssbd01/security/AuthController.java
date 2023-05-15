@@ -2,6 +2,7 @@ package pl.lodz.p.it.ssbd2023.ssbd01.security;
 
 import com.mailjet.client.errors.MailjetException;
 import jakarta.inject.Inject;
+import jakarta.persistence.NoResultException;
 import jakarta.security.enterprise.AuthenticationException;
 import jakarta.security.enterprise.credential.UsernamePasswordCredential;
 import jakarta.security.enterprise.identitystore.CredentialValidationResult;
@@ -17,6 +18,9 @@ import java.util.Date;
 import lombok.extern.java.Log;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.auth.LoginDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Account;
+import pl.lodz.p.it.ssbd2023.ssbd01.exceptions.AccountApplicationException;
+import pl.lodz.p.it.ssbd2023.ssbd01.exceptions.ApplicationException;
+import pl.lodz.p.it.ssbd2023.ssbd01.exceptions.ApplicationExceptionEntityNotFound;
 import pl.lodz.p.it.ssbd2023.ssbd01.mok.managers.AccountManagerLocal;
 
 @Log
@@ -31,45 +35,38 @@ public class AuthController {
 
   @POST
   @Path("/login")
-  public Response authenticate(@Valid LoginDTO loginDto)
-      throws MailjetException, AuthenticationException {
+  public Response authenticate(@Valid LoginDTO loginDto) {
+    Account account;
+    try {
+       account = accountManager.findByLogin(loginDto.getLogin());
+    } catch(ApplicationExceptionEntityNotFound e) {
+      throw ApplicationException.createUnauthorisedException();
+    }
 
     UsernamePasswordCredential credential =
         new UsernamePasswordCredential(loginDto.getLogin(), loginDto.getPassword());
     CredentialValidationResult result = identityStoreHandler.validate(credential);
-
-    log.warning(result.getCallerGroups().toString());
     if (result.getStatus() != CredentialValidationResult.Status.VALID) {
-
-      accountManager.updateAuthInformation(
-          credential.getCaller(),
-          httpServletRequest.getRemoteAddr(),
-          Date.from(Instant.now()),
-          false);
-      return Response.status(Response.Status.UNAUTHORIZED)
-          .entity("Invalid login or password")
-          .build();
-    } else {
-      Account account = accountManager.findByLogin(loginDto.getLogin());
-
-      if (!account.getConfirmed()) {
-        return Response.status(Response.Status.UNAUTHORIZED)
-            .entity("Account not confirmed")
-            .build();
-      }
-
-      if (!account.getActive()) {
-        return Response.status(Response.Status.UNAUTHORIZED).entity("Account not active").build();
-      }
-      // fixme nie działa w testach!!!
-      // drugie odwołanie się do accountManager rzuca
-      // "jakarta.enterprise.ejb.container: sfsb checkpoint error."
-      //      accountManager.findByLogin("admin123");
-      //            accountManager.updateAuthInformation(
-      //                    credential.getCaller(),
-      //                    httpServletRequest.getRemoteAddr(),
-      //                    Date.from(Instant.now()), true);
-      return Response.ok(jwtUtils.create(result)).build();
+      // fixme
+      //      accountManager.updateAuthInformation(
+      //          credential.getCaller(),
+      //          httpServletRequest.getRemoteAddr(),
+      //          Date.from(Instant.now()),
+      //          false);
+      throw ApplicationException.createUnauthorisedException();
     }
+
+    if (!account.getConfirmed()) {
+      throw AccountApplicationException.createAccountNotConfirmedException();
+    }
+    if (!account.getActive()) {
+      throw AccountApplicationException.createAccountBlockedException();
+    }
+    // fixme
+    //    accountManager.updateAuthInformation(
+    //            credential.getCaller(),
+    //            httpServletRequest.getRemoteAddr(),
+    //            Date.from(Instant.now()), true);
+    return Response.ok(jwtUtils.create(result)).build();
   }
 }
