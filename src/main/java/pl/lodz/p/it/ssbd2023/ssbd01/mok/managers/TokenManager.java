@@ -43,11 +43,17 @@ public class TokenManager extends AbstractManager
 
   @Override
   public void sendVerificationToken(Account account, String code) {
+    Token token = makeToken(account, code, TokenType.VERIFICATION);
+    tokenFacade.create(token);
+    emailService.sendRegistrationEmail(account.getEmail(), account.getLogin(), token.getCode());
+  }
+
+  private Token makeToken(Account account, String code, TokenType tokenType) {
     Token token =
         Token.builder()
             .account(account)
             .code(code == null ? RandomStringUtils.randomAlphanumeric(8) : code)
-            .tokenType(TokenType.VERIFICATION)
+            .tokenType(tokenType)
             .wasPreviousTokenSent(false)
             .expirationDate(createExpirationDate())
             .build();
@@ -55,8 +61,7 @@ public class TokenManager extends AbstractManager
     token.setCreatedBy(account);
     token.setModifiedBy(account);
 
-    tokenFacade.create(token);
-    emailService.sendRegistrationEmail(account.getEmail(), account.getLogin(), token.getCode());
+    return token;
   }
 
   private Date createExpirationDate() {
@@ -82,18 +87,7 @@ public class TokenManager extends AbstractManager
 
   @Override
   public void sendEmailChangeEmail(Account account, String new_email) {
-    Token token =
-        Token.builder()
-            .account(account)
-            .code(encodeEmail(new_email))
-            .expirationDate(createExpirationDate())
-            .wasPreviousTokenSent(false)
-            .tokenType(TokenType.EMAIL_CHANGE_CONFIRM)
-            .build();
-
-    token.setCreatedBy(account);
-    token.setModifiedBy(account);
-
+    Token token = makeToken(account, encodeEmail(new_email), TokenType.EMAIL_CHANGE_CONFIRM);
     tokenFacade.create(token);
     emailService.sendEmailChangeEmail(new_email, account.getLogin(), token.getCode());
   }
