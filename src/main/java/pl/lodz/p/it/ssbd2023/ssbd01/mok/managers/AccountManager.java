@@ -2,7 +2,6 @@ package pl.lodz.p.it.ssbd2023.ssbd01.mok.managers;
 
 import static pl.lodz.p.it.ssbd2023.ssbd01.exceptions.AuthApplicationException.accountBlockedException;
 
-import com.mailjet.client.errors.MailjetException;
 import jakarta.annotation.security.DenyAll;
 import jakarta.annotation.security.PermitAll;
 import jakarta.annotation.security.RolesAllowed;
@@ -52,6 +51,10 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
   @Inject
   @ConfigProperty(name = "unconfirmed.account.deletion.timeout.hours")
   private int UNCONFIRMED_ACCOUNT_DELETION_TIMEOUT_HOURS;
+
+  @Inject
+  @ConfigProperty(name = "unblocking.account.timeout.hours")
+  private int UNBLOCKING_ACCOUNT_TIMEOUT_HOURS;
 
   @Inject
   @ConfigProperty(name = "max.incorrect.login.attempts")
@@ -182,6 +185,20 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
   }
 
   @Override
+  @PermitAll
+  public void sendResetPasswordToken(String email) {
+    Account account = accountFacade.findByEmail(email);
+    verificationManager.sendResetPasswordToken(account);
+  }
+
+  @Override
+  @PermitAll
+  public void setNewPassword(String token, String newPassword) {
+    String password = HashAlgorithmImpl.generate(newPassword);
+    verificationManager.setNewPassword(token, password);
+  }
+
+  @Override
   @RolesAllowed("updateUserPassword")
   public Account updateUserPassword(Long id, String newPassword) {
     Account account = getAccount(id);
@@ -213,7 +230,7 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
   }
 
   @Override
-  @DenyAll
+  @PermitAll
   public void purgeUnactivatedAccounts() {
     List<Account> accountsToPurge = accountFacade.findNotConfirmed();
 
@@ -225,8 +242,29 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
               .atZone(ZoneId.systemDefault())
               .toLocalDateTime();
       if (creationDate.isBefore(timeoutThreshold)) {
-        emailService.sendEmailWhenRemovedDueToNotConfirmed(account.getEmail(), account.getLogin());
         accountFacade.remove(account);
+        emailService.sendEmailWhenRemovedDueToNotConfirmed(account.getEmail(), account.getLogin(),
+                account.getLanguage());
+      }
+    }
+  }
+
+  @Override
+  @PermitAll
+  public void activateBlockedAccounts() {
+    List<Account> blockedAccounts = accountFacade.findNotActiveAndIncorrectLoginAttemptsEqual(
+            MAX_INCORRECT_LOGIN_ATTEMPTS);
+
+    for (Account account : blockedAccounts) {
+      LocalDateTime timeoutThreshold = LocalDateTime.now()
+              .minusHours(UNBLOCKING_ACCOUNT_TIMEOUT_HOURS);
+      LocalDateTime lastNegativeLogin = Instant.ofEpochMilli(account.getLastNegativeLogin().getTime())
+                      .atZone(ZoneId.systemDefault())
+                      .toLocalDateTime();
+      if (lastNegativeLogin.isBefore(timeoutThreshold)) {
+        account.setActive(true);
+        accountFacade.edit(account);
+        emailService.sendEmailAccountActivated(account.getEmail(), account.getLogin(), account.getLanguage());
       }
     }
   }
@@ -235,7 +273,7 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
   @PermitAll
   public void updateAuthInformation(String caller, String remoteAddr, Date now, Boolean isCorrect) {
     Account account = accountFacade.findByLogin(caller);
-    if (account.getLoginAttempts() >= MAX_INCORRECT_LOGIN_ATTEMPTS) {
+    if (account.getIncorrectLoginAttempts() >= MAX_INCORRECT_LOGIN_ATTEMPTS) {
       LocalDateTime timeoutThreshold =
           LocalDateTime.now().minusHours(TEMPORARY_ACCOUNT_BLOCK_HOURS);
       LocalDateTime lastIncorrectLogin =
@@ -253,12 +291,12 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
     if (isCorrect) {
       account.setLastPositiveLogin(now);
       account.setLogicalAddress(remoteAddr);
-      account.setLoginAttempts(0);
+      account.setIncorrectLoginAttempts(0);
     } else {
       account.setLastNegativeLogin(now);
       account.setLogicalAddress(remoteAddr);
-      account.setLoginAttempts(account.getLoginAttempts() + 1);
-      if (account.getLoginAttempts() >= MAX_INCORRECT_LOGIN_ATTEMPTS) {
+      account.setIncorrectLoginAttempts(account.getIncorrectLoginAttempts() + 1);
+      if (account.getIncorrectLoginAttempts() >= MAX_INCORRECT_LOGIN_ATTEMPTS) {
         account.setActive(false);
         emailService.sendEmailAccountBlockedTooManyLogins(account.getEmail(), account.getLogin(),
                 account.getLanguage());
@@ -267,7 +305,7 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
   }
 
   @Override
-  @DenyAll
+  @PermitAll
   public void sendVerificationTokenIfPreviousWasNotSent() {
 
     Date halfExpirationDate =

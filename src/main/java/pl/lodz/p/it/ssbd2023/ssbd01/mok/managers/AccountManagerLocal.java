@@ -36,6 +36,10 @@ public interface AccountManagerLocal extends CommonManagerLocalInterface {
 
   void unblockAccount(Long id);
 
+  void sendResetPasswordToken(String email);
+
+  void setNewPassword(String token, String newPassword);
+
   Account updateUserPassword(Long id, String newPassword);
 
   Account removeAccessLevel(Long id, AccessLevel accessLevel);
@@ -45,6 +49,8 @@ public interface AccountManagerLocal extends CommonManagerLocalInterface {
   Account updateOwnEmail(Long id, String email);
 
   void purgeUnactivatedAccounts();
+
+  void activateBlockedAccounts();
 
   void updateAuthInformation(String caller, String remoteAddr, Date now, Boolean isCorrect);
 

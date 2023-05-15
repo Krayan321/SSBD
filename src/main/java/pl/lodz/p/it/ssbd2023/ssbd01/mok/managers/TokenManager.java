@@ -40,6 +40,10 @@ public class TokenManager extends AbstractManager
   @ConfigProperty(name = "verification.token.expiration.hours")
   private int VERIFICATION_TOKEN_EXPIRATION_HOURS;
 
+  @Inject
+  @ConfigProperty(name = "reset-password.token.expiration.hours")
+  private int RESET_PASSWORD_TOKEN_EXPIRATION_HOURS;
+
   @Override
   public void sendVerificationToken(Account account, String code) {
     Token token =
@@ -56,41 +60,76 @@ public class TokenManager extends AbstractManager
             .build();
     // todo czy napewno createdby/modifiedby przez account?
     token.setCreatedBy(account);
-    token.setModifiedBy(account);
 
     tokenFacade.create(token);
-    emailService.sendRegistrationEmail(account.getEmail(), account.getLogin(), token.getCode());
+    emailService.sendRegistrationEmail(account.getEmail(), account.getLogin(),
+            account.getLanguage(), token.getCode());
+  }
+
+  @Override
+  public void sendResetPasswordToken(Account account) {
+    Token token = Token.builder()
+            .account(account)
+            .code(RandomStringUtils.randomAlphanumeric(8))
+            .tokenType(TokenType.PASSWORD_RESET)
+            .wasPreviousTokenSent(false)
+            .expirationDate(new Date(Instant.now()
+                    .plusSeconds((long) RESET_PASSWORD_TOKEN_EXPIRATION_HOURS * 60 * 60)
+                    .toEpochMilli()))
+            .build();
+
+    token.setCreatedBy(account);
+
+    tokenFacade.create(token);
+    emailService.sendEmailResetPassword(account.getEmail(), account.getLogin(),
+            account.getLanguage(), token.getCode());
   }
 
   @Override
   public void verifyAccount(String code) {
     Token token = tokenFacade.findByCode(code);
-    checkIfTokenIsValid(token);
+    checkIfTokenIsValid(token, TokenType.VERIFICATION);
     Account account = token.getAccount();
     account.setConfirmed(true);
     account.setModifiedBy(account);
     account.setCreatedBy(account);
     token.setUsed(true);
+    tokenFacade.edit(token);
     emailService.sendEmailAccountActivated(
         account.getEmail(), account.getLogin(), account.getLanguage());
-    tokenFacade.edit(token);
   }
 
-  private void checkIfTokenIsValid(Token token) {
+  @Override
+  public void setNewPassword(String token, String newPassword) {
+    Token foundToken = tokenFacade.findByCode(token);
+    checkIfTokenIsValid(foundToken, TokenType.PASSWORD_RESET);
+
+    Account account = foundToken.getAccount();
+    account.setPassword(newPassword);
+    account.setModifiedBy(account);
+    foundToken.setUsed(true);
+
+    tokenFacade.edit(foundToken);
+  }
+
+  private void checkIfTokenIsValid(Token token, TokenType type) {
     if (token == null) {
-      TokenException.tokenNotFoundException();
+      throw TokenException.tokenNotFoundException();
     }
     Account account = token.getAccount();
 
     if (token.getExpirationDate().before(new java.util.Date())) {
-      tokenExpiredException();
+      throw tokenExpiredException();
     }
-    if (token.isUsed() || account.getConfirmed()) {
-      log.warning("MAGNO MANGO ZET Token already used");
-      tokenAlreadyUsedException();
+    if (token.isUsed()) {
+      log.warning("MAGNO MANGO ZET Token already used"); // todo huh?
+      throw tokenAlreadyUsedException();
     }
-    if (token.getTokenType() != TokenType.VERIFICATION) {
-      incorrectTokenTypeException();
+    if(type == TokenType.VERIFICATION && account.getConfirmed()) { // todo czy to jest na pewno potrzebne?
+      throw tokenAlreadyUsedException();
+    }
+    if (token.getTokenType() != type) {
+      throw incorrectTokenTypeException();
     }
   }
 
