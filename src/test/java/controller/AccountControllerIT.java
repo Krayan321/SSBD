@@ -75,6 +75,20 @@ public class AccountControllerIT extends BaseTest {
   }
 
   @Test
+  @Order(1)
+  public void getSelfInfoCorrect() {
+    given()
+            .header("authorization", "Bearer " + adminJwt)
+            .get(getApiRoot() + "/account/details")
+            .then()
+            .log()
+            .all()
+            .statusCode(Response.Status.OK.getStatusCode())
+            .body("accessLevels", hasItem(hasEntry("role", "ADMIN")))
+            .body("login", equalTo(adminLoginDto.getLogin()));
+  }
+
+  @Test
   @Order(2)
   public void readAccount_correct() {
     given()
@@ -488,17 +502,5 @@ public class AccountControllerIT extends BaseTest {
         .body("email", equalTo("kitty@meow.com"));
   }
 
-  @Test
-  @Order(24)
-  public void getSelfInfoCorrect() {
-    given()
-        .header("authorization", "Bearer " + adminJwt)
-        .get(getApiRoot() + "/account/details")
-        .then()
-        .log()
-        .all()
-        .statusCode(Response.Status.OK.getStatusCode())
-        .body("accessLevels", hasItem(hasEntry("role", "ADMIN")))
-        .body("login", equalTo(adminLoginDto.getLogin()));
-  }
+
 }
