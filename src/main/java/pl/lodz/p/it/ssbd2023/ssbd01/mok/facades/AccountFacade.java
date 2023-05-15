@@ -6,6 +6,7 @@ import jakarta.annotation.security.RolesAllowed;
 import jakarta.ejb.Stateless;
 import jakarta.ejb.TransactionAttribute;
 import jakarta.ejb.TransactionAttributeType;
+import jakarta.enterprise.event.Observes;
 import jakarta.interceptor.Interceptors;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -58,6 +59,16 @@ public class AccountFacade extends AbstractFacade<Account> {
     TypedQuery<Account> tq = em.createNamedQuery("account.findByLogin", Account.class);
     tq.setParameter(1, login);
     return tq.getSingleResult();
+  }
+
+  @PermitAll
+  public Account findByLoginAndRefresh(String login) {
+    TypedQuery<Account> tq = em.createNamedQuery("account.findByLogin", Account.class);
+    tq.setParameter(1, login);
+    Account foundAccount = tq.getSingleResult();
+    getEntityManager().refresh(foundAccount);
+    getEntityManager().flush();
+    return foundAccount;
   }
 
   @PermitAll

@@ -71,7 +71,8 @@ public class AccountController extends AbstractController {
   @Path("/details")
   @Produces(MediaType.APPLICATION_JSON)
   public SelfAccountWithAccessLevelDTO readOwnAccount() {
-    Account account = repeatTransaction(accountManager, () -> accountManager.getCurrentUser());
+    Account account = repeatTransaction(accountManager,
+            () -> accountManager.getCurrentUserWithAccessLevels());
     return AccountConverter.mapAccountToSelfAccountWithAccessLevelsDto(account);
   }
 
@@ -251,7 +252,7 @@ public class AccountController extends AbstractController {
   public Response addPatientAccountAsAdmin(
       @NotNull @Valid AddPatientAccountDto addPatientAccountDto) {
     Account account = AccountConverter.mapAddPatientDtoToAccount(addPatientAccountDto);
-    repeatTransaction(accountManager, () -> accountManager.registerAccount(account));
+    repeatTransaction(accountManager, () -> accountManager.createAccount(account));
     return Response.status(Response.Status.CREATED).build();
   }
 
@@ -261,7 +262,7 @@ public class AccountController extends AbstractController {
   public Response addChemistAccountAsAdmin(
       @NotNull @Valid AddChemistAccountDto addChemistAccountDto) {
     Account account = AccountConverter.mapChemistDtoToAccount(addChemistAccountDto);
-    repeatTransaction(accountManager, () -> accountManager.registerAccount(account));
+    repeatTransaction(accountManager, () -> accountManager.createAccount(account));
     return Response.status(Response.Status.CREATED).build();
   }
 
@@ -270,7 +271,7 @@ public class AccountController extends AbstractController {
   @Consumes(MediaType.APPLICATION_JSON)
   public Response addAdminAccountAsAdmin(@NotNull @Valid AddAdminAccountDto addAdminAccountDto) {
     Account account = AccountConverter.mapAdminDtoToAccount(addAdminAccountDto);
-    repeatTransaction(accountManager, () -> accountManager.registerAccount(account));
+    repeatTransaction(accountManager, () -> accountManager.createAccount(account));
     return Response.status(Response.Status.CREATED).build();
   }
 

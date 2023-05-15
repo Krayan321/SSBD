@@ -21,7 +21,7 @@ public class AccountScheduledTask {
   //        accountManager.purgeUnconfirmedAccounts();
   //    }
 
-  @Schedule(hour = "*", minute = "*", second = "*/10", info = "Each hour")
+  @Schedule(hour = "*", minute = "0", second = "*/10", info = "Each hour")
   public void activateBlockedAccounts() {
     accountManager.activateBlockedAccounts();
   }

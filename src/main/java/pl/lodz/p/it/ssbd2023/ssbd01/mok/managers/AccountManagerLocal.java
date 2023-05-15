@@ -11,7 +11,7 @@ import pl.lodz.p.it.ssbd2023.ssbd01.entities.Account;
 @Local
 public interface AccountManagerLocal extends CommonManagerLocalInterface {
 
-  Account createAccount(Account account, AccessLevel accessLevel);
+  Account createAccount(Account account);
 
   List<Account> getAllAccounts();
 
@@ -21,6 +21,8 @@ public interface AccountManagerLocal extends CommonManagerLocalInterface {
 
   Account getAccount(Long id);
   Account getCurrentUser();
+
+  Account getCurrentUserWithAccessLevels();
 
   Account getAccountAndAccessLevels(Long id);
 
