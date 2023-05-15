@@ -394,16 +394,6 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
         });
   }
 
-
-  @Override
-  @RolesAllowed("removeAccessLevel")
-  public Account removeAccessLevel(Long id, AccessLevel accessLevel) {
-    Account account = getAccount(id);
-    account.getAccessLevels().remove(accessLevel);
-    accountFacade.edit(account);
-    return account;
-  }
-
   @Override
   public void confirmEmailChange(String code) {
     verificationManager.confirmEmailChange(code);

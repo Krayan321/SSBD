@@ -64,7 +64,7 @@ public class TokenManager extends AbstractManager
             .code(code == null ? RandomStringUtils.randomAlphanumeric(8) : code)
             .tokenType(tokenType)
             .wasPreviousTokenSent(false)
-            .expirationDate(createExpirationDate())
+            .expirationDate(createExpirationDate(tokenType))
             .build();
 
     token.setCreatedBy(account.getLogin());
@@ -75,27 +75,12 @@ public class TokenManager extends AbstractManager
     return token;
   }
 
-  @Override
-  public void sendResetPasswordToken(Account account) {
-    Token token = Token.builder()
-            .account(account)
-            .code(RandomStringUtils.randomAlphanumeric(8))
-            .tokenType(TokenType.PASSWORD_RESET)
-            .wasPreviousTokenSent(false)
-            .expirationDate(new Date(Instant.now()
-                    .plusSeconds((long) RESET_PASSWORD_TOKEN_EXPIRATION_HOURS * 60 * 60)
-                    .toEpochMilli()))
-            .build();
-
-    token.setCreatedBy(account.getLogin());
-
-    return token;
-  }
-
-  private Date createExpirationDate() {
+  private Date createExpirationDate(TokenType type) {
+    long hours = (type == TokenType.VERIFICATION) ? VERIFICATION_TOKEN_EXPIRATION_HOURS :
+            RESET_PASSWORD_TOKEN_EXPIRATION_HOURS;
     return new Date(
         Instant.now()
-            .plusSeconds((long) VERIFICATION_TOKEN_EXPIRATION_HOURS * 60 * 60)
+            .plusSeconds(hours * 60 * 60)
             .toEpochMilli());
   }
 
@@ -135,8 +120,7 @@ public class TokenManager extends AbstractManager
     checkIfTokenIsValid(token, TokenType.EMAIL_CHANGE_CONFIRM);
     Account account = token.getAccount();
     account.setEmail(decodeEmail(code));
-    account.setModifiedBy(account);
-    account.setCreatedBy(account);
+    account.setModifiedBy(account.getLogin());
     token.setUsed(true);
     emailService.sendEmailAccountActivated(
         account.getEmail(), account.getLogin(), account.getLanguage());

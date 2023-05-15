@@ -62,6 +62,45 @@ public class AccountControllerIT extends BaseTest {
 
   @Test
   @Order(1)
+  public void changeOwnPassword_correct() {
+    given()
+            .header("authorization", "Bearer " + adminJwt)
+            .body(new ChangePasswordDTO("P@ssw0rd", "!Admin321"))
+            .put(getApiRoot() + "/account/changePassword")
+            .then()
+            .log()
+            .all()
+            .statusCode(Response.Status.OK.getStatusCode());
+  }
+
+  @Test
+  @Order(1)
+  public void changeOwnPassword_same_as_old() {
+    given()
+            .header("authorization", "Bearer " + adminJwt)
+            .body(new ChangePasswordDTO("P@ssw0rd", "P@ssw0rd"))
+            .put(getApiRoot() + "/account/changePassword")
+            .then()
+            .log()
+            .all()
+            .statusCode(Response.Status.UNAUTHORIZED.getStatusCode());
+  }
+
+  @Test
+  @Order(1)
+  public void changeOwnPassword_incorrect() {
+    given()
+            .header("authorization", "Bearer " + adminJwt)
+            .body(new ChangePasswordDTO("baD!password0", "P@ssw0rd"))
+            .put(getApiRoot() + "/account/changePassword")
+            .then()
+            .log()
+            .all()
+            .statusCode(Response.Status.UNAUTHORIZED.getStatusCode());
+  }
+
+  @Test
+  @Order(1)
   public void login_invalidLogin() {
     LoginDTO invalidLogin = new LoginDTO("nonexistantuser", adminLoginDto.getPassword());
 
@@ -540,45 +579,6 @@ public class AccountControllerIT extends BaseTest {
         .all()
         .statusCode(Response.Status.FORBIDDEN.getStatusCode())
         .body("message", equalTo(EXCEPTION_AUTH_BLOCKED_ACCOUNT));
-  }
-
-  @Test
-  @Order(1)
-  public void changeOwnPassword_correct() {
-    given()
-        .header("authorization", "Bearer " + adminJwt)
-        .body(new ChangePasswordDTO("P@ssw0rd", "admin321"))
-        .put(getApiRoot() + "/account/changePassword")
-        .then()
-        .log()
-        .all()
-        .statusCode(Response.Status.OK.getStatusCode());
-  }
-
-  @Test
-  @Order(1)
-  public void changeOwnPassword_same_as_old() {
-    given()
-            .header("authorization", "Bearer " + adminJwt)
-            .body(new ChangePasswordDTO("P@ssw0rd", "P@ssw0rd"))
-            .put(getApiRoot() + "/account/changePassword")
-            .then()
-            .log()
-            .all()
-            .statusCode(Response.Status.UNAUTHORIZED.getStatusCode());
-  }
-
-  @Test
-  @Order(1)
-  public void changeOwnPassword_incorrect() {
-    given()
-            .header("authorization", "Bearer " + adminJwt)
-            .body(new ChangePasswordDTO("badpassword", "admin321"))
-            .put(getApiRoot() + "/account/changePassword")
-            .then()
-            .log()
-            .all()
-            .statusCode(Response.Status.OK.getStatusCode());
   }
 
   @Test
