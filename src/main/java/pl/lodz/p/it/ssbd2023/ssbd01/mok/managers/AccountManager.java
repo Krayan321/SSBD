@@ -189,6 +189,13 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
   }
 
   @Override
+  @PermitAll
+  public void setNewPassword(String token, String newPassword) {
+    String password = HashAlgorithmImpl.generate(newPassword);
+    verificationManager.setNewPassword(token, password);
+  }
+
+  @Override
   @RolesAllowed("updateUserPassword")
   public Account updateUserPassword(Long id, String newPassword) {
     Account account = getAccount(id);

@@ -17,6 +17,8 @@ public interface TokenManagerLocal extends CommonManagerLocalInterface {
 
   void verifyAccount(String token);
 
+  void setNewPassword(String token, String newPassword);
+
   Token findByAccountId(Long id);
 
   void removeVerificationCode(Token token);

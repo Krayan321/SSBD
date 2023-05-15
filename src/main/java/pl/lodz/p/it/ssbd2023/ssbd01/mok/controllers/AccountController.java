@@ -1,7 +1,6 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.mok.controllers;
 
 import jakarta.annotation.security.DenyAll;
-import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
@@ -9,7 +8,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import java.util.ArrayList;
+
 import java.util.List;
 import pl.lodz.p.it.ssbd2023.ssbd01.common.AbstractController;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.*;
@@ -18,7 +17,7 @@ import pl.lodz.p.it.ssbd2023.ssbd01.dto.addAsAdmin.AddChemistAccountDto;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.addAsAdmin.AddPatientAccountDto;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.auth.EditAccountDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.auth.ResetPasswordDTO;
-import pl.lodz.p.it.ssbd2023.ssbd01.dto.auth.SetNewPasswordDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.auth.NewPasswordDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.auth.UpdateOtherUserPasswordDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.auth.VerificationTokenDto;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccount.EditAdminDataDTO;
@@ -154,18 +153,17 @@ return accounts.stream().map(AccountConverter::mapAccountToAccountDto).toList();
   }
 
   @PUT
-  @Path("/resetPassword")
+  @Path("/reset-password")
   public Response resetPassword(@Valid ResetPasswordDTO resetPasswordDTO) {
-    String email = resetPasswordDTO.getEmail();
-    accountManager.sendResetPasswordToken(email);
+    accountManager.sendResetPasswordToken(resetPasswordDTO.getEmail());
     return Response.status(Response.Status.OK).build();
   }
 
   @PUT
-  @Path("/setNewPassword")
-  public Response setNewPassword(@Valid SetNewPasswordDTO setNewPasswordDTO) {
-    // todo
-    return Response.status(Response.Status.OK).entity(null).build();
+  @Path("/new-password")
+  public Response setNewPassword(@Valid NewPasswordDTO newPasswordDTO) {
+    accountManager.setNewPassword(newPasswordDTO.getToken(), newPasswordDTO.getPassword());
+    return Response.status(Response.Status.OK).build();
   }
 
   @PUT

@@ -38,6 +38,8 @@ public interface AccountManagerLocal extends CommonManagerLocalInterface {
 
   void sendResetPasswordToken(String email);
 
+  void setNewPassword(String token, String newPassword);
+
   Account updateUserPassword(Long id, String newPassword);
 
   Account removeAccessLevel(Long id, AccessLevel accessLevel);

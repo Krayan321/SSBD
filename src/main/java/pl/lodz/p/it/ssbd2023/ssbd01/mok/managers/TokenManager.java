@@ -70,7 +70,7 @@ public class TokenManager extends AbstractManager
   public void sendResetPasswordToken(Account account) {
     Token token = Token.builder()
             .account(account)
-            .code(RandomStringUtils.randomAlphanumeric(28))
+            .code(RandomStringUtils.randomAlphanumeric(8))
             .tokenType(TokenType.PASSWORD_RESET)
             .wasPreviousTokenSent(false)
             .expirationDate(new Date(Instant.now()
@@ -99,21 +99,32 @@ public class TokenManager extends AbstractManager
     tokenFacade.edit(token);
   }
 
+  @Override
+  public void setNewPassword(String token, String newPassword) {
+    Token foundToken = tokenFacade.findByCode(token);
+    checkIfTokenIsValid(foundToken);
+
+    Account account = foundToken.getAccount();
+    account.setPassword(newPassword);
+
+    tokenFacade.edit(foundToken);
+  }
+
   private void checkIfTokenIsValid(Token token) {
     if (token == null) {
-      TokenException.tokenNotFoundException();
+      throw TokenException.tokenNotFoundException();
     }
     Account account = token.getAccount();
 
     if (token.getExpirationDate().before(new java.util.Date())) {
-      tokenExpiredException();
+      throw tokenExpiredException();
     }
     if (token.isUsed() || account.getConfirmed()) {
       log.warning("MAGNO MANGO ZET Token already used");
-      tokenAlreadyUsedException();
+      throw tokenAlreadyUsedException();
     }
     if (token.getTokenType() != TokenType.VERIFICATION) {
-      incorrectTokenTypeException();
+      throw incorrectTokenTypeException();
     }
   }
 
