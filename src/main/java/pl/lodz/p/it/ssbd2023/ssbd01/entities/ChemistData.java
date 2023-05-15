@@ -7,6 +7,8 @@ import jakarta.persistence.NamedQuery;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
+
+import jakarta.validation.constraints.Pattern;
 import lombok.*;
 
 @Entity
@@ -29,6 +31,7 @@ public class ChemistData extends AccessLevel implements Serializable {
   }
 
   @NotNull
+  @Pattern(regexp = "^\\d{6}$", message = "Invalid license number")
   @Column(nullable = false, unique = true, name = "license_number")
   private String licenseNumber;
 }

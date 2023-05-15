@@ -350,13 +350,13 @@ public class AccountControllerIT extends BaseTest {
   public void password_incorrect_block_account() {
     for (int i = 0; i < 3; i++) {
       given()
-          .body(new LoginDTO(patientLoginDto.getLogin(), "invalid_test"))
+          .body(new LoginDTO(patientLoginDto.getLogin(), "P@ssw0rd"))
           .post(getApiRoot() + "/auth/login")
           .then()
           .statusCode(Response.Status.UNAUTHORIZED.getStatusCode());
     }
     given()
-        .body(new LoginDTO(patientLoginDto.getLogin(), "invalid_test"))
+        .body(new LoginDTO(patientLoginDto.getLogin(), "P@ssw0rd"))
         .post(getApiRoot() + "/auth/login")
         .then()
         .log()
@@ -372,7 +372,7 @@ public class AccountControllerIT extends BaseTest {
   public void changeOwnPassword_correct() {
     given()
         .header("authorization", "Bearer " + adminJwt)
-        .body(new ChangePasswordDTO("admin123", "admin321"))
+        .body(new ChangePasswordDTO("P@ssw0rd", "adminP@ssw0rd"))
         .put(getApiRoot() + "/account/1/changePassword")
         .then()
         .log()
@@ -508,7 +508,7 @@ public class AccountControllerIT extends BaseTest {
   public void changeUserPassword() {
     given()
             .header("authorization", "Bearer " + adminJwt)
-            .body(new UpdateOtherUserPasswordDTO("test_password"))
+            .body(new UpdateOtherUserPasswordDTO("testAdm1n!23"))
             .put(getApiRoot() + "/account/1/changeUserPassword")
             .then()
             .log()

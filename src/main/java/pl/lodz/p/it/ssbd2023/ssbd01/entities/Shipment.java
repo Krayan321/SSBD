@@ -40,7 +40,6 @@ public class Shipment extends AbstractEntity implements Serializable {
   @Setter(lombok.AccessLevel.NONE)
   private Long id;
 
-  @NotNull
   @Column(nullable = false, name = "shipment_date", updatable = false)
   @Temporal(TemporalType.TIMESTAMP)
   private Date shipmentDate;

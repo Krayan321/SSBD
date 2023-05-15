@@ -1,6 +1,8 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.dto;
 
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,7 +12,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ChangePasswordDTO {
 
-  @NotNull String oldPassword;
+  @NotNull
+  @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$", message = "Invalid password")
+  @Size(max = 50, min = 8)
+  String oldPassword;
 
-  @NotNull String newPassword;
+  @NotNull
+  @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$", message = "Invalid password")
+  @Size(max = 50, min = 8)
+  String newPassword;
 }

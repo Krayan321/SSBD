@@ -1,6 +1,7 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccount;
 
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import lombok.*;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.AbstractEntityDTO;
 
@@ -18,5 +19,7 @@ public class EditChemistDataDTO extends AbstractEntityDTO {
     this.licenseNumber = licenseNumber;
   }
 
-  @NotNull private String licenseNumber;
+  @NotNull
+  @Pattern(regexp = "^\\d{6}$", message = "Invalid license number")
+  private String licenseNumber;
 }

@@ -36,7 +36,6 @@ public class OrderMedication extends AbstractEntity implements Serializable {
   @JoinColumn(name = "medication_id", updatable = false, nullable = false)
   private Medication medication;
 
-  @NotNull
   @Column(nullable = false)
   @Min(value = 1, message = "Quantity must be greater than 0")
   private Integer quantity;

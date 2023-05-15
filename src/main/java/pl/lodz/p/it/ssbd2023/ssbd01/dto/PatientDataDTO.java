@@ -1,6 +1,8 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.dto;
 
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Role;
 
@@ -32,19 +34,22 @@ public class PatientDataDTO extends AccessLevelDTO {
   }
 
   @NotNull
-  //    @Pattern(regexp = "^[0-9]{11}$", message = "Invalid PESEL")
+  @Pattern(regexp = "^\\d{11}$", message = "Invalid PESEL")
   private String pesel;
 
-  @NotNull private String firstName;
-
-  @NotNull private String lastName;
+  @NotNull
+  @Size(max = 50, min = 2)
+  private String firstName;
 
   @NotNull
-  //    @Pattern(regexp = "^(\\+48)? ?[0-9]{3} ?[0-9]{3} ?[0-9]{3}$", message = "Invalid phone
-  // number")
+  @Size(max = 50, min = 2)
+  private String lastName;
+
+  @NotNull
+  @Pattern(regexp = "^\\d{9}$", message = "Invalid phone number")
   private String phoneNumber;
 
   @NotNull
-  //    @Pattern(regexp = "^[0-9]{3}-[0-9]{3}-[0-9]{2}-[0-9]{2}$", message = "Invalid NIP")
+  @Pattern(regexp = "^\\d{10}$", message = "Invalid NIP")
   private String nip;
 }

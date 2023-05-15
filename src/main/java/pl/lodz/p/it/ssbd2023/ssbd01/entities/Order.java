@@ -43,10 +43,8 @@ public class Order extends AbstractEntity implements Serializable {
   private Long id;
 
   @Column(nullable = false, name = "in_queue")
-  @NotNull
   private Boolean inQueue;
 
-  @NotNull
   @Temporal(TemporalType.TIMESTAMP)
   @Column(nullable = false, name = "order_date")
   private Date orderDate;

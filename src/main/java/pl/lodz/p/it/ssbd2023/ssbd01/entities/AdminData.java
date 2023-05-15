@@ -7,6 +7,8 @@ import jakarta.persistence.NamedQuery;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
+
+import jakarta.validation.constraints.Pattern;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,8 +29,7 @@ public class AdminData extends AccessLevel implements Serializable {
 
   @Column(nullable = false, name = "work_phone_number")
   @NotNull
-  //    @Pattern(regexp = "^(\\+48)? ?[0-9]{3} ?[0-9]{3} ?[0-9]{3}$", message = "Invalid phone
-  // number")
+  @Pattern(regexp = "^\\d{9}$", message = "Invalid phone number")
   private String workPhoneNumber;
 
   @Builder
