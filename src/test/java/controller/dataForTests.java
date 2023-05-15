@@ -13,9 +13,9 @@ import pl.lodz.p.it.ssbd2023.ssbd01.dto.register.RegisterPatientDTO;
 
 public class dataForTests {
 
-  public static LoginDTO adminLoginDto = new LoginDTO("admin123", "admin123");
-
-  public static LoginDTO patientLoginDto = new LoginDTO("test1", "testPatient");
+  public static LoginDTO adminLoginDto = new LoginDTO("admin123", "P@ssw0rd");
+  public static LoginDTO changedLoginDto = new LoginDTO("admin123", "testAdm1n!23");
+  public static LoginDTO patientLoginDto = new LoginDTO("test11", "testP@tient123");
 
   // register
   public static RegisterPatientDTO registerPatientDto =
@@ -25,9 +25,9 @@ public class dataForTests {
           .email("patient-email@local.db")
           .name("Test")
           .lastName("Patient")
-          .phoneNumber("123 123 123")
+          .phoneNumber("123123123")
           .pesel("12345678901")
-          .nip("444-333-22-11")
+          .nip("4443332211")
           .build();
 
   public static RegisterPatientDTO registerPatientDtoDuplicateLogin =
@@ -37,9 +37,9 @@ public class dataForTests {
           .email("other-patient-email@local.db")
           .name("Test")
           .lastName("Patient")
-          .phoneNumber("123 123 123")
+          .phoneNumber("123123123")
           .pesel("12345678901")
-          .nip("444-333-22-11")
+          .nip("4443332211")
           .build();
 
   public static RegisterPatientDTO registerPatientDtoDuplicateEmail =
@@ -49,22 +49,22 @@ public class dataForTests {
           .email("patient-email@local.db")
           .name("Test")
           .lastName("Patient")
-          .phoneNumber("123 123 123")
+          .phoneNumber("123123123")
           .pesel("12345678901")
-          .nip("444-333-22-11")
+          .nip("4443332211")
           .build();
 
   // grant
-  public static GrantChemistDataDTO grantChemistDataDTO = new GrantChemistDataDTO("1234");
+  public static GrantChemistDataDTO grantChemistDataDTO = new GrantChemistDataDTO("123412");
 
-  public static GrantAdminDataDTO grantAdminDataDTO = new GrantAdminDataDTO("1234");
+  public static GrantAdminDataDTO grantAdminDataDTO = new GrantAdminDataDTO("123456789");
 
   // edit data
   public static EditAdminDataDTO adminDataDTOChangedPhone =
       EditAdminDataDTO.builder().id(4L).version(0L).workPhoneNumber("102938129").build();
 
   public static EditChemistDataDTO chemistDataDTOChangedLiscence =
-      EditChemistDataDTO.builder().id(3L).version(0L).licenseNumber("4123123123123").build();
+      EditChemistDataDTO.builder().id(3L).version(0L).licenseNumber("412312").build();
 
   public static EditPatientDataDTO patientDataDTOChangedName =
       EditPatientDataDTO.builder()
@@ -81,30 +81,30 @@ public class dataForTests {
   public static AddChemistAccountDto addChemistAccountDto =
       AddChemistAccountDto.builder()
           .login("testChemist")
-          .password("testChemist")
+          .password("testCh3m!st")
           .email("testChemist@o2.pl")
-          .licenseNumber("123456789")
+          .licenseNumber("123456")
           .build();
 
   public static AddAdminAccountDto addAdminAccountDto =
       AddAdminAccountDto.builder()
           .login("testAdmin")
-          .password("testAdmin")
+          .password("test@Dm1n")
           .email("testAdmin@o2.pl")
-          .workPhoneNumber("123456789")
+          .workPhoneNumber("123426123")
           .build();
 
   public static AddChemistAccountDto addChemistAccountDtoMissingField =
       AddChemistAccountDto.builder()
           .login("incorrectChemist")
-          .password("incorrectChemist")
+          .password("incorrectCh3m!st")
           .email("incorrectChemist@o2.pl")
           .build();
 
   public static AddAdminAccountDto addAdminAccountDtoMissingField =
       AddAdminAccountDto.builder()
           .login("incorrectAdmin")
-          .password("incorrectAdmin")
+          .password("incorrect@Dm1n")
           .email("incorrectAdmin@o2.pl")
           .build();
 

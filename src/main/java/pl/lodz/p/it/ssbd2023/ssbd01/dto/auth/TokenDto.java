@@ -10,8 +10,6 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TokenDto {
-
     @NotNull
     private String jwtToken;
-
 }

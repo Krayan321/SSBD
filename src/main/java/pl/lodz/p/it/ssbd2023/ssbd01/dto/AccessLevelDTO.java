@@ -17,7 +17,9 @@ public abstract class AccessLevelDTO extends AbstractEntityDTO {
     this.active = active;
   }
 
+  @NotNull
   private Role role;
 
-  @NotNull private Boolean active;
+  @NotNull
+  private Boolean active;
 }

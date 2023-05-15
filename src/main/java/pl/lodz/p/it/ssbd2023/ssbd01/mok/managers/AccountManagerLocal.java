@@ -32,6 +32,8 @@ public interface AccountManagerLocal extends CommonManagerLocalInterface {
 
   Account editAccessLevel(Long id, AccessLevel accessLevel, Long version);
 
+  void confirmEmailChange(String token);
+
   Account grantAccessLevel(Long id, AccessLevel accessLevel);
 
   void deactivateAccessLevel(Long id, Role role);

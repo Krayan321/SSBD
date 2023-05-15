@@ -20,6 +20,6 @@ public class EditAdminDataDTO extends AbstractEntityDTO {
   }
 
   @NotNull
-  @Pattern(regexp = "^(\\+48)? ?[0-9]{3} ?[0-9]{3} ?[0-9]{3}$", message = "Invalid phone number")
+  @Pattern(regexp = "^\\d{9}$", message = "Invalid phone number")
   private String workPhoneNumber;
 }

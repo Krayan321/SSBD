@@ -11,6 +11,7 @@ import jakarta.ejb.TransactionAttributeType;
 import jakarta.inject.Inject;
 import jakarta.interceptor.Interceptors;
 import java.time.Instant;
+import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 import lombok.extern.java.Log;
@@ -50,17 +51,20 @@ public class TokenManager extends AbstractManager
 
   @Override
   public void sendVerificationToken(Account account, String code) {
+    Token token = makeToken(account, code, TokenType.VERIFICATION);
+    tokenFacade.create(token);
+    emailService.sendRegistrationEmail(
+        account.getEmail(), account.getLogin(), account.getLanguage(), token.getCode());
+  }
+
+  private Token makeToken(Account account, String code, TokenType tokenType) {
     Token token =
         Token.builder()
             .account(account)
             .code(code == null ? RandomStringUtils.randomAlphanumeric(8) : code)
-            .tokenType(TokenType.VERIFICATION)
+            .tokenType(tokenType)
             .wasPreviousTokenSent(false)
-            .expirationDate(
-                new Date(
-                    Instant.now()
-                        .plusSeconds((long) VERIFICATION_TOKEN_EXPIRATION_HOURS * 60 * 60)
-                        .toEpochMilli()))
+            .expirationDate(createExpirationDate())
             .build();
 
     token.setCreatedBy(account.getLogin());
@@ -68,6 +72,7 @@ public class TokenManager extends AbstractManager
     tokenFacade.create(token);
     emailService.sendRegistrationEmail(account.getEmail(), account.getLogin(),
             account.getLanguage(), token.getCode());
+    return token;
   }
 
   @Override
@@ -84,9 +89,14 @@ public class TokenManager extends AbstractManager
 
     token.setCreatedBy(account.getLogin());
 
-    tokenFacade.create(token);
-    emailService.sendEmailResetPassword(account.getEmail(), account.getLogin(),
-            account.getLanguage(), token.getCode());
+    return token;
+  }
+
+  private Date createExpirationDate() {
+    return new Date(
+        Instant.now()
+            .plusSeconds((long) VERIFICATION_TOKEN_EXPIRATION_HOURS * 60 * 60)
+            .toEpochMilli());
   }
 
   @Override
@@ -101,6 +111,60 @@ public class TokenManager extends AbstractManager
     tokenFacade.edit(token);
     emailService.sendEmailAccountActivated(
         account.getEmail(), account.getLogin(), account.getLanguage());
+  }
+
+  @Override
+  public void sendEmailChangeEmail(Account account, String new_email) {
+    Token token = makeToken(account, encodeEmail(new_email), TokenType.EMAIL_CHANGE_CONFIRM);
+    tokenFacade.create(token);
+    emailService.sendEmailChangeEmail(new_email, account.getLogin(), token.getCode());
+  }
+
+  private String encodeEmail(String new_email) {
+    return RandomStringUtils.randomAlphanumeric(8)
+        + Base64.getEncoder().encodeToString(new_email.getBytes());
+  }
+
+  private String decodeEmail(String code) {
+    return Base64.getDecoder().decode((code.substring(8, code.length())).getBytes()).toString();
+  }
+
+  @Override
+  public void confirmEmailChange(String code) {
+    Token token = tokenFacade.findByCode(code);
+    checkIfTokenIsValid(token, TokenType.EMAIL_CHANGE_CONFIRM);
+    Account account = token.getAccount();
+    account.setEmail(decodeEmail(code));
+    account.setModifiedBy(account);
+    account.setCreatedBy(account);
+    token.setUsed(true);
+    emailService.sendEmailAccountActivated(
+        account.getEmail(), account.getLogin(), account.getLanguage());
+    tokenFacade.edit(token);
+  }
+
+  @Override
+  public Token findByAccountId(Long id) {
+    return tokenFacade.findByAccount(id);
+  }
+
+  @Override
+  public void removeVerificationCode(Token token) {
+    tokenFacade.remove(token);
+  }
+
+  @Override
+  public List<Token> findTokensByTokenTypeAndExpirationDateBefore(
+      TokenType verification, Date halfExpirationDate) {
+    return tokenFacade.findByTypeAndBeforeGivenData(verification, halfExpirationDate);
+  }
+
+  @Override
+  public void sendResetPasswordToken(Account account) {
+    Token token = makeToken(account, null, TokenType.PASSWORD_RESET);
+    tokenFacade.create(token);
+    emailService.sendEmailResetPassword(
+        account.getEmail(), account.getLogin(), account.getLanguage(), token.getCode());
   }
 
   @Override
@@ -130,27 +194,12 @@ public class TokenManager extends AbstractManager
       log.warning("MAGNO MANGO ZET Token already used"); // todo huh?
       throw tokenAlreadyUsedException();
     }
-    if(type == TokenType.VERIFICATION && account.getConfirmed()) { // todo czy to jest na pewno potrzebne?
+    if (type == TokenType.VERIFICATION
+        && account.getConfirmed()) { // todo czy to jest na pewno potrzebne?
       throw tokenAlreadyUsedException();
     }
     if (token.getTokenType() != type) {
       throw incorrectTokenTypeException();
     }
-  }
-
-  @Override
-  public Token findByAccountId(Long id) {
-    return tokenFacade.findByAccount(id);
-  }
-
-  @Override
-  public void removeVerificationCode(Token token) {
-    tokenFacade.remove(token);
-  }
-
-  @Override
-  public List<Token> findTokensByTokenTypeAndExpirationDateBefore(
-      TokenType verification, Date halfExpirationDate) {
-    return tokenFacade.findByTypeAndBeforeGivenData(verification, halfExpirationDate);
   }
 }

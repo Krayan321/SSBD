@@ -5,7 +5,8 @@ import lombok.Getter;
 @Getter
 public enum TokenType {
   VERIFICATION("VERIFICATION", "Weryfikacja konta"),
-  PASSWORD_RESET("PASSWORD_RESET", "Resetowanie hasła");
+  PASSWORD_RESET("PASSWORD_RESET", "Resetowanie hasła"),
+  EMAIL_CHANGE_CONFIRM("EMAIL_CHANGE_CONFIRM", "Potwierdzenie zmiany adresu email");
 
   private String tokenName;
 

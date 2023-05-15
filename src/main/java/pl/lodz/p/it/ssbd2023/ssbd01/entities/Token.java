@@ -15,6 +15,7 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -49,14 +50,13 @@ public class Token extends AbstractEntity {
   @Setter(lombok.AccessLevel.NONE)
   private Long id;
 
-  @Column(name = "code", nullable = false, updatable = false, unique = true, length = 8)
+  @Size(min = 8, max = 100)
+  @Column(name = "code", nullable = false, updatable = false, unique = true)
   private String code;
 
-  @NotNull
   @Column(name = "used", nullable = false, columnDefinition = "boolean default false")
   private boolean isUsed;
 
-  @NotNull
   @Column(
       name = "was_previous_token_sent",
       nullable = false,

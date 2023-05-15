@@ -1,6 +1,8 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.dto;
 
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 @ToString
@@ -20,11 +22,18 @@ public class AccountDTO extends AbstractEntityDTO {
     this.email = email;
   }
 
-  @NotNull private String login;
+  @Size(max = 50, min = 5)
+  @NotNull
+  private String login;
 
-  @NotNull private String email;
+  @Size(max = 50, min = 5)
+  @Email
+  @NotNull
+  private String email;
 
-  @NotNull private Boolean active;
+  @NotNull
+  private Boolean active;
 
-  @NotNull private Boolean confirmed;
+  @NotNull
+  private Boolean confirmed;
 }

@@ -1,6 +1,8 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.dto.register;
 
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,21 +13,24 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class RegisterPatientDTO extends BasicAccountDto {
 
-  @NotNull private String name;
-
-  @NotNull private String lastName;
+  @NotNull
+  @Size(max = 50, min = 2)
+  private String name;
 
   @NotNull
-  //    @Pattern(regexp = "^(\\+48)? ?[0-9]{3} ?[0-9]{3} ?[0-9]{3}$", message = "Invalid phone
-  // number")
+  @Size(max = 50, min = 2)
+  private String lastName;
+
+  @NotNull
+  @Pattern(regexp = "^\\d{9}$", message = "Invalid phone number")
   private String phoneNumber;
 
   @NotNull
-  //    @Pattern(regexp = "^[0-9]{11}$", message = "Invalid PESEL")
+  @Pattern(regexp = "^\\d{11}$", message = "Invalid license number")
   private String pesel;
 
   @NotNull
-  //    @Pattern(regexp = "^[0-9]{3}-[0-9]{3}-[0-9]{2}-[0-9]{2}$", message = "Invalid NIP")
+  @Pattern(regexp = "^\\d{10}$", message = "Invalid NIP")
   private String nip;
 
   @Builder
