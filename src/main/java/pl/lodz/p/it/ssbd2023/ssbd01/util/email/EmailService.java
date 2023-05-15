@@ -37,29 +37,11 @@ public class EmailService {
     client = new MailjetClient(options);
   }
 
-  public void sendEmailWhenRemovedDueToNotConfirmed(String email, String name) {
-    MailjetRequest request =
-        new MailjetRequest(Emailv31.resource)
-            .property(
-                Emailv31.MESSAGES,
-                new JSONArray()
-                    .put(
-                        new JSONObject()
-                            .put(
-                                Emailv31.Message.FROM, new JSONObject().put("Email", EMAIL_ADDRESS))
-                            .put(
-                                Emailv31.Message.TO,
-                                new JSONArray()
-                                    .put(new JSONObject().put("Email", email).put("Name", name)))
-                            .put(Emailv31.Message.SUBJECT, "Account removal!")
-                            .put(
-                                Emailv31.Message.TEXTPART,
-                                "Dear "
-                                    + name
-                                    + "! We are sorry but your account has been removed due to not"
-                                    + " confirming it in "
-                                    + UNCONFIRMED_ACCOUNT_DELETION_TIMEOUT_HOURS
-                                    + " hours.")));
+  public void sendEmailWhenRemovedDueToNotConfirmed(String email, String name, Locale locale) {
+    String subject = i18n.getMessage(i18n.MAIL_ACCOUNT_REMOVED_SUBJECT, locale);
+    String body = i18n.getMessage(i18n.MAIL_ACCOUNT_REMOVED_BODY, locale);
+
+    MailjetRequest request = getMailjetRequest(email, name, subject, body);
     try {
       client.post(request);
     } catch (MailjetException e) {

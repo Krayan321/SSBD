@@ -14,10 +14,15 @@ import pl.lodz.p.it.ssbd2023.ssbd01.entities.Token;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.TokenType;
 import pl.lodz.p.it.ssbd2023.ssbd01.interceptors.GenericFacadeExceptionsInterceptor;
 import pl.lodz.p.it.ssbd2023.ssbd01.interceptors.TokenFacadeInterceptor;
+import pl.lodz.p.it.ssbd2023.ssbd01.interceptors.TrackerInterceptor;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.MANDATORY)
-@Interceptors({GenericFacadeExceptionsInterceptor.class, TokenFacadeInterceptor.class})
+@Interceptors({
+        GenericFacadeExceptionsInterceptor.class,
+        TokenFacadeInterceptor.class,
+        TrackerInterceptor.class
+})
 public class TokenFacade extends AbstractFacade<Token> {
   @PersistenceContext(unitName = "ssbd01mokPU")
   private EntityManager em;

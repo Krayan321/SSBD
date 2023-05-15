@@ -67,12 +67,23 @@ public class AccountFacade extends AbstractFacade<Account> {
     return tq.getSingleResult();
   }
 
-  @DenyAll
+  @PermitAll
   public List<Account> findNotConfirmed() {
     CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
     CriteriaQuery cq = cb.createQuery();
     Root<Account> root = cq.from(Account.class);
     cq.select(root).where(cb.isFalse(root.get("confirmed")));
+    return getEntityManager().createQuery(cq).getResultList();
+  }
+
+  @PermitAll
+  public List<Account> findNotActiveAndIncorrectLoginAttemptsEqual(int attempts) {
+    CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
+    CriteriaQuery cq = cb.createQuery();
+    Root<Account> root = cq.from(Account.class);
+    cq.select(root).where(cb.and(
+            cb.isFalse(root.get("active")),
+            cb.equal(root.get("incorrectLoginAttempts"), attempts)));
     return getEntityManager().createQuery(cq).getResultList();
   }
 
