@@ -380,6 +380,33 @@ public class AccountControllerIT extends BaseTest {
   }
 
   @Test
+  @Order(1)
+  public void changeOwnPassword_same_as_old() {
+    given()
+            .header("authorization", "Bearer " + adminJwt)
+            .body(new ChangePasswordDTO("admin123", "admin123"))
+            .put(getApiRoot() + "/account/changePassword")
+            .then()
+            .log()
+            .all()
+            .statusCode(Response.Status.UNAUTHORIZED.getStatusCode());
+  }
+
+  @Test
+  @Order(1)
+  public void changeOwnPassword_incorrect() {
+    given()
+            .header("authorization", "Bearer " + adminJwt)
+            .body(new ChangePasswordDTO("badpassword", "admin321"))
+            .put(getApiRoot() + "/account/changePassword")
+            .then()
+            .log()
+            .all()
+            .statusCode(Response.Status.OK.getStatusCode());
+  }
+
+
+  @Test
   @Order(20)
   public void unblockAccount_alreadyUnblocked() {
     given()
