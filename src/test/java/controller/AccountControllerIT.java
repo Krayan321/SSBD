@@ -368,16 +368,42 @@ public class AccountControllerIT extends BaseTest {
   }
 
   @Test
-  @Order(19)
+  @Order(1)
   public void changeOwnPassword_correct() {
     given()
         .header("authorization", "Bearer " + adminJwt)
-        .body(new ChangePasswordDTO("P@ssw0rd", "adminP@ssw0rd"))
-        .put(getApiRoot() + "/account/1/changePassword")
+        .body(new ChangePasswordDTO("P@ssw0rd", "admin321"))
+        .put(getApiRoot() + "/account/changePassword")
         .then()
         .log()
         .all()
         .statusCode(Response.Status.OK.getStatusCode());
+  }
+
+  @Test
+  @Order(1)
+  public void changeOwnPassword_same_as_old() {
+    given()
+            .header("authorization", "Bearer " + adminJwt)
+            .body(new ChangePasswordDTO("P@ssw0rd", "P@ssw0rd"))
+            .put(getApiRoot() + "/account/changePassword")
+            .then()
+            .log()
+            .all()
+            .statusCode(Response.Status.UNAUTHORIZED.getStatusCode());
+  }
+
+  @Test
+  @Order(1)
+  public void changeOwnPassword_incorrect() {
+    given()
+            .header("authorization", "Bearer " + adminJwt)
+            .body(new ChangePasswordDTO("badpassword", "admin321"))
+            .put(getApiRoot() + "/account/changePassword")
+            .then()
+            .log()
+            .all()
+            .statusCode(Response.Status.OK.getStatusCode());
   }
 
   @Test

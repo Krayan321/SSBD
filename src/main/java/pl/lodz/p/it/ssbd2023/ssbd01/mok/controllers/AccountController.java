@@ -134,14 +134,14 @@ public class AccountController extends AbstractController {
   }
 
   @PUT
-  @Path("{id}/changePassword")
+  @Path("/changePassword")
   public Response changePassword(
-      @PathParam("id") Long id, @Valid ChangePasswordDTO changePasswordDTO) {
-    // todo get login from security context
+          @Valid ChangePasswordDTO changePasswordDTO) {
+    Account account = accountManager.getCurrentUser();
     String oldPassword = changePasswordDTO.getOldPassword();
     String newPassword = changePasswordDTO.getNewPassword();
-    repeatTransaction( // todo
-        accountManager, () -> accountManager.updateOwnPassword(id, oldPassword, newPassword));
+    repeatTransaction(
+            accountManager, () -> accountManager.updateOwnPassword(account.getId(), oldPassword, newPassword));
     return Response.status(Response.Status.OK).build();
   }
 

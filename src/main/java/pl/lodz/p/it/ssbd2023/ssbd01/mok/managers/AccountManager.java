@@ -212,13 +212,15 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
   @RolesAllowed("updateOwnPassword")
   public Account updateOwnPassword(Long id, String oldPassword, String newPassword) {
     Account account = getAccount(id);
-    if (HashAlgorithmImpl.check(oldPassword, account.getPassword())) {
-      account.setPassword(HashAlgorithmImpl.generate(newPassword));
-      accountFacade.edit(account);
-      return account;
-    } else {
-      return null;
+    if (!HashAlgorithmImpl.check(oldPassword, account.getPassword())) {
+      throw ApplicationException.createUnauthorisedException();
     }
+    if (HashAlgorithmImpl.check(newPassword, account.getPassword())) {
+      throw ApplicationException.createUnauthorisedException();
+    }
+    account.setPassword(HashAlgorithmImpl.generate(newPassword));
+    accountFacade.edit(account);
+    return account;
   }
 
   @Override
