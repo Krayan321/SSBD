@@ -24,7 +24,7 @@ public abstract class AbstractController {
       try {
         result = method.get();
         rollbackTX = service.isLastTransactionRollback();
-      } catch (EJBTransactionRolledbackException | ApplicationExceptionOptimisticLock e) {
+      } catch (EJBTransactionRolledbackException e) {
         rollbackTX = true;
       }
     } while (rollbackTX && --retryTXCounter > 0);
@@ -43,7 +43,7 @@ public abstract class AbstractController {
       try {
         voidFI.action();
         rollbackTX = service.isLastTransactionRollback();
-      } catch (EJBTransactionRolledbackException | ApplicationExceptionOptimisticLock e) {
+      } catch (EJBTransactionRolledbackException e) {
         rollbackTX = true;
       }
     } while (rollbackTX && --retryTXCounter > 0);

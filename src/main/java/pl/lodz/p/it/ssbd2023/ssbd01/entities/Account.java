@@ -18,6 +18,7 @@ import lombok.*;
 @Setter
 @NamedQuery(name = "account.findAll", query = "SELECT o FROM Account o")
 @NamedQuery(name = "account.findByLogin", query = "SELECT o FROM Account o WHERE o.login = ?1")
+@NamedQuery(name = "account.findByEmail", query = "SELECT o FROM Account o WHERE o.email = ?1")
 public class Account extends AbstractEntity implements Serializable {
 
   public static final long serialVersionUID = 1L;
@@ -71,8 +72,8 @@ public class Account extends AbstractEntity implements Serializable {
   @Column(name = "logical_address")
   private String logicalAddress;
 
-  @Column(name = "login_attempts")
-  private int loginAttempts;
+  @Column(name = "incorrect_login_attempts")
+  private int incorrectLoginAttempts;
 
   @Builder
   public Account(String login, String password) {

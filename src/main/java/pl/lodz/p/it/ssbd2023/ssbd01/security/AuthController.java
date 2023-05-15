@@ -16,7 +16,9 @@ import jakarta.ws.rs.core.Response;
 import java.time.Instant;
 import java.util.Date;
 import lombok.extern.java.Log;
+import pl.lodz.p.it.ssbd2023.ssbd01.common.AbstractController;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.auth.LoginDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.auth.TokenDto;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Account;
 import pl.lodz.p.it.ssbd2023.ssbd01.exceptions.AccountApplicationException;
 import pl.lodz.p.it.ssbd2023.ssbd01.exceptions.ApplicationException;
@@ -25,7 +27,7 @@ import pl.lodz.p.it.ssbd2023.ssbd01.mok.managers.AccountManagerLocal;
 
 @Log
 @Path("/auth")
-public class AuthController {
+public class AuthController extends AbstractController {
 
   @Inject private IdentityStoreHandler identityStoreHandler;
 
@@ -38,8 +40,9 @@ public class AuthController {
   public Response authenticate(@Valid LoginDTO loginDto) {
     Account account;
     try {
-       account = accountManager.findByLogin(loginDto.getLogin());
-    } catch(ApplicationExceptionEntityNotFound e) {
+      account =
+          repeatTransaction(accountManager, () -> accountManager.findByLogin(loginDto.getLogin()));
+    } catch (ApplicationExceptionEntityNotFound e) {
       throw ApplicationException.createUnauthorisedException();
     }
 
@@ -47,12 +50,14 @@ public class AuthController {
         new UsernamePasswordCredential(loginDto.getLogin(), loginDto.getPassword());
     CredentialValidationResult result = identityStoreHandler.validate(credential);
     if (result.getStatus() != CredentialValidationResult.Status.VALID) {
-      // fixme
-      //      accountManager.updateAuthInformation(
-      //          credential.getCaller(),
-      //          httpServletRequest.getRemoteAddr(),
-      //          Date.from(Instant.now()),
-      //          false);
+      repeatTransactionVoid(
+          accountManager,
+          () ->
+              accountManager.updateAuthInformation(
+                  credential.getCaller(),
+                  httpServletRequest.getRemoteAddr(),
+                  Date.from(Instant.now()),
+                  false));
       throw ApplicationException.createUnauthorisedException();
     }
 
@@ -62,11 +67,14 @@ public class AuthController {
     if (!account.getActive()) {
       throw AccountApplicationException.createAccountBlockedException();
     }
-    // fixme
-    //    accountManager.updateAuthInformation(
-    //            credential.getCaller(),
-    //            httpServletRequest.getRemoteAddr(),
-    //            Date.from(Instant.now()), true);
-    return Response.ok(jwtUtils.create(result)).build();
+    repeatTransactionVoid(
+        accountManager,
+        () ->
+            accountManager.updateAuthInformation(
+                credential.getCaller(),
+                httpServletRequest.getRemoteAddr(),
+                Date.from(Instant.now()),
+                true));
+    return Response.ok(new TokenDto(jwtUtils.create(result))).build();
   }
 }

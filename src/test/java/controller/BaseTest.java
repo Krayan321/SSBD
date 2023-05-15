@@ -20,7 +20,7 @@ public class BaseTest {
 
   static String getApiRoot() {
     return String.format(
-        "http://%s:%s/api", microContainer.getHost(), microContainer.getMappedPort(8080));
+        "http://%s:%s/api", payaraServerContainer.getHost(), payaraServerContainer.getMappedPort(8080));
   }
 
   @Container
@@ -36,19 +36,13 @@ public class BaseTest {
           .withNetworkAliases("ssbd_db");
 
   @Container
-  static GenericContainer microContainer =
-      new GenericContainer<>("payara/micro:6.2023.2-jdk17")
-          .withExposedPorts(8080, 8181)
-          .withLogConsumer(outputFrame -> System.out.println(outputFrame.getUtf8String()))
-          .dependsOn(postgreSQLContainer)
-          .withNetwork(NETWORK)
-          .withCopyToContainer(warFile, "/opt/payara/deployments/app.war")
-          //            .waitingFor(Wait.defaultWaitStrategy())
-          .waitingFor(Wait.forLogMessage(".* Payara Micro .* ready in .*\\s", 1))
-
-          //            .waitingFor(Wait.forLogMessage(
-          //                    ".* Payara Micro .* ready in .*\\s", 1))
-
-          .withCommand("--deploy /opt/payara/deployments/app.war"); // --sslPort 8181 --autoBindHttp
-  // --autoBindSsl
+  static GenericContainer payaraServerContainer =
+          new GenericContainer<>("payara/server-full:6.2023.2-jdk17")
+                  .withExposedPorts(8080, 8181)
+                  .withLogConsumer(outputFrame -> System.out.println(outputFrame.getUtf8String()))
+                  .dependsOn(postgreSQLContainer)
+                  .withNetwork(NETWORK)
+                  .withCopyToContainer(warFile, "/opt/payara/deployments/ssbd01-0.0.1.war")
+                  .waitingFor(Wait.forHttp("/health/ready").forStatusCode(200))
+                  .withStartupTimeout(java.time.Duration.ofSeconds(360));
 }

@@ -1,6 +1,7 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.dto.auth;
 
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,9 +9,12 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class SetNewPasswordDTO {
+public class NewPasswordDTO {
 
-  // todo refactor
+  @NotNull
+  String password;
 
-  @NotNull String password;
+  @NotNull
+  @Size(min = 8, max = 8)
+  String token;
 }

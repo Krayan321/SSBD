@@ -32,7 +32,7 @@ public class AccountControllerIT extends BaseTest {
   @BeforeAll
   static void setUp() throws InterruptedException {
     System.out.println(getApiRoot());
-    adminJwt =
+    String jsonJwt =
         given()
             .contentType("application/json")
             .body(adminLoginDto)
@@ -46,6 +46,8 @@ public class AccountControllerIT extends BaseTest {
             .extract()
             .response()
             .asString();
+
+    adminJwt = jsonJwt.substring(jsonJwt.indexOf(":") + 2, jsonJwt.length() - 2);
 
     // globally set authorization header
     RestAssured.requestSpecification =
@@ -175,20 +177,18 @@ public class AccountControllerIT extends BaseTest {
         .statusCode(Response.Status.OK.getStatusCode());
   }
 
-// todo this shouldn't pass
   @Test
   @Order(10)
   public void grantAdmin_secondGrant() {
     given()
-            .header("authorization", "Bearer " + adminJwt)
-            .body(grantAdminDataDTO)
-            .put(getApiRoot() + "/account/2/grantAdmin")
-            .then()
-            .log()
-            .all()
-            .statusCode(Response.Status.CONFLICT.getStatusCode());
+        .header("authorization", "Bearer " + adminJwt)
+        .body(grantAdminDataDTO)
+        .put(getApiRoot() + "/account/2/grantAdmin")
+        .then()
+        .log()
+        .all()
+        .statusCode(Response.Status.CONFLICT.getStatusCode());
   }
-
 
   @Test
   @Order(10)
@@ -255,13 +255,13 @@ public class AccountControllerIT extends BaseTest {
   @Order(12)
   public void editPatientData_badVersion() {
     given()
-            .header("authorization", "Bearer " + adminJwt)
-            .body(patientDataDTOChangedName)
-            .put(getApiRoot() + "/account/2/patient")
-            .then()
-            .log()
-            .all()
-            .statusCode(Response.Status.CONFLICT.getStatusCode());
+        .header("authorization", "Bearer " + adminJwt)
+        .body(patientDataDTOChangedName)
+        .put(getApiRoot() + "/account/2/patient")
+        .then()
+        .log()
+        .all()
+        .statusCode(Response.Status.CONFLICT.getStatusCode());
   }
 
   @Test
@@ -355,12 +355,12 @@ public class AccountControllerIT extends BaseTest {
           .statusCode(Response.Status.UNAUTHORIZED.getStatusCode());
     }
     given()
-        .body(adminLoginDto)
+        .body(new LoginDTO(patientLoginDto.getLogin(), "invalid_test"))
         .post(getApiRoot() + "/auth/login")
         .then()
         .log()
         .all()
-        .statusCode(Response.Status.UNAUTHORIZED.getStatusCode())
+        .statusCode(Response.Status.FORBIDDEN.getStatusCode())
         .extract()
         .response()
         .asString();

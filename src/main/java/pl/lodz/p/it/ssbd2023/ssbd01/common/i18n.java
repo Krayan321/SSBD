@@ -10,6 +10,7 @@ public class i18n {
   public static final String EXCEPTION_ACCESS_DENIED = "exception.access-denied";
   public static final String EXCEPTION_UNAUTHORISED = "exception.unauthorised";
   public static final String EXCEPTION_NOT_FOUND = "exception.not-found";
+  public static final String EXCEPTION_METHOD_NOT_ALLOWED = "exception.method-not-allowed";
   public static final String EXCEPTION_TRANSACTION_ROLLBACK = "exception.transaction-rollback";
   public static final String EXCEPTION_OPTIMISTIC_LOCK = "exception.optimistic-lock";
   public static final String EXCEPTION_ENTITY_NOT_FOUND = "exception.entity-not-found";
@@ -39,6 +40,8 @@ public class i18n {
   public static final String EXCEPTION_TOKEN_ALREADY_USED = "exception.token.already-used";
   public static final String EXCEPTION_TOKEN_BAD_TYPE = "exception.token.bad-type";
 
+  public static final String MAIL_ACCOUNT_REMOVED_SUBJECT = "mail.account.removed.subject";
+  public static final String MAIL_ACCOUNT_REMOVED_BODY = "mail.account.removed.body";
   public static final String MAIL_ACCOUNT_BLOCKED_SUBJECT = "mail.account.blocked.subject";
   public static final String MAIL_ACCOUNT_BLOCKED_BODY = "mail.account.blocked.body";
   public static final String MAIL_ACCOUNT_UNBLOCKED_SUBJECT = "mail.account.unblocked.subject";
@@ -47,6 +50,11 @@ public class i18n {
           "mail.account.unblocked.too-many-logins.body";
   public static final String MAIL_ACCOUNT_ACTIVATED_SUBJECT = "mail.account.activated.subject";
   public static final String MAIL_ACCOUNT_ACTIVATED_BODY = "mail.account.activated.body";
+  public static final String MAIL_ACCOUNT_REGISTER_SUBJECT = "mail.account.register.subject";
+  public static final String MAIL_ACCOUNT_REGISTER_BODY = "mail.account.register.body";
+
+  public static final String MAIL_PASSWORD_RESET_SUBJECT = "mail.password.reset.subject";
+  public static final String MAIL_PASSWORD_RESET_BODY = "mail.password.reset.body";
 
   public static String getMessage(String message, Locale locale) {
     ResourceBundle bundle = ResourceBundle.getBundle("i18n.messages", locale);

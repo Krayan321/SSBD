@@ -2,7 +2,10 @@ package pl.lodz.p.it.ssbd2023.ssbd01.mok.managers;
 
 import static pl.lodz.p.it.ssbd2023.ssbd01.exceptions.AuthApplicationException.accountBlockedException;
 
-import com.mailjet.client.errors.MailjetException;
+import jakarta.annotation.security.DenyAll;
+import jakarta.annotation.security.PermitAll;
+import jakarta.annotation.security.RolesAllowed;
+import jakarta.ejb.SessionSynchronization;
 import jakarta.ejb.Stateful;
 import jakarta.ejb.TransactionAttribute;
 import jakarta.ejb.TransactionAttributeType;
@@ -39,7 +42,8 @@ import pl.lodz.p.it.ssbd2023.ssbd01.util.mergers.AccessLevelMerger;
 @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 @Interceptors({GenericManagerExceptionsInterceptor.class, TrackerInterceptor.class})
 @Log
-public class AccountManager extends AbstractManager implements AccountManagerLocal {
+@DenyAll
+public class AccountManager extends AbstractManager implements AccountManagerLocal, SessionSynchronization {
 
   @Inject private AccountFacade accountFacade;
 
@@ -48,6 +52,10 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
   @Inject
   @ConfigProperty(name = "unconfirmed.account.deletion.timeout.hours")
   private int UNCONFIRMED_ACCOUNT_DELETION_TIMEOUT_HOURS;
+
+  @Inject
+  @ConfigProperty(name = "unblocking.account.timeout.hours")
+  private int UNBLOCKING_ACCOUNT_TIMEOUT_HOURS;
 
   @Inject
   @ConfigProperty(name = "max.incorrect.login.attempts")
@@ -62,11 +70,13 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
   private SecurityContext context;
 
   @Override
+  @RolesAllowed("getAllAccounts")
   public List<Account> getAllAccounts() {
     return accountFacade.findAll();
   }
 
   @Override
+  @PermitAll
   public Account findByLogin(String login) {
     // return accountFacade.findByLogin(login).orElseThrow(() ->
     // ApplicationException.createEntityNotFoundException());
@@ -74,12 +84,14 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
   }
 
   @Override
+  @RolesAllowed("getCurrentUser")
   public Account getCurrentUser(){
     Long id = accountFacade.findByLogin(context.getUserPrincipal().getName()).getId();
     return getAccountAndAccessLevels(id);
   }
 
   @Override
+  @RolesAllowed("getAccountAndAccessLevels")
   public Account getAccountAndAccessLevels(Long id) {
     Optional<Account> optionalAccount = accountFacade.findAndRefresh(id);
     if (optionalAccount.isEmpty()) {
@@ -89,6 +101,7 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
   }
 
   @Override
+  @RolesAllowed("grantAccessLevel")
   public Account grantAccessLevel(Long id, AccessLevel accessLevel) {
     Account account = getAccount(id);
     accessLevel.setAccount(account);
@@ -98,6 +111,7 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
   }
 
   @Override
+  @RolesAllowed("getAccount")
   public Account getAccount(Long id) {
     Optional<Account> optionalAccount = accountFacade.find(id);
     if (optionalAccount.isEmpty()) {
@@ -107,11 +121,13 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
   }
 
   @Override
+  @PermitAll
   public void confirmAccountRegistration(String verificationToken) {
     verificationManager.verifyAccount(verificationToken);
   }
 
   @Override
+  @PermitAll
   public Account registerAccount(Account account) {
     account.setPassword(HashAlgorithmImpl.generate(account.getPassword()));
     accountFacade.create(account);
@@ -120,6 +136,7 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
   }
 
   @Override
+  @RolesAllowed("editAccessLevel")
   public Account editAccessLevel(Long id, AccessLevel accessLevel, Long version) {
     Account account = getAccount(id);
     AccessLevel found = AccessLevelFinder.findAccessLevel(account, accessLevel);
@@ -132,6 +149,7 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
   }
 
   @Override
+  @RolesAllowed("activateUserAccount")
   public Account activateUserAccount(Long id) {
     Account account = getAccount(id);
     account.setConfirmed(true);
@@ -142,6 +160,7 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
   }
 
   @Override
+  @RolesAllowed("blockAccount")
   public void blockAccount(Long id) {
     Account account = getAccount(id);
     if (!account.getActive()) {
@@ -154,6 +173,7 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
   }
 
   @Override
+  @RolesAllowed("unblockAccount")
   public void unblockAccount(Long id) {
     Account account = getAccount(id);
     if (account.getActive()) {
@@ -166,6 +186,21 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
   }
 
   @Override
+  @PermitAll
+  public void sendResetPasswordToken(String email) {
+    Account account = accountFacade.findByEmail(email);
+    verificationManager.sendResetPasswordToken(account);
+  }
+
+  @Override
+  @PermitAll
+  public void setNewPassword(String token, String newPassword) {
+    String password = HashAlgorithmImpl.generate(newPassword);
+    verificationManager.setNewPassword(token, password);
+  }
+
+  @Override
+  @RolesAllowed("updateUserPassword")
   public Account updateUserPassword(Long id, String newPassword) {
     Account account = getAccount(id);
     account.setPassword(HashAlgorithmImpl.generate(newPassword));
@@ -174,6 +209,7 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
   }
 
   @Override
+  @RolesAllowed("updateOwnPassword")
   public Account updateOwnPassword(Long id, String oldPassword, String newPassword) {
     Account account = getAccount(id);
     if (HashAlgorithmImpl.check(oldPassword, account.getPassword())) {
@@ -186,6 +222,7 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
   }
 
   @Override
+  @RolesAllowed("updateOwnEmail")
   public Account updateOwnEmail(Long id, String email) {
     Account account = getAccount(id);
     verificationManager.sendEmailChangeEmail(account, email);
@@ -193,6 +230,7 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
   }
 
   @Override
+  @PermitAll
   public void purgeUnactivatedAccounts() {
     List<Account> accountsToPurge = accountFacade.findNotConfirmed();
 
@@ -204,16 +242,38 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
               .atZone(ZoneId.systemDefault())
               .toLocalDateTime();
       if (creationDate.isBefore(timeoutThreshold)) {
-        emailService.sendEmailWhenRemovedDueToNotConfirmed(account.getEmail(), account.getLogin());
         accountFacade.remove(account);
+        emailService.sendEmailWhenRemovedDueToNotConfirmed(account.getEmail(), account.getLogin(),
+                account.getLanguage());
       }
     }
   }
 
   @Override
+  @PermitAll
+  public void activateBlockedAccounts() {
+    List<Account> blockedAccounts = accountFacade.findNotActiveAndIncorrectLoginAttemptsEqual(
+            MAX_INCORRECT_LOGIN_ATTEMPTS);
+
+    for (Account account : blockedAccounts) {
+      LocalDateTime timeoutThreshold = LocalDateTime.now()
+              .minusHours(UNBLOCKING_ACCOUNT_TIMEOUT_HOURS);
+      LocalDateTime lastNegativeLogin = Instant.ofEpochMilli(account.getLastNegativeLogin().getTime())
+                      .atZone(ZoneId.systemDefault())
+                      .toLocalDateTime();
+      if (lastNegativeLogin.isBefore(timeoutThreshold)) {
+        account.setActive(true);
+        accountFacade.edit(account);
+        emailService.sendEmailAccountActivated(account.getEmail(), account.getLogin(), account.getLanguage());
+      }
+    }
+  }
+
+  @Override
+  @PermitAll
   public void updateAuthInformation(String caller, String remoteAddr, Date now, Boolean isCorrect) {
     Account account = accountFacade.findByLogin(caller);
-    if (account.getLoginAttempts() >= MAX_INCORRECT_LOGIN_ATTEMPTS) {
+    if (account.getIncorrectLoginAttempts() >= MAX_INCORRECT_LOGIN_ATTEMPTS) {
       LocalDateTime timeoutThreshold =
           LocalDateTime.now().minusHours(TEMPORARY_ACCOUNT_BLOCK_HOURS);
       LocalDateTime lastIncorrectLogin =
@@ -231,12 +291,12 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
     if (isCorrect) {
       account.setLastPositiveLogin(now);
       account.setLogicalAddress(remoteAddr);
-      account.setLoginAttempts(0);
+      account.setIncorrectLoginAttempts(0);
     } else {
       account.setLastNegativeLogin(now);
       account.setLogicalAddress(remoteAddr);
-      account.setLoginAttempts(account.getLoginAttempts() + 1);
-      if (account.getLoginAttempts() >= MAX_INCORRECT_LOGIN_ATTEMPTS) {
+      account.setIncorrectLoginAttempts(account.getIncorrectLoginAttempts() + 1);
+      if (account.getIncorrectLoginAttempts() >= MAX_INCORRECT_LOGIN_ATTEMPTS) {
         account.setActive(false);
         emailService.sendEmailAccountBlockedTooManyLogins(account.getEmail(), account.getLogin(),
                 account.getLanguage());
@@ -245,6 +305,7 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
   }
 
   @Override
+  @PermitAll
   public void sendVerificationTokenIfPreviousWasNotSent() {
 
     Date halfExpirationDate =
@@ -264,6 +325,7 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
 
   // fixme? Is this really necessary
   @Override
+  //todo
   public Account createAccount(Account account, AccessLevel accessLevel) {
     account.setPassword(HashAlgorithmImpl.generate(account.getPassword()));
     accessLevel.setAccount(account);
@@ -274,6 +336,7 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
   }
 
   @Override
+  @RolesAllowed("removeAccessLevel")
   public Account removeAccessLevel(Long id, AccessLevel accessLevel) {
     Account account = getAccount(id);
     account.getAccessLevels().remove(accessLevel);

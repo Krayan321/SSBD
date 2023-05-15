@@ -41,11 +41,16 @@ public class TokenManager extends AbstractManager
   @ConfigProperty(name = "verification.token.expiration.hours")
   private int VERIFICATION_TOKEN_EXPIRATION_HOURS;
 
+  @Inject
+  @ConfigProperty(name = "reset-password.token.expiration.hours")
+  private int RESET_PASSWORD_TOKEN_EXPIRATION_HOURS;
+
   @Override
   public void sendVerificationToken(Account account, String code) {
     Token token = makeToken(account, code, TokenType.VERIFICATION);
     tokenFacade.create(token);
-    emailService.sendRegistrationEmail(account.getEmail(), account.getLogin(), token.getCode());
+    emailService.sendRegistrationEmail(
+        account.getEmail(), account.getLogin(), account.getLanguage(), token.getCode());
   }
 
   private Token makeToken(Account account, String code, TokenType tokenType) {
@@ -80,9 +85,9 @@ public class TokenManager extends AbstractManager
     account.setModifiedBy(account);
     account.setCreatedBy(account);
     token.setUsed(true);
+    tokenFacade.edit(token);
     emailService.sendEmailAccountActivated(
         account.getEmail(), account.getLogin(), account.getLanguage());
-    tokenFacade.edit(token);
   }
 
   @Override
@@ -115,24 +120,6 @@ public class TokenManager extends AbstractManager
     tokenFacade.edit(token);
   }
 
-  private void checkIfTokenIsValid(Token token, TokenType tokenType) {
-    if (token == null) {
-      TokenException.tokenNotFoundException();
-    }
-    Account account = token.getAccount();
-
-    if (token.getExpirationDate().before(new java.util.Date())) {
-      tokenExpiredException();
-    }
-    if (token.isUsed() || account.getConfirmed()) {
-      log.warning("MAGNO MANGO ZET Token already used");
-      tokenAlreadyUsedException();
-    }
-    if (token.getTokenType() != tokenType) {
-      incorrectTokenTypeException();
-    }
-  }
-
   @Override
   public Token findByAccountId(Long id) {
     return tokenFacade.findByAccount(id);
@@ -147,5 +134,48 @@ public class TokenManager extends AbstractManager
   public List<Token> findTokensByTokenTypeAndExpirationDateBefore(
       TokenType verification, Date halfExpirationDate) {
     return tokenFacade.findByTypeAndBeforeGivenData(verification, halfExpirationDate);
+  }
+
+  @Override
+  public void sendResetPasswordToken(Account account) {
+    Token token = makeToken(account, null, TokenType.PASSWORD_RESET);
+    tokenFacade.create(token);
+    emailService.sendEmailResetPassword(
+        account.getEmail(), account.getLogin(), account.getLanguage(), token.getCode());
+  }
+
+  @Override
+  public void setNewPassword(String token, String newPassword) {
+    Token foundToken = tokenFacade.findByCode(token);
+    checkIfTokenIsValid(foundToken, TokenType.PASSWORD_RESET);
+
+    Account account = foundToken.getAccount();
+    account.setPassword(newPassword);
+    account.setModifiedBy(account);
+    foundToken.setUsed(true);
+
+    tokenFacade.edit(foundToken);
+  }
+
+  private void checkIfTokenIsValid(Token token, TokenType type) {
+    if (token == null) {
+      throw TokenException.tokenNotFoundException();
+    }
+    Account account = token.getAccount();
+
+    if (token.getExpirationDate().before(new java.util.Date())) {
+      throw tokenExpiredException();
+    }
+    if (token.isUsed()) {
+      log.warning("MAGNO MANGO ZET Token already used"); // todo huh?
+      throw tokenAlreadyUsedException();
+    }
+    if (type == TokenType.VERIFICATION
+        && account.getConfirmed()) { // todo czy to jest na pewno potrzebne?
+      throw tokenAlreadyUsedException();
+    }
+    if (token.getTokenType() != type) {
+      throw incorrectTokenTypeException();
+    }
   }
 }
