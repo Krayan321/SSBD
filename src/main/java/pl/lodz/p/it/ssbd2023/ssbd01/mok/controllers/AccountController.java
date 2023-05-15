@@ -46,7 +46,6 @@ public class AccountController extends AbstractController {
   @GET
   @Path("/")
   @Produces(MediaType.APPLICATION_JSON)
-  @RolesAllowed({"ADMIN"})
   public List<AccountDTO> readAllClients() {
     List<Account> accounts = accountManager.getAllAccounts();
 //            repeatTransaction(accountManager, () -> accountManager.getAccount(id));
@@ -65,7 +64,6 @@ return accounts.stream().map(AccountConverter::mapAccountToAccountDto).toList();
   @GET
   @Path("/{id}")
   @Produces(MediaType.APPLICATION_JSON)
-  @RolesAllowed({"ADMIN"})
   public AccountDTO readAccount(@PathParam("id") Long id) {
     Account account = accountManager.getAccount(id);
     //            repeatTransaction(accountManager, () -> accountManager.getAccount(id));
@@ -75,7 +73,6 @@ return accounts.stream().map(AccountConverter::mapAccountToAccountDto).toList();
   @GET
   @Path("/details")
   @Produces(MediaType.APPLICATION_JSON)
-  @RolesAllowed({"PATIENT", "CHEMIST", "ADMIN"})
   public SelfAccountWithAccessLevelDTO readOwnAccount() {
     Account account = accountManager.getCurrentUser();
 //            repeatTransaction(accountManager, () -> accountManager.getCurrentUser());
@@ -85,7 +82,6 @@ return accounts.stream().map(AccountConverter::mapAccountToAccountDto).toList();
   @GET
   @Path("/{id}/details")
   @Produces(MediaType.APPLICATION_JSON)
-  @RolesAllowed({"ADMIN"})
   public AccountAndAccessLevelsDTO readAccountAndAccessLevels(@PathParam("id") Long id) {
     Account account = accountManager.getAccountAndAccessLevels(id);
     //        repeatTransaction(accountManager, () -> accountManager.getAccountAndAccessLevels(id));
@@ -95,7 +91,6 @@ return accounts.stream().map(AccountConverter::mapAccountToAccountDto).toList();
   @POST
   @Path("/register")
   @Consumes(MediaType.APPLICATION_JSON)
-  //    @RolesAllowed({"GUEST"})
   public Response registerPatientAccount(@NotNull @Valid RegisterPatientDTO registerPatientDto) {
     Account account = AccountConverter.mapRegisterPatientDtoToAccount(registerPatientDto);
     accountManager.registerAccount(account);
@@ -104,7 +99,6 @@ return accounts.stream().map(AccountConverter::mapAccountToAccountDto).toList();
 
   @PUT
   @Path("/{id}/block")
-  @RolesAllowed({"ADMIN"})
   public Response blockAccount(@PathParam("id") Long id) {
     accountManager.blockAccount(id);
     return Response.status(Response.Status.OK).build();
@@ -112,7 +106,6 @@ return accounts.stream().map(AccountConverter::mapAccountToAccountDto).toList();
 
   @PUT
   @Path("/{id}/unblock")
-  @RolesAllowed({"ADMIN"})
   public Response unblockAccount(@PathParam("id") Long id) {
     accountManager.unblockAccount(id);
     return Response.status(Response.Status.OK).build();
@@ -120,7 +113,6 @@ return accounts.stream().map(AccountConverter::mapAccountToAccountDto).toList();
 
   @PUT
   @Path("{id}/activate")
-  @RolesAllowed({"ADMIN"})
   public AccountDTO activateAccount(@PathParam("id") Long id) {
     Account account = accountManager.activateUserAccount(id);
     //        repeatTransaction(accountManager, () -> accountManager.activateUserAccount(id));
@@ -129,7 +121,6 @@ return accounts.stream().map(AccountConverter::mapAccountToAccountDto).toList();
 
   @PUT
   @Path("/{id}/changeUserPassword")
-  @RolesAllowed({"ADMIN"})
   public AccountDTO changeUserPassword(
       @PathParam("id") Long id, @Valid UpdateOtherUserPasswordDTO updateOtherUserPasswordDTO) {
     String newPassword = updateOtherUserPasswordDTO.getPassword();
@@ -141,12 +132,12 @@ return accounts.stream().map(AccountConverter::mapAccountToAccountDto).toList();
 
   @PUT
   @Path("{id}/changePassword")
-  @RolesAllowed({"PATIENT", "CHEMIST", "ADMIN"})
   public Response changePassword(
       @PathParam("id") Long id, @Valid ChangePasswordDTO changePasswordDTO) {
+    // todo get login from security context
     String oldPassword = changePasswordDTO.getOldPassword();
     String newPassword = changePasswordDTO.getNewPassword();
-    accountManager.updateOwnPassword(id, oldPassword, newPassword);
+    accountManager.updateOwnPassword(id, oldPassword, newPassword); //todo
     //    repeatTransaction(
     //        accountManager, () -> accountManager.updateOwnPassword(id, oldPassword, newPassword));
     return Response.status(Response.Status.OK).build();
@@ -154,7 +145,6 @@ return accounts.stream().map(AccountConverter::mapAccountToAccountDto).toList();
 
   @PUT
   @Path("{id}/editAccount")
-  @RolesAllowed({"PATIENT", "CHEMIST", "ADMIN"})
   public Response editAccount(@PathParam("id") Long id, @Valid EditAccountDTO editAccountDTO) {
     String email = editAccountDTO.getEmail();
     accountManager.updateOwnEmail(id, email);
@@ -165,7 +155,6 @@ return accounts.stream().map(AccountConverter::mapAccountToAccountDto).toList();
 
   @PUT
   @Path("/resetPassword")
-  @RolesAllowed({"GUEST"})
   public Response resetPassword(@Valid ResetPasswordDTO resetPasswordDTO) {
     String email = resetPasswordDTO.getEmail();
     // todo
@@ -174,7 +163,6 @@ return accounts.stream().map(AccountConverter::mapAccountToAccountDto).toList();
 
   @PUT
   @Path("/setNewPassword")
-  @RolesAllowed({"GUEST"})
   public Response setNewPassword(@Valid SetNewPasswordDTO setNewPasswordDTO) {
     // todo
     return Response.status(Response.Status.OK).entity(null).build();
@@ -184,7 +172,6 @@ return accounts.stream().map(AccountConverter::mapAccountToAccountDto).toList();
   @Path("/{id}/patient")
   @Produces(MediaType.APPLICATION_JSON)
   @Consumes(MediaType.APPLICATION_JSON)
-  @RolesAllowed({"ADMIN"})
   public AccountAndAccessLevelsDTO editPatientData(
       @PathParam("id") Long id, @Valid EditPatientDataDTO patientDataDTO) {
     PatientData patientData =
@@ -198,7 +185,6 @@ return accounts.stream().map(AccountConverter::mapAccountToAccountDto).toList();
   @Path("/{id}/admin")
   @Produces(MediaType.APPLICATION_JSON)
   @Consumes(MediaType.APPLICATION_JSON)
-  @RolesAllowed({"ADMIN"})
   public AccountAndAccessLevelsDTO editAdminData(
       @PathParam("id") Long id, @Valid EditAdminDataDTO adminDataDTO) {
     AdminData adminData = AccessLevelConverter.mapEditAdminDataDtoToAdminData(adminDataDTO);
@@ -211,7 +197,6 @@ return accounts.stream().map(AccountConverter::mapAccountToAccountDto).toList();
   @Path("/{id}/chemist")
   @Produces(MediaType.APPLICATION_JSON)
   @Consumes(MediaType.APPLICATION_JSON)
-  @RolesAllowed({"ADMIN"})
   public AccountAndAccessLevelsDTO editChemistData(
       @PathParam("id") Long id, @Valid EditChemistDataDTO chemistDataDTO) {
     ChemistData chemistData =
@@ -225,7 +210,6 @@ return accounts.stream().map(AccountConverter::mapAccountToAccountDto).toList();
   @Path("/{id}/grantPatient")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
-  @RolesAllowed({"ADMIN"})
   public AccountAndAccessLevelsDTO grantPatient(
       @PathParam("id") Long id, @Valid GrantPatientDataDTO patientDataDTO) {
     PatientData patientData =
@@ -240,7 +224,6 @@ return accounts.stream().map(AccountConverter::mapAccountToAccountDto).toList();
   @Path("/{id}/grantChemist")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
-  @RolesAllowed({"ADMIN"})
   public AccountAndAccessLevelsDTO grantChemist(
       @PathParam("id") Long id, @Valid GrantChemistDataDTO chemistDataDTO) {
     ChemistData chemistData =
@@ -255,7 +238,6 @@ return accounts.stream().map(AccountConverter::mapAccountToAccountDto).toList();
   @Path("/{id}/grantAdmin")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
-  @RolesAllowed({"ADMIN"})
   public AccountAndAccessLevelsDTO grantAdmin(
       @PathParam("id") Long id, @Valid GrantAdminDataDTO adminDataDTO) {
     AdminData adminData = AccessLevelConverter.mapGrantAdminDataDtoToAdminData(adminDataDTO);
@@ -268,7 +250,6 @@ return accounts.stream().map(AccountConverter::mapAccountToAccountDto).toList();
   @POST
   @Path("/add-patient")
   @Consumes(MediaType.APPLICATION_JSON)
-  @RolesAllowed({"ADMIN"})
   public Response addPatientAccountAsAdmin(
       @NotNull @Valid AddPatientAccountDto addPatientAccountDto) {
     Account account = AccountConverter.mapAddPatientDtoToAccount(addPatientAccountDto);
@@ -280,7 +261,6 @@ return accounts.stream().map(AccountConverter::mapAccountToAccountDto).toList();
   @POST
   @Path("/add-chemist")
   @Consumes(MediaType.APPLICATION_JSON)
-  @RolesAllowed({"ADMIN"})
   public Response addChemistAccountAsAdmin(
       @NotNull @Valid AddChemistAccountDto addChemistAccountDto) {
     Account account = AccountConverter.mapChemistDtoToAccount(addChemistAccountDto);
@@ -292,7 +272,6 @@ return accounts.stream().map(AccountConverter::mapAccountToAccountDto).toList();
   @POST
   @Path("/add-admin")
   @Consumes(MediaType.APPLICATION_JSON)
-  @RolesAllowed({"ADMIN"})
   public Response addAdminAccountAsAdmin(@NotNull @Valid AddAdminAccountDto addAdminAccountDto) {
     Account account = AccountConverter.mapAdminDtoToAccount(addAdminAccountDto);
     accountManager.registerAccount(account);
@@ -304,7 +283,6 @@ return accounts.stream().map(AccountConverter::mapAccountToAccountDto).toList();
   @Path("/{id}/removeRoleAdmin")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
-  @RolesAllowed({"ADMIN"})
   public Response removeRoleAdmin(@PathParam("id") Long id, @Valid AdminDataDTO adminDataDTO) {
     Account account =
         accountManager.removeAccessLevel(
@@ -323,7 +301,6 @@ return accounts.stream().map(AccountConverter::mapAccountToAccountDto).toList();
   @Path("/{id}/removeRoleChemist")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
-  @RolesAllowed({"ADMIN"})
   public Response removeRoleChemist(
       @PathParam("id") Long id, @Valid ChemistDataDTO chemistDataDTO) {
     Account account =
@@ -343,7 +320,6 @@ return accounts.stream().map(AccountConverter::mapAccountToAccountDto).toList();
   @Path("/{id}/removeRolePatient")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
-  @RolesAllowed({"ADMIN"})
   public Response removeRolePatient(
       @PathParam("id") Long id, @Valid PatientDataDTO patientDataDTO) {
     Account account =
