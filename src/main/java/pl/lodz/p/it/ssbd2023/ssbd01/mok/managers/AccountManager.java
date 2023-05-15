@@ -5,6 +5,7 @@ import static pl.lodz.p.it.ssbd2023.ssbd01.exceptions.AuthApplicationException.a
 import jakarta.annotation.security.DenyAll;
 import jakarta.annotation.security.PermitAll;
 import jakarta.annotation.security.RolesAllowed;
+import jakarta.ejb.SessionSynchronization;
 import jakarta.ejb.Stateful;
 import jakarta.ejb.TransactionAttribute;
 import jakarta.ejb.TransactionAttributeType;
@@ -42,7 +43,7 @@ import pl.lodz.p.it.ssbd2023.ssbd01.util.mergers.AccessLevelMerger;
 @Interceptors({GenericManagerExceptionsInterceptor.class, TrackerInterceptor.class})
 @Log
 @DenyAll
-public class AccountManager extends AbstractManager implements AccountManagerLocal {
+public class AccountManager extends AbstractManager implements AccountManagerLocal, SessionSynchronization {
 
   @Inject private AccountFacade accountFacade;
 
