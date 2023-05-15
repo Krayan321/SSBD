@@ -32,7 +32,7 @@ public class AccountControllerIT extends BaseTest {
   @BeforeAll
   static void setUp() throws InterruptedException {
     System.out.println(getApiRoot());
-    adminJwt =
+    String jsonJwt =
         given()
             .contentType("application/json")
             .body(adminLoginDto)
@@ -46,6 +46,8 @@ public class AccountControllerIT extends BaseTest {
             .extract()
             .response()
             .asString();
+
+    adminJwt = jsonJwt.substring(jsonJwt.indexOf(":") + 2, jsonJwt.length() - 2);
 
     // globally set authorization header
     RestAssured.requestSpecification =
@@ -179,15 +181,14 @@ public class AccountControllerIT extends BaseTest {
   @Order(10)
   public void grantAdmin_secondGrant() {
     given()
-            .header("authorization", "Bearer " + adminJwt)
-            .body(grantAdminDataDTO)
-            .put(getApiRoot() + "/account/2/grantAdmin")
-            .then()
-            .log()
-            .all()
-            .statusCode(Response.Status.CONFLICT.getStatusCode());
+        .header("authorization", "Bearer " + adminJwt)
+        .body(grantAdminDataDTO)
+        .put(getApiRoot() + "/account/2/grantAdmin")
+        .then()
+        .log()
+        .all()
+        .statusCode(Response.Status.CONFLICT.getStatusCode());
   }
-
 
   @Test
   @Order(10)
@@ -254,13 +255,13 @@ public class AccountControllerIT extends BaseTest {
   @Order(12)
   public void editPatientData_badVersion() {
     given()
-            .header("authorization", "Bearer " + adminJwt)
-            .body(patientDataDTOChangedName)
-            .put(getApiRoot() + "/account/2/patient")
-            .then()
-            .log()
-            .all()
-            .statusCode(Response.Status.CONFLICT.getStatusCode());
+        .header("authorization", "Bearer " + adminJwt)
+        .body(patientDataDTOChangedName)
+        .put(getApiRoot() + "/account/2/patient")
+        .then()
+        .log()
+        .all()
+        .statusCode(Response.Status.CONFLICT.getStatusCode());
   }
 
   @Test
@@ -343,7 +344,6 @@ public class AccountControllerIT extends BaseTest {
         .statusCode(Response.Status.BAD_REQUEST.getStatusCode());
   }
 
-  // nie przechodzi przez wykomentowane bloki w AuthController
   @Test
   @Order(18)
   public void password_incorrect_block_account() {
@@ -355,12 +355,12 @@ public class AccountControllerIT extends BaseTest {
           .statusCode(Response.Status.UNAUTHORIZED.getStatusCode());
     }
     given()
-        .body(adminLoginDto)
+        .body(new LoginDTO(patientLoginDto.getLogin(), "invalid_test"))
         .post(getApiRoot() + "/auth/login")
         .then()
         .log()
         .all()
-        .statusCode(Response.Status.UNAUTHORIZED.getStatusCode())
+        .statusCode(Response.Status.FORBIDDEN.getStatusCode())
         .extract()
         .response()
         .asString();
@@ -490,17 +490,15 @@ public class AccountControllerIT extends BaseTest {
 
   @Test
   @Order(24)
-  public void getSelfInfoCorrect(){
+  public void getSelfInfoCorrect() {
     given()
-            .header("authorization", "Bearer " + adminJwt)
-            .get(getApiRoot() + "/account/details")
-            .then()
-            .log()
-            .all()
-            .statusCode(Response.Status.OK.getStatusCode())
-            .body("accessLevels",
-                    hasItem(hasEntry("role", "ADMIN")))
-            .body("login", equalTo(adminLoginDto.getLogin()) );
+        .header("authorization", "Bearer " + adminJwt)
+        .get(getApiRoot() + "/account/details")
+        .then()
+        .log()
+        .all()
+        .statusCode(Response.Status.OK.getStatusCode())
+        .body("accessLevels", hasItem(hasEntry("role", "ADMIN")))
+        .body("login", equalTo(adminLoginDto.getLogin()));
   }
-
 }
