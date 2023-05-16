@@ -4,6 +4,7 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { putPatient } from "../api/mok/accountApi";
 import { Box } from "@mui/system";
 import { Paper } from "@mui/material";
+import { getAccount } from "../api/mok/accountApi";
 
 export default function EditPatient() {
   const { id } = useParams();
@@ -16,6 +17,7 @@ export default function EditPatient() {
 
   const navigate = useNavigate();
   const location = useLocation();
+  console.log(location);
 
   const paperStyle = {
     padding: "30px 20px",
@@ -23,6 +25,16 @@ export default function EditPatient() {
     margin: "20px auto",
     justifyContent: "center",
   };
+
+  useEffect(() => {
+    getAccount(id).then((account) => {
+      setPesel(account.pesel);
+      setFirstName(account.firstName);
+      setLastName(account.lastName);
+      setPhoneNumber(account.phoneNumber);
+      setNip(account.nip);
+    });
+  }, []);
 
   const handleSubmit = async (event) => {
     event.preventDefault();

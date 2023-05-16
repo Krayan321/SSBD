@@ -10,7 +10,6 @@ export function EditChemistForm({
   return (
     <Box sx={{ display: "flex", flexDirection: "column", width: "60%" }}>
       <form className="form-container">
-        <label>License Number</label>
         <TextField
           defaultValue={licenseNumber}
           onChange={(e) => {
