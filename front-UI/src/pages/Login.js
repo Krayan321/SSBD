@@ -1,17 +1,19 @@
 import React, { useState } from "react";
-import { TextField, Button, Box } from "@mui/material";
-import "./Login.css";
+import { Grid, Paper, TextField, Button, Box, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
-
 
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [passwordShown, setPasswordShown] = useState(false);
 
   const { t } = useTranslation();
+
+  const paperStyle = {
+    padding: "30px 20px",
+    width: 300,
+    margin: "20px auto",
+    justifyContent: "center",
+  };
 
   const handleUsernameChange = (event) => {
     setUsername(event.target.value);
@@ -27,32 +29,40 @@ const Login = () => {
   };
 
   return (
-    <div className="sign-in">
-        <div className="title">
-            <div>{t("sign_in")} {t("sign_in_info")}</div>
-        </div>
-    <div className="form-container">
-    <Box sx={{display: "flex", flexDirection: "column", width: "40%" }} onSubmit={handleSubmit}>
-      <TextField sx={{ width: 9/10}}
-        id="username"
-        label={t("username")}
-        value={username}
-        onChange={handleUsernameChange}
-      />
-      <TextField
-        id="password"
-        label={t("password")}
-        type="password"
-        value={password}
-        onChange={handlePasswordChange}
-        InputProps={{endAdornment: <Button onClick={() => setPasswordShown(!passwordShown)}>{passwordShown ? <VisibilityOffIcon fontSize="small" sx={{color: 'black'}}/> : <VisibilityIcon fontSize="small" sx={{color: 'black'}}/>}</Button>}}
-      />
-      <Button variant="contained" color="primary" type="submit">
-        {t("sign_in")}
-      </Button>
-    </Box>
-    </div>
-    </div>
+    <Grid>
+      <Paper elevation={20} sx={paperStyle}>
+        <Box>
+          <Typography sx={{ fontSize: 30, textAlign: "center" }}>
+            {t("sign_in")} {t("sign_in_info")}
+          </Typography>
+          <Box
+            sx={{ display: "flex", flexDirection: "column", width: "100%" }}
+            onSubmit={handleSubmit}
+          >
+            <TextField
+              fullwidth
+              margin="normal"
+              id="username"
+              label={t("username")}
+              value={username}
+              onChange={handleUsernameChange}
+            />
+            <TextField
+              margin="normal"
+              fullwidth
+              id="password"
+              label={t("password")}
+              type="password"
+              value={password}
+              onChange={handlePasswordChange}
+            />
+            <Button variant="contained" color="primary" type="submit">
+              {t("sign_in")}
+            </Button>
+          </Box>
+        </Box>
+      </Paper>
+    </Grid>
   );
 };
 

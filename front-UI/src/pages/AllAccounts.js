@@ -1,21 +1,19 @@
 import React, { useCallback, useEffect, useState } from "react";
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
-import axios from 'axios';
-
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Paper from "@mui/material/Paper";
+import axios from "axios";
 
 export default function AllAccounts() {
+  const [accounts, setAccounts] = useState([]);
 
-const [accounts, setAccounts] = useState([]);
-
-const findAccounts = useCallback(async () => {
-    const response = await axios ('http:/api/accounts');
-});
+  const findAccounts = useCallback(async () => {
+    const response = await axios("http:/api/accounts");
+  });
 
   return (
     <TableContainer component={Paper}>
@@ -32,7 +30,7 @@ const findAccounts = useCallback(async () => {
           {accounts.map((row) => (
             <TableRow
               key={row.name}
-              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+              sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
             >
               <TableCell component="th" scope="row">
                 {row.login}
