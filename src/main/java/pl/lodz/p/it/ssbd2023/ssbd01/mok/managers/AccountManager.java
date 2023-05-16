@@ -25,10 +25,8 @@ import jakarta.ws.rs.core.SecurityContext;
 import lombok.extern.java.Log;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import pl.lodz.p.it.ssbd2023.ssbd01.common.AbstractManager;
-import pl.lodz.p.it.ssbd2023.ssbd01.entities.AccessLevel;
-import pl.lodz.p.it.ssbd2023.ssbd01.entities.Account;
-import pl.lodz.p.it.ssbd2023.ssbd01.entities.Token;
-import pl.lodz.p.it.ssbd2023.ssbd01.entities.TokenType;
+import pl.lodz.p.it.ssbd2023.ssbd01.entities.*;
+import pl.lodz.p.it.ssbd2023.ssbd01.exceptions.AccountApplicationException;
 import pl.lodz.p.it.ssbd2023.ssbd01.exceptions.ApplicationException;
 import pl.lodz.p.it.ssbd2023.ssbd01.interceptors.GenericManagerExceptionsInterceptor;
 import pl.lodz.p.it.ssbd2023.ssbd01.interceptors.TrackerInterceptor;
@@ -78,16 +76,25 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
   @Override
   @PermitAll
   public Account findByLogin(String login) {
-    // return accountFacade.findByLogin(login).orElseThrow(() ->
-    // ApplicationException.createEntityNotFoundException());
     return accountFacade.findByLogin(login);
   }
 
   @Override
   @RolesAllowed("getCurrentUser")
-  public Account getCurrentUser(){
-    Long id = accountFacade.findByLogin(context.getUserPrincipal().getName()).getId();
-    return getAccountAndAccessLevels(id);
+  public Account getCurrentUser() {
+    return accountFacade.findByLogin(getCurrentUserLogin());
+  }
+
+  @Override
+  @PermitAll
+  public String getCurrentUserLogin() {
+    return context.getUserPrincipal().getName();
+  }
+
+  @Override
+  @RolesAllowed("getCurrentUserWithAccessLevels")
+  public Account getCurrentUserWithAccessLevels() {
+    return accountFacade.findByLoginAndRefresh(getCurrentUserLogin());
   }
 
   @Override
@@ -105,9 +112,42 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
   public Account grantAccessLevel(Long id, AccessLevel accessLevel) {
     Account account = getAccount(id);
     accessLevel.setAccount(account);
+    accessLevel.setCreatedBy(getCurrentUserLogin());
     account.getAccessLevels().add(accessLevel);
+    account.setModifiedBy(getCurrentUserLogin());
     accountFacade.editAndRefresh(account);
     return account;
+  }
+
+  @Override
+  @RolesAllowed("deactivateAccessLevel")
+  public void deactivateAccessLevel(Long id, Role role) {
+    Account account = getAccountAndAccessLevels(id);
+    if(Objects.equals(account.getLogin(), getCurrentUserLogin()) && role == Role.ADMIN)
+      throw AccountApplicationException.createDeactivationOfSelf();
+    AccessLevel accessLevel = AccessLevelFinder.findAccessLevel(account, role);
+    if(!accessLevel.getActive()) return;
+    int numberActive = 0;
+    for(AccessLevel l : account.getAccessLevels())
+      if(l.getActive()) numberActive++;
+    if(numberActive <= 1)
+      throw AccountApplicationException.createDeactivateLastAccessLevel();
+    accessLevel.setActive(false);
+    account.setModifiedBy(getCurrentUserLogin());
+    accessLevel.setModifiedBy(getCurrentUserLogin());
+    accountFacade.edit(account);
+  }
+
+  @Override
+  @RolesAllowed("activateAccessLevel")
+  public void activateAccessLevel(Long id, Role role) {
+    Account account = getAccountAndAccessLevels(id);
+    AccessLevel accessLevel = AccessLevelFinder.findAccessLevel(account, role);
+    if(accessLevel.getActive()) return;
+    accessLevel.setActive(true);
+    account.setModifiedBy(getCurrentUserLogin());
+    accessLevel.setModifiedBy(getCurrentUserLogin());
+    accountFacade.edit(account);
   }
 
   @Override
@@ -136,6 +176,15 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
   }
 
   @Override
+  @RolesAllowed("createAccount")
+  public Account createAccount(Account account) {
+    account.setPassword(HashAlgorithmImpl.generate(account.getPassword()));
+    account.setCreatedBy(getCurrentUserLogin());
+    accountFacade.create(account);
+    return account;
+  }
+
+  @Override
   @RolesAllowed("editAccessLevel")
   public Account editAccessLevel(Long id, AccessLevel accessLevel, Long version) {
     Account account = getAccount(id);
@@ -144,6 +193,7 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
       throw ApplicationException.createOptimisticLockException();
     }
     AccessLevelMerger.mergeAccessLevels(found, accessLevel);
+    found.setModifiedBy(getCurrentUserLogin());
     accountFacade.edit(account);
     return account;
   }
@@ -155,6 +205,7 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
     account.setConfirmed(true);
     emailService.sendEmailAccountActivated(
         account.getEmail(), account.getLogin(), account.getLanguage());
+    account.setModifiedBy(getCurrentUserLogin());
     accountFacade.edit(account);
     return account;
   }
@@ -167,6 +218,7 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
       return;
     }
     account.setActive(false);
+    account.setModifiedBy(getCurrentUserLogin());
     accountFacade.edit(account);
     emailService.sendEmailAccountBlocked(
         account.getEmail(), account.getLogin(), account.getLanguage());
@@ -180,6 +232,7 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
       return;
     }
     account.setActive(true);
+    account.setModifiedBy(getCurrentUserLogin());
     accountFacade.edit(account);
     emailService.sendEmailAccountUnblocked(
         account.getEmail(), account.getLogin(), account.getLanguage());
@@ -204,6 +257,7 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
   public Account updateUserPassword(Long id, String newPassword) {
     Account account = getAccount(id);
     account.setPassword(HashAlgorithmImpl.generate(newPassword));
+    account.setModifiedBy(getCurrentUserLogin());
     accountFacade.edit(account);
     return account;
   }
@@ -219,15 +273,30 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
       throw ApplicationException.createUnauthorisedException();
     }
     account.setPassword(HashAlgorithmImpl.generate(newPassword));
+    account.setModifiedBy(getCurrentUserLogin());
     accountFacade.edit(account);
     return account;
   }
 
   @Override
   @RolesAllowed("updateOwnEmail")
-  public Account updateOwnEmail(Long id, String email) {
-    Account account = getAccount(id);
+  public Account updateOwnEmail(String email) {
+    Account account = getCurrentUser();
+    account.setEmail(email);
+    account.setModifiedBy(getCurrentUserLogin());
+    accountFacade.edit(account);
     verificationManager.sendEmailChangeEmail(account, email);
+    return account;
+  }
+
+  @Override
+  @RolesAllowed("updateUserEmail")
+  public Account updateUserEmail(Long id, String email) {
+    Account account = getAccount(id);
+    account.setEmail(email);
+    account.setConfirmed(true);
+    account.setModifiedBy(getCurrentUserLogin());
+    accountFacade.edit(account);
     return account;
   }
 
@@ -323,27 +392,6 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
           token.setWasPreviousTokenSent(true);
           verificationManager.sendVerificationToken(token.getAccount(), token.getCode());
         });
-  }
-
-  // fixme? Is this really necessary
-  @Override
-  //todo
-  public Account createAccount(Account account, AccessLevel accessLevel) {
-    account.setPassword(HashAlgorithmImpl.generate(account.getPassword()));
-    accessLevel.setAccount(account);
-    account.getAccessLevels().add(accessLevel);
-    account.setCreatedBy(account);
-    accountFacade.create(account);
-    return account;
-  }
-
-  @Override
-  @RolesAllowed("removeAccessLevel")
-  public Account removeAccessLevel(Long id, AccessLevel accessLevel) {
-    Account account = getAccount(id);
-    account.getAccessLevels().remove(accessLevel);
-    accountFacade.edit(account);
-    return account;
   }
 
   @Override

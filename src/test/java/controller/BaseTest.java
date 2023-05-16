@@ -44,5 +44,5 @@ public class BaseTest {
                   .withNetwork(NETWORK)
                   .withCopyToContainer(warFile, "/opt/payara/deployments/ssbd01-0.0.1.war")
                   .waitingFor(Wait.forHttp("/health/ready").forStatusCode(200))
-                  .withStartupTimeout(java.time.Duration.ofSeconds(360));
+                  .withStartupTimeout(java.time.Duration.ofSeconds(120));
 }

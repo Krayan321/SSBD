@@ -62,6 +62,45 @@ public class AccountControllerIT extends BaseTest {
 
   @Test
   @Order(1)
+  public void changeOwnPassword_correct() {
+    given()
+            .header("authorization", "Bearer " + adminJwt)
+            .body(new ChangePasswordDTO("P@ssw0rd", "!Admin321"))
+            .put(getApiRoot() + "/account/changePassword")
+            .then()
+            .log()
+            .all()
+            .statusCode(Response.Status.OK.getStatusCode());
+  }
+
+  @Test
+  @Order(1)
+  public void changeOwnPassword_same_as_old() {
+    given()
+            .header("authorization", "Bearer " + adminJwt)
+            .body(new ChangePasswordDTO("P@ssw0rd", "P@ssw0rd"))
+            .put(getApiRoot() + "/account/changePassword")
+            .then()
+            .log()
+            .all()
+            .statusCode(Response.Status.UNAUTHORIZED.getStatusCode());
+  }
+
+  @Test
+  @Order(1)
+  public void changeOwnPassword_incorrect() {
+    given()
+            .header("authorization", "Bearer " + adminJwt)
+            .body(new ChangePasswordDTO("baD!password0", "P@ssw0rd"))
+            .put(getApiRoot() + "/account/changePassword")
+            .then()
+            .log()
+            .all()
+            .statusCode(Response.Status.UNAUTHORIZED.getStatusCode());
+  }
+
+  @Test
+  @Order(1)
   public void login_invalidLogin() {
     LoginDTO invalidLogin = new LoginDTO("nonexistantuser", adminLoginDto.getPassword());
 
@@ -73,6 +112,20 @@ public class AccountControllerIT extends BaseTest {
         .all()
         .statusCode(Response.Status.UNAUTHORIZED.getStatusCode())
         .body("message", equalTo(EXCEPTION_UNAUTHORISED));
+  }
+
+  @Test
+  @Order(1)
+  public void getSelfInfoCorrect() {
+    given()
+            .header("authorization", "Bearer " + adminJwt)
+            .get(getApiRoot() + "/account/details")
+            .then()
+            .log()
+            .all()
+            .statusCode(Response.Status.OK.getStatusCode())
+            .body("accessLevels", hasItem(hasEntry("role", "ADMIN")))
+            .body("login", equalTo(adminLoginDto.getLogin()));
   }
 
   @Test
@@ -157,7 +210,7 @@ public class AccountControllerIT extends BaseTest {
     given()
         .header("authorization", "Bearer " + adminJwt)
         .body(grantChemistDataDTO)
-        .put(getApiRoot() + "/account/2/grantChemist")
+        .post(getApiRoot() + "/account/2/chemist")
         .then()
         .log()
         .all()
@@ -171,7 +224,7 @@ public class AccountControllerIT extends BaseTest {
     given()
         .header("authorization", "Bearer " + adminJwt)
         .body(grantAdminDataDTO)
-        .put(getApiRoot() + "/account/2/grantAdmin")
+        .post(getApiRoot() + "/account/2/admin")
         .then()
         .log()
         .all()
@@ -184,7 +237,7 @@ public class AccountControllerIT extends BaseTest {
     given()
         .header("authorization", "Bearer " + adminJwt)
         .body(grantAdminDataDTO)
-        .put(getApiRoot() + "/account/2/grantAdmin")
+        .post(getApiRoot() + "/account/2/admin")
         .then()
         .log()
         .all()
@@ -247,8 +300,7 @@ public class AccountControllerIT extends BaseTest {
         .log()
         .all()
         .statusCode(Response.Status.OK.getStatusCode())
-        .body(
-            "accessLevels",
+        .body("accessLevels",
             hasItem(hasEntry("firstName", patientDataDTOChangedName.getFirstName())));
   }
 
@@ -256,17 +308,159 @@ public class AccountControllerIT extends BaseTest {
   @Order(12)
   public void editPatientData_badVersion() {
     given()
-        .header("authorization", "Bearer " + adminJwt)
-        .body(patientDataDTOChangedName)
-        .put(getApiRoot() + "/account/2/patient")
-        .then()
-        .log()
-        .all()
-        .statusCode(Response.Status.CONFLICT.getStatusCode());
+            .header("authorization", "Bearer " + adminJwt)
+            .body(patientDataDTOChangedName)
+            .put(getApiRoot() + "/account/2/patient")
+            .then()
+            .log()
+            .all()
+            .statusCode(Response.Status.CONFLICT.getStatusCode());
   }
 
   @Test
   @Order(12)
+  public void blockRoleChemist_correct() {
+    given()
+        .header("authorization", "Bearer " + adminJwt)
+        .put(getApiRoot() + "/account/2/chemist/block")
+        .then()
+        .log()
+        .all()
+        .statusCode(Response.Status.NO_CONTENT.getStatusCode());
+    given()
+        .header("authorization", "Bearer " + adminJwt)
+        .get(getApiRoot() + "/account/2/details")
+        .then()
+        .log()
+        .all()
+        .statusCode(Response.Status.OK.getStatusCode())
+        .body("accessLevels.find{it.role=='CHEMIST'}.active", equalTo(false));
+  }
+
+  @Test
+  @Order(12)
+  public void blockRolePatient_correct() {
+    given()
+            .header("authorization", "Bearer " + adminJwt)
+            .put(getApiRoot() + "/account/2/patient/block")
+            .then()
+            .log()
+            .all()
+            .statusCode(Response.Status.NO_CONTENT.getStatusCode());
+    given()
+            .header("authorization", "Bearer " + adminJwt)
+            .get(getApiRoot() + "/account/2/details")
+            .then()
+            .log()
+            .all()
+            .statusCode(Response.Status.OK.getStatusCode())
+            .body("accessLevels.find{it.role=='PATIENT'}.active", equalTo(false));
+  }
+
+  @Test
+  @Order(13)
+  public void blockRoleAdmin_lastAccessLevel() {
+    given()
+            .header("authorization", "Bearer " + adminJwt)
+            .put(getApiRoot() + "/account/2/admin/block")
+            .then()
+            .log()
+            .all()
+            .statusCode(Response.Status.BAD_REQUEST.getStatusCode())
+            .body("message", equalTo(EXCEPTION_ACCOUNT_DEACTIVATE_LAST_ACCESS_LEVEL));
+    given()
+            .header("authorization", "Bearer " + adminJwt)
+            .get(getApiRoot() + "/account/2/details")
+            .then()
+            .log()
+            .all()
+            .statusCode(Response.Status.OK.getStatusCode())
+            .body("accessLevels.find{it.role=='ADMIN'}.active", equalTo(true));
+  }
+
+  @Test
+  @Order(13)
+  public void blockRoleAdmin_deactivationOnSelf() {
+    given()
+            .header("authorization", "Bearer " + adminJwt)
+            .put(getApiRoot() + "/account/1/admin/block")
+            .then()
+            .log()
+            .all()
+            .statusCode(Response.Status.BAD_REQUEST.getStatusCode())
+            .body("message", equalTo(EXCEPTION_ACCOUNT_DEACTIVATE_SELF));
+    given()
+            .header("authorization", "Bearer " + adminJwt)
+            .get(getApiRoot() + "/account/1/details")
+            .then()
+            .log()
+            .all()
+            .statusCode(Response.Status.OK.getStatusCode())
+            .body("accessLevels.find{it.role=='ADMIN'}.active", equalTo(true));
+  }
+
+  @Test
+  @Order(14)
+  public void unblockRolePatient_correct() {
+    given()
+            .header("authorization", "Bearer " + adminJwt)
+            .put(getApiRoot() + "/account/2/patient/unblock")
+            .then()
+            .log()
+            .all()
+            .statusCode(Response.Status.NO_CONTENT.getStatusCode());
+    given()
+            .header("authorization", "Bearer " + adminJwt)
+            .get(getApiRoot() + "/account/2/details")
+            .then()
+            .log()
+            .all()
+            .statusCode(Response.Status.OK.getStatusCode())
+            .body("accessLevels.find{it.role=='PATIENT'}.active", equalTo(true));
+  }
+
+  @Test
+  @Order(14)
+  public void unblockRoleChemist_correct() {
+    given()
+            .header("authorization", "Bearer " + adminJwt)
+            .put(getApiRoot() + "/account/2/chemist/unblock")
+            .then()
+            .log()
+            .all()
+            .statusCode(Response.Status.NO_CONTENT.getStatusCode());
+    given()
+            .header("authorization", "Bearer " + adminJwt)
+            .get(getApiRoot() + "/account/2/details")
+            .then()
+            .log()
+            .all()
+            .statusCode(Response.Status.OK.getStatusCode())
+            .body("accessLevels.find{it.role=='CHEMIST'}.active", equalTo(true));
+  }
+
+  @Test
+  @Order(15)
+  public void blockRoleAdmin_correct() {
+    given()
+            .header("authorization", "Bearer " + adminJwt)
+            .put(getApiRoot() + "/account/2/admin/block")
+            .then()
+            .log()
+            .all()
+            .statusCode(Response.Status.NO_CONTENT.getStatusCode());
+    given()
+            .header("authorization", "Bearer " + adminJwt)
+            .get(getApiRoot() + "/account/2/details")
+            .then()
+            .log()
+            .all()
+            .statusCode(Response.Status.OK.getStatusCode())
+            .body("accessLevels.find{it.role=='ADMIN'}.active", equalTo(false));
+  }
+
+  @Test
+  @Order(15)
   public void addChemist_correct() {
     given()
         .header("authorization", "Bearer " + adminJwt)
@@ -279,7 +473,7 @@ public class AccountControllerIT extends BaseTest {
   }
 
   @Test
-  @Order(13)
+  @Order(16)
   public void addChemist_incorrect_duplicate() {
     given()
         .header("authorization", "Bearer " + adminJwt)
@@ -293,7 +487,7 @@ public class AccountControllerIT extends BaseTest {
   }
 
   @Test
-  @Order(14)
+  @Order(16)
   public void addChemist_incorrect_missing_field() {
     given()
         .header("authorization", "Bearer " + adminJwt)
@@ -306,7 +500,7 @@ public class AccountControllerIT extends BaseTest {
   }
 
   @Test
-  @Order(15)
+  @Order(16)
   public void addAdmin_correct() {
     given()
         .header("authorization", "Bearer " + adminJwt)
@@ -319,7 +513,7 @@ public class AccountControllerIT extends BaseTest {
   }
 
   @Test
-  @Order(16)
+  @Order(17)
   public void addAdmin_incorrect_duplicate() {
     given()
         .header("authorization", "Bearer " + adminJwt)
@@ -347,6 +541,28 @@ public class AccountControllerIT extends BaseTest {
 
   @Test
   @Order(18)
+  public void editAccount_correct() {
+    given()
+        .header("authorization", "Bearer " + adminJwt)
+        .body(editEmailDto)
+        .put(getApiRoot() + "/account/2")
+        .then()
+        .log()
+        .all()
+        .statusCode(Response.Status.OK.getStatusCode());
+    given()
+            .header("authorization", "Bearer " + adminJwt)
+            .get(getApiRoot() + "/account/2")
+            .then()
+            .log()
+            .all()
+            .statusCode(Response.Status.OK.getStatusCode())
+            .body("email", equalTo(editEmailDto.getEmail()),
+            "confirmed", equalTo(true));
+  }
+
+  @Test
+  @Order(19)
   public void password_incorrect_block_account() {
     for (int i = 0; i < 3; i++) {
       given()
@@ -362,48 +578,7 @@ public class AccountControllerIT extends BaseTest {
         .log()
         .all()
         .statusCode(Response.Status.FORBIDDEN.getStatusCode())
-        .extract()
-        .response()
-        .asString();
-  }
-
-  @Test
-  @Order(1)
-  public void changeOwnPassword_correct() {
-    given()
-        .header("authorization", "Bearer " + adminJwt)
-        .body(new ChangePasswordDTO("P@ssw0rd", "admin321"))
-        .put(getApiRoot() + "/account/changePassword")
-        .then()
-        .log()
-        .all()
-        .statusCode(Response.Status.OK.getStatusCode());
-  }
-
-  @Test
-  @Order(1)
-  public void changeOwnPassword_same_as_old() {
-    given()
-            .header("authorization", "Bearer " + adminJwt)
-            .body(new ChangePasswordDTO("P@ssw0rd", "P@ssw0rd"))
-            .put(getApiRoot() + "/account/changePassword")
-            .then()
-            .log()
-            .all()
-            .statusCode(Response.Status.UNAUTHORIZED.getStatusCode());
-  }
-
-  @Test
-  @Order(1)
-  public void changeOwnPassword_incorrect() {
-    given()
-            .header("authorization", "Bearer " + adminJwt)
-            .body(new ChangePasswordDTO("badpassword", "admin321"))
-            .put(getApiRoot() + "/account/changePassword")
-            .then()
-            .log()
-            .all()
-            .statusCode(Response.Status.OK.getStatusCode());
+        .body("message", equalTo(EXCEPTION_AUTH_BLOCKED_ACCOUNT));
   }
 
   @Test
@@ -501,33 +676,12 @@ public class AccountControllerIT extends BaseTest {
     given()
         .header("authorization", "Bearer " + adminJwt)
         .body(new EditAccountDTO("kitty@meow.com"))
-        .put(getApiRoot() + "/account/1/editAccount")
+        .put(getApiRoot() + "/account")
         .then()
         .log()
         .all()
-        .statusCode(Response.Status.OK.getStatusCode());
-    given()
-        .header("authorization", "Bearer " + adminJwt)
-        .get(getApiRoot() + "/account/1")
-        .then()
-        .log()
-        .all()
-        .body("email", equalTo("admin@o2.pl"));
-  }
-
-  @Test
-  @Order(26)
-  public void getSelfInfoCorrect() {
-    given()
-            .header("authorization", "Bearer " + adminJwt)
-            .get(getApiRoot() + "/account/details")
-            .then()
-            .log()
-            .all()
-            .statusCode(Response.Status.OK.getStatusCode())
-            .body("accessLevels",
-                    hasItem(hasEntry("role", "ADMIN")))
-            .body("login", equalTo(adminLoginDto.getLogin()) );
+        .statusCode(Response.Status.OK.getStatusCode())
+        .body("email", equalTo("kitty@meow.com"));
   }
 
   @Test

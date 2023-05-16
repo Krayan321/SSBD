@@ -44,6 +44,16 @@ public class AccountApplicationException extends ApplicationException {
     return new AccountApplicationException(CONFLICT, EXCEPTION_ACCOUNT_DUPLICATE_ACCESS_LEVEL);
   }
 
+  public static AccountApplicationException createDeactivationOfSelf() {
+    return new AccountApplicationException(
+            BAD_REQUEST, EXCEPTION_ACCOUNT_DEACTIVATE_SELF);
+  }
+
+  public static AccountApplicationException createDeactivateLastAccessLevel() {
+    return new AccountApplicationException(
+            BAD_REQUEST, EXCEPTION_ACCOUNT_DEACTIVATE_LAST_ACCESS_LEVEL);
+  }
+
   public static AccountApplicationException createDuplicateEmailException() {
     return new AccountApplicationException(CONFLICT, EXCEPTION_ACCOUNT_DUPLICATE_EMAIL);
   }

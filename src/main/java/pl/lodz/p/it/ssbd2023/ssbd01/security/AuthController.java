@@ -45,6 +45,9 @@ public class AuthController extends AbstractController {
     } catch (ApplicationExceptionEntityNotFound e) {
       throw ApplicationException.createUnauthorisedException();
     }
+    if (!account.getConfirmed()) {
+      throw AccountApplicationException.createAccountNotConfirmedException();
+    }
 
     UsernamePasswordCredential credential =
         new UsernamePasswordCredential(loginDto.getLogin(), loginDto.getPassword());
@@ -60,13 +63,10 @@ public class AuthController extends AbstractController {
                   false));
       throw ApplicationException.createUnauthorisedException();
     }
-
-    if (!account.getConfirmed()) {
-      throw AccountApplicationException.createAccountNotConfirmedException();
-    }
     if (!account.getActive()) {
       throw AccountApplicationException.createAccountBlockedException();
     }
+
     repeatTransactionVoid(
         accountManager,
         () ->

@@ -16,6 +16,13 @@
     </security-role-mapping>
 
     <security-role-mapping>
+        <role-name>getCurrentUserWithAccessLevels</role-name>
+        <group-name>PATIENT</group-name>
+        <group-name>CHEMIST</group-name>
+        <group-name>ADMIN</group-name>
+    </security-role-mapping>
+
+    <security-role-mapping>
         <role-name>getAccountAndAccessLevels</role-name>
         <group-name>ADMIN</group-name>
     </security-role-mapping>
@@ -26,9 +33,24 @@
     </security-role-mapping>
 
     <security-role-mapping>
+        <role-name>deactivateAccessLevel</role-name>
+        <group-name>ADMIN</group-name>
+    </security-role-mapping>
+
+    <security-role-mapping>
+        <role-name>activateAccessLevel</role-name>
+        <group-name>ADMIN</group-name>
+    </security-role-mapping>
+
+    <security-role-mapping>
         <role-name>getAccount</role-name>
         <group-name>PATIENT</group-name>
         <group-name>CHEMIST</group-name>
+        <group-name>ADMIN</group-name>
+    </security-role-mapping>
+
+    <security-role-mapping>
+        <role-name>createAccount</role-name>
         <group-name>ADMIN</group-name>
     </security-role-mapping>
 
@@ -72,7 +94,9 @@
     </security-role-mapping>
 
     <security-role-mapping>
-        <role-name>removeAccessLevel</role-name>
+        <role-name>updateUserEmail</role-name>
         <group-name>ADMIN</group-name>
     </security-role-mapping>
+
+
 </glassfish-web-app>
