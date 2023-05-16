@@ -16,6 +16,7 @@ public class dataForTests {
   public static LoginDTO adminLoginDto = new LoginDTO("admin123", "P@ssw0rd");
   public static LoginDTO changedLoginDto = new LoginDTO("admin123", "testAdm1n!23");
   public static LoginDTO patientLoginDto = new LoginDTO("test11", "testP@tient123");
+  public static LoginDTO grantAdminToChemistLogin = new LoginDTO("chemist123", "P4$$w0Rd");
 
   // register
   public static RegisterPatientDTO registerPatientDto =
@@ -57,18 +58,18 @@ public class dataForTests {
   // grant
   public static GrantChemistDataDTO grantChemistDataDTO = new GrantChemistDataDTO("123412");
 
-  public static GrantAdminDataDTO grantAdminDataDTO = new GrantAdminDataDTO("123456789");
+  public static GrantAdminDataDTO grantAdminDataDTO = new GrantAdminDataDTO("999888777");
 
   // edit data
   public static EditAdminDataDTO adminDataDTOChangedPhone =
-      EditAdminDataDTO.builder().id(4L).version(0L).workPhoneNumber("102938129").build();
+      EditAdminDataDTO.builder().id(1L).version(0L).workPhoneNumber("102938129").build();
 
   public static EditChemistDataDTO chemistDataDTOChangedLiscence =
-      EditChemistDataDTO.builder().id(3L).version(0L).licenseNumber("412312").build();
+      EditChemistDataDTO.builder().id(4L).version(0L).licenseNumber("412312").build();
 
   public static EditPatientDataDTO patientDataDTOChangedName =
       EditPatientDataDTO.builder()
-          .id(2L)
+          .id(3L)
           .version(0L)
           .pesel(registerPatientDto.getPesel())
           .firstName("Othername")
