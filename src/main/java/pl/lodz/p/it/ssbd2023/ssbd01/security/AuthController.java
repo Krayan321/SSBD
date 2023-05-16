@@ -23,6 +23,7 @@ import pl.lodz.p.it.ssbd2023.ssbd01.entities.Account;
 import pl.lodz.p.it.ssbd2023.ssbd01.exceptions.AccountApplicationException;
 import pl.lodz.p.it.ssbd2023.ssbd01.exceptions.ApplicationException;
 import pl.lodz.p.it.ssbd2023.ssbd01.exceptions.ApplicationExceptionEntityNotFound;
+import pl.lodz.p.it.ssbd2023.ssbd01.exceptions.AuthApplicationException;
 import pl.lodz.p.it.ssbd2023.ssbd01.mok.managers.AccountManagerLocal;
 
 @Log
@@ -43,7 +44,7 @@ public class AuthController extends AbstractController {
       account =
           repeatTransaction(accountManager, () -> accountManager.findByLogin(loginDto.getLogin()));
     } catch (ApplicationExceptionEntityNotFound e) {
-      throw ApplicationException.createUnauthorisedException();
+      throw AuthApplicationException.createInvalidLoginOrPasswordException();
     }
     if (!account.getConfirmed()) {
       throw AccountApplicationException.createAccountNotConfirmedException();
@@ -61,7 +62,7 @@ public class AuthController extends AbstractController {
                   httpServletRequest.getRemoteAddr(),
                   Date.from(Instant.now()),
                   false));
-      throw ApplicationException.createUnauthorisedException();
+      throw AuthApplicationException.createInvalidLoginOrPasswordException();
     }
     if (!account.getActive()) {
       throw AccountApplicationException.createAccountBlockedException();
