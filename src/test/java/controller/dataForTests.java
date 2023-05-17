@@ -62,9 +62,9 @@ public class dataForTests {
             .email("pesel-patient-email@local.db")
             .name("Test")
             .lastName("Patient")
-                .phoneNumber("123123123")
+                .phoneNumber("123123321")
                 .pesel("12345678901")
-                .nip("4443332211")
+                .nip("4443332213")
                 .build();
 
   public static RegisterPatientDTO registerPatientDtoDuplicateNip =
@@ -74,9 +74,9 @@ public class dataForTests {
             .email("nip-patient-email@local.db")
             .name("Test")
             .lastName("Patient")
-                .phoneNumber("123123123")
-                .pesel("12345678901")
-                .nip("1111111111")
+                .phoneNumber("123123321")
+                .pesel("12345678999")
+                .nip("4443332211")
                 .build();
 
     public static RegisterPatientDTO registerPatientDtoDuplicatePhoneNumber =
@@ -86,9 +86,9 @@ public class dataForTests {
             .email("phone-patient-email@local.db")
             .name("Test")
             .lastName("Patient")
-                .phoneNumber("111111111")
-                .pesel("12345678901")
-                .nip("4443332211")
+                .phoneNumber("123123123")
+                .pesel("12345678910")
+                .nip("1443332211")
                 .build();
   // grant
   public static GrantChemistDataDTO grantChemistDataDTO = new GrantChemistDataDTO("123412");
