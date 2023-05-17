@@ -28,6 +28,7 @@ import pl.lodz.p.it.ssbd2023.ssbd01.common.AbstractManager;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.*;
 import pl.lodz.p.it.ssbd2023.ssbd01.exceptions.AccountApplicationException;
 import pl.lodz.p.it.ssbd2023.ssbd01.exceptions.ApplicationException;
+import pl.lodz.p.it.ssbd2023.ssbd01.exceptions.AuthApplicationException;
 import pl.lodz.p.it.ssbd2023.ssbd01.interceptors.GenericManagerExceptionsInterceptor;
 import pl.lodz.p.it.ssbd2023.ssbd01.interceptors.TrackerInterceptor;
 import pl.lodz.p.it.ssbd2023.ssbd01.mok.facades.AccountFacade;
@@ -267,7 +268,7 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
   public Account updateOwnPassword(Long id, String oldPassword, String newPassword) {
     Account account = getAccount(id);
     if (!HashAlgorithmImpl.check(oldPassword, account.getPassword())) {
-      throw ApplicationException.createUnauthorisedException();
+      throw AuthApplicationException.createInvalidLoginOrPasswordException();
     }
     if (HashAlgorithmImpl.check(newPassword, account.getPassword())) {
       throw ApplicationException.createUnauthorisedException();
