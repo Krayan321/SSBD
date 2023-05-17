@@ -1,4 +1,4 @@
-package pl.lodz.p.it.ssbd2023.ssbd01.dto;
+package pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccount;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -9,7 +9,7 @@ import lombok.*;
 @ToString(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class ChangePasswordDTO extends AbstractEditEntityDTO {
+public class ChangePasswordDTO extends AbstractEditAccountDTO {
 
   @Builder
   public ChangePasswordDTO(String login, Long version, String oldPassword, String newPassword) {

@@ -1,4 +1,4 @@
-package pl.lodz.p.it.ssbd2023.ssbd01.dto.auth;
+package pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccount;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -7,12 +7,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import pl.lodz.p.it.ssbd2023.ssbd01.dto.AbstractEditEntityDTO;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UpdateOtherUserPasswordDTO extends AbstractEditEntityDTO {
+public class UpdateOtherUserPasswordDTO extends AbstractEditAccountDTO {
 
   @Builder
   public UpdateOtherUserPasswordDTO(String login, Long version, String password) {

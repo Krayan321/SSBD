@@ -9,18 +9,16 @@ import static org.hamcrest.Matchers.hasSize;
 import static pl.lodz.p.it.ssbd2023.ssbd01.common.i18n.*;
 import static org.hamcrest.Matchers.*;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.filter.log.LogDetail;
 import io.restassured.http.ContentType;
 import jakarta.ws.rs.core.Response;
 import org.junit.jupiter.api.*;
-import pl.lodz.p.it.ssbd2023.ssbd01.config.EntityIdentitySignerVerifier;
-import pl.lodz.p.it.ssbd2023.ssbd01.dto.ChangePasswordDTO;
-import pl.lodz.p.it.ssbd2023.ssbd01.dto.auth.EditAccountDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccount.ChangePasswordDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccount.EditAccountDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.auth.LoginDTO;
-import pl.lodz.p.it.ssbd2023.ssbd01.dto.auth.UpdateOtherUserPasswordDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccount.UpdateOtherUserPasswordDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.grant.GrantAdminDataDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.grant.GrantChemistDataDTO;
 

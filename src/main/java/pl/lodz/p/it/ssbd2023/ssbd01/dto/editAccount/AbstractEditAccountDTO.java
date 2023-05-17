@@ -1,4 +1,4 @@
-package pl.lodz.p.it.ssbd2023.ssbd01.dto;
+package pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccount;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.NotNull;
@@ -11,7 +11,7 @@ import pl.lodz.p.it.ssbd2023.ssbd01.common.SignableEntity;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public abstract class AbstractEditEntityDTO implements SignableEntity {
+public abstract class AbstractEditAccountDTO implements SignableEntity {
 
     @NotNull
     private String login;

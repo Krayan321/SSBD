@@ -4,7 +4,6 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.*;
-import pl.lodz.p.it.ssbd2023.ssbd01.dto.AbstractEditEntityDTO;
 
 @ToString
 @EqualsAndHashCode(callSuper = true)
@@ -12,7 +11,7 @@ import pl.lodz.p.it.ssbd2023.ssbd01.dto.AbstractEditEntityDTO;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class EditPatientDataDTO extends AbstractEditEntityDTO {
+public class EditPatientDataDTO extends AbstractEditAccountDTO {
 
   @Builder
   public EditPatientDataDTO(String login, Long version, String pesel, String firstName,
