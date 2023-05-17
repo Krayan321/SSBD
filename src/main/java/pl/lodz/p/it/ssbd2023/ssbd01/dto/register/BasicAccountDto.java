@@ -7,11 +7,12 @@ import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import pl.lodz.p.it.ssbd2023.ssbd01.common.SignableEntity;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class BasicAccountDto {
+public class BasicAccountDto implements SignableEntity {
 
   @Size(max = 50, min = 5)
   @NotNull
@@ -28,4 +29,9 @@ public class BasicAccountDto {
   private String email;
 
   private String language;
+
+  @Override
+  public String getSignablePayload() {
+    return login + email;
+  }
 }

@@ -36,7 +36,6 @@ public class AccessLevelConverter {
 
   public static PatientData mapEditPatientDataDtoToPatientData(EditPatientDataDTO patientDataDTO) {
     return PatientData.builder()
-        .id(patientDataDTO.getId())
         .firstName(patientDataDTO.getFirstName())
         .lastName(patientDataDTO.getLastName())
         .NIP(patientDataDTO.getNip())
@@ -117,7 +116,6 @@ public class AccessLevelConverter {
 
   public static ChemistData mapEditChemistDataDtoToChemistData(EditChemistDataDTO chemistData) {
     return ChemistData.builder()
-        .id(chemistData.getId())
         .licenseNumber(chemistData.getLicenseNumber())
         .build();
   }
@@ -153,7 +151,6 @@ public class AccessLevelConverter {
 
   public static AdminData mapEditAdminDataDtoToAdminData(EditAdminDataDTO adminDataDTO) {
     return AdminData.builder()
-        .id(adminDataDTO.getId())
         .workPhoneNumber(adminDataDTO.getWorkPhoneNumber())
         .build();
   }

@@ -55,6 +55,41 @@ public class dataForTests {
           .nip("4443332211")
           .build();
 
+  public static RegisterPatientDTO registerPatientDtoDuplicatePesel =
+        RegisterPatientDTO.builder()
+            .login("pesel-login")
+            .password(patientLoginDto.getPassword())
+            .email("pesel-patient-email@local.db")
+            .name("Test")
+            .lastName("Patient")
+                .phoneNumber("123123321")
+                .pesel("12345678901")
+                .nip("4443332213")
+                .build();
+
+  public static RegisterPatientDTO registerPatientDtoDuplicateNip =
+        RegisterPatientDTO.builder()
+            .login("nip-login")
+            .password(patientLoginDto.getPassword())
+            .email("nip-patient-email@local.db")
+            .name("Test")
+            .lastName("Patient")
+                .phoneNumber("123123321")
+                .pesel("12345678999")
+                .nip("4443332211")
+                .build();
+
+    public static RegisterPatientDTO registerPatientDtoDuplicatePhoneNumber =
+        RegisterPatientDTO.builder()
+            .login("phone-login")
+            .password(patientLoginDto.getPassword())
+            .email("phone-patient-email@local.db")
+            .name("Test")
+            .lastName("Patient")
+                .phoneNumber("123123123")
+                .pesel("12345678910")
+                .nip("1443332211")
+                .build();
   // grant
   public static GrantChemistDataDTO grantChemistDataDTO = new GrantChemistDataDTO("123412");
 
@@ -62,14 +97,13 @@ public class dataForTests {
 
   // edit data
   public static EditAdminDataDTO adminDataDTOChangedPhone =
-      EditAdminDataDTO.builder().id(1L).version(0L).workPhoneNumber("102938129").build();
+      EditAdminDataDTO.builder().version(0L).workPhoneNumber("102938129").build();
 
   public static EditChemistDataDTO chemistDataDTOChangedLiscence =
-      EditChemistDataDTO.builder().id(4L).version(0L).licenseNumber("412312").build();
+      EditChemistDataDTO.builder().version(0L).licenseNumber("412312").build();
 
   public static EditPatientDataDTO patientDataDTOChangedName =
       EditPatientDataDTO.builder()
-          .id(3L)
           .version(0L)
           .pesel(registerPatientDto.getPesel())
           .firstName("Othername")

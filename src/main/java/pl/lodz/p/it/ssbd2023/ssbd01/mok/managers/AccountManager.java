@@ -189,7 +189,7 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
   @RolesAllowed("editAccessLevel")
   public Account editAccessLevel(Long id, AccessLevel accessLevel, Long version) {
     Account account = getAccount(id);
-    AccessLevel found = AccessLevelFinder.findAccessLevel(account, accessLevel);
+    AccessLevel found = AccessLevelFinder.findAccessLevel(account, accessLevel.getRole());
     if (!Objects.equals(found.getVersion(), version)) {
       throw ApplicationException.createOptimisticLockException();
     }

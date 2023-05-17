@@ -31,6 +31,12 @@ public class AccountFacadeExceptionsInterceptor {
           throw AccountApplicationException.createDuplicateEmailException();
         } else if(cause.getMessage().contains("login")) {
           throw AccountApplicationException.createDuplicateLoginException();
+        } else if(cause.getMessage().contains("phone_number")) {
+          throw AccountApplicationException.createDuplicatePhoneNumberException();
+        } else if(cause.getMessage().contains("nip")) {
+            throw AccountApplicationException.createDuplicateNipException();
+        } else if(cause.getMessage().contains("pesel")) {
+            throw AccountApplicationException.createDuplicatePeselException();
         }
       }
       throw AccountApplicationException.createAccountConstraintViolationException(e);

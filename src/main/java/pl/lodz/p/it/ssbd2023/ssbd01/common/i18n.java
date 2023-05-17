@@ -11,7 +11,9 @@ public class i18n {
   public static final String EXCEPTION_UNAUTHORISED = "exception.unauthorised";
   public static final String EXCEPTION_NOT_FOUND = "exception.not-found";
   public static final String EXCEPTION_METHOD_NOT_ALLOWED = "exception.method-not-allowed";
-  public static final String EXCEPTION_TRANSACTION_ROLLBACK = "exception.transaction-rollback";
+  public static final String EXCEPTION_ETAG_CREATION = "exception.etag.creation";
+  public static final String EXCEPTION_ETAG_EMPTY = "exception.etag.empty";
+  public static final String EXCEPTION_ETAG_INVALID = "exception.etag.not-valid";
   public static final String EXCEPTION_OPTIMISTIC_LOCK = "exception.optimistic-lock";
   public static final String EXCEPTION_ENTITY_NOT_FOUND = "exception.entity-not-found";
 
@@ -35,7 +37,12 @@ public class i18n {
           "exception.account.duplicate.email";
   public static final String EXCEPTION_ACCOUNT_DUPLICATE_LOGIN =
           "exception.account.duplicate.login";
-
+  public static final String EXCEPTION_ACCOUNT_DUPLICATE_PHONE_NUMBER =
+          "exception.account.duplicate.phone";
+  public static final String EXCEPTION_ACCOUNT_DUPLICATE_NIP =
+          "exception.account.duplicate.nip";
+  public static final String EXCEPTION_ACCOUNT_DUPLICATE_PESEL =
+          "exception.account.duplicate.pesel";
   public static final String EXCEPTION_AUTH_BAD_CREDENTIALS = "exception.auth.bad-credentials";
   public static final String EXCEPTION_AUTH_BLOCKED_ACCOUNT = "exception.auth.blocked-account";
 

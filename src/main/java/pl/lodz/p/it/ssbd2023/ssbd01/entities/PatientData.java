@@ -48,11 +48,11 @@ public class PatientData extends AccessLevel implements Serializable {
   @Size(max = 50, min = 2)
   private String lastName;
 
-  @Column(nullable = false, name = "phone_number")
+  @Column(nullable = false, unique = true ,name = "phone_number")
   @Pattern(regexp = "^\\d{9}$", message = "Invalid phone number")
   private String phoneNumber;
 
-  @Column(nullable = false)
+  @Column(nullable = false, unique = true)
   @Pattern(regexp = "^\\d{10}$", message = "Invalid NIP")
   private String NIP;
 }

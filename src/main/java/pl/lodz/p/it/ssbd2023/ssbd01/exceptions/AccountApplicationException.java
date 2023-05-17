@@ -61,4 +61,16 @@ public class AccountApplicationException extends ApplicationException {
   public static AccountApplicationException createDuplicateLoginException() {
     return new AccountApplicationException(CONFLICT, EXCEPTION_ACCOUNT_DUPLICATE_LOGIN);
   }
+
+  public static AccountApplicationException createDuplicatePhoneNumberException() {
+    return new AccountApplicationException(CONFLICT, EXCEPTION_ACCOUNT_DUPLICATE_PHONE_NUMBER);
+  }
+
+  public static AccountApplicationException createDuplicateNipException() {
+    return new AccountApplicationException(CONFLICT, EXCEPTION_ACCOUNT_DUPLICATE_NIP);
+  }
+
+  public static AccountApplicationException createDuplicatePeselException() {
+    return new AccountApplicationException(CONFLICT, EXCEPTION_ACCOUNT_DUPLICATE_PESEL);
+  }
 }
