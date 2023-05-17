@@ -34,6 +34,11 @@ const languages = [
     name: 'Polski',
     country_code: 'pl'
   }
+  {
+    code: 'cs',
+    name: 'Český',
+    country_code: 'cs'
+  }
 ]
 
 export default function Navbar() {
