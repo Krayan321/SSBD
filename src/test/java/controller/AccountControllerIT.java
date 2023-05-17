@@ -79,9 +79,10 @@ public class AccountControllerIT extends BaseTest {
       etag = response.getHeader("ETag");
       Long version = response.getBody().jsonPath().getLong("version");
       changePasswordDTO = ChangePasswordDTO.builder()
+              .login(adminLoginDto.getLogin())
               .version(version)
-              .newPassword("P@ssw0rd")
-              .oldPassword("!Admin321")
+              .newPassword("!Admin321")
+              .oldPassword(adminLoginDto.getPassword())
               .build();
     }
 
@@ -106,7 +107,7 @@ public class AccountControllerIT extends BaseTest {
       given()
               .header("authorization", "Bearer " + adminJwt)
               .header("If-Match", etag)
-              .body(new ChangePasswordDTO("P@ssw0rd", "P@ssw0rd"))
+              .body(changePasswordDTO)
               .put(getApiRoot() + "/account/change-password")
               .then()
               .log()
@@ -117,10 +118,11 @@ public class AccountControllerIT extends BaseTest {
     @Test
     @Order(3)
     public void changeOwnPassword_incorrect() {
+      changePasswordDTO.setOldPassword("baD!password0");
       given()
               .header("authorization", "Bearer " + adminJwt)
               .header("If-Match", etag)
-              .body(new ChangePasswordDTO("baD!password0", "P@ssw0rd"))
+              .body(changePasswordDTO)
               .put(getApiRoot() + "/account/change-password")
               .then()
               .log()
@@ -141,7 +143,7 @@ public class AccountControllerIT extends BaseTest {
         .log()
         .all()
         .statusCode(Response.Status.UNAUTHORIZED.getStatusCode())
-        .body("message", equalTo(EXCEPTION_UNAUTHORISED));
+        .body("message", equalTo(EXCEPTION_AUTH_BAD_CREDENTIALS));
   }
 
   @Test

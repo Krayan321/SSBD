@@ -15,8 +15,8 @@ import pl.lodz.p.it.ssbd2023.ssbd01.dto.AbstractEditEntityDTO;
 public class UpdateOtherUserPasswordDTO extends AbstractEditEntityDTO {
 
   @Builder
-  public UpdateOtherUserPasswordDTO(Long id, String password) {
-    super(id);
+  public UpdateOtherUserPasswordDTO(String login, Long version, String password) {
+    super(login, version);
     this.password = password;
   }
 

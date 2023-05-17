@@ -10,16 +10,11 @@ import pl.lodz.p.it.ssbd2023.ssbd01.common.SignableEntity;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public abstract class AbstractEntityDTO implements SignableEntity {
+public abstract class AbstractEntityDTO {
 
   @NotNull
   private Long id;
 
   @NotNull
   private Long version;
-
-  @Override
-  public String getSignablePayload() {
-    return id.toString() + version.toString();
-  }
 }

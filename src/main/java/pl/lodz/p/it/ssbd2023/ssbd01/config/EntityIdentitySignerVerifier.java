@@ -50,7 +50,6 @@ public class EntityIdentitySignerVerifier {
       JWSObject jwsObject = JWSObject.parse(tag); //tutaj wywala blad
       JWSVerifier verifier = new MACVerifier(ETAG_SECRET);
       return jwsObject.verify(verifier);
-
     } catch (ParseException | JOSEException e) {
       e.printStackTrace();
       return false;
@@ -62,7 +61,6 @@ public class EntityIdentitySignerVerifier {
       final String header = JWSObject.parse(tag).getPayload().toString();
       final String signableEntityPayload = entity.getSignablePayload();
       return validateEntitySignature(tag) && signableEntityPayload.equals(header);
-
     } catch (ParseException e) {
       e.printStackTrace();
       return false;

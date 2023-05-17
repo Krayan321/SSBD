@@ -14,8 +14,8 @@ import pl.lodz.p.it.ssbd2023.ssbd01.dto.AbstractEditEntityDTO;
 public class EditAdminDataDTO extends AbstractEditEntityDTO {
 
   @Builder
-  public EditAdminDataDTO(Long version, String workPhoneNumber) {
-    super(version);
+  public EditAdminDataDTO(String login, Long version, String workPhoneNumber) {
+    super(login, version);
     this.workPhoneNumber = workPhoneNumber;
   }
 

@@ -1,5 +1,6 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import pl.lodz.p.it.ssbd2023.ssbd01.common.SignableEntity;
@@ -13,10 +14,14 @@ import pl.lodz.p.it.ssbd2023.ssbd01.common.SignableEntity;
 public abstract class AbstractEditEntityDTO implements SignableEntity {
 
     @NotNull
+    private String login;
+
+    @NotNull
     private Long version;
 
     @Override
+    @JsonIgnore
     public String getSignablePayload() {
-        return version.toString();
+        return String.format("%s.%d", login, version);
     }
 }

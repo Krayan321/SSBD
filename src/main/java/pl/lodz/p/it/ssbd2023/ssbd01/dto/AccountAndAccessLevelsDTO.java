@@ -7,6 +7,7 @@ import java.util.Set;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+import pl.lodz.p.it.ssbd2023.ssbd01.common.SignableEntity;
 
 @ToString
 @EqualsAndHashCode(callSuper = true)
@@ -14,7 +15,7 @@ import lombok.*;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class AccountAndAccessLevelsDTO extends AbstractEntityDTO {
+public class AccountAndAccessLevelsDTO extends AbstractEntityDTO implements SignableEntity {
 
   @Builder
   public AccountAndAccessLevelsDTO(
@@ -49,4 +50,9 @@ public class AccountAndAccessLevelsDTO extends AbstractEntityDTO {
 
   @NotNull
   private Boolean confirmed;
+
+  @Override
+  public String getSignablePayload() {
+    return String.format("%s.%d", login, getVersion());
+  }
 }

@@ -14,8 +14,8 @@ import pl.lodz.p.it.ssbd2023.ssbd01.dto.AbstractEditEntityDTO;
 public class EditChemistDataDTO extends AbstractEditEntityDTO {
 
   @Builder
-  public EditChemistDataDTO(Long version, String licenseNumber) {
-    super(version);
+  public EditChemistDataDTO(String login, Long version, String licenseNumber) {
+    super(login, version);
     this.licenseNumber = licenseNumber;
   }
 

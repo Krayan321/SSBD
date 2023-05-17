@@ -12,8 +12,8 @@ import lombok.*;
 public class ChangePasswordDTO extends AbstractEditEntityDTO {
 
   @Builder
-  public ChangePasswordDTO(Long version, String oldPassword, String newPassword) {
-    super(version);
+  public ChangePasswordDTO(String login, Long version, String oldPassword, String newPassword) {
+    super(login, version);
     this.oldPassword = oldPassword;
     this.newPassword = newPassword;
   }

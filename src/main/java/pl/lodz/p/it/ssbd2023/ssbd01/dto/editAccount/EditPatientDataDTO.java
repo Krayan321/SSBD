@@ -15,9 +15,9 @@ import pl.lodz.p.it.ssbd2023.ssbd01.dto.AbstractEditEntityDTO;
 public class EditPatientDataDTO extends AbstractEditEntityDTO {
 
   @Builder
-  public EditPatientDataDTO(Long version, String pesel, String firstName,
+  public EditPatientDataDTO(String login, Long version, String pesel, String firstName,
                             String lastName, String phoneNumber, String nip) {
-    super(version);
+    super(login, version);
     this.pesel = pesel;
     this.firstName = firstName;
     this.lastName = lastName;
