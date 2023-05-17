@@ -35,7 +35,12 @@ public class i18n {
           "exception.account.duplicate.email";
   public static final String EXCEPTION_ACCOUNT_DUPLICATE_LOGIN =
           "exception.account.duplicate.login";
-
+  public static final String EXCEPTION_ACCOUNT_DUPLICATE_PHONE_NUMBER =
+          "exception.account.duplicate.phone";
+  public static final String EXCEPTION_ACCOUNT_DUPLICATE_NIP =
+          "exception.account.duplicate.nip";
+  public static final String EXCEPTION_ACCOUNT_DUPLICATE_PESEL =
+          "exception.account.duplicate.pesel";
   public static final String EXCEPTION_AUTH_BAD_CREDENTIALS = "exception.auth.bad-credentials";
   public static final String EXCEPTION_AUTH_BLOCKED_ACCOUNT = "exception.auth.blocked-account";
 

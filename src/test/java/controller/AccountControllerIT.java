@@ -187,6 +187,47 @@ public class AccountControllerIT extends BaseTest {
 
   @Test
   @Order(11)
+  public void registerPatient_duplicatePhoneNumber() {
+    given()
+        .body(registerPatientDtoDuplicatePhoneNumber)
+        .post(getApiRoot() + "/account/register")
+        .then()
+        .log()
+        .all()
+        .statusCode(Response.Status.CONFLICT.getStatusCode())
+        .body("message", equalTo(EXCEPTION_ACCOUNT_DUPLICATE_PHONE_NUMBER));
+  }
+
+  @Test
+  @Order(12)
+  public void registerPatient_duplicatePesel() {
+    given()
+        .body(registerPatientDtoDuplicatePesel)
+        .post(getApiRoot() + "/account/register")
+        .then()
+        .log()
+        .all()
+        .statusCode(Response.Status.CONFLICT.getStatusCode())
+        .body("message", equalTo(EXCEPTION_ACCOUNT_DUPLICATE_PESEL));
+  }
+
+  @Test
+  @Order(13)
+  public void registerPatient_duplicateNip() {
+    given()
+        .body(registerPatientDtoDuplicateNip)
+        .post(getApiRoot() + "/account/register")
+        .then()
+        .log()
+        .all()
+        .statusCode(Response.Status.CONFLICT.getStatusCode())
+        .body("message", equalTo(EXCEPTION_ACCOUNT_DUPLICATE_NIP));
+  }
+
+
+
+  @Test
+  @Order(14)
   public void cannotLogin_when_registered_but_account_not_confirmed() {
     patientJwt =
         given()
@@ -203,7 +244,7 @@ public class AccountControllerIT extends BaseTest {
 
   // access level id: 3
   @Test
-  @Order(12)
+  @Order(15)
   public void grantChemist_correct() {
     given()
         .header("authorization", "Bearer " + adminJwt)
@@ -217,7 +258,7 @@ public class AccountControllerIT extends BaseTest {
 
   // access level id: 4
   @Test
-  @Order(13)
+  @Order(16)
   public void grantAdmin_correct() {
     given()
         .header("authorization", "Bearer " + adminJwt)
@@ -230,7 +271,7 @@ public class AccountControllerIT extends BaseTest {
   }
 
   @Test
-  @Order(14)
+  @Order(17)
   public void grantAdmin_secondGrant() {
     given()
         .header("authorization", "Bearer " + adminJwt)
@@ -243,7 +284,7 @@ public class AccountControllerIT extends BaseTest {
   }
 
   @Test
-  @Order(15)
+  @Order(18)
   public void readAccountAndAccessLevels_correct() {
     given()
         .header("authorization", "Bearer " + adminJwt)
@@ -256,7 +297,7 @@ public class AccountControllerIT extends BaseTest {
   }
 
   @Test
-  @Order(16)
+  @Order(19)
   public void editAdminData_correct() {
 
     given()
@@ -273,7 +314,7 @@ public class AccountControllerIT extends BaseTest {
   }
 
   @Test
-  @Order(17)
+  @Order(20)
   public void editChemistData_correct() {
 
 
@@ -291,7 +332,7 @@ public class AccountControllerIT extends BaseTest {
   }
 
   @Test
-  @Order(18)
+  @Order(21)
   public void editPatientData_correct() {
     given()
         .header("authorization", "Bearer " + adminJwt)
@@ -307,7 +348,7 @@ public class AccountControllerIT extends BaseTest {
   }
 
   @Test
-  @Order(19)
+  @Order(22)
   public void editPatientData_badVersion() {
     given()
         .header("authorization", "Bearer " + adminJwt)
@@ -320,7 +361,7 @@ public class AccountControllerIT extends BaseTest {
   }
 
   @Test
-  @Order(20)
+  @Order(23)
   public void blockRoleChemist_correct() {
     given()
         .header("authorization", "Bearer " + adminJwt)
@@ -340,7 +381,7 @@ public class AccountControllerIT extends BaseTest {
   }
 
   @Test
-  @Order(21)
+  @Order(24)
   public void blockRolePatient_correct() {
     given()
         .header("authorization", "Bearer " + adminJwt)
@@ -360,7 +401,7 @@ public class AccountControllerIT extends BaseTest {
   }
 
   @Test
-  @Order(22)
+  @Order(25)
   public void blockRoleAdmin_lastAccessLevel() {
     given()
         .header("authorization", "Bearer " + adminJwt)
@@ -381,7 +422,7 @@ public class AccountControllerIT extends BaseTest {
   }
 
   @Test
-  @Order(23)
+  @Order(26)
   public void blockRoleAdmin_deactivationOnSelf() {
     given()
         .header("authorization", "Bearer " + adminJwt)
@@ -402,7 +443,7 @@ public class AccountControllerIT extends BaseTest {
   }
 
   @Test
-  @Order(24)
+  @Order(27)
   public void unblockRolePatient_correct() {
     given()
         .header("authorization", "Bearer " + adminJwt)
@@ -422,7 +463,7 @@ public class AccountControllerIT extends BaseTest {
   }
 
   @Test
-  @Order(25)
+  @Order(28)
   public void unblockRoleChemist_correct() {
     given()
         .header("authorization", "Bearer " + adminJwt)
@@ -442,7 +483,7 @@ public class AccountControllerIT extends BaseTest {
   }
 
   @Test
-  @Order(26)
+  @Order(29)
   public void blockRoleAdmin_correct() {
     given()
         .header("authorization", "Bearer " + adminJwt)
@@ -462,7 +503,7 @@ public class AccountControllerIT extends BaseTest {
   }
 
   @Test
-  @Order(27)
+  @Order(30)
   public void addChemist_correct() {
     given()
         .header("authorization", "Bearer " + adminJwt)
@@ -475,7 +516,7 @@ public class AccountControllerIT extends BaseTest {
   }
 
   @Test
-  @Order(28)
+  @Order(31)
   public void addChemist_incorrect_duplicate() {
     given()
         .header("authorization", "Bearer " + adminJwt)
@@ -502,7 +543,7 @@ public class AccountControllerIT extends BaseTest {
   }
 
   @Test
-  @Order(29)
+  @Order(32)
   public void addAdmin_correct() {
     given()
         .header("authorization", "Bearer " + adminJwt)
@@ -515,7 +556,7 @@ public class AccountControllerIT extends BaseTest {
   }
 
   @Test
-  @Order(30)
+  @Order(33)
   public void addAdmin_incorrect_duplicate() {
     given()
         .header("authorization", "Bearer " + adminJwt)
@@ -529,7 +570,7 @@ public class AccountControllerIT extends BaseTest {
   }
 
   @Test
-  @Order(31)
+  @Order(34)
   public void addAdmin_incorrect_missing_field() {
     given()
         .header("authorization", "Bearer " + adminJwt)
@@ -542,7 +583,7 @@ public class AccountControllerIT extends BaseTest {
   }
 
   @Test
-  @Order(32)
+  @Order(35)
   public void editAccount_correct() {
     given()
         .header("authorization", "Bearer " + adminJwt)
@@ -563,7 +604,7 @@ public class AccountControllerIT extends BaseTest {
   }
 
   @Test
-  @Order(33)
+  @Order(36)
   public void password_incorrect_block_account() {
     for (int i = 0; i < 3; i++) {
       given()
@@ -583,7 +624,7 @@ public class AccountControllerIT extends BaseTest {
   }
 
   @Test
-  @Order(34)
+  @Order(37)
   public void unblockAccount_alreadyUnblocked() {
     given()
         .header("authorization", "Bearer " + adminJwt)
@@ -602,7 +643,7 @@ public class AccountControllerIT extends BaseTest {
   }
 
   @Test
-  @Order(35)
+  @Order(38)
   public void blockAccount_correct() {
     given()
         .header("authorization", "Bearer " + adminJwt)
@@ -621,7 +662,7 @@ public class AccountControllerIT extends BaseTest {
   }
 
   @Test
-  @Order(36)
+  @Order(39)
   public void blockAccount_alreadyBlocked() {
     given()
         .header("authorization", "Bearer " + adminJwt)
@@ -640,7 +681,7 @@ public class AccountControllerIT extends BaseTest {
   }
 
   @Test
-  @Order(37)
+  @Order(40)
   public void unblockAccount_correct() {
     given()
         .header("authorization", "Bearer " + adminJwt)
@@ -659,7 +700,7 @@ public class AccountControllerIT extends BaseTest {
   }
 
   @Test
-  @Order(38)
+  @Order(41)
   public void readAccounts_returns_something() {
     given()
         .header("authorization", "Bearer " + adminJwt)
@@ -672,7 +713,7 @@ public class AccountControllerIT extends BaseTest {
   }
 
   @Test
-  @Order(39)
+  @Order(42)
   public void editAccount() {
     given()
         .header("authorization", "Bearer " + adminJwt)
@@ -686,7 +727,7 @@ public class AccountControllerIT extends BaseTest {
   }
 
   @Test
-  @Order(40)
+  @Order(43)
   public void changeUserPassword() {
     given()
         .header("authorization", "Bearer " + adminJwt)
@@ -706,7 +747,7 @@ public class AccountControllerIT extends BaseTest {
   }
 
   @Test
-  @Order(41)
+  @Order(44)
   void grantAdminAccessLevelToChemist() {
 
     String chemistJwtLoginBeforeGrant =
@@ -758,7 +799,7 @@ public class AccountControllerIT extends BaseTest {
   }
 
   @Test
-  @Order(42)
+  @Order(45)
   void revokeAdminAccessLevel() {
 
     String chemistJwtLoginBeforeRevokeGrant =
