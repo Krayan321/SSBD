@@ -97,14 +97,13 @@ public class dataForTests {
 
   // edit data
   public static EditAdminDataDTO adminDataDTOChangedPhone =
-      EditAdminDataDTO.builder().id(1L).version(0L).workPhoneNumber("102938129").build();
+      EditAdminDataDTO.builder().version(0L).workPhoneNumber("102938129").build();
 
   public static EditChemistDataDTO chemistDataDTOChangedLiscence =
-      EditChemistDataDTO.builder().id(4L).version(0L).licenseNumber("412312").build();
+      EditChemistDataDTO.builder().version(0L).licenseNumber("412312").build();
 
   public static EditPatientDataDTO patientDataDTOChangedName =
       EditPatientDataDTO.builder()
-          .id(3L)
           .version(0L)
           .pesel(registerPatientDto.getPesel())
           .firstName("Othername")

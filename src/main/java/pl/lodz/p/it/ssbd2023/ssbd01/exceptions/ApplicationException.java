@@ -49,8 +49,16 @@ public class ApplicationException extends WebApplicationException {
     return new ApplicationException(METHOD_NOT_ALLOWED, EXCEPTION_METHOD_NOT_ALLOWED);
   }
 
-  public static ApplicationException createTransactionRolledBackException() {
-    return new ApplicationException(INTERNAL_SERVER_ERROR, EXCEPTION_TRANSACTION_ROLLBACK);
+  public static ApplicationException createEtagEmptyException() {
+    return new ApplicationException(BAD_REQUEST, EXCEPTION_ETAG_EMPTY);
+  }
+
+  public static ApplicationException createEtagNotValidException() {
+    return new ApplicationException(UNAUTHORIZED, EXCEPTION_ETAG_INVALID);
+  }
+
+  public static ApplicationException createEtagCreationException() {
+    return new ApplicationException(UNAUTHORIZED, EXCEPTION_ETAG_CREATION);
   }
 
   public static ApplicationException createEntityNotFoundException() {

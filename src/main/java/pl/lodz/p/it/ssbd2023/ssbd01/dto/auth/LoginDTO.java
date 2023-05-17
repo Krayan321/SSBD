@@ -17,7 +17,6 @@ public class LoginDTO {
   String login;
 
   @NotNull
-  @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$", message = "Invalid password")
-  @Size(max = 50, min = 8)
+  @Size(max = 50)
   String password;
 }
