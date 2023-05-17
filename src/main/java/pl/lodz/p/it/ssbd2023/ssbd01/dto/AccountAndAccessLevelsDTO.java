@@ -1,5 +1,6 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.dto;
 
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import java.util.Set;
 
@@ -21,6 +22,7 @@ public class AccountAndAccessLevelsDTO extends AbstractEntityDTO {
       Long version,
       Set<AccessLevelDTO> accessLevels,
       String login,
+      String email,
       Boolean active,
       Boolean confirmed) {
     super(id, version);
@@ -28,6 +30,7 @@ public class AccountAndAccessLevelsDTO extends AbstractEntityDTO {
     this.login = login;
     this.active = active;
     this.confirmed = confirmed;
+    this.email = email;
   }
 
   @ToString.Exclude Set<AccessLevelDTO> accessLevels;
@@ -35,6 +38,11 @@ public class AccountAndAccessLevelsDTO extends AbstractEntityDTO {
   @Size(max = 50, min = 5)
   @NotNull
   private String login;
+
+  @Email
+  @Size(max = 50, min = 5)
+  @NotNull
+  private String email;
 
   @NotNull
   private Boolean active;

@@ -9,23 +9,24 @@ import static org.hamcrest.Matchers.hasSize;
 import static pl.lodz.p.it.ssbd2023.ssbd01.common.i18n.*;
 import static org.hamcrest.Matchers.*;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.filter.log.LogDetail;
 import io.restassured.http.ContentType;
 import jakarta.ws.rs.core.Response;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.*;
+import pl.lodz.p.it.ssbd2023.ssbd01.config.EntityIdentitySignerVerifier;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.ChangePasswordDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.auth.EditAccountDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.auth.LoginDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.auth.UpdateOtherUserPasswordDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.grant.GrantAdminDataDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.grant.GrantChemistDataDTO;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class AccountControllerIT extends BaseTest {
+
   static String adminJwt;
 
   static String patientJwt;
@@ -58,43 +59,74 @@ public class AccountControllerIT extends BaseTest {
             .build();
   }
 
-  @Test
-  @Order(1)
-  public void changeOwnPassword_correct() {
-    given()
-        .header("authorization", "Bearer " + adminJwt)
-        .body(new ChangePasswordDTO("P@ssw0rd", "!Admin321"))
-        .put(getApiRoot() + "/account/changePassword")
-        .then()
-        .log()
-        .all()
-        .statusCode(Response.Status.OK.getStatusCode());
-  }
+  @Nested
+  @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+  class ChangeOwnPassword {
+    private ChangePasswordDTO changePasswordDTO;
+    private String etag;
 
-  @Test
-  @Order(2)
-  public void changeOwnPassword_same_as_old() {
-    given()
-        .header("authorization", "Bearer " + adminJwt)
-        .body(new ChangePasswordDTO("P@ssw0rd", "P@ssw0rd"))
-        .put(getApiRoot() + "/account/changePassword")
-        .then()
-        .log()
-        .all()
-        .statusCode(Response.Status.UNAUTHORIZED.getStatusCode());
-  }
+    @BeforeEach
+    public void init() {
+      var response = given()
+              .header("authorization", "Bearer " + adminJwt)
+              .get(getApiRoot() + "/account/details")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.OK.getStatusCode())
+              .extract()
+              .response();
+      etag = response.getHeader("ETag");
+      Long version = response.getBody().jsonPath().getLong("version");
+      changePasswordDTO = ChangePasswordDTO.builder()
+              .version(version)
+              .newPassword("P@ssw0rd")
+              .oldPassword("!Admin321")
+              .build();
+    }
 
-  @Test
-  @Order(3)
-  public void changeOwnPassword_incorrect() {
-    given()
-        .header("authorization", "Bearer " + adminJwt)
-        .body(new ChangePasswordDTO("baD!password0", "P@ssw0rd"))
-        .put(getApiRoot() + "/account/changePassword")
-        .then()
-        .log()
-        .all()
-        .statusCode(Response.Status.UNAUTHORIZED.getStatusCode());
+    @Test
+    @Order(1)
+    public void changeOwnPassword_correct() {
+      given()
+              .header("authorization", "Bearer " + adminJwt)
+              .header("If-Match", etag)
+              .body(changePasswordDTO)
+              .put(getApiRoot() + "/account/change-password")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.OK.getStatusCode());
+    }
+
+    @Test
+    @Order(2)
+    public void changeOwnPassword_same_as_old() {
+      changePasswordDTO.setNewPassword(changePasswordDTO.getOldPassword());
+      given()
+              .header("authorization", "Bearer " + adminJwt)
+              .header("If-Match", etag)
+              .body(new ChangePasswordDTO("P@ssw0rd", "P@ssw0rd"))
+              .put(getApiRoot() + "/account/change-password")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.UNAUTHORIZED.getStatusCode());
+    }
+
+    @Test
+    @Order(3)
+    public void changeOwnPassword_incorrect() {
+      given()
+              .header("authorization", "Bearer " + adminJwt)
+              .header("If-Match", etag)
+              .body(new ChangePasswordDTO("baD!password0", "P@ssw0rd"))
+              .put(getApiRoot() + "/account/change-password")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.UNAUTHORIZED.getStatusCode());
+    }
   }
 
   @Test
@@ -246,8 +278,23 @@ public class AccountControllerIT extends BaseTest {
   @Test
   @Order(15)
   public void grantChemist_correct() {
+
+    var response = given()
+            .header("authorization", "Bearer " + adminJwt)
+            .get(getApiRoot() + "/account/3/details")
+            .then()
+            .log()
+            .all()
+            .statusCode(Response.Status.OK.getStatusCode())
+            .extract()
+            .response();
+    String etag = response.getHeader("ETag");
+    String licenseNumber = response.getBody().jsonPath().getString("licenseNumber");
+    GrantChemistDataDTO grantChemistDataDTO1 = new GrantChemistDataDTO(licenseNumber);
+
     given()
         .header("authorization", "Bearer " + adminJwt)
+            .header("If-Match", etag)
         .body(grantChemistDataDTO)
         .post(getApiRoot() + "/account/3/chemist")
         .then()
@@ -260,8 +307,23 @@ public class AccountControllerIT extends BaseTest {
   @Test
   @Order(16)
   public void grantAdmin_correct() {
+
+    var response = given()
+            .header("authorization", "Bearer " + adminJwt)
+            .get(getApiRoot() + "/account/3/details")
+            .then()
+            .log()
+            .all()
+            .statusCode(Response.Status.OK.getStatusCode())
+            .extract()
+            .response();
+    String etag = response.getHeader("ETag");
+    String workPhoneNumber = response.getBody().jsonPath().getString("workPhoneNumber");
+    GrantAdminDataDTO grantAdminDataDTO1 = new GrantAdminDataDTO(workPhoneNumber);
+
     given()
         .header("authorization", "Bearer " + adminJwt)
+            .header("If-Match", etag)
         .body(grantAdminDataDTO)
         .post(getApiRoot() + "/account/3/admin")
         .then()
@@ -273,8 +335,23 @@ public class AccountControllerIT extends BaseTest {
   @Test
   @Order(17)
   public void grantAdmin_secondGrant() {
+
+    var response = given()
+            .header("authorization", "Bearer " + adminJwt)
+            .get(getApiRoot() + "/account/3/details")
+            .then()
+            .log()
+            .all()
+            .statusCode(Response.Status.OK.getStatusCode())
+            .extract()
+            .response();
+    String etag = response.getHeader("ETag");
+    String workPhoneNumber = response.getBody().jsonPath().getString("workPhoneNumber");
+    GrantAdminDataDTO grantAdminDataDTO1 = new GrantAdminDataDTO(workPhoneNumber);
+
     given()
         .header("authorization", "Bearer " + adminJwt)
+            .header("If-Match", etag)
         .body(grantAdminDataDTO)
         .post(getApiRoot() + "/account/3/admin")
         .then()
@@ -585,14 +662,31 @@ public class AccountControllerIT extends BaseTest {
   @Test
   @Order(35)
   public void editAccount_correct() {
+
+      var response = given()
+              .header("authorization", "Bearer " + adminJwt)
+              .get(getApiRoot() + "/account/3/details")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.OK.getStatusCode())
+              .extract()
+              .response();
+
+      String etag = response.getHeader("ETag");
+      String email = response.getBody().jsonPath().getString("email");
+
+      EditAccountDTO editAccountDTO = new EditAccountDTO(email);
+
     given()
-        .header("authorization", "Bearer " + adminJwt)
-        .body(editEmailDto)
+        .header("authorization", "Bearer " + adminJwt).header("If-Match", etag)
+        .body(editAccountDTO)
         .put(getApiRoot() + "/account/3")
         .then()
         .log()
         .all()
         .statusCode(Response.Status.OK.getStatusCode());
+
     given()
         .header("authorization", "Bearer " + adminJwt)
         .get(getApiRoot() + "/account/3")

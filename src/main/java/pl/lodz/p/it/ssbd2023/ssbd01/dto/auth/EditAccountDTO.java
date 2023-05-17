@@ -20,6 +20,6 @@ public class EditAccountDTO implements SignableEntity {
 
   @Override
   public String getSignablePayload() {
-    return email;
+    return email + "." + "1";
   }
 }

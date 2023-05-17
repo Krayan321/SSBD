@@ -4,6 +4,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.AbstractEditEntityDTO;
@@ -12,6 +13,12 @@ import pl.lodz.p.it.ssbd2023.ssbd01.dto.AbstractEditEntityDTO;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UpdateOtherUserPasswordDTO extends AbstractEditEntityDTO {
+
+  @Builder
+  public UpdateOtherUserPasswordDTO(Long id, String password) {
+    super(id);
+    this.password = password;
+  }
 
   @NotNull
   @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$", message = "Invalid password")

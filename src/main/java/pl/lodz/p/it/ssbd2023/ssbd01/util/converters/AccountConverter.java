@@ -36,6 +36,7 @@ public class AccountConverter {
         .version(account.getVersion())
         .accessLevels(accessLevels)
         .login(account.getLogin())
+        .email(account.getEmail())
         .active(account.getActive())
         .confirmed(account.getConfirmed())
         .build();

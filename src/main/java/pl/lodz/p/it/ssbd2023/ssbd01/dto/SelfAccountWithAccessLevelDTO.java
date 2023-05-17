@@ -25,14 +25,9 @@ public class SelfAccountWithAccessLevelDTO extends AccountAndAccessLevelsDTO {
             Boolean confirmed,
             String email,
             Locale language) {
-        super(id, version, accessLevels, login, active, confirmed);
+        super(id, version, accessLevels, login, email, active, confirmed);
         this.language = language.getLanguage();
-        this.email = email;
     }
-    @NotNull
-    @Size(max = 50, min = 5)
-    @Email
-    private String email;
 
     private String language;
 }
