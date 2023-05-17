@@ -3,7 +3,7 @@ package pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccount;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;
-import pl.lodz.p.it.ssbd2023.ssbd01.dto.AbstractEntityDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.AbstractEditEntityDTO;
 
 @ToString
 @EqualsAndHashCode(callSuper = true)
@@ -11,11 +11,11 @@ import pl.lodz.p.it.ssbd2023.ssbd01.dto.AbstractEntityDTO;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class EditChemistDataDTO extends AbstractEntityDTO {
+public class EditChemistDataDTO extends AbstractEditEntityDTO {
 
   @Builder
-  public EditChemistDataDTO(Long id, Long version, String licenseNumber) {
-    super(id, version);
+  public EditChemistDataDTO(Long version, String licenseNumber) {
+    super(version);
     this.licenseNumber = licenseNumber;
   }
 

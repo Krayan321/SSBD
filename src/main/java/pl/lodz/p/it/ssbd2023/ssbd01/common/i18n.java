@@ -11,7 +11,9 @@ public class i18n {
   public static final String EXCEPTION_UNAUTHORISED = "exception.unauthorised";
   public static final String EXCEPTION_NOT_FOUND = "exception.not-found";
   public static final String EXCEPTION_METHOD_NOT_ALLOWED = "exception.method-not-allowed";
-  public static final String EXCEPTION_TRANSACTION_ROLLBACK = "exception.transaction-rollback";
+  public static final String EXCEPTION_ETAG_CREATION = "exception.etag.creation";
+  public static final String EXCEPTION_ETAG_EMPTY = "exception.etag.empty";
+  public static final String EXCEPTION_ETAG_INVALID = "exception.etag.not-valid";
   public static final String EXCEPTION_OPTIMISTIC_LOCK = "exception.optimistic-lock";
   public static final String EXCEPTION_ENTITY_NOT_FOUND = "exception.entity-not-found";
 

@@ -565,6 +565,11 @@ public class AccountControllerIT extends BaseTest {
   @Test
   @Order(33)
   public void password_incorrect_block_account() {
+    given()
+        .body(patientLoginDto)
+        .post(getApiRoot() + "/auth/login")
+        .then()
+        .statusCode(Response.Status.OK.getStatusCode());
     for (int i = 0; i < 3; i++) {
       given()
           .body(new LoginDTO(patientLoginDto.getLogin(), "P@ssw0rd"))

@@ -1,16 +1,18 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+import pl.lodz.p.it.ssbd2023.ssbd01.common.SignableEntity;
 
 @ToString
 @EqualsAndHashCode(callSuper = true)
 @Getter
 @Setter
 @NoArgsConstructor
-public class AccountDTO extends AbstractEntityDTO {
+public class AccountDTO extends AbstractEntityDTO implements SignableEntity {
 
   @Builder
   public AccountDTO(
@@ -36,4 +38,10 @@ public class AccountDTO extends AbstractEntityDTO {
 
   @NotNull
   private Boolean confirmed;
+
+  @Override
+  @JsonIgnore
+  public String getSignablePayload() {
+    return login + email;
+  }
 }

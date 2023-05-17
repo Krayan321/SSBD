@@ -16,6 +16,7 @@ import pl.lodz.p.it.ssbd2023.ssbd01.exceptions.ApplicationException;
 import java.util.logging.Level;
 
 import static pl.lodz.p.it.ssbd2023.ssbd01.common.i18n.EXCEPTION_UNKNOWN;
+import static pl.lodz.p.it.ssbd2023.ssbd01.util.converters.ExceptionConverter.mapApplicationExceptionToResponse;
 
 @Provider
 @Log
@@ -26,16 +27,16 @@ public class ThrowableExceptionMapper implements ExceptionMapper<Throwable> {
         try {
             throw throwable;
         } catch(ApplicationException e) {
-            return getResponseFromApplicationException(e);
+            return mapApplicationExceptionToResponse(e);
         } catch(NotFoundException e) {
             ApplicationException ex = ApplicationException.createNotFoundException();
-            return getResponseFromApplicationException(ex);
+            return mapApplicationExceptionToResponse(ex);
         } catch(NotAllowedException e) {
             ApplicationException ex = ApplicationException.createMethodNotAllowedException();
-            return getResponseFromApplicationException(ex);
+            return mapApplicationExceptionToResponse(ex);
         } catch(ForbiddenException | EJBAccessException | AccessLocalException e) {
             ApplicationException ex = ApplicationException.createAccessDeniedException();
-            return getResponseFromApplicationException(ex);
+            return mapApplicationExceptionToResponse(ex);
         } catch(WebApplicationException e) {
             return Response.status(e.getResponse().getStatus())
                     .entity(new ExceptionDTO(e.getMessage()))
@@ -44,14 +45,7 @@ public class ThrowableExceptionMapper implements ExceptionMapper<Throwable> {
         } catch (Throwable e) {
             log.log(Level.SEVERE, EXCEPTION_UNKNOWN, throwable);
             ApplicationException ex = ApplicationException.createGeneralException(e);
-            return getResponseFromApplicationException(ex);
+            return mapApplicationExceptionToResponse(ex);
         }
-    }
-
-    private Response getResponseFromApplicationException(ApplicationException e) {
-        return Response.status(e.getResponse().getStatus())
-                .entity(new ExceptionDTO(e.getKey()))
-                .header("Content-Type", "application/json")
-                .build();
     }
 }

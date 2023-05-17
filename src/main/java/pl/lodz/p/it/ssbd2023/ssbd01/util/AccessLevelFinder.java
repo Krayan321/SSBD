@@ -6,15 +6,6 @@ import pl.lodz.p.it.ssbd2023.ssbd01.entities.Role;
 import pl.lodz.p.it.ssbd2023.ssbd01.exceptions.ApplicationException;
 
 public class AccessLevelFinder {
-  public static AccessLevel findAccessLevel(Account account, AccessLevel accessLevel) {
-    for (AccessLevel next : account.getAccessLevels()) {
-      if (next.equals(accessLevel)) {
-        return next;
-      }
-    }
-    throw ApplicationException.createEntityNotFoundException();
-  }
-
   public static AccessLevel findAccessLevel(Account account, Role role) {
     for (AccessLevel next : account.getAccessLevels()) {
       if (next.getRole().equals(role)) {

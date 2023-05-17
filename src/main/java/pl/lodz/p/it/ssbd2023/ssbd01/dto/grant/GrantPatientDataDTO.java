@@ -4,13 +4,14 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+import pl.lodz.p.it.ssbd2023.ssbd01.common.SignableEntity;
 
 @ToString
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class GrantPatientDataDTO {
+public class GrantPatientDataDTO implements SignableEntity {
 
   @NotNull
   @Pattern(regexp = "^\\d{11}$", message = "Invalid PESEL")
@@ -31,4 +32,9 @@ public class GrantPatientDataDTO {
   @NotNull
   @Pattern(regexp = "^\\d{10}$", message = "Invalid NIP")
   private String nip;
+
+  @Override
+  public String getSignablePayload() {
+    return pesel + firstName + lastName + phoneNumber + nip;
+  }
 }
