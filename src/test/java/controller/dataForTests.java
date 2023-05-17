@@ -55,6 +55,41 @@ public class dataForTests {
           .nip("4443332211")
           .build();
 
+  public static RegisterPatientDTO registerPatientDtoDuplicatePesel =
+        RegisterPatientDTO.builder()
+            .login("pesel-login")
+            .password(patientLoginDto.getPassword())
+            .email("pesel-patient-email@local.db")
+            .name("Test")
+            .lastName("Patient")
+                .phoneNumber("123123321")
+                .pesel("12345678901")
+                .nip("4443332213")
+                .build();
+
+  public static RegisterPatientDTO registerPatientDtoDuplicateNip =
+        RegisterPatientDTO.builder()
+            .login("nip-login")
+            .password(patientLoginDto.getPassword())
+            .email("nip-patient-email@local.db")
+            .name("Test")
+            .lastName("Patient")
+                .phoneNumber("123123321")
+                .pesel("12345678999")
+                .nip("4443332211")
+                .build();
+
+    public static RegisterPatientDTO registerPatientDtoDuplicatePhoneNumber =
+        RegisterPatientDTO.builder()
+            .login("phone-login")
+            .password(patientLoginDto.getPassword())
+            .email("phone-patient-email@local.db")
+            .name("Test")
+            .lastName("Patient")
+                .phoneNumber("123123123")
+                .pesel("12345678910")
+                .nip("1443332211")
+                .build();
   // grant
   public static GrantChemistDataDTO grantChemistDataDTO = new GrantChemistDataDTO("123412");
 
