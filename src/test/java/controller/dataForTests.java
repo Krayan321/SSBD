@@ -2,21 +2,20 @@ package controller;
 
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.addAsAdmin.AddAdminAccountDto;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.addAsAdmin.AddChemistAccountDto;
-import pl.lodz.p.it.ssbd2023.ssbd01.dto.auth.EditAccountDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccount.EditAccountDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.auth.LoginDTO;
-import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccount.EditAdminDataDTO;
-import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccount.EditChemistDataDTO;
-import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccount.EditPatientDataDTO;
-import pl.lodz.p.it.ssbd2023.ssbd01.dto.grant.GrantAdminDataDTO;
-import pl.lodz.p.it.ssbd2023.ssbd01.dto.grant.GrantChemistDataDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccessLevel.EditAdminDataDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccessLevel.EditChemistDataDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccessLevel.EditPatientDataDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccount.grant.GrantAdminDataDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccount.grant.GrantChemistDataDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.register.RegisterPatientDTO;
 
 public class dataForTests {
 
   public static LoginDTO adminLoginDto = new LoginDTO("admin123", "P@ssw0rd");
-  public static LoginDTO changedLoginDto = new LoginDTO("admin123", "testAdm1n!23");
   public static LoginDTO patientLoginDto = new LoginDTO("test11", "testP@tient123");
-  public static LoginDTO grantAdminToChemistLogin = new LoginDTO("chemist123", "P4$$w0Rd");
+  public static LoginDTO chemistLoginDto = new LoginDTO("chemist123", "P4$$w0Rd");
 
   // register
   public static RegisterPatientDTO registerPatientDto =
@@ -91,9 +90,17 @@ public class dataForTests {
                 .nip("1443332211")
                 .build();
   // grant
-  public static GrantChemistDataDTO grantChemistDataDTO = new GrantChemistDataDTO("123412");
+  public static GrantChemistDataDTO grantChemistDataDTO = GrantChemistDataDTO.builder()
+          .login(patientLoginDto.getLogin())
+          .licenseNumber("127836")
+          .version(0L)
+          .build();
 
-  public static GrantAdminDataDTO grantAdminDataDTO = new GrantAdminDataDTO("999888777");
+  public static GrantAdminDataDTO grantAdminDataDTO = GrantAdminDataDTO.builder()
+          .login(patientLoginDto.getLogin())
+          .workPhoneNumber("123431431")
+          .version(0L)
+          .build();
 
   // edit data
   public static EditAdminDataDTO adminDataDTOChangedPhone =

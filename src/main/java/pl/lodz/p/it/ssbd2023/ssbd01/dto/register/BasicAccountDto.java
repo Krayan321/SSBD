@@ -1,5 +1,6 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.dto.register;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -12,7 +13,7 @@ import pl.lodz.p.it.ssbd2023.ssbd01.common.SignableEntity;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class BasicAccountDto implements SignableEntity {
+public class BasicAccountDto {
 
   @Size(max = 50, min = 5)
   @NotNull
@@ -29,9 +30,4 @@ public class BasicAccountDto implements SignableEntity {
   private String email;
 
   private String language;
-
-  @Override
-  public String getSignablePayload() {
-    return login + email;
-  }
 }

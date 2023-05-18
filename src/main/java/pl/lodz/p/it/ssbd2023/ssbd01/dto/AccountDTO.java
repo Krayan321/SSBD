@@ -42,6 +42,6 @@ public class AccountDTO extends AbstractEntityDTO implements SignableEntity {
   @Override
   @JsonIgnore
   public String getSignablePayload() {
-    return login + email;
+    return String.format("%s.%d", login, getVersion());
   }
 }

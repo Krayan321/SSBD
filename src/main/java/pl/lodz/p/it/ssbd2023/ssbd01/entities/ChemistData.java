@@ -26,7 +26,7 @@ public class ChemistData extends AccessLevel implements Serializable {
 
   @Builder
   public ChemistData(Long id, String licenseNumber) {
-    super(id);
+    super(id, Role.CHEMIST);
     this.licenseNumber = licenseNumber;
   }
 

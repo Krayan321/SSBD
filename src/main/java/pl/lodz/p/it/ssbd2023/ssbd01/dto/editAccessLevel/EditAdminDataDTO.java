@@ -1,9 +1,10 @@
-package pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccount;
+package pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccessLevel;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;
-import pl.lodz.p.it.ssbd2023.ssbd01.dto.AbstractEditEntityDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccount.AbstractEditAccountDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.entities.Role;
 
 @ToString
 @EqualsAndHashCode(callSuper = true)
@@ -11,11 +12,11 @@ import pl.lodz.p.it.ssbd2023.ssbd01.dto.AbstractEditEntityDTO;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class EditAdminDataDTO extends AbstractEditEntityDTO {
+public class EditAdminDataDTO extends AbstractEditAccessLevelDTO {
 
   @Builder
   public EditAdminDataDTO(Long version, String workPhoneNumber) {
-    super(version);
+    super(version, Role.ADMIN);
     this.workPhoneNumber = workPhoneNumber;
   }
 

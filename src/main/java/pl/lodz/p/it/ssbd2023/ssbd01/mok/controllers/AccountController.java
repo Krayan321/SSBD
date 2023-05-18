@@ -4,42 +4,48 @@ import jakarta.annotation.security.DenyAll;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import java.util.List;
+
+import lombok.extern.java.Log;
 import pl.lodz.p.it.ssbd2023.ssbd01.common.AbstractController;
-import pl.lodz.p.it.ssbd2023.ssbd01.common.SignableEntity;
 import pl.lodz.p.it.ssbd2023.ssbd01.config.ETagFilterBinding;
 import pl.lodz.p.it.ssbd2023.ssbd01.config.EntityIdentitySignerVerifier;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.*;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.addAsAdmin.AddAdminAccountDto;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.addAsAdmin.AddChemistAccountDto;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.addAsAdmin.AddPatientAccountDto;
-import pl.lodz.p.it.ssbd2023.ssbd01.dto.auth.EditAccountDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccessLevel.EditAdminDataDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccessLevel.EditChemistDataDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccessLevel.EditPatientDataDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccount.EditAccountDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.auth.NewPasswordDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.auth.ResetPasswordDTO;
-import pl.lodz.p.it.ssbd2023.ssbd01.dto.auth.UpdateOtherUserPasswordDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccount.*;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.auth.VerificationTokenDto;
-import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccount.EditAdminDataDTO;
-import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccount.EditChemistDataDTO;
-import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccount.EditPatientDataDTO;
-import pl.lodz.p.it.ssbd2023.ssbd01.dto.grant.GrantAdminDataDTO;
-import pl.lodz.p.it.ssbd2023.ssbd01.dto.grant.GrantChemistDataDTO;
-import pl.lodz.p.it.ssbd2023.ssbd01.dto.grant.GrantPatientDataDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccount.grant.GrantAdminDataDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccount.grant.GrantChemistDataDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccount.grant.GrantPatientDataDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.register.RegisterPatientDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.*;
 import pl.lodz.p.it.ssbd2023.ssbd01.mok.managers.AccountManagerLocal;
+import pl.lodz.p.it.ssbd2023.ssbd01.util.AccessLevelFinder;
 import pl.lodz.p.it.ssbd2023.ssbd01.util.converters.AccessLevelConverter;
 import pl.lodz.p.it.ssbd2023.ssbd01.util.converters.AccountConverter;
 
 @Path("account")
 @RequestScoped
 @DenyAll
+@Log
 public class AccountController extends AbstractController {
 
   @Inject private AccountManagerLocal accountManager;
+
+  @Inject private EntityIdentitySignerVerifier entityIdentitySignerVerifier;
 
   @GET
   @Path("/")
@@ -59,7 +65,7 @@ public class AccountController extends AbstractController {
   }
 
   @POST
-  @Path("/confirmEmailChange")
+  @Path("/confirm-email-change")
   public Response confirmEmailChange(@Valid VerificationTokenDto token) {
     repeatTransactionVoid(
         accountManager, () -> accountManager.confirmEmailChange(token.getToken()));
@@ -72,7 +78,7 @@ public class AccountController extends AbstractController {
   public Response readAccount(@PathParam("id") Long id) {
     Account account = repeatTransaction(accountManager, () -> accountManager.getAccount(id));
     AccountDTO accountDto = AccountConverter.mapAccountToAccountDto(account);
-    String etag = EntityIdentitySignerVerifier.calculateEntitySignature(accountDto);
+    String etag = entityIdentitySignerVerifier.calculateEntitySignature(accountDto);
     return Response.ok(accountDto).tag(etag).build();
   }
 
@@ -84,7 +90,7 @@ public class AccountController extends AbstractController {
         repeatTransaction(accountManager, () -> accountManager.getCurrentUserWithAccessLevels());
     SelfAccountWithAccessLevelDTO accountDto =
         AccountConverter.mapAccountToSelfAccountWithAccessLevelsDto(account);
-    String etag = EntityIdentitySignerVerifier.calculateEntitySignature(accountDto);
+    String etag = entityIdentitySignerVerifier.calculateEntitySignature(accountDto);
     return Response.ok(accountDto).tag(etag).build();
   }
 
@@ -96,7 +102,7 @@ public class AccountController extends AbstractController {
         repeatTransaction(accountManager, () -> accountManager.getAccountAndAccessLevels(id));
     AccountAndAccessLevelsDTO accountDto =
         AccountConverter.mapAccountToAccountAndAccessLevelsDto(account);
-    String etag = EntityIdentitySignerVerifier.calculateEntitySignature(accountDto);
+    String etag = entityIdentitySignerVerifier.calculateEntitySignature(accountDto);
     return Response.ok(accountDto).tag(etag).build();
   }
 
@@ -132,30 +138,30 @@ public class AccountController extends AbstractController {
   }
 
   @PUT
-  @Path("/{id}/changeUserPassword")
+  @Path("/{id}/change-user-password")
   @ETagFilterBinding
   public AccountDTO changeUserPassword(
-      @HeaderParam("If-Match") String etag,
+      @HeaderParam("If-Match") @NotEmpty String etag,
       @PathParam("id") Long id,
-      @Valid UpdateOtherUserPasswordDTO updateOtherUserPasswordDTO) {
-    String newPassword = updateOtherUserPasswordDTO.getPassword();
+      @Valid UpdateOtherUserPasswordDTO passwordDTO) {
+    entityIdentitySignerVerifier.checkEtagIntegrity(passwordDTO, etag);
     Account account =
-        repeatTransaction(accountManager, () -> accountManager.updateUserPassword(id, newPassword));
+        repeatTransaction(accountManager, () -> accountManager.updateUserPassword(
+                id, passwordDTO.getPassword(), passwordDTO.getLogin(), passwordDTO.getVersion()));
     return AccountConverter.mapAccountToAccountDto(account);
   }
 
   @PUT
-  @Path("/changePassword")
+  @Path("/change-password")
   @ETagFilterBinding
   public Response changePassword(
-      @HeaderParam("If-Match") String etag, @Valid ChangePasswordDTO changePasswordDTO) {
-    EntityIdentitySignerVerifier.checkEtagIntegrity(changePasswordDTO, etag);
-    Account account = accountManager.getCurrentUser();
-    String oldPassword = changePasswordDTO.getOldPassword();
-    String newPassword = changePasswordDTO.getNewPassword();
-    repeatTransaction(
-        accountManager,
-        () -> accountManager.updateOwnPassword(account.getId(), oldPassword, newPassword));
+      @HeaderParam("If-Match") @NotEmpty String etag,
+      @Valid ChangePasswordDTO changePasswordDTO) {
+    entityIdentitySignerVerifier.checkEtagIntegrity(changePasswordDTO, etag);
+    repeatTransaction(accountManager,
+        () -> accountManager.updateOwnPassword(
+                changePasswordDTO.getOldPassword(), changePasswordDTO.getNewPassword(),
+                changePasswordDTO.getLogin(), changePasswordDTO.getVersion()));
     return Response.status(Response.Status.OK).build();
   }
 
@@ -163,10 +169,12 @@ public class AccountController extends AbstractController {
   @Path("/")
   @ETagFilterBinding
   public AccountDTO editOwnAccount(
-      @HeaderParam("If-Match") String etag, @Valid EditAccountDTO editAccountDTO) {
-    EntityIdentitySignerVerifier.checkEtagIntegrity(editAccountDTO, etag);
-    String email = editAccountDTO.getEmail();
-    Account account = repeatTransaction(accountManager, () -> accountManager.updateOwnEmail(email));
+      @HeaderParam("If-Match") @NotEmpty String etag,
+      @Valid EditAccountDTO editAccountDTO) {
+    entityIdentitySignerVerifier.checkEtagIntegrity(editAccountDTO, etag);
+    Account account = repeatTransaction(accountManager,
+            () -> accountManager.updateOwnEmail(editAccountDTO.getEmail(),
+                    editAccountDTO.getLogin(), editAccountDTO.getVersion()));
     return AccountConverter.mapAccountToAccountDto(account);
   }
 
@@ -174,13 +182,13 @@ public class AccountController extends AbstractController {
   @Path("/{id}")
   @ETagFilterBinding
   public AccountDTO editUserAccount(
-      @HeaderParam("If-Match") String etag,
+      @HeaderParam("If-Match") @NotEmpty String etag,
       @PathParam("id") Long id,
       @Valid EditAccountDTO editAccountDTO) {
-    EntityIdentitySignerVerifier.checkEtagIntegrity(editAccountDTO, etag);
-    String email = editAccountDTO.getEmail();
+    entityIdentitySignerVerifier.checkEtagIntegrity(editAccountDTO, etag);
     Account account =
-        repeatTransaction(accountManager, () -> accountManager.updateUserEmail(id, email));
+        repeatTransaction(accountManager, () -> accountManager.updateUserEmail(
+                id, editAccountDTO.getEmail(), editAccountDTO.getLogin(), editAccountDTO.getVersion()));
     return AccountConverter.mapAccountToAccountDto(account);
   }
 
@@ -200,62 +208,6 @@ public class AccountController extends AbstractController {
         () ->
             accountManager.setNewPassword(newPasswordDTO.getToken(), newPasswordDTO.getPassword()));
     return Response.status(Response.Status.OK).build();
-  }
-
-  @PUT
-  @Path("/{id}/patient")
-  @Produces(MediaType.APPLICATION_JSON)
-  @Consumes(MediaType.APPLICATION_JSON)
-  @ETagFilterBinding
-  public AccountAndAccessLevelsDTO editPatientData(
-      @HeaderParam("If-Match") String etag,
-      @PathParam("id") Long id,
-      @Valid EditPatientDataDTO patientDataDTO) {
-    EntityIdentitySignerVerifier.checkEtagIntegrity(patientDataDTO, etag);
-    PatientData patientData =
-        AccessLevelConverter.mapEditPatientDataDtoToPatientData(patientDataDTO);
-    Account account =
-        repeatTransaction(
-            accountManager,
-            () -> accountManager.editAccessLevel(id, patientData, patientDataDTO.getVersion()));
-    return AccountConverter.mapAccountToAccountAndAccessLevelsDto(account);
-  }
-
-  @PUT
-  @Path("/{id}/admin")
-  @Produces(MediaType.APPLICATION_JSON)
-  @Consumes(MediaType.APPLICATION_JSON)
-  @ETagFilterBinding
-  public AccountAndAccessLevelsDTO editAdminData(
-      @HeaderParam("If-Match") String etag,
-      @PathParam("id") Long id,
-      @Valid EditAdminDataDTO adminDataDTO) {
-    EntityIdentitySignerVerifier.checkEtagIntegrity(adminDataDTO, etag);
-    AdminData adminData = AccessLevelConverter.mapEditAdminDataDtoToAdminData(adminDataDTO);
-    Account account =
-        repeatTransaction(
-            accountManager,
-            () -> accountManager.editAccessLevel(id, adminData, adminDataDTO.getVersion()));
-    return AccountConverter.mapAccountToAccountAndAccessLevelsDto(account);
-  }
-
-  @PUT
-  @Path("/{id}/chemist")
-  @Produces(MediaType.APPLICATION_JSON)
-  @Consumes(MediaType.APPLICATION_JSON)
-  @ETagFilterBinding
-  public AccountAndAccessLevelsDTO editChemistData(
-      @HeaderParam("If-Match") String etag,
-      @PathParam("id") Long id,
-      @Valid EditChemistDataDTO chemistDataDTO) {
-    EntityIdentitySignerVerifier.checkEtagIntegrity(chemistDataDTO, etag);
-    ChemistData chemistData =
-        AccessLevelConverter.mapEditChemistDataDtoToChemistData(chemistDataDTO);
-    Account account =
-        repeatTransaction(
-            accountManager,
-            () -> accountManager.editAccessLevel(id, chemistData, chemistDataDTO.getVersion()));
-    return AccountConverter.mapAccountToAccountAndAccessLevelsDto(account);
   }
 
   @POST
@@ -287,20 +239,22 @@ public class AccountController extends AbstractController {
     return Response.status(Response.Status.CREATED).build();
   }
 
+  // append access level
   @POST
   @Path("/{id}/patient")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   @ETagFilterBinding
   public AccountAndAccessLevelsDTO grantPatient(
-      @HeaderParam("If-Match") String etag,
+      @HeaderParam("If-Match") @NotEmpty String etag,
       @PathParam("id") Long id,
       @Valid GrantPatientDataDTO patientDataDTO) {
-    EntityIdentitySignerVerifier.checkEtagIntegrity(patientDataDTO, etag);
+    entityIdentitySignerVerifier.checkEtagIntegrity(patientDataDTO, etag);
     PatientData patientData =
         AccessLevelConverter.mapGrantPatientDataDTOtoPatientData(patientDataDTO);
     Account account =
-        repeatTransaction(accountManager, () -> accountManager.grantAccessLevel(id, patientData));
+        repeatTransaction(accountManager, () -> accountManager.grantAccessLevel(
+                id, patientData, patientDataDTO.getLogin(), patientData.getVersion()));
     return AccountConverter.mapAccountToAccountAndAccessLevelsDto(account);
   }
 
@@ -310,14 +264,15 @@ public class AccountController extends AbstractController {
   @Produces(MediaType.APPLICATION_JSON)
   @ETagFilterBinding
   public AccountAndAccessLevelsDTO grantChemist(
-      @HeaderParam("If-Match") String etag,
+      @HeaderParam("If-Match") @NotEmpty String etag,
       @PathParam("id") Long id,
       @Valid GrantChemistDataDTO chemistDataDTO) {
-    EntityIdentitySignerVerifier.checkEtagIntegrity(chemistDataDTO, etag);
+    entityIdentitySignerVerifier.checkEtagIntegrity(chemistDataDTO, etag);
     ChemistData chemistData =
         AccessLevelConverter.mapGrantChemistDataDtoToChemistData(chemistDataDTO);
     Account account =
-        repeatTransaction(accountManager, () -> accountManager.grantAccessLevel(id, chemistData));
+        repeatTransaction(accountManager, () -> accountManager.grantAccessLevel(
+                id, chemistData, chemistDataDTO.getLogin(), chemistDataDTO.getVersion()));
     return AccountConverter.mapAccountToAccountAndAccessLevelsDto(account);
   }
 
@@ -327,15 +282,109 @@ public class AccountController extends AbstractController {
   @Produces(MediaType.APPLICATION_JSON)
   @ETagFilterBinding
   public AccountAndAccessLevelsDTO grantAdmin(
-      @HeaderParam("If-Match") String etag,
+      @HeaderParam("If-Match") @NotEmpty String etag,
       @PathParam("id") Long id,
       @Valid GrantAdminDataDTO adminDataDTO) {
-    EntityIdentitySignerVerifier.checkEtagIntegrity(adminDataDTO, etag);
+    entityIdentitySignerVerifier.checkEtagIntegrity(adminDataDTO, etag);
     AdminData adminData = AccessLevelConverter.mapGrantAdminDataDtoToAdminData(adminDataDTO);
     Account account =
-        repeatTransaction(accountManager, () -> accountManager.grantAccessLevel(id, adminData));
+        repeatTransaction(accountManager, () -> accountManager.grantAccessLevel(
+                id, adminData, adminDataDTO.getLogin(), adminDataDTO.getVersion()));
     return AccountConverter.mapAccountToAccountAndAccessLevelsDto(account);
   }
+
+  // read access level
+  @GET
+  @Path("/{id}/patient")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response getPatientData(@PathParam("id") Long id) {
+    AccessLevel accessLevel = repeatTransaction(
+            accountManager, () -> accountManager.getAccessLevel(id, Role.PATIENT));
+    AccessLevelDTO accessLevelDTO = AccessLevelConverter.mapAccessLevelToAccessLevelDto(accessLevel);
+    String etag = entityIdentitySignerVerifier.calculateEntitySignature(accessLevelDTO);
+    return Response.status(Response.Status.OK).entity(accessLevelDTO).tag(etag).build();
+  }
+
+  @GET
+  @Path("/{id}/chemist")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response getChemistData(@PathParam("id") Long id) {
+    AccessLevel accessLevel = repeatTransaction(
+            accountManager, () -> accountManager.getAccessLevel(id, Role.CHEMIST));
+    AccessLevelDTO accessLevelDTO = AccessLevelConverter.mapAccessLevelToAccessLevelDto(accessLevel);
+    String etag = entityIdentitySignerVerifier.calculateEntitySignature(accessLevelDTO);
+    return Response.status(Response.Status.OK).entity(accessLevelDTO).tag(etag).build();
+  }
+
+  @GET
+  @Path("/{id}/admin")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response getAdminData(@PathParam("id") Long id) {
+    AccessLevel accessLevel = repeatTransaction(
+            accountManager, () -> accountManager.getAccessLevel(id, Role.ADMIN));
+    AccessLevelDTO accessLevelDTO = AccessLevelConverter.mapAccessLevelToAccessLevelDto(accessLevel);
+    String etag = entityIdentitySignerVerifier.calculateEntitySignature(accessLevelDTO);
+    return Response.status(Response.Status.OK).entity(accessLevelDTO).tag(etag).build();
+  }
+
+  // edit access level
+  @PUT
+  @Path("/{id}/patient")
+  @Produces(MediaType.APPLICATION_JSON)
+  @Consumes(MediaType.APPLICATION_JSON)
+  @ETagFilterBinding
+  public AccountAndAccessLevelsDTO editPatientData(
+          @HeaderParam("If-Match") @NotEmpty String etag,
+          @PathParam("id") Long id,
+          @Valid EditPatientDataDTO patientDataDTO) {
+    entityIdentitySignerVerifier.checkEtagIntegrity(patientDataDTO, etag);
+    PatientData patientData =
+            AccessLevelConverter.mapEditPatientDataDtoToPatientData(patientDataDTO);
+    Account account =
+            repeatTransaction(
+                    accountManager,
+                    () -> accountManager.editAccessLevel(id, patientData, patientDataDTO.getVersion()));
+    return AccountConverter.mapAccountToAccountAndAccessLevelsDto(account);
+  }
+
+  @PUT
+  @Path("/{id}/chemist")
+  @Produces(MediaType.APPLICATION_JSON)
+  @Consumes(MediaType.APPLICATION_JSON)
+  @ETagFilterBinding
+  public AccountAndAccessLevelsDTO editChemistData(
+          @HeaderParam("If-Match") @NotEmpty String etag,
+          @PathParam("id") Long id,
+          @Valid EditChemistDataDTO chemistDataDTO) {
+    entityIdentitySignerVerifier.checkEtagIntegrity(chemistDataDTO, etag);
+    ChemistData chemistData =
+            AccessLevelConverter.mapEditChemistDataDtoToChemistData(chemistDataDTO);
+    Account account =
+            repeatTransaction(
+                    accountManager,
+                    () -> accountManager.editAccessLevel(id, chemistData, chemistDataDTO.getVersion()));
+    return AccountConverter.mapAccountToAccountAndAccessLevelsDto(account);
+  }
+
+  @PUT
+  @Path("/{id}/admin")
+  @Produces(MediaType.APPLICATION_JSON)
+  @Consumes(MediaType.APPLICATION_JSON)
+  @ETagFilterBinding
+  public AccountAndAccessLevelsDTO editAdminData(
+          @HeaderParam("If-Match") @NotEmpty String etag,
+          @PathParam("id") Long id,
+          @Valid EditAdminDataDTO adminDataDTO) {
+    entityIdentitySignerVerifier.checkEtagIntegrity(adminDataDTO, etag);
+    AdminData adminData = AccessLevelConverter.mapEditAdminDataDtoToAdminData(adminDataDTO);
+    Account account =
+            repeatTransaction(
+                    accountManager,
+                    () -> accountManager.editAccessLevel(id, adminData, adminDataDTO.getVersion()));
+    return AccountConverter.mapAccountToAccountAndAccessLevelsDto(account);
+  }
+
+
 
   @PUT
   @Path("/{id}/admin/block")

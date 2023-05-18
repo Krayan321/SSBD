@@ -15,7 +15,6 @@ public class AuthApplicationException extends ApplicationException {
     super(status, key, e);
   }
 
-  // todo split for login and password
   public static AuthApplicationException createInvalidLoginOrPasswordException() {
     return new AuthApplicationException(
         Response.Status.UNAUTHORIZED, EXCEPTION_AUTH_BAD_CREDENTIALS);
