@@ -19,7 +19,6 @@ import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccount.ChangePasswordDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccount.EditAccountDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.auth.LoginDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccount.UpdateOtherUserPasswordDTO;
-import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccount.grant.GrantAdminDataDTO;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestClassOrder(ClassOrderer.OrderAnnotation.class)
@@ -57,43 +56,12 @@ public class AccountControllerIT extends BaseTest {
             .build();
   }
 
-
-
-  @Test
-  @Order(4)
-  public void login_invalidLogin() {
-    LoginDTO invalidLogin = new LoginDTO("nonexistantuser", adminLoginDto.getPassword());
-
-    given()
-        .body(invalidLogin)
-        .post(getApiRoot() + "/auth/login")
-        .then()
-        .log()
-        .all()
-        .statusCode(Response.Status.UNAUTHORIZED.getStatusCode())
-        .body("message", equalTo(EXCEPTION_AUTH_BAD_CREDENTIALS));
-  }
-
-
+  // todo test użycia jednego etagu z inną encją
+  // pomyśleć jakie różne akcje mogą się przeplatać
+  // sprawdzić czy przechodzą testy na remocie
 
   @Test
-  @Order(14)
-  public void cannotLogin_when_registered_but_account_not_confirmed() {
-    patientJwt =
-        given()
-            .body(patientLoginDto)
-            .post(getApiRoot() + "/auth/login")
-            .then()
-            .log()
-            .all()
-            .statusCode(Response.Status.UNAUTHORIZED.getStatusCode())
-            .extract()
-            .response()
-            .asString();
-  }
-
-  @Test
-  @Order(35)
+  @Order(1)
   public void editAccount_correct() {
 
       var response = given()
@@ -130,85 +98,14 @@ public class AccountControllerIT extends BaseTest {
         .body("email", equalTo(editEmailDto.getEmail()), "confirmed", equalTo(true));
   }
 
-  @Test
-  @Order(36)
-  public void password_incorrect_block_account() {
-    given()
-        .body(patientLoginDto)
-        .post(getApiRoot() + "/auth/login")
-        .then()
-        .statusCode(Response.Status.OK.getStatusCode());
-    for (int i = 0; i < 3; i++) {
-      given()
-          .body(new LoginDTO(patientLoginDto.getLogin(), "P@ssw0rd"))
-          .post(getApiRoot() + "/auth/login")
-          .then()
-          .statusCode(Response.Status.UNAUTHORIZED.getStatusCode());
-    }
-    given()
-        .body(new LoginDTO(patientLoginDto.getLogin(), "P@ssw0rd"))
-        .post(getApiRoot() + "/auth/login")
-        .then()
-        .log()
-        .all()
-        .statusCode(Response.Status.FORBIDDEN.getStatusCode())
-        .body("message", equalTo(EXCEPTION_AUTH_BLOCKED_ACCOUNT));
-  }
 
   @Test
-  @Order(41)
-  public void readAccounts_returns_something() {
-    given()
-        .header("authorization", "Bearer " + adminJwt)
-        .get(getApiRoot() + "/account/")
-        .then()
-        .statusCode(Response.Status.OK.getStatusCode())
-        .body("$", hasSize(greaterThan(3)))
-        .body("$", hasItem(hasKey("login")))
-        .body("$", hasItem(hasEntry("login", adminLoginDto.getLogin())));
-  }
-
-  @Test
-  @Order(42)
-  public void editAccount() {
-    given()
-        .header("authorization", "Bearer " + adminJwt)
-        .body(new EditAccountDTO("kitty@meow.com"))
-        .put(getApiRoot() + "/account")
-        .then()
-        .log()
-        .all()
-        .statusCode(Response.Status.OK.getStatusCode())
-        .body("email", equalTo("kitty@meow.com"));
-  }
-
-  @Test
-  @Order(43)
-  public void changeUserPassword() {
-    given()
-        .header("authorization", "Bearer " + adminJwt)
-        .body(new UpdateOtherUserPasswordDTO("testAdm1n!23"))
-        .put(getApiRoot() + "/account/1/changeUserPassword")
-        .then()
-        .log()
-        .all()
-        .statusCode(Response.Status.OK.getStatusCode());
-    given()
-        .body(changedLoginDto)
-        .post(getApiRoot() + "/auth/login")
-        .then()
-        .log()
-        .all()
-        .statusCode(Response.Status.OK.getStatusCode());
-  }
-
-  @Test
-  @Order(44)
+  @Order(2)
   void grantAdminAccessLevelToChemist() {
 
     String chemistJwtLoginBeforeGrant =
         given()
-            .body(grantAdminToChemistLogin)
+            .body(chemistLoginDto)
             .post(getApiRoot() + "/auth/login")
             .then()
             .statusCode(Response.Status.OK.getStatusCode())
@@ -235,7 +132,7 @@ public class AccountControllerIT extends BaseTest {
 
     String chemistJwtAfterGrant =
         given()
-            .body(grantAdminToChemistLogin)
+            .body(chemistLoginDto)
             .post(getApiRoot() + "/auth/login")
             .then()
             .statusCode(Response.Status.OK.getStatusCode())
@@ -255,12 +152,12 @@ public class AccountControllerIT extends BaseTest {
   }
 
   @Test
-  @Order(45)
+  @Order(3)
   void revokeAdminAccessLevel() {
 
     String chemistJwtLoginBeforeRevokeGrant =
         given()
-            .body(grantAdminToChemistLogin)
+            .body(chemistLoginDto)
             .post(getApiRoot() + "/auth/login")
             .then()
             .statusCode(Response.Status.OK.getStatusCode())
@@ -287,7 +184,7 @@ public class AccountControllerIT extends BaseTest {
 
     String chemistJwtAfterRemovingGrant =
         given()
-            .body(grantAdminToChemistLogin)
+            .body(chemistLoginDto)
             .post(getApiRoot() + "/auth/login")
             .then()
             .statusCode(Response.Status.OK.getStatusCode())
@@ -375,6 +272,174 @@ public class AccountControllerIT extends BaseTest {
               .header("If-Match", etag)
               .body(changePasswordDTO)
               .put(getApiRoot() + "/account/change-password")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.OK.getStatusCode());
+      adminLoginDto.setPassword(changePasswordDTO.getNewPassword());
+    }
+  }
+
+  @Nested
+  @Order(2)
+  @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+  class ChangeUserPassword {
+    private UpdateOtherUserPasswordDTO updateOtherUserPasswordDTO;
+    private String etag;
+
+    @BeforeEach
+    public void init() {
+      var response = given()
+              .header("authorization", "Bearer " + adminJwt)
+              .get(getApiRoot() + "/account/2")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.OK.getStatusCode())
+              .extract()
+              .response();
+      etag = response.getHeader("ETag").replace("\"", "");
+      Long version = response.getBody().jsonPath().getLong("version");
+      updateOtherUserPasswordDTO = UpdateOtherUserPasswordDTO.builder()
+              .login(adminLoginDto.getLogin())
+              .version(version)
+              .password("testChemist!23")
+              .build();
+
+    }
+
+    @Test
+    @Order(1)
+    public void changeUserPassword_correct() {
+      given()
+              .header("authorization", "Bearer " + adminJwt)
+              .header("If-Match", etag)
+              .body(updateOtherUserPasswordDTO)
+              .put(getApiRoot() + "/account/2/change-user-password")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.OK.getStatusCode());
+
+      given()
+              .body(chemistLoginDto)
+              .post(getApiRoot() + "/auth/login")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.UNAUTHORIZED.getStatusCode())
+              .body("message", equalTo(EXCEPTION_AUTH_BAD_CREDENTIALS));
+
+      chemistLoginDto.setPassword(updateOtherUserPasswordDTO.getPassword());
+      given()
+              .body(chemistLoginDto)
+              .post(getApiRoot() + "/auth/login")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.OK.getStatusCode());
+    }
+
+    @Test
+    @Order(2)
+    public void changeUserPassword_noSuchUser() {
+      given()
+              .header("authorization", "Bearer " + adminJwt)
+              .header("If-Match", etag)
+              .body(updateOtherUserPasswordDTO)
+              .put(getApiRoot() + "/account/1000/change-user-password")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.NOT_FOUND.getStatusCode())
+              .body("message", equalTo(EXCEPTION_ENTITY_NOT_FOUND));
+    }
+
+    private static ChangePasswordDTO changePasswordDTO;
+    private static String ownEtag;
+
+    private static String chemistJwt;
+
+    private void initUserOwn() {
+      var response = given()
+              .header("authorization", "Bearer " + adminJwt)
+              .get(getApiRoot() + "/account/details")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.OK.getStatusCode())
+              .extract()
+              .response();
+      ownEtag = response.getHeader("ETag").replace("\"", "");
+      Long version = response.getBody().jsonPath().getLong("version");
+      changePasswordDTO = ChangePasswordDTO.builder()
+              .login(chemistLoginDto.getLogin())
+              .version(version)
+              .newPassword("31827931Aaa1@!")
+              .oldPassword(chemistLoginDto.getPassword())
+              .build();
+
+      chemistJwt = given()
+              .body(chemistLoginDto)
+              .post(getApiRoot() + "/auth/login")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.OK.getStatusCode())
+              .extract().jsonPath().getString("jwtToken");
+    }
+
+    @Test
+    @Order(3)
+    public void changeUserPassword_changeOwnPassword_conflict() {
+      initUserOwn();
+      String newPassword = "18237967183BBbb@!";
+      updateOtherUserPasswordDTO.setPassword(newPassword);
+
+      given()
+              .header("authorization", "Bearer " + adminJwt)
+              .header("If-Match", etag)
+              .body(updateOtherUserPasswordDTO)
+              .put(getApiRoot() + "/account/2/change-user-password")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.OK.getStatusCode());
+
+      given()
+              .header("authorization", "Bearer " + chemistJwt)
+              .header("If-Match", ownEtag)
+              .body(changePasswordDTO)
+              .put(getApiRoot() + "/account/change-password")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.UNAUTHORIZED.getStatusCode());
+      chemistLoginDto.setPassword(newPassword);
+    }
+
+    @Test
+    @Order(4)
+    public void changeOwnPassword_changeUserPassword_conflict() {
+      initUserOwn();
+      String newPassword = "14697231Cc@!";
+      updateOtherUserPasswordDTO.setPassword(newPassword);
+
+      given()
+              .header("authorization", "Bearer " + chemistJwt)
+              .header("If-Match", ownEtag)
+              .body(changePasswordDTO)
+              .put(getApiRoot() + "/account/change-password")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.OK.getStatusCode());
+
+      given()
+              .header("authorization", "Bearer " + adminJwt)
+              .header("If-Match", etag)
+              .body(updateOtherUserPasswordDTO)
+              .put(getApiRoot() + "/account/2/change-user-password")
               .then()
               .log()
               .all()
@@ -917,6 +982,19 @@ public class AccountControllerIT extends BaseTest {
               .statusCode(Response.Status.NOT_FOUND.getStatusCode())
               .body("message", equalTo(EXCEPTION_ENTITY_NOT_FOUND));
     }
+
+    @Test
+    @Order(7)
+    public void readAccounts_correct() {
+      given()
+              .header("authorization", "Bearer " + adminJwt)
+              .get(getApiRoot() + "/account/")
+              .then()
+              .statusCode(Response.Status.OK.getStatusCode())
+              .body("$", hasSize(equalTo(3)))
+              .body("$", hasItem(hasKey("login")))
+              .body("$", hasItem(hasEntry("login", adminLoginDto.getLogin())));
+    }
   }
 
   @Nested
@@ -1229,6 +1307,98 @@ public class AccountControllerIT extends BaseTest {
               .log()
               .all()
               .statusCode(Response.Status.BAD_REQUEST.getStatusCode());
+    }
+  }
+
+  @Nested
+  @Order(11)
+  @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+  class Login {
+    @Test
+    @Order(1)
+    public void login_invalidLogin() {
+      LoginDTO invalidLogin = new LoginDTO("nonexistantuser", adminLoginDto.getPassword());
+
+      given()
+              .body(invalidLogin)
+              .post(getApiRoot() + "/auth/login")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.UNAUTHORIZED.getStatusCode())
+              .body("message", equalTo(EXCEPTION_AUTH_BAD_CREDENTIALS));
+    }
+
+    @Test
+    @Order(2)
+    public void login_invalidPassword() {
+      LoginDTO invalidPassword = new LoginDTO(adminLoginDto.getLogin(), "P1!ssword");
+
+      given()
+              .body(invalidPassword)
+              .post(getApiRoot() + "/auth/login")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.UNAUTHORIZED.getStatusCode())
+              .body("message", equalTo(EXCEPTION_AUTH_BAD_CREDENTIALS));
+    }
+
+    @Test
+    @Order(3)
+    public void login_registeredButNotConfirmed() { //todo powinno być coś innego niż bad credentials
+      given()
+            .body(patientLoginDto)
+            .post(getApiRoot() + "/auth/login")
+            .then()
+            .log()
+            .all()
+            .statusCode(Response.Status.UNAUTHORIZED.getStatusCode())
+            .body("message", equalTo(EXCEPTION_AUTH_BAD_CREDENTIALS));
+    }
+
+    @Test
+    @Order(4)
+    public void login_correct() {
+      given()
+              .body(chemistLoginDto)
+              .post(getApiRoot() + "/auth/login")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.OK.getStatusCode())
+              .body("jwtToken", not(empty()));
+    }
+
+    @Test
+    @Order(5)
+    public void login_passwordIncorrectBlockAccount() {
+      // reset counter
+      given()
+              .body(adminLoginDto)
+              .post(getApiRoot() + "/auth/login")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.OK.getStatusCode())
+              .body("jwtToken", not(empty()));
+
+      for (int i = 0; i < 3; i++) {
+        given()
+                .body(new LoginDTO(adminLoginDto.getLogin(), "P@ssw0rd"))
+                .post(getApiRoot() + "/auth/login")
+                .then()
+                .statusCode(Response.Status.UNAUTHORIZED.getStatusCode());
+      }
+      // poprawne dane logowania
+      given()
+              .body(adminLoginDto)
+              .post(getApiRoot() + "/auth/login")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.FORBIDDEN.getStatusCode())
+              .body("message", equalTo(EXCEPTION_AUTH_BLOCKED_ACCOUNT));
     }
   }
 }

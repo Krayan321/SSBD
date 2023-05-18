@@ -14,9 +14,8 @@ import pl.lodz.p.it.ssbd2023.ssbd01.dto.register.RegisterPatientDTO;
 public class dataForTests {
 
   public static LoginDTO adminLoginDto = new LoginDTO("admin123", "P@ssw0rd");
-  public static LoginDTO changedLoginDto = new LoginDTO("admin123", "testAdm1n!23");
   public static LoginDTO patientLoginDto = new LoginDTO("test11", "testP@tient123");
-  public static LoginDTO grantAdminToChemistLogin = new LoginDTO("chemist123", "P4$$w0Rd");
+  public static LoginDTO chemistLoginDto = new LoginDTO("chemist123", "P4$$w0Rd");
 
   // register
   public static RegisterPatientDTO registerPatientDto =

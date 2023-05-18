@@ -62,7 +62,7 @@ public class AccountController extends AbstractController {
   }
 
   @POST
-  @Path("/confirmEmailChange")
+  @Path("/confirm-email-change")
   public Response confirmEmailChange(@Valid VerificationTokenDto token) {
     repeatTransactionVoid(
         accountManager, () -> accountManager.confirmEmailChange(token.getToken()));
@@ -135,7 +135,7 @@ public class AccountController extends AbstractController {
   }
 
   @PUT
-  @Path("/{id}/changeUserPassword")
+  @Path("/{id}/change-user-password")
   @ETagFilterBinding
   public AccountDTO changeUserPassword(
       @HeaderParam("If-Match") @NotEmpty String etag,
