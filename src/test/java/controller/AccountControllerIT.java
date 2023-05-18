@@ -19,6 +19,7 @@ import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccount.ChangePasswordDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccount.EditAccountDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.auth.LoginDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccount.UpdateOtherUserPasswordDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccount.grant.GrantAdminDataDTO;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestClassOrder(ClassOrderer.OrderAnnotation.class)
@@ -59,150 +60,6 @@ public class AccountControllerIT extends BaseTest {
   // todo test użycia jednego etagu z inną encją
   // pomyśleć jakie różne akcje mogą się przeplatać
   // sprawdzić czy przechodzą testy na remocie
-
-  @Test
-  @Order(1)
-  public void editAccount_correct() {
-
-      var response = given()
-              .header("authorization", "Bearer " + adminJwt)
-              .get(getApiRoot() + "/account/3/details")
-              .then()
-              .log()
-              .all()
-              .statusCode(Response.Status.OK.getStatusCode())
-              .extract()
-              .response();
-
-      String etag = response.getHeader("ETag");
-      String email = response.getBody().jsonPath().getString("email");
-
-      EditAccountDTO editAccountDTO = new EditAccountDTO(email);
-
-    given()
-        .header("authorization", "Bearer " + adminJwt).header("If-Match", etag)
-        .body(editAccountDTO)
-        .put(getApiRoot() + "/account/3")
-        .then()
-        .log()
-        .all()
-        .statusCode(Response.Status.OK.getStatusCode());
-
-    given()
-        .header("authorization", "Bearer " + adminJwt)
-        .get(getApiRoot() + "/account/3")
-        .then()
-        .log()
-        .all()
-        .statusCode(Response.Status.OK.getStatusCode())
-        .body("email", equalTo(editEmailDto.getEmail()), "confirmed", equalTo(true));
-  }
-
-
-  @Test
-  @Order(2)
-  void grantAdminAccessLevelToChemist() {
-
-    String chemistJwtLoginBeforeGrant =
-        given()
-            .body(chemistLoginDto)
-            .post(getApiRoot() + "/auth/login")
-            .then()
-            .statusCode(Response.Status.OK.getStatusCode())
-            .extract()
-            .response()
-            .asString();
-
-    String jwtFromJsonLoginBeforeGrant =
-        chemistJwtLoginBeforeGrant.substring(
-            chemistJwtLoginBeforeGrant.indexOf(":") + 2, chemistJwtLoginBeforeGrant.length() - 2);
-
-    given()
-        .header("authorization", "Bearer " + jwtFromJsonLoginBeforeGrant)
-        .get(getApiRoot() + "/account")
-        .then()
-        .statusCode(Response.Status.FORBIDDEN.getStatusCode());
-
-    given()
-        .header("authorization", "Bearer " + adminJwt)
-        .body(grantAdminDataDTO)
-        .post(getApiRoot() + "/account/2/admin")
-        .then()
-        .statusCode(Response.Status.OK.getStatusCode());
-
-    String chemistJwtAfterGrant =
-        given()
-            .body(chemistLoginDto)
-            .post(getApiRoot() + "/auth/login")
-            .then()
-            .statusCode(Response.Status.OK.getStatusCode())
-            .extract()
-            .response()
-            .asString();
-
-    String jwtFromJsonAfterGrant =
-        chemistJwtAfterGrant.substring(
-            chemistJwtAfterGrant.indexOf(":") + 2, chemistJwtAfterGrant.length() - 2);
-
-    given()
-        .header("authorization", "Bearer " + jwtFromJsonAfterGrant)
-        .get(getApiRoot() + "/account")
-        .then()
-        .statusCode(Response.Status.OK.getStatusCode());
-  }
-
-  @Test
-  @Order(3)
-  void revokeAdminAccessLevel() {
-
-    String chemistJwtLoginBeforeRevokeGrant =
-        given()
-            .body(chemistLoginDto)
-            .post(getApiRoot() + "/auth/login")
-            .then()
-            .statusCode(Response.Status.OK.getStatusCode())
-            .extract()
-            .response()
-            .asString();
-
-    String chemistJwtFromJsonLoginBeforeRevokeGrant =
-        chemistJwtLoginBeforeRevokeGrant.substring(
-            chemistJwtLoginBeforeRevokeGrant.indexOf(":") + 2,
-            chemistJwtLoginBeforeRevokeGrant.length() - 2);
-
-    given()
-        .header("authorization", "Bearer " + chemistJwtFromJsonLoginBeforeRevokeGrant)
-        .get(getApiRoot() + "/account")
-        .then()
-        .statusCode(Response.Status.OK.getStatusCode());
-
-    given()
-        .header("authorization", "Bearer " + adminJwt)
-        .put(getApiRoot() + "/account/2/admin/block")
-        .then()
-        .statusCode(Response.Status.NO_CONTENT.getStatusCode());
-
-    String chemistJwtAfterRemovingGrant =
-        given()
-            .body(chemistLoginDto)
-            .post(getApiRoot() + "/auth/login")
-            .then()
-            .statusCode(Response.Status.OK.getStatusCode())
-            .extract()
-            .response()
-            .asString();
-
-    String jwtFromJsonAfterGrantRemoving =
-        chemistJwtAfterRemovingGrant.substring(
-            chemistJwtAfterRemovingGrant.indexOf(":") + 2,
-            chemistJwtAfterRemovingGrant.length() - 2);
-
-    given()
-        .header("authorization", "Bearer " + jwtFromJsonAfterGrantRemoving)
-        .get(getApiRoot() + "/account")
-        .then()
-        .statusCode(Response.Status.FORBIDDEN.getStatusCode());
-  }
 
   @Nested
   @Order(1)
@@ -416,6 +273,15 @@ public class AccountControllerIT extends BaseTest {
               .all()
               .statusCode(Response.Status.UNAUTHORIZED.getStatusCode());
       chemistLoginDto.setPassword(newPassword);
+
+      given()
+              .body(chemistLoginDto)
+              .post(getApiRoot() + "/auth/login")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.OK.getStatusCode())
+              .body("jwtToken", not(empty()));
     }
 
     @Test
@@ -1399,6 +1265,204 @@ public class AccountControllerIT extends BaseTest {
               .all()
               .statusCode(Response.Status.FORBIDDEN.getStatusCode())
               .body("message", equalTo(EXCEPTION_AUTH_BLOCKED_ACCOUNT));
+    }
+  }
+
+  @Nested
+  @Order(12)
+  @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+  class EditUserAccount {
+
+    private String etag;
+    private EditAccountDTO editAccountDTO;
+
+    @BeforeEach
+    public void init() {
+      var response = given()
+              .header("authorization", "Bearer " + adminJwt)
+              .get(getApiRoot() + "/account/3")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.OK.getStatusCode())
+              .extract()
+              .response();
+      etag = response.getHeader("ETag").replace("\"", "");
+      Long version = response.getBody().jsonPath().getLong("version");
+      editAccountDTO = EditAccountDTO.builder()
+              .version(version)
+              .login(patientLoginDto.getLogin())
+              .email("patient1@mail.pl")
+              .build();
+    }
+
+    @Test
+    @Order(1)
+    public void editAccount_correct() {
+      given()
+              .header("authorization", "Bearer " + adminJwt)
+              .get(getApiRoot() + "/account/3")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.OK.getStatusCode())
+              .body("confirmed", equalTo(false));
+
+      given()
+              .header("authorization", "Bearer " + adminJwt).header("If-Match", etag)
+              .body(editAccountDTO)
+              .put(getApiRoot() + "/account/3")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.OK.getStatusCode())
+              .body("email", equalTo(editAccountDTO.getEmail()), "confirmed", equalTo(true));
+    }
+
+    // todo more tests
+  }
+
+  // todo Edit self account
+
+  @Nested
+  @Order(13)
+  @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+  class MultipleAccessLevels {
+
+    private String etag;
+    private String chemistJwt;
+    private EditAccountDTO editAccountDTO;
+
+    @BeforeEach
+    public void init() {
+      var response = given()
+              .header("authorization", "Bearer " + adminJwt)
+              .get(getApiRoot() + "/account/3")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.OK.getStatusCode())
+              .extract()
+              .response();
+      etag = response.getHeader("ETag").replace("\"", "");
+      Long version = response.getBody().jsonPath().getLong("version");
+      grantAdminDataDTO = GrantAdminDataDTO.builder()
+              .version(version)
+              .login(chemistLoginDto.getLogin())
+              .workPhoneNumber("777888999")
+              .build();
+      chemistJwt = given()
+              .body(chemistLoginDto)
+              .post(getApiRoot() + "/auth/login")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.OK.getStatusCode())
+              .extract().jsonPath().getString("jwtToken");
+    }
+
+    @Test
+    @Order(2)
+    void grantAdminAccessLevelToChemist() {
+
+      chemistJwt = given()
+                      .body(chemistLoginDto)
+                      .post(getApiRoot() + "/auth/login")
+                      .then()
+                      .statusCode(Response.Status.OK.getStatusCode())
+                      .extract()
+                      .response().jsonPath().getString("jwtToken");
+
+      // access denied
+      given()
+              .header("authorization", "Bearer " + chemistJwt)
+              .get(getApiRoot() + "/account")
+              .then()
+              .statusCode(Response.Status.FORBIDDEN.getStatusCode());
+
+      // grant admin
+      given()
+              .header("authorization", "Bearer " + adminJwt)
+              .header("If-Match", etag)
+              .body(grantAdminDataDTO)
+              .post(getApiRoot() + "/account/2/admin")
+              .then()
+              .statusCode(Response.Status.OK.getStatusCode());
+
+      // denied for old jwt
+      given()
+              .header("authorization", "Bearer " + chemistJwt)
+              .get(getApiRoot() + "/account")
+              .then()
+              .statusCode(Response.Status.FORBIDDEN.getStatusCode());
+
+      chemistJwt = given()
+              .body(chemistLoginDto)
+              .post(getApiRoot() + "/auth/login")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.OK.getStatusCode())
+              .extract().jsonPath().getString("jwtToken");
+
+      given()
+              .header("authorization", "Bearer " + chemistJwt)
+              .get(getApiRoot() + "/account")
+              .then()
+              .statusCode(Response.Status.OK.getStatusCode());
+    }
+
+    @Test
+    @Order(3)
+    void revokeAdminAccessLevel() {
+
+      String chemistJwtLoginBeforeRevokeGrant =
+              given()
+                      .body(chemistLoginDto)
+                      .post(getApiRoot() + "/auth/login")
+                      .then()
+                      .statusCode(Response.Status.OK.getStatusCode())
+                      .extract()
+                      .response()
+                      .asString();
+
+      String chemistJwtFromJsonLoginBeforeRevokeGrant =
+              chemistJwtLoginBeforeRevokeGrant.substring(
+                      chemistJwtLoginBeforeRevokeGrant.indexOf(":") + 2,
+                      chemistJwtLoginBeforeRevokeGrant.length() - 2);
+
+      given()
+              .header("authorization", "Bearer " + chemistJwtFromJsonLoginBeforeRevokeGrant)
+              .get(getApiRoot() + "/account")
+              .then()
+              .statusCode(Response.Status.OK.getStatusCode());
+
+      given()
+              .header("authorization", "Bearer " + adminJwt)
+              .put(getApiRoot() + "/account/2/admin/block")
+              .then()
+              .statusCode(Response.Status.NO_CONTENT.getStatusCode());
+
+      String chemistJwtAfterRemovingGrant =
+              given()
+                      .body(chemistLoginDto)
+                      .post(getApiRoot() + "/auth/login")
+                      .then()
+                      .statusCode(Response.Status.OK.getStatusCode())
+                      .extract()
+                      .response()
+                      .asString();
+
+      String jwtFromJsonAfterGrantRemoving =
+              chemistJwtAfterRemovingGrant.substring(
+                      chemistJwtAfterRemovingGrant.indexOf(":") + 2,
+                      chemistJwtAfterRemovingGrant.length() - 2);
+
+      given()
+              .header("authorization", "Bearer " + jwtFromJsonAfterGrantRemoving)
+              .get(getApiRoot() + "/account")
+              .then()
+              .statusCode(Response.Status.FORBIDDEN.getStatusCode());
     }
   }
 }
