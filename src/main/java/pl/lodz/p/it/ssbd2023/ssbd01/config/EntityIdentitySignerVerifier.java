@@ -5,6 +5,7 @@ import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
 import jakarta.inject.Inject;
 import jakarta.interceptor.Interceptors;
+import lombok.extern.java.Log;
 import org.eclipse.microprofile.config.ConfigProvider;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import pl.lodz.p.it.ssbd2023.ssbd01.common.SignableEntity;
@@ -19,6 +20,7 @@ import java.text.ParseException;
 import java.util.Properties;
 
 
+@Log
 public class EntityIdentitySignerVerifier {
 
   @Inject
@@ -47,10 +49,12 @@ public class EntityIdentitySignerVerifier {
 
   public boolean validateEntitySignature(String tag) {
     try {
-      JWSObject jwsObject = JWSObject.parse(tag); //tutaj wywala blad
+      JWSObject jwsObject = JWSObject.parse(tag);
+      log.severe("secret " + ETAG_SECRET);
       JWSVerifier verifier = new MACVerifier(ETAG_SECRET);
       return jwsObject.verify(verifier);
     } catch (ParseException | JOSEException e) {
+      log.severe("exception " + e.getMessage());
       e.printStackTrace();
       return false;
     }
@@ -60,6 +64,7 @@ public class EntityIdentitySignerVerifier {
     try {
       final String header = JWSObject.parse(tag).getPayload().toString();
       final String signableEntityPayload = entity.getSignablePayload();
+      log.severe(String.format("header: %s, payload: %s", header, signableEntityPayload));
       return validateEntitySignature(tag) && signableEntityPayload.equals(header);
     } catch (ParseException e) {
       e.printStackTrace();

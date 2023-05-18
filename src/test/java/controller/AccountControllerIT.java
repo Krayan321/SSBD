@@ -74,7 +74,7 @@ public class AccountControllerIT extends BaseTest {
               .statusCode(Response.Status.OK.getStatusCode())
               .extract()
               .response();
-      etag = response.getHeader("ETag");
+      etag = response.getHeader("ETag").replace("\"", "");
       Long version = response.getBody().jsonPath().getLong("version");
       changePasswordDTO = ChangePasswordDTO.builder()
               .login(adminLoginDto.getLogin())
@@ -110,7 +110,8 @@ public class AccountControllerIT extends BaseTest {
               .then()
               .log()
               .all()
-              .statusCode(Response.Status.UNAUTHORIZED.getStatusCode());
+              .statusCode(Response.Status.BAD_REQUEST.getStatusCode())
+              .body("message", equalTo(EXCEPTION_PASSWORD_NOT_CHANGED));
     }
 
     @Test
@@ -125,7 +126,8 @@ public class AccountControllerIT extends BaseTest {
               .then()
               .log()
               .all()
-              .statusCode(Response.Status.UNAUTHORIZED.getStatusCode());
+              .statusCode(Response.Status.UNAUTHORIZED.getStatusCode())
+              .body("message", equalTo(EXCEPTION_AUTH_BAD_CREDENTIALS));
     }
   }
 

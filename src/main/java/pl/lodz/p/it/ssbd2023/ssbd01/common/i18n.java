@@ -9,6 +9,7 @@ public class i18n {
   public static final String EXCEPTION_PERSISTENCE = "exception.persistence";
   public static final String EXCEPTION_ACCESS_DENIED = "exception.access-denied";
   public static final String EXCEPTION_UNAUTHORISED = "exception.unauthorised";
+  public static final String EXCEPTION_PASSWORD_NOT_CHANGED = "exception.password.not-changed";
   public static final String EXCEPTION_NOT_FOUND = "exception.not-found";
   public static final String EXCEPTION_METHOD_NOT_ALLOWED = "exception.method-not-allowed";
   public static final String EXCEPTION_ETAG_CREATION = "exception.etag.creation";

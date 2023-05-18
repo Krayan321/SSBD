@@ -271,7 +271,7 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
       throw AuthApplicationException.createInvalidLoginOrPasswordException();
     }
     if (HashAlgorithmImpl.check(newPassword, account.getPassword())) {
-      throw ApplicationException.createUnauthorisedException();
+      throw ApplicationException.createPasswordNotChangedException();
     }
     account.setPassword(HashAlgorithmImpl.generate(newPassword));
     account.setModifiedBy(getCurrentUserLogin());

@@ -41,6 +41,10 @@ public class ApplicationException extends WebApplicationException {
     return new ApplicationException(UNAUTHORIZED, EXCEPTION_UNAUTHORISED);
   }
 
+  public static ApplicationException createPasswordNotChangedException() {
+    return new ApplicationException(BAD_REQUEST, EXCEPTION_PASSWORD_NOT_CHANGED);
+  }
+
   public static ApplicationException createNotFoundException() {
     return new ApplicationException(NOT_FOUND, EXCEPTION_NOT_FOUND);
   }
