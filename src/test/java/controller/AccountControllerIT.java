@@ -298,8 +298,8 @@ public class AccountControllerIT extends BaseTest {
               .then()
               .log()
               .all()
-              .statusCode(Response.Status.UNAUTHORIZED.getStatusCode())
-              .body("message", equalTo(EXCEPTION_AUTH_BAD_CREDENTIALS));
+              .statusCode(Response.Status.CONFLICT.getStatusCode())
+              .body("message", equalTo(EXCEPTION_OPTIMISTIC_LOCK));
       chemistLoginDto.setPassword(newPassword);
 
       given()
@@ -1387,7 +1387,37 @@ public class AccountControllerIT extends BaseTest {
               .body("email", equalTo(editAccountDTO.getEmail()), "confirmed", equalTo(true));
     }
 
-    // todo more tests
+    @Test
+    @Order(2)
+    public void editAccount_mismatchedPayload() {
+      given()
+              .header("authorization", "Bearer " + adminJwt)
+              .header("If-Match", etag)
+              .body(editAccountDTO)
+              .put(getApiRoot() + "/account/2")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.BAD_REQUEST.getStatusCode())
+              .body("message", equalTo(EXCEPTION_MISMATCHED_PAYLOAD));
+    }
+
+    @Test
+    @Order(3)
+    public void editAccount_noSuchAccount() {
+      given()
+              .header("authorization", "Bearer " + adminJwt)
+              .header("If-Match", etag)
+              .body(editAccountDTO)
+              .put(getApiRoot() + "/account/1000")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.NOT_FOUND.getStatusCode())
+              .body("message", equalTo(EXCEPTION_ENTITY_NOT_FOUND));
+    }
+
+    // todo więcej testów z edit self (podobnie jak w change user password)
   }
 
   // todo Edit self account

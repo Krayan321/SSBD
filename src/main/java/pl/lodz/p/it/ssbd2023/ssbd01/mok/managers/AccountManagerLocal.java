@@ -53,11 +53,11 @@ public interface AccountManagerLocal extends CommonManagerLocalInterface {
 
   Account updateUserPassword(Long id, String newPassword, String login, Long version);
 
-  Account updateOwnPassword(String oldPassword, String newPassword, String login);
+  Account updateOwnPassword(String oldPassword, String newPassword, String login, Long version);
 
   Account updateOwnEmail(String email, String login, Long version);
 
-  Account updateUserEmail(Long id, String login, String email);
+  Account updateUserEmail(Long id, String email, String login, Long version);
 
   void purgeUnactivatedAccounts();
 

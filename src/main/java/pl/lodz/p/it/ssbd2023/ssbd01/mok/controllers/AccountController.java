@@ -158,11 +158,10 @@ public class AccountController extends AbstractController {
       @HeaderParam("If-Match") @NotEmpty String etag,
       @Valid ChangePasswordDTO changePasswordDTO) {
     entityIdentitySignerVerifier.checkEtagIntegrity(changePasswordDTO, etag);
-    String oldPassword = changePasswordDTO.getOldPassword();
-    String newPassword = changePasswordDTO.getNewPassword();
     repeatTransaction(accountManager,
         () -> accountManager.updateOwnPassword(
-                oldPassword, newPassword, changePasswordDTO.getLogin()));
+                changePasswordDTO.getOldPassword(), changePasswordDTO.getNewPassword(),
+                changePasswordDTO.getLogin(), changePasswordDTO.getVersion()));
     return Response.status(Response.Status.OK).build();
   }
 
@@ -189,7 +188,7 @@ public class AccountController extends AbstractController {
     entityIdentitySignerVerifier.checkEtagIntegrity(editAccountDTO, etag);
     Account account =
         repeatTransaction(accountManager, () -> accountManager.updateUserEmail(
-                id, editAccountDTO.getLogin(), editAccountDTO.getEmail()));
+                id, editAccountDTO.getEmail(), editAccountDTO.getLogin(), editAccountDTO.getVersion()));
     return AccountConverter.mapAccountToAccountDto(account);
   }
 

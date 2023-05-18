@@ -285,11 +285,14 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
 
   @Override
   @RolesAllowed("updateOwnPassword")
-  public Account updateOwnPassword(String oldPassword, String newPassword, String login) {
+  public Account updateOwnPassword(String oldPassword, String newPassword, String login, Long version) {
     Account account = getCurrentUser();
     log.severe(String.format("current %s, payload: %s", account.getLogin(), login));
     if(!account.getLogin().equals(login)) {
       throw ApplicationException.createMismatchedPayloadException();
+    }
+    if(!account.getVersion().equals(version)) {
+      throw ApplicationException.createOptimisticLockException();
     }
     if (!HashAlgorithmImpl.check(oldPassword, account.getPassword())) {
       throw AuthApplicationException.createInvalidLoginOrPasswordException();
@@ -322,10 +325,13 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
 
   @Override
   @RolesAllowed("updateUserEmail")
-  public Account updateUserEmail(Long id, String login, String email) {
+  public Account updateUserEmail(Long id, String email, String login, Long version) {
     Account account = getAccount(id);
     if(!account.getLogin().equals(login)) {
       throw ApplicationException.createMismatchedPayloadException();
+    }
+    if(!account.getVersion().equals(version)) {
+      throw ApplicationException.createOptimisticLockException();
     }
     account.setEmail(email);
     account.setConfirmed(true);
