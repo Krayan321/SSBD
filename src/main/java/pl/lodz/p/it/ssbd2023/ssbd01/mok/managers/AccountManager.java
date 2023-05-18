@@ -110,8 +110,15 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
 
   @Override
   @RolesAllowed("grantAccessLevel")
-  public Account grantAccessLevel(Long id, AccessLevel accessLevel) {
+  public Account grantAccessLevel(Long id, AccessLevel accessLevel, String login, Long version) {
     Account account = getAccount(id);
+    if(!account.getLogin().equals(login)) {
+      throw ApplicationException.createMismatchedPayloadException();
+    }
+    log.severe(String.format("account: %d, sent: %d", account.getVersion(), version));
+    if(!account.getVersion().equals(version)) {
+      throw ApplicationException.createOptimisticLockException();
+    }
     accessLevel.setAccount(account);
     accessLevel.setCreatedBy(getCurrentUserLogin());
     account.getAccessLevels().add(accessLevel);
@@ -262,8 +269,14 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
 
   @Override
   @RolesAllowed("updateUserPassword")
-  public Account updateUserPassword(Long id, String newPassword) {
+  public Account updateUserPassword(Long id, String newPassword, String login, Long version) {
     Account account = getAccount(id);
+    if(!account.getLogin().equals(login)) {
+      throw ApplicationException.createMismatchedPayloadException();
+    }
+    if(!account.getVersion().equals(version)) {
+      throw ApplicationException.createOptimisticLockException();
+    }
     account.setPassword(HashAlgorithmImpl.generate(newPassword));
     account.setModifiedBy(getCurrentUserLogin());
     accountFacade.edit(account);
@@ -272,8 +285,12 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
 
   @Override
   @RolesAllowed("updateOwnPassword")
-  public Account updateOwnPassword(Long id, String oldPassword, String newPassword) {
-    Account account = getAccount(id);
+  public Account updateOwnPassword(String oldPassword, String newPassword, String login) {
+    Account account = getCurrentUser();
+    log.severe(String.format("current %s, payload: %s", account.getLogin(), login));
+    if(!account.getLogin().equals(login)) {
+      throw ApplicationException.createMismatchedPayloadException();
+    }
     if (!HashAlgorithmImpl.check(oldPassword, account.getPassword())) {
       throw AuthApplicationException.createInvalidLoginOrPasswordException();
     }
@@ -288,8 +305,14 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
 
   @Override
   @RolesAllowed("updateOwnEmail")
-  public Account updateOwnEmail(String email) {
+  public Account updateOwnEmail(String email, String login, Long version) {
     Account account = getCurrentUser();
+    if(!account.getLogin().equals(login)) {
+      throw ApplicationException.createMismatchedPayloadException();
+    }
+    if(!account.getVersion().equals(version)) {
+      throw ApplicationException.createOptimisticLockException();
+    }
     account.setEmail(email);
     account.setModifiedBy(getCurrentUserLogin());
     accountFacade.edit(account);
@@ -299,8 +322,11 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
 
   @Override
   @RolesAllowed("updateUserEmail")
-  public Account updateUserEmail(Long id, String email) {
+  public Account updateUserEmail(Long id, String login, String email) {
     Account account = getAccount(id);
+    if(!account.getLogin().equals(login)) {
+      throw ApplicationException.createMismatchedPayloadException();
+    }
     account.setEmail(email);
     account.setConfirmed(true);
     account.setModifiedBy(getCurrentUserLogin());

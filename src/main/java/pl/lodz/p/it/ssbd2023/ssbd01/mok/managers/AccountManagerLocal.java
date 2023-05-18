@@ -34,7 +34,7 @@ public interface AccountManagerLocal extends CommonManagerLocalInterface {
 
   void confirmEmailChange(String token);
 
-  Account grantAccessLevel(Long id, AccessLevel accessLevel);
+  Account grantAccessLevel(Long id, AccessLevel accessLevel, String login, Long version);
   AccessLevel getAccessLevel(Long id, Role role);
 
   void deactivateAccessLevel(Long id, Role role);
@@ -51,13 +51,13 @@ public interface AccountManagerLocal extends CommonManagerLocalInterface {
 
   void setNewPassword(String token, String newPassword);
 
-  Account updateUserPassword(Long id, String newPassword);
+  Account updateUserPassword(Long id, String newPassword, String login, Long version);
 
-  Account updateOwnPassword(Long id, String oldPassword, String newPassword);
+  Account updateOwnPassword(String oldPassword, String newPassword, String login);
 
-  Account updateOwnEmail(String email);
+  Account updateOwnEmail(String email, String login, Long version);
 
-  Account updateUserEmail(Long id, String email);
+  Account updateUserEmail(Long id, String login, String email);
 
   void purgeUnactivatedAccounts();
 

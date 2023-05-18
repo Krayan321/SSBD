@@ -61,8 +61,9 @@ public class EntityIdentitySignerVerifier {
   public boolean verifyEntityIntegrity(SignableEntity entity, String tag) {
     try {
       final String header = JWSObject.parse(tag).getPayload().toString();
-      final String signableEntityPayload = entity.getSignablePayload();
-      return validateEntitySignature(tag) && signableEntityPayload.equals(header);
+      final String signablePayload = entity.getSignablePayload();
+      log.severe(String.format("sent: %s, payload: %s", header, signablePayload));
+      return validateEntitySignature(tag) && signablePayload.equals(header);
     } catch (ParseException e) {
       e.printStackTrace();
       return false;

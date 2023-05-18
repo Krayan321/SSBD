@@ -135,6 +135,33 @@ public class AccountControllerIT extends BaseTest {
               .statusCode(Response.Status.OK.getStatusCode());
       adminLoginDto.setPassword(changePasswordDTO.getNewPassword());
     }
+
+    @Test
+    @Order(4)
+    public void changeOwnPassword_payloadMismatch() {
+      String chemistJwt = given()
+              .contentType("application/json")
+              .body(chemistLoginDto)
+              .log()
+              .all()
+              .post(getApiRoot() + "/auth/login")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.OK.getStatusCode())
+              .extract().response().jsonPath().getString("jwtToken");
+
+      given()
+              .header("authorization", "Bearer " + chemistJwt)
+              .header("If-Match", etag)
+              .body(changePasswordDTO)
+              .put(getApiRoot() + "/account/change-password")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.BAD_REQUEST.getStatusCode())
+              .body("message", equalTo(EXCEPTION_MISMATCHED_PAYLOAD));
+    }
   }
 
   @Nested
@@ -146,6 +173,14 @@ public class AccountControllerIT extends BaseTest {
 
     @BeforeEach
     public void init() {
+      chemistJwt = given()
+              .body(chemistLoginDto)
+              .post(getApiRoot() + "/auth/login")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.OK.getStatusCode())
+              .extract().jsonPath().getString("jwtToken");
       var response = given()
               .header("authorization", "Bearer " + adminJwt)
               .get(getApiRoot() + "/account/2")
@@ -158,11 +193,10 @@ public class AccountControllerIT extends BaseTest {
       etag = response.getHeader("ETag").replace("\"", "");
       Long version = response.getBody().jsonPath().getLong("version");
       updateOtherUserPasswordDTO = UpdateOtherUserPasswordDTO.builder()
-              .login(adminLoginDto.getLogin())
+              .login(chemistLoginDto.getLogin())
               .version(version)
               .password("testChemist!23")
               .build();
-
     }
 
     @Test
@@ -213,13 +247,13 @@ public class AccountControllerIT extends BaseTest {
     }
 
     private static ChangePasswordDTO changePasswordDTO;
-    private static String ownEtag;
+    private static String ownChemistEtag;
 
     private static String chemistJwt;
 
     private void initUserOwn() {
       var response = given()
-              .header("authorization", "Bearer " + adminJwt)
+              .header("authorization", "Bearer " + chemistJwt)
               .get(getApiRoot() + "/account/details")
               .then()
               .log()
@@ -227,7 +261,7 @@ public class AccountControllerIT extends BaseTest {
               .statusCode(Response.Status.OK.getStatusCode())
               .extract()
               .response();
-      ownEtag = response.getHeader("ETag").replace("\"", "");
+      ownChemistEtag = response.getHeader("ETag").replace("\"", "");
       Long version = response.getBody().jsonPath().getLong("version");
       changePasswordDTO = ChangePasswordDTO.builder()
               .login(chemistLoginDto.getLogin())
@@ -236,14 +270,7 @@ public class AccountControllerIT extends BaseTest {
               .oldPassword(chemistLoginDto.getPassword())
               .build();
 
-      chemistJwt = given()
-              .body(chemistLoginDto)
-              .post(getApiRoot() + "/auth/login")
-              .then()
-              .log()
-              .all()
-              .statusCode(Response.Status.OK.getStatusCode())
-              .extract().jsonPath().getString("jwtToken");
+
     }
 
     @Test
@@ -265,13 +292,14 @@ public class AccountControllerIT extends BaseTest {
 
       given()
               .header("authorization", "Bearer " + chemistJwt)
-              .header("If-Match", ownEtag)
+              .header("If-Match", ownChemistEtag)
               .body(changePasswordDTO)
               .put(getApiRoot() + "/account/change-password")
               .then()
               .log()
               .all()
-              .statusCode(Response.Status.UNAUTHORIZED.getStatusCode());
+              .statusCode(Response.Status.UNAUTHORIZED.getStatusCode())
+              .body("message", equalTo(EXCEPTION_AUTH_BAD_CREDENTIALS));
       chemistLoginDto.setPassword(newPassword);
 
       given()
@@ -291,15 +319,18 @@ public class AccountControllerIT extends BaseTest {
       String newPassword = "14697231Cc@!";
       updateOtherUserPasswordDTO.setPassword(newPassword);
 
+      System.out.println(changePasswordDTO.toString());
+
       given()
               .header("authorization", "Bearer " + chemistJwt)
-              .header("If-Match", ownEtag)
+              .header("If-Match", ownChemistEtag)
               .body(changePasswordDTO)
               .put(getApiRoot() + "/account/change-password")
               .then()
               .log()
               .all()
               .statusCode(Response.Status.OK.getStatusCode());
+      chemistLoginDto.setPassword(changePasswordDTO.getNewPassword());
 
       given()
               .header("authorization", "Bearer " + adminJwt)
@@ -309,7 +340,24 @@ public class AccountControllerIT extends BaseTest {
               .then()
               .log()
               .all()
-              .statusCode(Response.Status.OK.getStatusCode());
+              .statusCode(Response.Status.CONFLICT.getStatusCode())
+              .body("message", equalTo(EXCEPTION_OPTIMISTIC_LOCK));
+    }
+
+    @Test
+    @Order(5)
+    public void changeUserPassword_mismatchedPayload() {
+      updateOtherUserPasswordDTO.setPassword("917SasdA!!");
+      given()
+              .header("authorization", "Bearer " + adminJwt)
+              .header("If-Match", etag)
+              .body(updateOtherUserPasswordDTO)
+              .put(getApiRoot() + "/account/3/change-user-password")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.BAD_REQUEST.getStatusCode())
+              .body("message", equalTo(EXCEPTION_MISMATCHED_PAYLOAD));
     }
   }
 
@@ -411,7 +459,6 @@ public class AccountControllerIT extends BaseTest {
   @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
   class GrantAccessLevel {
 
-    private Long version;
     private String etag;
 
     @BeforeEach
@@ -426,13 +473,14 @@ public class AccountControllerIT extends BaseTest {
               .extract()
               .response();
       etag = response.getHeader("ETag").replace("\"", "");
-      version = response.getBody().jsonPath().getLong("version");
+      Long version = response.getBody().jsonPath().getLong("version");
+      grantChemistDataDTO.setVersion(version);
+      grantAdminDataDTO.setVersion(version);
     }
 
     @Test
     @Order(1)
     public void grantChemist_correct() {
-      grantChemistDataDTO.setVersion(version);
       given()
               .header("authorization", "Bearer " + adminJwt)
               .header("If-Match", etag)
@@ -447,7 +495,6 @@ public class AccountControllerIT extends BaseTest {
     @Test
     @Order(2)
     public void grantAdmin_correct() {
-      grantAdminDataDTO.setVersion(version);
       given()
               .header("authorization", "Bearer " + adminJwt)
               .header("If-Match", etag)
@@ -462,7 +509,6 @@ public class AccountControllerIT extends BaseTest {
     @Test
     @Order(3)
     public void grantAdmin_secondGrant() {
-      grantAdminDataDTO.setVersion(version);
       given()
               .header("authorization", "Bearer " + adminJwt)
               .header("If-Match", etag)
@@ -487,14 +533,13 @@ public class AccountControllerIT extends BaseTest {
               .then()
               .log()
               .all()
-              .statusCode(Response.Status.UNAUTHORIZED.getStatusCode())
+              .statusCode(Response.Status.BAD_REQUEST.getStatusCode())
               .body("message", equalTo(EXCEPTION_ETAG_INVALID));
     }
 
     @Test
     @Order(5)
     public void grantAdmin_noEtag() {
-      grantAdminDataDTO.setVersion(version);
       given()
               .header("authorization", "Bearer " + adminJwt)
               .body(grantAdminDataDTO)
@@ -504,6 +549,20 @@ public class AccountControllerIT extends BaseTest {
               .all()
               .statusCode(Response.Status.BAD_REQUEST.getStatusCode())
               .body("message", equalTo(EXCEPTION_ETAG_EMPTY));
+    }
+
+    @Test
+    @Order(6)
+    void grantAdminAccess_etagMismatch() {
+      // use same etag to grant admin to other account
+      given()
+              .header("authorization", "Bearer " + adminJwt)
+              .header("If-Match", etag)
+              .body(grantAdminDataDTO)
+              .post(getApiRoot() + "/account/2/admin")
+              .then()
+              .statusCode(Response.Status.BAD_REQUEST.getStatusCode())
+              .body("message", equalTo(EXCEPTION_MISMATCHED_PAYLOAD));
     }
   }
 
@@ -558,7 +617,7 @@ public class AccountControllerIT extends BaseTest {
               .then()
               .log()
               .all()
-              .statusCode(Response.Status.UNAUTHORIZED.getStatusCode())
+              .statusCode(Response.Status.BAD_REQUEST.getStatusCode())
               .body("message", equalTo(EXCEPTION_ETAG_INVALID));
     }
 
@@ -646,7 +705,7 @@ public class AccountControllerIT extends BaseTest {
               .then()
               .log()
               .all()
-              .statusCode(Response.Status.UNAUTHORIZED.getStatusCode())
+              .statusCode(Response.Status.BAD_REQUEST.getStatusCode())
               .body("message", equalTo(EXCEPTION_ETAG_INVALID));
     }
 
@@ -734,7 +793,7 @@ public class AccountControllerIT extends BaseTest {
               .then()
               .log()
               .all()
-              .statusCode(Response.Status.UNAUTHORIZED.getStatusCode())
+              .statusCode(Response.Status.BAD_REQUEST.getStatusCode())
               .body("message", equalTo(EXCEPTION_ETAG_INVALID));
     }
 
@@ -1265,6 +1324,15 @@ public class AccountControllerIT extends BaseTest {
               .all()
               .statusCode(Response.Status.FORBIDDEN.getStatusCode())
               .body("message", equalTo(EXCEPTION_AUTH_BLOCKED_ACCOUNT));
+
+      // stary jwt dalej działa
+      given()
+              .header("authorization", "Bearer " + adminJwt)
+              .get(getApiRoot() + "/account/3")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.OK.getStatusCode());
     }
   }
 
@@ -1335,9 +1403,17 @@ public class AccountControllerIT extends BaseTest {
 
     @BeforeEach
     public void init() {
+      chemistJwt = given()
+              .body(chemistLoginDto)
+              .post(getApiRoot() + "/auth/login")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.OK.getStatusCode())
+              .extract().jsonPath().getString("jwtToken");
       var response = given()
               .header("authorization", "Bearer " + adminJwt)
-              .get(getApiRoot() + "/account/3")
+              .get(getApiRoot() + "/account/2")
               .then()
               .log()
               .all()
@@ -1351,28 +1427,11 @@ public class AccountControllerIT extends BaseTest {
               .login(chemistLoginDto.getLogin())
               .workPhoneNumber("777888999")
               .build();
-      chemistJwt = given()
-              .body(chemistLoginDto)
-              .post(getApiRoot() + "/auth/login")
-              .then()
-              .log()
-              .all()
-              .statusCode(Response.Status.OK.getStatusCode())
-              .extract().jsonPath().getString("jwtToken");
     }
 
     @Test
-    @Order(2)
+    @Order(1)
     void grantAdminAccessLevelToChemist() {
-
-      chemistJwt = given()
-                      .body(chemistLoginDto)
-                      .post(getApiRoot() + "/auth/login")
-                      .then()
-                      .statusCode(Response.Status.OK.getStatusCode())
-                      .extract()
-                      .response().jsonPath().getString("jwtToken");
-
       // access denied
       given()
               .header("authorization", "Bearer " + chemistJwt)
@@ -1412,54 +1471,37 @@ public class AccountControllerIT extends BaseTest {
               .statusCode(Response.Status.OK.getStatusCode());
     }
 
+
+
     @Test
     @Order(3)
     void revokeAdminAccessLevel() {
-
-      String chemistJwtLoginBeforeRevokeGrant =
-              given()
-                      .body(chemistLoginDto)
-                      .post(getApiRoot() + "/auth/login")
-                      .then()
-                      .statusCode(Response.Status.OK.getStatusCode())
-                      .extract()
-                      .response()
-                      .asString();
-
-      String chemistJwtFromJsonLoginBeforeRevokeGrant =
-              chemistJwtLoginBeforeRevokeGrant.substring(
-                      chemistJwtLoginBeforeRevokeGrant.indexOf(":") + 2,
-                      chemistJwtLoginBeforeRevokeGrant.length() - 2);
-
+      // has access
       given()
-              .header("authorization", "Bearer " + chemistJwtFromJsonLoginBeforeRevokeGrant)
+              .header("authorization", "Bearer " + chemistJwt)
               .get(getApiRoot() + "/account")
               .then()
               .statusCode(Response.Status.OK.getStatusCode());
 
+      // removing access level
       given()
               .header("authorization", "Bearer " + adminJwt)
               .put(getApiRoot() + "/account/2/admin/block")
               .then()
               .statusCode(Response.Status.NO_CONTENT.getStatusCode());
 
-      String chemistJwtAfterRemovingGrant =
-              given()
-                      .body(chemistLoginDto)
-                      .post(getApiRoot() + "/auth/login")
-                      .then()
-                      .statusCode(Response.Status.OK.getStatusCode())
-                      .extract()
-                      .response()
-                      .asString();
+      chemistJwt = given()
+              .body(chemistLoginDto)
+              .post(getApiRoot() + "/auth/login")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.OK.getStatusCode())
+              .extract().jsonPath().getString("jwtToken");
 
-      String jwtFromJsonAfterGrantRemoving =
-              chemistJwtAfterRemovingGrant.substring(
-                      chemistJwtAfterRemovingGrant.indexOf(":") + 2,
-                      chemistJwtAfterRemovingGrant.length() - 2);
-
+      // no access
       given()
-              .header("authorization", "Bearer " + jwtFromJsonAfterGrantRemoving)
+              .header("authorization", "Bearer " + chemistJwt)
               .get(getApiRoot() + "/account")
               .then()
               .statusCode(Response.Status.FORBIDDEN.getStatusCode());

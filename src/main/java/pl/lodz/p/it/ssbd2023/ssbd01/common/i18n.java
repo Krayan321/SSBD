@@ -12,6 +12,7 @@ public class i18n {
   public static final String EXCEPTION_PASSWORD_NOT_CHANGED = "exception.password.not-changed";
   public static final String EXCEPTION_NOT_FOUND = "exception.not-found";
   public static final String EXCEPTION_METHOD_NOT_ALLOWED = "exception.method-not-allowed";
+  public static final String EXCEPTION_MISMATCHED_PAYLOAD = "exception.mismatched.payload";
   public static final String EXCEPTION_ETAG_CREATION = "exception.etag.creation";
   public static final String EXCEPTION_ETAG_EMPTY = "exception.etag.empty";
   public static final String EXCEPTION_ETAG_INVALID = "exception.etag.not-valid";

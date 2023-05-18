@@ -33,6 +33,10 @@ public class ApplicationException extends WebApplicationException {
     return new ApplicationException(INTERNAL_SERVER_ERROR, EXCEPTION_PERSISTENCE, cause);
   }
 
+  public static ApplicationException createMismatchedPayloadException() {
+    return new ApplicationException(BAD_REQUEST, EXCEPTION_MISMATCHED_PAYLOAD);
+  }
+
   public static ApplicationException createAccessDeniedException() {
     return new ApplicationException(FORBIDDEN, EXCEPTION_ACCESS_DENIED);
   }
@@ -58,7 +62,7 @@ public class ApplicationException extends WebApplicationException {
   }
 
   public static ApplicationException createEtagNotValidException() {
-    return new ApplicationException(UNAUTHORIZED, EXCEPTION_ETAG_INVALID);
+    return new ApplicationException(BAD_REQUEST, EXCEPTION_ETAG_INVALID);
   }
 
   public static ApplicationException createEtagCreationException() {

@@ -22,6 +22,7 @@ public abstract class AbstractFacade<T> {
 
   protected void edit(T entity) {
     getEntityManager().merge(entity);
+    getEntityManager().flush();
   }
 
   protected void editAndRefresh(T entity) {
@@ -32,6 +33,7 @@ public abstract class AbstractFacade<T> {
 
   protected void remove(T entity) {
     getEntityManager().remove(getEntityManager().merge(entity));
+    getEntityManager().flush();
   }
 
   protected Optional<T> find(Object id) {
@@ -41,6 +43,7 @@ public abstract class AbstractFacade<T> {
   protected Optional<T> findAndRefresh(Object id) {
     Optional<T> optEntity = find(id);
     optEntity.ifPresent(t -> getEntityManager().refresh(t));
+    getEntityManager().flush();
     return optEntity;
   }
 
