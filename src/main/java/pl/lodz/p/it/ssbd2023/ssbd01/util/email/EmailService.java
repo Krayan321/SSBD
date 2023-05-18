@@ -39,7 +39,7 @@ public class EmailService {
 
   public void sendEmailWhenRemovedDueToNotConfirmed(String email, String name, Locale locale) {
     String subject = i18n.getMessage(i18n.MAIL_ACCOUNT_REMOVED_SUBJECT, locale);
-    String body = i18n.getMessage(i18n.MAIL_ACCOUNT_REMOVED_BODY, locale);
+    String body = i18n.getMessage(i18n.MAIL_ACCOUNT_REMOVED_BODY, locale, name);
 
     MailjetRequest request = getMailjetRequest(email, name, subject, body);
     try {
@@ -51,7 +51,7 @@ public class EmailService {
 
   public void sendEmailAccountBlocked(String email, String name, Locale locale) {
     String subject = i18n.getMessage(i18n.MAIL_ACCOUNT_BLOCKED_SUBJECT, locale);
-    String body = i18n.getMessage(i18n.MAIL_ACCOUNT_BLOCKED_BODY, locale);
+    String body = i18n.getMessage(i18n.MAIL_ACCOUNT_BLOCKED_BODY, locale, name);
 
     MailjetRequest request = getMailjetRequest(email, name, subject, body);
     try {
@@ -63,7 +63,7 @@ public class EmailService {
 
   public void sendEmailAccountUnblocked(String email, String name, Locale locale) {
     String subject = i18n.getMessage(i18n.MAIL_ACCOUNT_UNBLOCKED_SUBJECT, locale);
-    String body = i18n.getMessage(i18n.MAIL_ACCOUNT_UNBLOCKED_BODY, locale);
+    String body = i18n.getMessage(i18n.MAIL_ACCOUNT_UNBLOCKED_BODY, locale, name);
 
     MailjetRequest request = getMailjetRequest(email, name, subject, body);
     try {
@@ -75,7 +75,7 @@ public class EmailService {
 
   public void sendEmailAccountBlockedTooManyLogins(String email, String name, Locale locale) {
     String subject = i18n.getMessage(i18n.MAIL_ACCOUNT_BLOCKED_SUBJECT, locale);
-    String body = i18n.getMessage(i18n.MAIL_ACCOUNT_BLOCKED_TOO_MANY_LOGINS_BODY, locale);
+    String body = i18n.getMessage(i18n.MAIL_ACCOUNT_BLOCKED_TOO_MANY_LOGINS_BODY, locale, name);
 
     MailjetRequest request = getMailjetRequest(email, name, subject, body);
     try {
@@ -87,7 +87,7 @@ public class EmailService {
 
   public void sendEmailResetPassword(String email, String name, Locale locale, String token) {
     String subject = i18n.getMessage(i18n.MAIL_PASSWORD_RESET_SUBJECT, locale);
-    String body = i18n.getMessage(i18n.MAIL_PASSWORD_RESET_BODY, locale);
+    String body = i18n.getMessage(i18n.MAIL_PASSWORD_RESET_BODY, locale, name);
     body += " " + token;
 
     MailjetRequest request = getMailjetRequest(email, name, subject, body);
@@ -100,7 +100,7 @@ public class EmailService {
 
   public void sendEmailAccountActivated(String email, String name, Locale locale) {
     String subject = i18n.getMessage(i18n.MAIL_ACCOUNT_ACTIVATED_SUBJECT, locale);
-    String body = i18n.getMessage(i18n.MAIL_ACCOUNT_ACTIVATED_BODY, locale);
+    String body = i18n.getMessage(i18n.MAIL_ACCOUNT_ACTIVATED_BODY, locale, name);
 
     MailjetRequest request = getMailjetRequest(email, name, subject, body);
     try {
@@ -112,7 +112,7 @@ public class EmailService {
 
   public void sendRegistrationEmail(String email, String name, Locale locale, String token) {
     String subject = i18n.getMessage(i18n.MAIL_ACCOUNT_REGISTER_SUBJECT, locale);
-    String body = i18n.getMessage(i18n.MAIL_ACCOUNT_REGISTER_BODY, locale);
+    String body = i18n.getMessage(i18n.MAIL_ACCOUNT_REGISTER_BODY, locale, name);
     body += " " + token;
 
     MailjetRequest request = getMailjetRequest(email, name, subject, body);
