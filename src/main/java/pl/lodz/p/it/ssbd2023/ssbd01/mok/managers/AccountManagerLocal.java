@@ -3,6 +3,8 @@ package pl.lodz.p.it.ssbd2023.ssbd01.mok.managers;
 import jakarta.ejb.Local;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+
 import pl.lodz.p.it.ssbd2023.ssbd01.common.CommonManagerLocalInterface;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.AccessLevel;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Account;
@@ -56,6 +58,8 @@ public interface AccountManagerLocal extends CommonManagerLocalInterface {
   Account updateOwnPassword(String oldPassword, String newPassword, String login, Long version);
 
   Account updateOwnEmail(String email, String login, Long version);
+
+  void changeAccountLanguage(String language);
 
   Account updateUserEmail(Long id, String email, String login, Long version);
 

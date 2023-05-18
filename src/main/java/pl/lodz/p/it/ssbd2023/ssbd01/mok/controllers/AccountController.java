@@ -10,8 +10,10 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import java.util.List;
+import java.util.Locale;
 
 import lombok.extern.java.Log;
+import org.apache.commons.codec.language.bm.Languages;
 import pl.lodz.p.it.ssbd2023.ssbd01.common.AbstractController;
 import pl.lodz.p.it.ssbd2023.ssbd01.config.ETagFilterBinding;
 import pl.lodz.p.it.ssbd2023.ssbd01.config.EntityIdentitySignerVerifier;
@@ -176,6 +178,14 @@ public class AccountController extends AbstractController {
             () -> accountManager.updateOwnEmail(editAccountDTO.getEmail(),
                     editAccountDTO.getLogin(), editAccountDTO.getVersion()));
     return AccountConverter.mapAccountToAccountDto(account);
+  }
+
+  @PUT
+  @Path("/change-language")
+  public Response changeLanguage(@QueryParam("language") String language) {
+    repeatTransactionVoid(accountManager,
+            () -> accountManager.changeAccountLanguage(language));
+    return Response.status(Response.Status.NO_CONTENT).build();
   }
 
   @PUT

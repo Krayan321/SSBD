@@ -31,7 +31,7 @@ public class AccountConverter {
   public static AccountAndAccessLevelsDTO mapAccountToAccountAndAccessLevelsDto(Account account) {
     var accessLevels =
         AccessLevelConverter.mapAccessLevelsToAccessLevelsDto(account.getAccessLevels());
-    return AccountAndAccessLevelsDTO.builder()
+    return AccountAndAccessLevelsDTO.accountAndAccessLevelsBuilder()
         .id(account.getId())
         .version(account.getVersion())
         .accessLevels(accessLevels)

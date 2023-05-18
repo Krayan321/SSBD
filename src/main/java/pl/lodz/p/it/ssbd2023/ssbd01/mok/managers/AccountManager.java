@@ -15,10 +15,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.SecurityContext;
@@ -321,6 +318,20 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
     accountFacade.edit(account);
     verificationManager.sendEmailChangeEmail(account, email);
     return account;
+  }
+
+  @Override
+  @RolesAllowed("changeAccountLanguage")
+  public void changeAccountLanguage(String language) {
+    try {
+      LanguageType.valueOf(language);
+    } catch(IllegalArgumentException e) {
+      throw ApplicationException.createLanguageNotFoundException();
+    }
+    Locale locale = Locale.forLanguageTag(language);
+    Account account = getCurrentUser();
+    account.setLanguage(locale);
+    accountFacade.edit(account);
   }
 
   @Override
