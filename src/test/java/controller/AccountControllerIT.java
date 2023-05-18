@@ -969,4 +969,27 @@ public class AccountControllerIT extends BaseTest {
               .body("message", equalTo(EXCEPTION_ETAG_EMPTY));
     }
   }
+
+  @Nested
+  @Order(2)
+  @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+  class EditAccessLevel {
+    private Long version;
+    private String etag;
+
+    @BeforeEach
+    public void init() {
+      var response = given()
+              .header("authorization", "Bearer " + adminJwt)
+              .get(getApiRoot() + "/account/3/details")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.OK.getStatusCode())
+              .extract()
+              .response();
+      etag = response.getHeader("ETag").replace("\"", "");
+      version = response.getBody().jsonPath().getLong("version");
+    }
+  }
 }

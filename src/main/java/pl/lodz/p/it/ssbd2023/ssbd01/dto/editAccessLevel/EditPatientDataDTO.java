@@ -5,6 +5,7 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccount.AbstractEditAccountDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.entities.Role;
 
 @ToString
 @EqualsAndHashCode(callSuper = true)
@@ -12,12 +13,12 @@ import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccount.AbstractEditAccountDTO;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class EditPatientDataDTO extends AbstractEditAccountDTO {
+public class EditPatientDataDTO extends AbstractEditAccessLevelDTO {
 
   @Builder
-  public EditPatientDataDTO(String login, Long version, String pesel, String firstName,
+  public EditPatientDataDTO(Long version, String pesel, String firstName,
                             String lastName, String phoneNumber, String nip) {
-    super(login, version);
+    super(version, Role.PATIENT);
     this.pesel = pesel;
     this.firstName = firstName;
     this.lastName = lastName;

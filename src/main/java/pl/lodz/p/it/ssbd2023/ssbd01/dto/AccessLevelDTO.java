@@ -2,6 +2,7 @@ package pl.lodz.p.it.ssbd2023.ssbd01.dto;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import pl.lodz.p.it.ssbd2023.ssbd01.common.SignableEntity;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Role;
 
 @ToString
@@ -9,7 +10,7 @@ import pl.lodz.p.it.ssbd2023.ssbd01.entities.Role;
 @Getter
 @Setter
 @NoArgsConstructor
-public abstract class AccessLevelDTO extends AbstractEntityDTO {
+public abstract class AccessLevelDTO extends AbstractEntityDTO implements SignableEntity {
 
   public AccessLevelDTO(Long id, Long version, Role role, Boolean active) {
     super(id, version);
@@ -22,4 +23,9 @@ public abstract class AccessLevelDTO extends AbstractEntityDTO {
 
   @NotNull
   private Boolean active;
+
+  @Override
+  public String getSignablePayload() {
+    return String.format("%s.%d", role, getVersion());
+  }
 }

@@ -4,6 +4,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccount.AbstractEditAccountDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.entities.Role;
 
 @ToString
 @EqualsAndHashCode(callSuper = true)
@@ -11,11 +12,11 @@ import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccount.AbstractEditAccountDTO;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class EditChemistDataDTO extends AbstractEditAccountDTO {
+public class EditChemistDataDTO extends AbstractEditAccessLevelDTO {
 
   @Builder
-  public EditChemistDataDTO(String login, Long version, String licenseNumber) {
-    super(login, version);
+  public EditChemistDataDTO(Long version, String licenseNumber) {
+    super(version, Role.CHEMIST);
     this.licenseNumber = licenseNumber;
   }
 
