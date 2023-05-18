@@ -121,6 +121,13 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
   }
 
   @Override
+  @RolesAllowed("getAccessLevel")
+  public AccessLevel getAccessLevel(Long id, Role role) {
+    Account account = getAccount(id);
+    return AccessLevelFinder.findAccessLevel(account, role);
+  }
+
+  @Override
   @RolesAllowed("deactivateAccessLevel")
   public void deactivateAccessLevel(Long id, Role role) {
     Account account = getAccountAndAccessLevels(id);

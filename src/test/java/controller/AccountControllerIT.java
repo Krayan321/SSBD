@@ -220,68 +220,6 @@ public class AccountControllerIT extends BaseTest {
   }
 
   @Test
-  @Order(19)
-  public void editAdminData_correct() {
-
-    given()
-        .header("authorization", "Bearer " + adminJwt)
-        .body(adminDataDTOChangedPhone)
-        .put(getApiRoot() + "/account/1/admin")
-        .then()
-        .log()
-        .all()
-        .statusCode(Response.Status.OK.getStatusCode())
-        .body(
-            "accessLevels",
-            hasItem(hasEntry("workPhoneNumber", adminDataDTOChangedPhone.getWorkPhoneNumber())));
-  }
-
-  @Test
-  @Order(20)
-  public void editChemistData_correct() {
-    given()
-        .header("authorization", "Bearer " + adminJwt)
-        .body(chemistDataDTOChangedLiscence)
-        .put(getApiRoot() + "/account/3/chemist")
-        .then()
-        .log()
-        .all()
-        .statusCode(Response.Status.OK.getStatusCode())
-        .body(
-            "accessLevels",
-            hasItem(hasEntry("licenseNumber", chemistDataDTOChangedLiscence.getLicenseNumber())));
-  }
-
-  @Test
-  @Order(21)
-  public void editPatientData_correct() {
-    given()
-        .header("authorization", "Bearer " + adminJwt)
-        .body(patientDataDTOChangedName)
-        .put(getApiRoot() + "/account/3/patient")
-        .then()
-        .log()
-        .all()
-        .statusCode(Response.Status.OK.getStatusCode())
-        .body(
-            "accessLevels",
-            hasItem(hasEntry("firstName", patientDataDTOChangedName.getFirstName())));
-  }
-
-  @Test
-  @Order(22)
-  public void editPatientData_badVersion() {
-    given()
-        .header("authorization", "Bearer " + adminJwt)
-        .body(patientDataDTOChangedName)
-        .put(getApiRoot() + "/account/3/patient")
-        .then()
-        .log()
-        .all()
-        .statusCode(Response.Status.CONFLICT.getStatusCode());
-  }
-
-  @Test
   @Order(23)
   public void blockRoleChemist_correct() {
     given()
@@ -971,10 +909,12 @@ public class AccountControllerIT extends BaseTest {
   }
 
   @Nested
-  @Order(2)
+  @Order(3)
   @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
   class EditAccessLevel {
-    private Long version;
+    private Long versionPatient;
+    private Long versionChemist;
+    private Long versionAdmin;
     private String etag;
 
     @BeforeEach
@@ -989,7 +929,112 @@ public class AccountControllerIT extends BaseTest {
               .extract()
               .response();
       etag = response.getHeader("ETag").replace("\"", "");
-      version = response.getBody().jsonPath().getLong("version");
+      versionPatient = response.getBody().jsonPath().getLong("accessLevels.find{it.role=='PATIENT'}.version");
+      versionChemist = response.getBody().jsonPath().getLong("accessLevels.find{it.role=='CHEMIST'}.version");
+      versionAdmin = response.getBody().jsonPath().getLong("accessLevels.find{it.role=='ADMIN'}.version");
+    }
+
+    @Test
+    @Order(1)
+    public void editAdminData_correct() {
+      adminDataDTOChangedPhone.setVersion(versionAdmin);
+      given()
+              .header("authorization", "Bearer " + adminJwt)
+              .header("If-Match", etag)
+              .body(adminDataDTOChangedPhone)
+              .put(getApiRoot() + "/account/3/admin")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.OK.getStatusCode())
+              .body(
+                      "accessLevels",
+                      hasItem(hasEntry("workPhoneNumber", adminDataDTOChangedPhone.getWorkPhoneNumber())));
+    }
+
+    @Test
+    @Order(2)
+    public void editChemistData_correct() {
+      chemistDataDTOChangedLiscence.setVersion(versionChemist);
+      given()
+              .header("authorization", "Bearer " + adminJwt)
+              .header("If-Match", etag)
+              .body(chemistDataDTOChangedLiscence)
+              .put(getApiRoot() + "/account/3/chemist")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.OK.getStatusCode())
+              .body(
+                      "accessLevels",
+                      hasItem(hasEntry("licenseNumber", chemistDataDTOChangedLiscence.getLicenseNumber())));
+    }
+
+    @Test
+    @Order(3)
+    public void editPatientData_correct() {
+      patientDataDTOChangedName.setVersion(versionPatient);
+      given()
+              .header("authorization", "Bearer " + adminJwt)
+              .header("If-Match", etag)
+              .body(patientDataDTOChangedName)
+              .put(getApiRoot() + "/account/3/patient")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.OK.getStatusCode())
+              .body(
+                      "accessLevels",
+                      hasItem(hasEntry("firstName", patientDataDTOChangedName.getFirstName())));
+    }
+
+    @Test
+    @Order(4)
+    public void editPatientData_badVersion() {
+      patientDataDTOChangedName.setVersion(-1L);
+      given()
+              .header("authorization", "Bearer " + adminJwt)
+              .header("If-Match", etag)
+              .body(patientDataDTOChangedName)
+              .put(getApiRoot() + "/account/3/patient")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.UNAUTHORIZED.getStatusCode())
+              .body("message", equalTo(EXCEPTION_ETAG_INVALID));
+    }
+
+    @Test
+    @Order(5)
+    public void editPatientData_concurrentEdits() {
+      patientDataDTOChangedName.setVersion(versionPatient);
+      patientDataDTOChangedName.setLastName("Aaaaa");
+      given()
+              .header("authorization", "Bearer " + adminJwt)
+              .header("If-Match", etag)
+              .body(patientDataDTOChangedName)
+              .put(getApiRoot() + "/account/3/patient")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.OK.getStatusCode())
+              .body(
+                      "accessLevels",
+                      hasItem(hasEntry("firstName", patientDataDTOChangedName.getFirstName())));
+
+      // nie zmieniamy wersji, symulacja pobrania identycznych wartości do
+      // dwóch formularzy i jednoczesna edycja
+      patientDataDTOChangedName.setLastName("Bbbbbb");
+      given()
+              .header("authorization", "Bearer " + adminJwt)
+              .header("If-Match", etag)
+              .body(patientDataDTOChangedName)
+              .put(getApiRoot() + "/account/3/patient")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.UNAUTHORIZED.getStatusCode())
+              .body("message", equalTo(EXCEPTION_ETAG_INVALID));
     }
   }
 }
