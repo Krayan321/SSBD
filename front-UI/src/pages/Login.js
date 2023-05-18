@@ -1,10 +1,13 @@
 import React, { useState } from "react";
 import { Grid, Paper, TextField, Button, Box, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
+import { useAccount } from "../hooks/useAccount";
+import { signInAccount } from "../api/mok/accountApi";
 
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const { logInClient } = useAccount();
 
   const { t } = useTranslation();
 
@@ -24,9 +27,13 @@ const Login = () => {
   };
 
   const handleSubmit = (event) => {
+    signInAccount(username, password);
     event.preventDefault();
-    console.log(`Username: ${username}, Password: ${password}`);
   };
+
+  // async function signInButtonHandle() {
+  //   await logInClient({ username, password });
+  // }
 
   return (
     <Grid>
@@ -37,28 +44,35 @@ const Login = () => {
           </Typography>
           <Box
             sx={{ display: "flex", flexDirection: "column", width: "100%" }}
-            onSubmit={handleSubmit}
+            //onSubmit={signInButtonHandle}
           >
-            <TextField
-              fullwidth
-              margin="normal"
-              id="username"
-              label={t("username")}
-              value={username}
-              onChange={handleUsernameChange}
-            />
-            <TextField
-              margin="normal"
-              fullwidth
-              id="password"
-              label={t("password")}
-              type="password"
-              value={password}
-              onChange={handlePasswordChange}
-            />
-            <Button variant="contained" color="primary" type="submit">
-              {t("sign_in")}
-            </Button>
+            <form>
+              <TextField
+                fullwidth
+                margin="normal"
+                id="username"
+                label={t("username")}
+                value={username}
+                onChange={handleUsernameChange}
+              />
+              <TextField
+                margin="normal"
+                fullwidth
+                id="password"
+                label={t("password")}
+                type="password"
+                value={password}
+                onChange={handlePasswordChange}
+              />
+              <Button
+                variant="contained"
+                color="primary"
+                type="submit"
+                onClick={handleSubmit}
+              >
+                {t("sign_in")}
+              </Button>
+            </form>
           </Box>
         </Box>
       </Paper>
