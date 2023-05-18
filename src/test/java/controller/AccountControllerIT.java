@@ -911,17 +911,14 @@ public class AccountControllerIT extends BaseTest {
   @Nested
   @Order(3)
   @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-  class EditAccessLevel {
-    private Long versionPatient;
-    private Long versionChemist;
-    private Long versionAdmin;
+  class EditPatientData {
     private String etag;
 
     @BeforeEach
     public void init() {
       var response = given()
               .header("authorization", "Bearer " + adminJwt)
-              .get(getApiRoot() + "/account/3/details")
+              .get(getApiRoot() + "/account/3/patient")
               .then()
               .log()
               .all()
@@ -929,51 +926,13 @@ public class AccountControllerIT extends BaseTest {
               .extract()
               .response();
       etag = response.getHeader("ETag").replace("\"", "");
-      versionPatient = response.getBody().jsonPath().getLong("accessLevels.find{it.role=='PATIENT'}.version");
-      versionChemist = response.getBody().jsonPath().getLong("accessLevels.find{it.role=='CHEMIST'}.version");
-      versionAdmin = response.getBody().jsonPath().getLong("accessLevels.find{it.role=='ADMIN'}.version");
+      Long version = response.getBody().jsonPath().getLong("version");
+      patientDataDTOChangedName.setVersion(version);
     }
 
     @Test
     @Order(1)
-    public void editAdminData_correct() {
-      adminDataDTOChangedPhone.setVersion(versionAdmin);
-      given()
-              .header("authorization", "Bearer " + adminJwt)
-              .header("If-Match", etag)
-              .body(adminDataDTOChangedPhone)
-              .put(getApiRoot() + "/account/3/admin")
-              .then()
-              .log()
-              .all()
-              .statusCode(Response.Status.OK.getStatusCode())
-              .body(
-                      "accessLevels",
-                      hasItem(hasEntry("workPhoneNumber", adminDataDTOChangedPhone.getWorkPhoneNumber())));
-    }
-
-    @Test
-    @Order(2)
-    public void editChemistData_correct() {
-      chemistDataDTOChangedLiscence.setVersion(versionChemist);
-      given()
-              .header("authorization", "Bearer " + adminJwt)
-              .header("If-Match", etag)
-              .body(chemistDataDTOChangedLiscence)
-              .put(getApiRoot() + "/account/3/chemist")
-              .then()
-              .log()
-              .all()
-              .statusCode(Response.Status.OK.getStatusCode())
-              .body(
-                      "accessLevels",
-                      hasItem(hasEntry("licenseNumber", chemistDataDTOChangedLiscence.getLicenseNumber())));
-    }
-
-    @Test
-    @Order(3)
     public void editPatientData_correct() {
-      patientDataDTOChangedName.setVersion(versionPatient);
       given()
               .header("authorization", "Bearer " + adminJwt)
               .header("If-Match", etag)
@@ -989,7 +948,7 @@ public class AccountControllerIT extends BaseTest {
     }
 
     @Test
-    @Order(4)
+    @Order(2)
     public void editPatientData_badVersion() {
       patientDataDTOChangedName.setVersion(-1L);
       given()
@@ -1005,9 +964,8 @@ public class AccountControllerIT extends BaseTest {
     }
 
     @Test
-    @Order(5)
+    @Order(3)
     public void editPatientData_concurrentEdits() {
-      patientDataDTOChangedName.setVersion(versionPatient);
       patientDataDTOChangedName.setLastName("Aaaaa");
       given()
               .header("authorization", "Bearer " + adminJwt)
@@ -1033,8 +991,184 @@ public class AccountControllerIT extends BaseTest {
               .then()
               .log()
               .all()
+              .statusCode(Response.Status.CONFLICT.getStatusCode())
+              .body("message", equalTo(EXCEPTION_OPTIMISTIC_LOCK));
+    }
+  }
+
+  @Nested
+  @Order(4)
+  @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+  class EditChemistData {
+    private String etag;
+
+    @BeforeEach
+    public void init() {
+      var response = given()
+              .header("authorization", "Bearer " + adminJwt)
+              .get(getApiRoot() + "/account/3/chemist")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.OK.getStatusCode())
+              .extract()
+              .response();
+      etag = response.getHeader("ETag").replace("\"", "");
+      Long version = response.getBody().jsonPath().getLong("version");
+      chemistDataDTOChangedLiscence.setVersion(version);
+    }
+
+    @Test
+    @Order(1)
+    public void editChemistData_correct() {
+      given()
+              .header("authorization", "Bearer " + adminJwt)
+              .header("If-Match", etag)
+              .body(chemistDataDTOChangedLiscence)
+              .put(getApiRoot() + "/account/3/chemist")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.OK.getStatusCode())
+              .body(
+                      "accessLevels",
+                      hasItem(hasEntry("licenseNumber", chemistDataDTOChangedLiscence.getLicenseNumber())));
+    }
+
+    @Test
+    @Order(2)
+    public void editChemistData_badVersion() {
+      chemistDataDTOChangedLiscence.setVersion(-1L);
+      given()
+              .header("authorization", "Bearer " + adminJwt)
+              .header("If-Match", etag)
+              .body(chemistDataDTOChangedLiscence)
+              .put(getApiRoot() + "/account/3/chemist")
+              .then()
+              .log()
+              .all()
               .statusCode(Response.Status.UNAUTHORIZED.getStatusCode())
               .body("message", equalTo(EXCEPTION_ETAG_INVALID));
+    }
+
+    @Test
+    @Order(3)
+    public void editChemistData_concurrentEdits() {
+      chemistDataDTOChangedLiscence.setLicenseNumber("234567");
+      given()
+              .header("authorization", "Bearer " + adminJwt)
+              .header("If-Match", etag)
+              .body(chemistDataDTOChangedLiscence)
+              .put(getApiRoot() + "/account/3/chemist")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.OK.getStatusCode())
+              .body(
+                      "accessLevels",
+                      hasItem(hasEntry("licenseNumber", chemistDataDTOChangedLiscence.getLicenseNumber())));
+
+      // nie zmieniamy wersji, symulacja pobrania identycznych wartości do
+      // dwóch formularzy i jednoczesna edycja
+      chemistDataDTOChangedLiscence.setLicenseNumber("654321");
+      given()
+              .header("authorization", "Bearer " + adminJwt)
+              .header("If-Match", etag)
+              .body(chemistDataDTOChangedLiscence)
+              .put(getApiRoot() + "/account/3/chemist")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.CONFLICT.getStatusCode())
+              .body("message", equalTo(EXCEPTION_OPTIMISTIC_LOCK));
+    }
+  }
+
+  @Nested
+  @Order(5)
+  @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+  class EditAdminData {
+    private String etag;
+
+    @BeforeEach
+    public void init() {
+      var response = given()
+              .header("authorization", "Bearer " + adminJwt)
+              .get(getApiRoot() + "/account/3/admin")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.OK.getStatusCode())
+              .extract()
+              .response();
+      etag = response.getHeader("ETag").replace("\"", "");
+      Long version = response.getBody().jsonPath().getLong("version");
+      adminDataDTOChangedPhone.setVersion(version);
+    }
+
+    @Test
+    @Order(1)
+    public void editAdminData_correct() {
+      given()
+              .header("authorization", "Bearer " + adminJwt)
+              .header("If-Match", etag)
+              .body(adminDataDTOChangedPhone)
+              .put(getApiRoot() + "/account/3/admin")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.OK.getStatusCode())
+              .body(
+                      "accessLevels",
+                      hasItem(hasEntry("workPhoneNumber", adminDataDTOChangedPhone.getWorkPhoneNumber())));
+    }
+
+    @Test
+    @Order(2)
+    public void editAdminData_badVersion() {
+      adminDataDTOChangedPhone.setVersion(-1L);
+      given()
+              .header("authorization", "Bearer " + adminJwt)
+              .header("If-Match", etag)
+              .body(adminDataDTOChangedPhone)
+              .put(getApiRoot() + "/account/3/admin")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.UNAUTHORIZED.getStatusCode())
+              .body("message", equalTo(EXCEPTION_ETAG_INVALID));
+    }
+
+    @Test
+    @Order(3)
+    public void editAdminData_concurrentEdits() {
+      adminDataDTOChangedPhone.setWorkPhoneNumber("123456789");
+      given()
+              .header("authorization", "Bearer " + adminJwt)
+              .header("If-Match", etag)
+              .body(adminDataDTOChangedPhone)
+              .put(getApiRoot() + "/account/3/admin")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.OK.getStatusCode())
+              .body(
+                      "accessLevels",
+                      hasItem(hasEntry("workPhoneNumber", adminDataDTOChangedPhone.getWorkPhoneNumber())));
+
+      // nie zmieniamy wersji, symulacja pobrania identycznych wartości do
+      // dwóch formularzy i jednoczesna edycja
+      adminDataDTOChangedPhone.setWorkPhoneNumber("987654321");
+      given()
+              .header("authorization", "Bearer " + adminJwt)
+              .header("If-Match", etag)
+              .body(adminDataDTOChangedPhone)
+              .put(getApiRoot() + "/account/3/admin")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.CONFLICT.getStatusCode())
+              .body("message", equalTo(EXCEPTION_OPTIMISTIC_LOCK));
     }
   }
 }

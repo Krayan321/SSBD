@@ -1,5 +1,6 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import pl.lodz.p.it.ssbd2023.ssbd01.common.SignableEntity;
@@ -25,6 +26,7 @@ public abstract class AccessLevelDTO extends AbstractEntityDTO implements Signab
   private Boolean active;
 
   @Override
+  @JsonIgnore
   public String getSignablePayload() {
     return String.format("%s.%d", role, getVersion());
   }

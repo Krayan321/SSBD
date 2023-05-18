@@ -50,11 +50,9 @@ public class EntityIdentitySignerVerifier {
   public boolean validateEntitySignature(String tag) {
     try {
       JWSObject jwsObject = JWSObject.parse(tag);
-      log.severe("secret " + ETAG_SECRET);
       JWSVerifier verifier = new MACVerifier(ETAG_SECRET);
       return jwsObject.verify(verifier);
     } catch (ParseException | JOSEException e) {
-      log.severe("exception " + e.getMessage());
       e.printStackTrace();
       return false;
     }
@@ -64,7 +62,6 @@ public class EntityIdentitySignerVerifier {
     try {
       final String header = JWSObject.parse(tag).getPayload().toString();
       final String signableEntityPayload = entity.getSignablePayload();
-      log.severe(String.format("header: %s, payload: %s", header, signableEntityPayload));
       return validateEntitySignature(tag) && signableEntityPayload.equals(header);
     } catch (ParseException e) {
       e.printStackTrace();

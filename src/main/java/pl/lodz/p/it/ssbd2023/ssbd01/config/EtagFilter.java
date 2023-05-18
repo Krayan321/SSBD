@@ -23,7 +23,6 @@ public class EtagFilter implements ContainerRequestFilter {
     @Override
     public void filter(ContainerRequestContext requestContext) {
         String header = requestContext.getHeaderString("If-Match");
-        log.severe("header " + header);
         if (header == null || header.isEmpty()) {
             ApplicationException e = ApplicationException.createEtagEmptyException();
             Response response = ExceptionConverter.mapApplicationExceptionToResponse(e);

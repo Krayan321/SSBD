@@ -34,7 +34,7 @@ public class AdminData extends AccessLevel implements Serializable {
 
   @Builder
   public AdminData(Long id, String workPhoneNumber) {
-    super(id);
+    super(id, Role.ADMIN);
     this.workPhoneNumber = workPhoneNumber;
   }
 }

@@ -28,7 +28,7 @@ public class PatientData extends AccessLevel implements Serializable {
   @Builder
   public PatientData(
       Long id, String pesel, String firstName, String lastName, String phoneNumber, String NIP) {
-    super(id);
+    super(id, Role.PATIENT);
     this.pesel = pesel;
     this.firstName = firstName;
     this.lastName = lastName;

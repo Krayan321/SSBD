@@ -3,10 +3,8 @@ package pl.lodz.p.it.ssbd2023.ssbd01.entities;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+
+import lombok.*;
 
 @Entity
 @Table(name = "access_level", uniqueConstraints = {
@@ -41,7 +39,8 @@ public abstract class AccessLevel extends AbstractEntity implements Serializable
   @JoinColumn(name = "account_id", referencedColumnName = "id", updatable = false)
   private Account account;
 
-  public AccessLevel(Long id) {
+  public AccessLevel(Long id, Role role) {
     this.id = id;
+    this.role = role;
   }
 }

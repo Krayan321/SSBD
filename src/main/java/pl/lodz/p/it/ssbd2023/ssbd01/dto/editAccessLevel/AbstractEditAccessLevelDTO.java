@@ -1,9 +1,8 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccessLevel;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import pl.lodz.p.it.ssbd2023.ssbd01.common.SignableEntity;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Role;
 
@@ -15,10 +14,11 @@ public class AbstractEditAccessLevelDTO implements SignableEntity {
     @NotNull
     private Long version;
 
-    @NotNull
+    @NotNull // todo exclude from serialization
     private Role role;
 
     @Override
+    @JsonIgnore
     public String getSignablePayload() {
         return String.format("%s.%d", role, version);
     }

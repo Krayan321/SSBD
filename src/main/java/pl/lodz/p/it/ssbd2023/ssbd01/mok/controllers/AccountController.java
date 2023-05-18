@@ -291,7 +291,6 @@ public class AccountController extends AbstractController {
   @GET
   @Path("/{id}/patient")
   @Produces(MediaType.APPLICATION_JSON)
-  @ETagFilterBinding
   public Response getPatientData(@PathParam("id") Long id) {
     AccessLevel accessLevel = repeatTransaction(
             accountManager, () -> accountManager.getAccessLevel(id, Role.PATIENT));
@@ -303,7 +302,6 @@ public class AccountController extends AbstractController {
   @GET
   @Path("/{id}/chemist")
   @Produces(MediaType.APPLICATION_JSON)
-  @ETagFilterBinding
   public Response getChemistData(@PathParam("id") Long id) {
     AccessLevel accessLevel = repeatTransaction(
             accountManager, () -> accountManager.getAccessLevel(id, Role.CHEMIST));
@@ -315,7 +313,6 @@ public class AccountController extends AbstractController {
   @GET
   @Path("/{id}/admin")
   @Produces(MediaType.APPLICATION_JSON)
-  @ETagFilterBinding
   public Response getAdminData(@PathParam("id") Long id) {
     AccessLevel accessLevel = repeatTransaction(
             accountManager, () -> accountManager.getAccessLevel(id, Role.ADMIN));
