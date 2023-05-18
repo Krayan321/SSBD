@@ -74,118 +74,6 @@ public class AccountControllerIT extends BaseTest {
         .body("message", equalTo(EXCEPTION_AUTH_BAD_CREDENTIALS));
   }
 
-  @Test
-  @Order(5)
-  public void getSelfInfoCorrect() {
-    given()
-        .header("authorization", "Bearer " + adminJwt)
-        .get(getApiRoot() + "/account/details")
-        .then()
-        .log()
-        .all()
-        .statusCode(Response.Status.OK.getStatusCode())
-        .body("accessLevels", hasItem(hasEntry("role", "ADMIN")))
-        .body("login", equalTo(adminLoginDto.getLogin()));
-  }
-
-  @Test
-  @Order(6)
-  public void readAccount_correct() {
-    given()
-        .header("authorization", "Bearer " + adminJwt)
-        .get(getApiRoot() + "/account/1")
-        .then()
-        .statusCode(Response.Status.OK.getStatusCode())
-        .body("login", equalTo(adminLoginDto.getLogin()));
-  }
-
-  @Test
-  @Order(7)
-  public void readAccount_noSuchUser() {
-    given()
-        .header("authorization", "Bearer " + adminJwt)
-        .get(getApiRoot() + "/account/3")
-        .then()
-        .statusCode(Response.Status.NOT_FOUND.getStatusCode());
-  }
-
-  @Test
-  @Order(8)
-  public void registerPatient_correct() {
-    given()
-        .body(registerPatientDto)
-        .post(getApiRoot() + "/account/register")
-        .then()
-        .log()
-        .all()
-        .statusCode(Response.Status.CREATED.getStatusCode());
-  }
-
-  @Test
-  @Order(9)
-  public void registerPatient_duplicateLogin() {
-    given()
-        .body(registerPatientDtoDuplicateLogin)
-        .post(getApiRoot() + "/account/register")
-        .then()
-        .log()
-        .all()
-        .statusCode(Response.Status.CONFLICT.getStatusCode())
-        .body("message", equalTo(EXCEPTION_ACCOUNT_DUPLICATE_LOGIN));
-  }
-
-  @Test
-  @Order(10)
-  public void registerPatient_duplicateEmail() {
-    given()
-        .body(registerPatientDtoDuplicateEmail)
-        .post(getApiRoot() + "/account/register")
-        .then()
-        .log()
-        .all()
-        .statusCode(Response.Status.CONFLICT.getStatusCode())
-        .body("message", equalTo(EXCEPTION_ACCOUNT_DUPLICATE_EMAIL));
-  }
-
-  @Test
-  @Order(11)
-  public void registerPatient_duplicatePhoneNumber() {
-    given()
-        .body(registerPatientDtoDuplicatePhoneNumber)
-        .post(getApiRoot() + "/account/register")
-        .then()
-        .log()
-        .all()
-        .statusCode(Response.Status.CONFLICT.getStatusCode())
-        .body("message", equalTo(EXCEPTION_ACCOUNT_DUPLICATE_PHONE_NUMBER));
-  }
-
-  @Test
-  @Order(12)
-  public void registerPatient_duplicatePesel() {
-    given()
-        .body(registerPatientDtoDuplicatePesel)
-        .post(getApiRoot() + "/account/register")
-        .then()
-        .log()
-        .all()
-        .statusCode(Response.Status.CONFLICT.getStatusCode())
-        .body("message", equalTo(EXCEPTION_ACCOUNT_DUPLICATE_PESEL));
-  }
-
-  @Test
-  @Order(13)
-  public void registerPatient_duplicateNip() {
-    given()
-        .body(registerPatientDtoDuplicateNip)
-        .post(getApiRoot() + "/account/register")
-        .then()
-        .log()
-        .all()
-        .statusCode(Response.Status.CONFLICT.getStatusCode())
-        .body("message", equalTo(EXCEPTION_ACCOUNT_DUPLICATE_NIP));
-  }
-
 
 
   @Test
@@ -206,18 +94,7 @@ public class AccountControllerIT extends BaseTest {
 
   // access level id: 3
 
-  @Test
-  @Order(18)
-  public void readAccountAndAccessLevels_correct() {
-    given()
-        .header("authorization", "Bearer " + adminJwt)
-        .get(getApiRoot() + "/account/3/details")
-        .then()
-        .log()
-        .all()
-        .statusCode(Response.Status.OK.getStatusCode())
-        .body("accessLevels", hasSize(3));
-  }
+
 
   @Test
   @Order(23)
@@ -359,86 +236,6 @@ public class AccountControllerIT extends BaseTest {
         .all()
         .statusCode(Response.Status.OK.getStatusCode())
         .body("accessLevels.find{it.role=='ADMIN'}.active", equalTo(false));
-  }
-
-  @Test
-  @Order(30)
-  public void addChemist_correct() {
-    given()
-        .header("authorization", "Bearer " + adminJwt)
-        .body(addChemistAccountDto)
-        .post(getApiRoot() + "/account/add-chemist")
-        .then()
-        .log()
-        .all()
-        .statusCode(Response.Status.CREATED.getStatusCode());
-  }
-
-  @Test
-  @Order(31)
-  public void addChemist_incorrect_duplicate() {
-    given()
-        .header("authorization", "Bearer " + adminJwt)
-        .body(addChemistAccountDto)
-        .post(getApiRoot() + "/account/add-chemist")
-        .then()
-        .log()
-        .all()
-        .statusCode(Response.Status.CONFLICT.getStatusCode())
-        .body("message", equalTo(EXCEPTION_ACCOUNT_DUPLICATE_EMAIL));
-  }
-
-  @Test
-  @Order(16)
-  public void addChemist_incorrect_missing_field() {
-    given()
-        .header("authorization", "Bearer " + adminJwt)
-        .body(addChemistAccountDtoMissingField)
-        .post(getApiRoot() + "/account/add-chemist")
-        .then()
-        .log()
-        .all()
-        .statusCode(Response.Status.BAD_REQUEST.getStatusCode());
-  }
-
-  @Test
-  @Order(32)
-  public void addAdmin_correct() {
-    given()
-        .header("authorization", "Bearer " + adminJwt)
-        .body(addAdminAccountDto)
-        .post(getApiRoot() + "/account/add-admin")
-        .then()
-        .log()
-        .all()
-        .statusCode(Response.Status.CREATED.getStatusCode());
-  }
-
-  @Test
-  @Order(33)
-  public void addAdmin_incorrect_duplicate() {
-    given()
-        .header("authorization", "Bearer " + adminJwt)
-        .body(addAdminAccountDto)
-        .post(getApiRoot() + "/account/add-admin")
-        .then()
-        .log()
-        .all()
-        .statusCode(Response.Status.CONFLICT.getStatusCode())
-        .body("message", equalTo(EXCEPTION_ACCOUNT_DUPLICATE_EMAIL));
-  }
-
-  @Test
-  @Order(34)
-  public void addAdmin_incorrect_missing_field() {
-    given()
-        .header("authorization", "Bearer " + adminJwt)
-        .body(addAdminAccountDtoMissingField)
-        .post(getApiRoot() + "/account/add-admin")
-        .then()
-        .log()
-        .all()
-        .statusCode(Response.Status.BAD_REQUEST.getStatusCode());
   }
 
   @Test
@@ -810,6 +607,99 @@ public class AccountControllerIT extends BaseTest {
   @Nested
   @Order(2)
   @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+  class RegisterPatient {
+    @Test
+    @Order(1)
+    public void registerPatient_correct() {
+      given()
+              .body(registerPatientDto)
+              .post(getApiRoot() + "/account/register")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.CREATED.getStatusCode());
+    }
+
+    @Test
+    @Order(2)
+    public void registerPatient_duplicateLogin() {
+      given()
+              .body(registerPatientDtoDuplicateLogin)
+              .post(getApiRoot() + "/account/register")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.CONFLICT.getStatusCode())
+              .body("message", equalTo(EXCEPTION_ACCOUNT_DUPLICATE_LOGIN));
+    }
+
+    @Test
+    @Order(3)
+    public void registerPatient_duplicateEmail() {
+      given()
+              .body(registerPatientDtoDuplicateEmail)
+              .post(getApiRoot() + "/account/register")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.CONFLICT.getStatusCode())
+              .body("message", equalTo(EXCEPTION_ACCOUNT_DUPLICATE_EMAIL));
+    }
+
+    @Test
+    @Order(4)
+    public void registerPatient_duplicatePhoneNumber() {
+      given()
+              .body(registerPatientDtoDuplicatePhoneNumber)
+              .post(getApiRoot() + "/account/register")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.CONFLICT.getStatusCode())
+              .body("message", equalTo(EXCEPTION_ACCOUNT_DUPLICATE_PHONE_NUMBER));
+    }
+
+    @Test
+    @Order(5)
+    public void registerPatient_duplicatePesel() {
+      given()
+              .body(registerPatientDtoDuplicatePesel)
+              .post(getApiRoot() + "/account/register")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.CONFLICT.getStatusCode())
+              .body("message", equalTo(EXCEPTION_ACCOUNT_DUPLICATE_PESEL));
+    }
+
+    @Test
+    @Order(6)
+    public void registerPatient_duplicateNip() {
+      given()
+              .body(registerPatientDtoDuplicateNip)
+              .post(getApiRoot() + "/account/register")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.CONFLICT.getStatusCode())
+              .body("message", equalTo(EXCEPTION_ACCOUNT_DUPLICATE_NIP));
+    }
+
+    @Test
+    @Order(7)
+    public void registerPatient_noBody() {
+      given()
+              .post(getApiRoot() + "/account/register")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.BAD_REQUEST.getStatusCode());
+    }
+  }
+
+  @Nested
+  @Order(3)
+  @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
   class GrantAccessLevel {
 
     private Long version;
@@ -909,7 +799,7 @@ public class AccountControllerIT extends BaseTest {
   }
 
   @Nested
-  @Order(3)
+  @Order(4)
   @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
   class EditPatientData {
     private String etag;
@@ -997,7 +887,7 @@ public class AccountControllerIT extends BaseTest {
   }
 
   @Nested
-  @Order(4)
+  @Order(5)
   @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
   class EditChemistData {
     private String etag;
@@ -1085,7 +975,7 @@ public class AccountControllerIT extends BaseTest {
   }
 
   @Nested
-  @Order(5)
+  @Order(6)
   @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
   class EditAdminData {
     private String etag;
@@ -1169,6 +1059,170 @@ public class AccountControllerIT extends BaseTest {
               .all()
               .statusCode(Response.Status.CONFLICT.getStatusCode())
               .body("message", equalTo(EXCEPTION_OPTIMISTIC_LOCK));
+    }
+  }
+
+  @Nested
+  @Order(7)
+  @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+  class ReadAccount {
+    @Test
+    @Order(1)
+    public void getSelfInfoCorrect() {
+      given()
+              .header("authorization", "Bearer " + adminJwt)
+              .get(getApiRoot() + "/account/details")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.OK.getStatusCode())
+              .body("accessLevels", hasItem(hasEntry("role", "ADMIN")))
+              .body("login", equalTo(adminLoginDto.getLogin()));
+    }
+
+    @Test
+    @Order(2)
+    public void getSelfInfo_unauthorised() {
+      given()
+              .get(getApiRoot() + "/account/details")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.FORBIDDEN.getStatusCode())
+              .body("message", equalTo(EXCEPTION_ACCESS_DENIED));
+    }
+
+    @Test
+    @Order(3)
+    public void readAccount_correct() {
+      given()
+              .header("authorization", "Bearer " + adminJwt)
+              .get(getApiRoot() + "/account/3")
+              .then()
+              .statusCode(Response.Status.OK.getStatusCode())
+              .body("login", equalTo(patientLoginDto.getLogin()));
+    }
+
+    @Test
+    @Order(4)
+    public void readAccount_noSuchUser() {
+      given()
+              .header("authorization", "Bearer " + adminJwt)
+              .get(getApiRoot() + "/account/1000")
+              .then()
+              .statusCode(Response.Status.NOT_FOUND.getStatusCode())
+              .body("message", equalTo(EXCEPTION_ENTITY_NOT_FOUND));
+    }
+
+    @Test
+    @Order(5)
+    public void readAccountAndAccessLevels_correct() {
+      given()
+              .header("authorization", "Bearer " + adminJwt)
+              .get(getApiRoot() + "/account/3/details")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.OK.getStatusCode())
+              .body("accessLevels", hasSize(3));
+    }
+
+    @Test
+    @Order(6)
+    public void readAccountAndAccessLevels_noSuchUser() {
+      given()
+              .header("authorization", "Bearer " + adminJwt)
+              .get(getApiRoot() + "/account/1000/details")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.NOT_FOUND.getStatusCode())
+              .body("message", equalTo(EXCEPTION_ENTITY_NOT_FOUND));
+    }
+  }
+
+  @Nested
+  @Order(8)
+  @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+  class AddAccountWithAccessLevel {
+    @Test
+    @Order(1)
+    public void addChemist_correct() {
+      given()
+              .header("authorization", "Bearer " + adminJwt)
+              .body(addChemistAccountDto)
+              .post(getApiRoot() + "/account/add-chemist")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.CREATED.getStatusCode());
+    }
+
+    @Test
+    @Order(2)
+    public void addChemist_incorrect_duplicate() {
+      given()
+              .header("authorization", "Bearer " + adminJwt)
+              .body(addChemistAccountDto)
+              .post(getApiRoot() + "/account/add-chemist")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.CONFLICT.getStatusCode())
+              .body("message", equalTo(EXCEPTION_ACCOUNT_DUPLICATE_EMAIL));
+    }
+
+    @Test
+    @Order(3)
+    public void addChemist_incorrect_missing_field() {
+      given()
+              .header("authorization", "Bearer " + adminJwt)
+              .body(addChemistAccountDtoMissingField)
+              .post(getApiRoot() + "/account/add-chemist")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.BAD_REQUEST.getStatusCode());
+    }
+
+    @Test
+    @Order(4)
+    public void addAdmin_correct() {
+      given()
+              .header("authorization", "Bearer " + adminJwt)
+              .body(addAdminAccountDto)
+              .post(getApiRoot() + "/account/add-admin")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.CREATED.getStatusCode());
+    }
+
+    @Test
+    @Order(5)
+    public void addAdmin_incorrect_duplicate() {
+      given()
+              .header("authorization", "Bearer " + adminJwt)
+              .body(addAdminAccountDto)
+              .post(getApiRoot() + "/account/add-admin")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.CONFLICT.getStatusCode())
+              .body("message", equalTo(EXCEPTION_ACCOUNT_DUPLICATE_EMAIL));
+    }
+
+    @Test
+    @Order(6)
+    public void addAdmin_incorrect_missing_field() {
+      given()
+              .header("authorization", "Bearer " + adminJwt)
+              .body(addAdminAccountDtoMissingField)
+              .post(getApiRoot() + "/account/add-admin")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.BAD_REQUEST.getStatusCode());
     }
   }
 }
