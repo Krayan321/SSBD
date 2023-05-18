@@ -1,21 +1,23 @@
-package pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccount;
+package pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccount.grant;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+import pl.lodz.p.it.ssbd2023.ssbd01.common.SignableEntity;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccount.AbstractEditAccountDTO;
 
 @ToString
-@EqualsAndHashCode(callSuper = true)
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
-public class EditPatientDataDTO extends AbstractEditAccountDTO {
+@AllArgsConstructor
+public class GrantPatientDataDTO extends AbstractEditAccountDTO {
 
   @Builder
-  public EditPatientDataDTO(String login, Long version, String pesel, String firstName,
-                            String lastName, String phoneNumber, String nip) {
+  public GrantPatientDataDTO(String login, Long version, String pesel,
+                             String firstName, String lastName, String phoneNumber,
+                             String nip) {
     super(login, version);
     this.pesel = pesel;
     this.firstName = firstName;
@@ -25,7 +27,7 @@ public class EditPatientDataDTO extends AbstractEditAccountDTO {
   }
 
   @NotNull
-  @Pattern(regexp = "^[0-9]{11}$", message = "Invalid PESEL")
+  @Pattern(regexp = "^\\d{11}$", message = "Invalid PESEL")
   private String pesel;
 
   @NotNull

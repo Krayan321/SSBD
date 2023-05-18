@@ -1,8 +1,9 @@
-package pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccount;
+package pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccessLevel;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccount.AbstractEditAccountDTO;
 
 @ToString
 @EqualsAndHashCode(callSuper = true)
