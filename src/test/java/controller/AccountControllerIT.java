@@ -92,152 +92,6 @@ public class AccountControllerIT extends BaseTest {
             .asString();
   }
 
-  // access level id: 3
-
-
-
-  @Test
-  @Order(23)
-  public void blockRoleChemist_correct() {
-    given()
-        .header("authorization", "Bearer " + adminJwt)
-        .put(getApiRoot() + "/account/3/chemist/block")
-        .then()
-        .log()
-        .all()
-        .statusCode(Response.Status.NO_CONTENT.getStatusCode());
-    given()
-        .header("authorization", "Bearer " + adminJwt)
-        .get(getApiRoot() + "/account/3/details")
-        .then()
-        .log()
-        .all()
-        .statusCode(Response.Status.OK.getStatusCode())
-        .body("accessLevels.find{it.role=='CHEMIST'}.active", equalTo(false));
-  }
-
-  @Test
-  @Order(24)
-  public void blockRolePatient_correct() {
-    given()
-        .header("authorization", "Bearer " + adminJwt)
-        .put(getApiRoot() + "/account/3/patient/block")
-        .then()
-        .log()
-        .all()
-        .statusCode(Response.Status.NO_CONTENT.getStatusCode());
-    given()
-        .header("authorization", "Bearer " + adminJwt)
-        .get(getApiRoot() + "/account/3/details")
-        .then()
-        .log()
-        .all()
-        .statusCode(Response.Status.OK.getStatusCode())
-        .body("accessLevels.find{it.role=='PATIENT'}.active", equalTo(false));
-  }
-
-  @Test
-  @Order(25)
-  public void blockRoleAdmin_lastAccessLevel() {
-    given()
-        .header("authorization", "Bearer " + adminJwt)
-        .put(getApiRoot() + "/account/3/admin/block")
-        .then()
-        .log()
-        .all()
-        .statusCode(Response.Status.BAD_REQUEST.getStatusCode())
-        .body("message", equalTo(EXCEPTION_ACCOUNT_DEACTIVATE_LAST_ACCESS_LEVEL));
-    given()
-        .header("authorization", "Bearer " + adminJwt)
-        .get(getApiRoot() + "/account/3/details")
-        .then()
-        .log()
-        .all()
-        .statusCode(Response.Status.OK.getStatusCode())
-        .body("accessLevels.find{it.role=='ADMIN'}.active", equalTo(true));
-  }
-
-  @Test
-  @Order(26)
-  public void blockRoleAdmin_deactivationOnSelf() {
-    given()
-        .header("authorization", "Bearer " + adminJwt)
-        .put(getApiRoot() + "/account/1/admin/block")
-        .then()
-        .log()
-        .all()
-        .statusCode(Response.Status.BAD_REQUEST.getStatusCode())
-        .body("message", equalTo(EXCEPTION_ACCOUNT_DEACTIVATE_SELF));
-    given()
-        .header("authorization", "Bearer " + adminJwt)
-        .get(getApiRoot() + "/account/1/details")
-        .then()
-        .log()
-        .all()
-        .statusCode(Response.Status.OK.getStatusCode())
-        .body("accessLevels.find{it.role=='ADMIN'}.active", equalTo(true));
-  }
-
-  @Test
-  @Order(27)
-  public void unblockRolePatient_correct() {
-    given()
-        .header("authorization", "Bearer " + adminJwt)
-        .put(getApiRoot() + "/account/3/patient/unblock")
-        .then()
-        .log()
-        .all()
-        .statusCode(Response.Status.NO_CONTENT.getStatusCode());
-    given()
-        .header("authorization", "Bearer " + adminJwt)
-        .get(getApiRoot() + "/account/3/details")
-        .then()
-        .log()
-        .all()
-        .statusCode(Response.Status.OK.getStatusCode())
-        .body("accessLevels.find{it.role=='PATIENT'}.active", equalTo(true));
-  }
-
-  @Test
-  @Order(28)
-  public void unblockRoleChemist_correct() {
-    given()
-        .header("authorization", "Bearer " + adminJwt)
-        .put(getApiRoot() + "/account/3/chemist/unblock")
-        .then()
-        .log()
-        .all()
-        .statusCode(Response.Status.NO_CONTENT.getStatusCode());
-    given()
-        .header("authorization", "Bearer " + adminJwt)
-        .get(getApiRoot() + "/account/3/details")
-        .then()
-        .log()
-        .all()
-        .statusCode(Response.Status.OK.getStatusCode())
-        .body("accessLevels.find{it.role=='CHEMIST'}.active", equalTo(true));
-  }
-
-  @Test
-  @Order(29)
-  public void blockRoleAdmin_correct() {
-    given()
-        .header("authorization", "Bearer " + adminJwt)
-        .put(getApiRoot() + "/account/3/admin/block")
-        .then()
-        .log()
-        .all()
-        .statusCode(Response.Status.NO_CONTENT.getStatusCode());
-    given()
-        .header("authorization", "Bearer " + adminJwt)
-        .get(getApiRoot() + "/account/3/details")
-        .then()
-        .log()
-        .all()
-        .statusCode(Response.Status.OK.getStatusCode())
-        .body("accessLevels.find{it.role=='ADMIN'}.active", equalTo(false));
-  }
-
   @Test
   @Order(35)
   public void editAccount_correct() {
@@ -299,82 +153,6 @@ public class AccountControllerIT extends BaseTest {
         .all()
         .statusCode(Response.Status.FORBIDDEN.getStatusCode())
         .body("message", equalTo(EXCEPTION_AUTH_BLOCKED_ACCOUNT));
-  }
-
-  @Test
-  @Order(37)
-  public void unblockAccount_alreadyUnblocked() {
-    given()
-        .header("authorization", "Bearer " + adminJwt)
-        .put(getApiRoot() + "/account/3/unblock")
-        .then()
-        .log()
-        .all()
-        .statusCode(Response.Status.OK.getStatusCode());
-    given()
-        .header("authorization", "Bearer " + adminJwt)
-        .get(getApiRoot() + "/account/3")
-        .then()
-        .log()
-        .all()
-        .body("active", equalTo(true));
-  }
-
-  @Test
-  @Order(38)
-  public void blockAccount_correct() {
-    given()
-        .header("authorization", "Bearer " + adminJwt)
-        .put(getApiRoot() + "/account/3/block")
-        .then()
-        .log()
-        .all()
-        .statusCode(Response.Status.OK.getStatusCode());
-    given()
-        .header("authorization", "Bearer " + adminJwt)
-        .get(getApiRoot() + "/account/3")
-        .then()
-        .log()
-        .all()
-        .body("active", equalTo(false));
-  }
-
-  @Test
-  @Order(39)
-  public void blockAccount_alreadyBlocked() {
-    given()
-        .header("authorization", "Bearer " + adminJwt)
-        .put(getApiRoot() + "/account/3/block")
-        .then()
-        .log()
-        .all()
-        .statusCode(Response.Status.OK.getStatusCode());
-    given()
-        .header("authorization", "Bearer " + adminJwt)
-        .get(getApiRoot() + "/account/3")
-        .then()
-        .log()
-        .all()
-        .body("active", equalTo(false));
-  }
-
-  @Test
-  @Order(40)
-  public void unblockAccount_correct() {
-    given()
-        .header("authorization", "Bearer " + adminJwt)
-        .put(getApiRoot() + "/account/3/unblock")
-        .then()
-        .log()
-        .all()
-        .statusCode(Response.Status.OK.getStatusCode());
-    given()
-        .header("authorization", "Bearer " + adminJwt)
-        .get(getApiRoot() + "/account/3")
-        .then()
-        .log()
-        .all()
-        .body("active", equalTo(true));
   }
 
   @Test
@@ -1143,6 +921,234 @@ public class AccountControllerIT extends BaseTest {
 
   @Nested
   @Order(8)
+  @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+  class BlockAndUnblockAccessLevel {
+    @Test
+    @Order(1)
+    public void blockRoleChemist_correct() {
+      given()
+              .header("authorization", "Bearer " + adminJwt)
+              .put(getApiRoot() + "/account/3/chemist/block")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.NO_CONTENT.getStatusCode());
+      given()
+              .header("authorization", "Bearer " + adminJwt)
+              .get(getApiRoot() + "/account/3/details")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.OK.getStatusCode())
+              .body("accessLevels.find{it.role=='CHEMIST'}.active", equalTo(false));
+    }
+
+    @Test
+    @Order(2)
+    public void blockRolePatient_correct() {
+      given()
+              .header("authorization", "Bearer " + adminJwt)
+              .put(getApiRoot() + "/account/3/patient/block")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.NO_CONTENT.getStatusCode());
+      given()
+              .header("authorization", "Bearer " + adminJwt)
+              .get(getApiRoot() + "/account/3/details")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.OK.getStatusCode())
+              .body("accessLevels.find{it.role=='PATIENT'}.active", equalTo(false));
+    }
+
+    @Test
+    @Order(3)
+    public void blockRoleAdmin_lastAccessLevel() {
+      given()
+              .header("authorization", "Bearer " + adminJwt)
+              .put(getApiRoot() + "/account/3/admin/block")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.BAD_REQUEST.getStatusCode())
+              .body("message", equalTo(EXCEPTION_ACCOUNT_DEACTIVATE_LAST_ACCESS_LEVEL));
+      given()
+              .header("authorization", "Bearer " + adminJwt)
+              .get(getApiRoot() + "/account/3/details")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.OK.getStatusCode())
+              .body("accessLevels.find{it.role=='ADMIN'}.active", equalTo(true));
+    }
+
+    @Test
+    @Order(4)
+    public void blockRoleAdmin_deactivationOnSelf() {
+      given()
+              .header("authorization", "Bearer " + adminJwt)
+              .put(getApiRoot() + "/account/1/admin/block")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.BAD_REQUEST.getStatusCode())
+              .body("message", equalTo(EXCEPTION_ACCOUNT_DEACTIVATE_SELF));
+      given()
+              .header("authorization", "Bearer " + adminJwt)
+              .get(getApiRoot() + "/account/1/details")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.OK.getStatusCode())
+              .body("accessLevels.find{it.role=='ADMIN'}.active", equalTo(true));
+    }
+
+    @Test
+    @Order(5)
+    public void unblockRolePatient_correct() {
+      given()
+              .header("authorization", "Bearer " + adminJwt)
+              .put(getApiRoot() + "/account/3/patient/unblock")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.NO_CONTENT.getStatusCode());
+      given()
+              .header("authorization", "Bearer " + adminJwt)
+              .get(getApiRoot() + "/account/3/details")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.OK.getStatusCode())
+              .body("accessLevels.find{it.role=='PATIENT'}.active", equalTo(true));
+    }
+
+    @Test
+    @Order(6)
+    public void unblockRoleChemist_correct() {
+      given()
+              .header("authorization", "Bearer " + adminJwt)
+              .put(getApiRoot() + "/account/3/chemist/unblock")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.NO_CONTENT.getStatusCode());
+      given()
+              .header("authorization", "Bearer " + adminJwt)
+              .get(getApiRoot() + "/account/3/details")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.OK.getStatusCode())
+              .body("accessLevels.find{it.role=='CHEMIST'}.active", equalTo(true));
+    }
+
+    @Test
+    @Order(7)
+    public void blockRoleAdmin_correct() {
+      given()
+              .header("authorization", "Bearer " + adminJwt)
+              .put(getApiRoot() + "/account/3/admin/block")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.NO_CONTENT.getStatusCode());
+      given()
+              .header("authorization", "Bearer " + adminJwt)
+              .get(getApiRoot() + "/account/3/details")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.OK.getStatusCode())
+              .body("accessLevels.find{it.role=='ADMIN'}.active", equalTo(false));
+    }
+  }
+
+  @Nested
+  @Order(9)
+  @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+  class BlockAndUnblockAccount {
+    @Test
+    @Order(1)
+    public void unblockAccount_alreadyUnblocked() {
+      given()
+              .header("authorization", "Bearer " + adminJwt)
+              .put(getApiRoot() + "/account/3/unblock")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.OK.getStatusCode());
+      given()
+              .header("authorization", "Bearer " + adminJwt)
+              .get(getApiRoot() + "/account/3")
+              .then()
+              .log()
+              .all()
+              .body("active", equalTo(true));
+    }
+
+    @Test
+    @Order(2)
+    public void blockAccount_correct() {
+      given()
+              .header("authorization", "Bearer " + adminJwt)
+              .put(getApiRoot() + "/account/3/block")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.OK.getStatusCode());
+      given()
+              .header("authorization", "Bearer " + adminJwt)
+              .get(getApiRoot() + "/account/3")
+              .then()
+              .log()
+              .all()
+              .body("active", equalTo(false));
+    }
+
+    @Test
+    @Order(3)
+    public void blockAccount_alreadyBlocked() {
+      given()
+              .header("authorization", "Bearer " + adminJwt)
+              .put(getApiRoot() + "/account/3/block")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.OK.getStatusCode());
+      given()
+              .header("authorization", "Bearer " + adminJwt)
+              .get(getApiRoot() + "/account/3")
+              .then()
+              .log()
+              .all()
+              .body("active", equalTo(false));
+    }
+
+    @Test
+    @Order(4)
+    public void unblockAccount_correct() {
+      given()
+              .header("authorization", "Bearer " + adminJwt)
+              .put(getApiRoot() + "/account/3/unblock")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.OK.getStatusCode());
+      given()
+              .header("authorization", "Bearer " + adminJwt)
+              .get(getApiRoot() + "/account/3")
+              .then()
+              .log()
+              .all()
+              .body("active", equalTo(true));
+    }
+  }
+
+  @Nested
+  @Order(10)
   @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
   class AddAccountWithAccessLevel {
     @Test
