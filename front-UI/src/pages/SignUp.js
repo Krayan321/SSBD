@@ -13,43 +13,46 @@ import {Container, Stack} from '@mui/material';
 
 const signUpSchema = Yup.object().shape({
     name: Yup.string()
-        .min(2, 'Too Short!')
-        .max(50, 'Too Long!')
-        .required('Name is required'),
+        .min(2, 'first_name_length_min')
+        .max(50, 'first_name_length_max')
+        .required('first_name_required'),
     lastName: Yup.string()
-        .min(2, 'Too Short!')
-        .max(50, 'Too Long!')
-        .required('Last name is required'),
+        .min(2, 'last_name_lenght_min')
+        .max(50, 'last_name_length_max')
+        .required('last_name_required'),
     login: Yup.string()
-        .min(2, 'Too Short!')
-        .max(50, 'Too Long!')
-        .required('Login is required'),
+        .min(5, 'login_length_min')
+        .max(50, 'login_length_max')
+        .required('login_required'),
     email: Yup.string()
-        .email('Invalid email')
-        .required('Email is required'),
+        .email('email_valid')
+        .required('email_required'),
     password: Yup.string()
-        .min(8, 'Too Short!')
-        .max(50, 'Too Long!')
+        .min(8, 'password_length_min')
+        .max(50, 'password_length_max')
         .matches(
-            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/,
-            "Must Contain 8 Characters, One Uppercase, One Lowercase and One Number"
+            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+            "password_invalid"
         )
         .required('Password is required'),
+    confirmPassword: Yup.string()
+        .oneOf([Yup.ref('password'), null], 'passwords_not_match')
+        .required('confirm_password_required'),
     phoneNumber: Yup.string()
-        .min(9, 'Too Short!')
-        .max(9, 'Too Long!')
-        .matches(/^[0-9]+$/, "Must be only digits")
-        .required('Phone number is required'),
+        .min(9, 'phone_number_length')
+        .max(9, 'phone_number_length')
+        .matches(/^[0-9]+$/, "phone_number_only_digits")
+        .required('phone_number_required'),
     pesel: Yup.string()
-        .min(11, 'Too Short!')
-        .max(11, 'Too Long!')
-        .matches(/^[0-9]+$/, "Must be only digits")
-        .required('Pesel is required'),
+        .min(11, 'pesel_length')
+        .max(11, 'pesel_length')
+        .matches(/^[0-9]+$/, "pesel_only_digits")
+        .required('pesel_required'),
     nip: Yup.string()
-        .min(10, 'Too Short!')
-        .matches(/^[0-9]+$/, "Must be only digits")
-        .max(10, 'Too Long!')
-        .required('Nip is required'),
+        .min(10, 'nip_length')
+        .matches(/^[0-9]+$/, "nip_only_digits")
+        .max(10, 'nip_length')
+        .required('nip_required')
 });
 
 function SignUp() {
@@ -66,9 +69,10 @@ function SignUp() {
         signUpAccount(name, lastName, login, email, password, phoneNumber, pesel, nip)
     })
 
-    const paperStyle = {padding: '30px 20px', margin: "0px auto", width: 400}
+    const paperStyle = {padding: '20px 20px', margin: "0px auto", width: 400}
     const headerStyle = {margin: 0}
     const [passwordShown, setPasswordShown] = useState(false);
+    const [confirmPasswordShown, setConfirmPasswordShown] = useState(false);
     const {t} = useTranslation();
 
     return (
@@ -77,7 +81,6 @@ function SignUp() {
             display: 'flex',
             justifyContent: 'center',
             alignContent: 'center',
-            maxHeight: '100vh',
             marginTop: '3rem'
         }}>
             <Paper elevation={20} style={paperStyle}>
@@ -90,45 +93,57 @@ function SignUp() {
                             type="text"
                             variant='outlined'
                             color='secondary'
-                            label="First Name"
+                            label={t("name")}
                             fullWidth
                             required
                             error={errors.name}
-                            helperText={errors.name?.message}
+                            helperText={t(errors.name?.message)}
                         />
                         <TextField
                             type="text"
                             variant='outlined'
                             color='secondary'
-                            label="Last Name"
+                            label={t("last_name")}
                             fullWidth
                             required
                             error={errors.lastName}
-                            helperText={errors.lastName?.message}
+                            helperText={t(errors.lastName?.message)}
                             {...register("lastName")}
                         />
                     </Stack>
                     <TextField
+                        type="text"
+                        variant='outlined'
+                        color='secondary'
+                        label={t("login")}
+                        fullWidth
+                        required
+                        sx={{mb: 4}}
+                        error={errors.login}
+                        helperText={t(errors.login?.message)}
+                        {...register("login")}
+                    />
+                    <TextField
                         type="email"
                         variant='outlined'
                         color='secondary'
-                        label="Email"
+                        label={t("email")}
                         fullWidth
                         required
                         sx={{mb: 4}}
                         error={errors.email}
-                        helperText={errors.email?.message}
+                        helperText={t(errors.email?.message)}
                         {...register("email")}
                     />
                     <TextField
                         type={passwordShown ? "text" : "password"}
                         variant='outlined'
                         color='secondary'
-                        label="Password"
+                        label={t("password")}
                         required
                         fullWidth
                         error={errors.password}
-                        helperText={errors.password?.message}
+                        helperText={t(errors.password?.message)}
                         sx={{mb: 4}}
                         {...register("password")}
                         InputProps={
@@ -140,26 +155,46 @@ function SignUp() {
                         }
                     />
                     <TextField
-                        type="text"
+                        type={confirmPasswordShown ? "text" : "password"}
                         variant='outlined'
                         color='secondary'
-                        label="Phone Number"
+                        label={t("confirm_password")}
                         required
                         fullWidth
-                        error={errors.phoneNumber}
-                        helperText={errors.phoneNumber?.message}
+                        error={errors.confirmPassword}
+                        helperText={t(errors.confirmPassword?.message)}
                         sx={{mb: 4}}
-                        {...register("PhoneNumber")}
+                        {...register("confirmPassword")}
+                        InputProps={
+                            {
+                                endAdornment: <Button
+                                    onClick={() => setConfirmPasswordShown(!confirmPasswordShown)}>{confirmPasswordShown ?
+                                    <VisibilityOffIcon fontSize="small" sx={{color: 'black'}}/> :
+                                    <VisibilityIcon fontSize="small" sx={{color: 'black'}}/>}</Button>
+                            }
+                        }
                     />
                     <TextField
                         type="text"
                         variant='outlined'
                         color='secondary'
-                        label="Pesel"
+                        label={t("phone_number")}
+                        required
+                        fullWidth
+                        error={errors.phoneNumber}
+                        helperText={t(errors.phoneNumber?.message)}
+                        sx={{mb: 4}}
+                        {...register("phoneNumber")}
+                    />
+                    <TextField
+                        type="text"
+                        variant='outlined'
+                        color='secondary'
+                        label={t("pesel")}
                         required
                         fullWidth
                         error={errors.pesel}
-                        helperText={errors.pesel?.message}
+                        helperText={t(errors.pesel?.message)}
                         sx={{mb: 4}}
                         {...register("pesel")}
                     />
@@ -167,16 +202,16 @@ function SignUp() {
                         type="text"
                         variant='outlined'
                         color='secondary'
-                        label="Nip"
+                        label={t("nip")}
                         required
                         fullWidth
                         error={errors.nip}
-                        helperText={errors.nip?.message}
+                        helperText={t(errors.nip?.message)}
                         sx={{mb: 4}}
                         {...register("nip")}
                     />
                     <Button fullWidth
-                            onClick={onSubmit} type='submit' variant='contained' color='secondary'>Sign up</Button>
+                            onClick={onSubmit} type='submit' variant='contained'>{t("sign_up")}</Button>
                 </form>
             </Paper>
         </div>
