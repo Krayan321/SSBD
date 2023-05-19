@@ -9,6 +9,12 @@ import * as Yup from "yup";
 import {yupResolver} from "@hookform/resolvers/yup";
 import {useForm} from "react-hook-form";
 
+import React, { useState } from "react";
+import { Grid, Paper, TextField, Button, Box, Typography } from "@mui/material";
+import { useTranslation } from "react-i18next";
+import { signInAccount } from "../api/mok/accountApi";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const logInSchema = Yup.object().shape({
     login: Yup.string()
@@ -33,11 +39,43 @@ const Login = () => {
     const [passwordShown, setPasswordShown] = useState(false);
     const {t} = useTranslation();
     const paperStyle = {padding: '30px 20px', margin: "auto", width: 400}
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
 
-    const onSubmit = handleSubmit(({login, password}) => {
-        //todo
-        console.log(`Username: ${login}, Password: ${password}`);
-    });
+  const navigate = useNavigate();
+
+
+
+  const handleUsernameChange = (event) => {
+    setUsername(event.target.value);
+  };
+
+  const handlePasswordChange = (event) => {
+    setPassword(event.target.value);
+  };
+
+  const setAuthToken = (token) => {
+    if (token) {
+      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    } else {
+      delete axios.defaults.headers.common['Authorization'];
+    }
+  };
+
+
+  async function handleSubmit(event) {
+    event.preventDefault();
+    const response = await signInAccount(username, password);
+    console.log(response.data);
+    const jwt = response.data.jwtToken;
+    console.log(jwt);
+    localStorage.setItem('jwtToken', jwt);
+    setAuthToken(jwt);
+    console.log(localStorage.getItem('jwtToken'));
+    navigate('/accounts');
+  }
+
+
 
     return (
 

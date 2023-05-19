@@ -25,7 +25,7 @@ i18n
   .use(LanguageDetector)
   .use(HttpApi)
   .init({
-    supportedLngs: ['en', 'pl', 'cs'],
+    supportedLngs: ['en', 'pl'],
     backend: {
         loadPath: '/assets/locales/{{lng}}/translation.json',
     }, 
@@ -48,26 +48,24 @@ const loading = (
 function App() {
   return (
     <Suspense fallback={loading}>
-    <Router>
-      <Navbar />
-      <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/" element={<Home />} />
-        <Route path="/sign-up" element={<SingUp />} />
-        <Route path="/accounts" element={<AllAccounts />} />
-        <Route path="/accounts:id" element={<SingleAccount />} />
-        <Route path="/accounts/self" element={<AccountInfo />} />
-        <Route path="/accounts/edit/:id" element={<EditSingleAccount />} />
-        <Route path="*" element={<h1>Not Found</h1>} />
-        <Route path="/edit-chemist/:id" element={<EditChemist />} />
-        <Route path="/edit-admin/:id" element={<EditChemist />} />
-        <Route path="/edit-patient/:id" element={<EditChemist />} />
-      </Routes>
-    </Router>
+      <Router>
+        <Navbar />
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/" element={<Home />} />
+          <Route path="/sign-up" element={<SingUp />} />
+          <Route path="/accounts" element={<AllAccounts />} />
+          <Route path="/accounts:id" element={<SingleAccount />} />
+          <Route path="/accounts/self" element={<AccountInfo />} />
+          <Route path="/accounts/edit/:id" element={<EditSingleAccount />} />
+          <Route path="*" element={<h1>Not Found</h1>} />
+          <Route path="/edit-chemist/:id" element={<EditChemist />} />
+          <Route path="/edit-admin/:id" element={<EditAdmin />} />
+          <Route path="/edit-patient/:id" element={<EditPatient />} />
+        </Routes>
+      </Router>
     </Suspense>
   );
 }
-
-
 
 export default App;
