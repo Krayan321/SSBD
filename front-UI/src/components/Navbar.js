@@ -16,7 +16,7 @@ import LanguageIcon from '@mui/icons-material/Language';
 
 const guestTheme = createTheme({
   palette: {
-    primary: purple,
+    primary: blue,
     //admin: blue,
     //pharmacist: green,
     //patient: yellow,
