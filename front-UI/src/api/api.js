@@ -21,7 +21,7 @@ export async function getNoResponse(stringUrl, params) {
         },
         withCredentials: true,
       });
-      return response.status;
+      return response;
     } catch (error) {
       console.error(error);
     }
@@ -41,7 +41,7 @@ export async function get(stringUrl, params) {
         },
         withCredentials: true,
       });
-      return response.status;
+      return response;
     } catch (error) {
       console.error(error);
     }
@@ -53,9 +53,9 @@ export async function post(stringUrl, body) {
     try {
       const response = await axios.post(url, body, {
         headers: defaultHeaders,
-        withCredentials: false,
+        withCredentials: true,
       });
-      return response.status;
+      return response;
     } catch (error) {
       console.error(error);
     }
@@ -67,9 +67,9 @@ export async function put(stringUrl, body) {
     try {
       const response = await axios.put(url, body, {
         headers: defaultHeaders,
-        withCredentials: false,
+        withCredentials: true,
       });
-      return response.status;
+      return response;
     } catch (error) {
       console.error(error);
     }
@@ -83,7 +83,7 @@ export async function del(stringUrl) {
         headers: defaultHeaders,
         withCredentials: true,
       });
-      return response.status;
+      return response;
     } catch (error) {
       console.error(error);
     }

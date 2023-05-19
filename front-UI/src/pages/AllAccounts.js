@@ -7,13 +7,44 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import axios from "axios";
+import { getAccounts } from "../api/mok/accountApi";
+import { Button } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 export default function AllAccounts() {
   const [accounts, setAccounts] = useState([]);
+  const navigate = useNavigate();
 
   const findAccounts = useCallback(async () => {
-    const response = await axios("http:/api/accounts");
-  });
+    let response = await getAccounts();
+
+
+    if (response.status === 200) {
+      setAccounts(response.data);
+      console.log(response.data);
+    } else {
+      //toast ?
+      console.log('Nie udało się pobrać kont');
+    }
+  }, []);
+
+  useEffect(() => {
+    findAccounts();
+  }, [findAccounts]);
+
+  const handleAccountDetails = async (accountId) => {
+    const id = accountId;
+    const accountToUpdate = [...accounts];
+    const indexOfProductToEdit = accountToUpdate.findIndex(
+      (account) => account.id === accountId
+    );
+    if (indexOfProductToEdit !== -1) {
+      setAccounts(accountToUpdate);
+    }
+    navigate(`/account/${id}/details`);
+  };
+
+  
 
   return (
     <TableContainer component={Paper}>
@@ -21,9 +52,9 @@ export default function AllAccounts() {
         <TableHead>
           <TableRow>
             <TableCell>Account login</TableCell>
-            <TableCell align="right">Active</TableCell>
+            <TableCell align="right">Email</TableCell>
             <TableCell align="right">Confimed</TableCell>
-            <TableCell align="right">Access Level</TableCell>
+            <TableCell align="right">Details</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -35,9 +66,9 @@ export default function AllAccounts() {
               <TableCell component="th" scope="row">
                 {row.login}
               </TableCell>
-              <TableCell align="right">{row.active}</TableCell>
-              <TableCell align="right">{row.confirmed}</TableCell>
-              <TableCell align="right">{row.accessLevels}</TableCell>
+              <TableCell align="right">{row.email}</TableCell>
+              <TableCell align="right">{String(row.confirmed)}</TableCell>
+              <TableCell align="right"><Button onClick={handleAccountDetails(row.id)}>Details</Button></TableCell>
             </TableRow>
           ))}
         </TableBody>

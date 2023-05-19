@@ -1,13 +1,15 @@
 import React, { useState } from "react";
 import { Grid, Paper, TextField, Button, Box, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
-import { useAccount } from "../hooks/useAccount";
 import { signInAccount } from "../api/mok/accountApi";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const { logInClient } = useAccount();
+
+  const navigate = useNavigate();
 
   const { t } = useTranslation();
 
@@ -26,14 +28,28 @@ const Login = () => {
     setPassword(event.target.value);
   };
 
-  const handleSubmit = (event) => {
-    signInAccount(username, password);
-    event.preventDefault();
+  const setAuthToken = (token) => {
+    if (token) {
+      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    } else {
+      delete axios.defaults.headers.common['Authorization'];
+    }
   };
+  
 
-  // async function signInButtonHandle() {
-  //   await logInClient({ username, password });
-  // }
+  async function handleSubmit(event) {
+    event.preventDefault();
+    const response = await signInAccount(username, password);
+    console.log(response.data);
+    const jwt = response.data.jwtToken;
+    console.log(jwt);
+    localStorage.setItem('jwtToken', jwt);
+    setAuthToken(jwt);
+    console.log(localStorage.getItem('jwtToken'));
+    navigate('/accounts');
+  }
+
+
 
   return (
     <Grid>
@@ -44,7 +60,7 @@ const Login = () => {
           </Typography>
           <Box
             sx={{ display: "flex", flexDirection: "column", width: "100%" }}
-            //onSubmit={signInButtonHandle}
+            //onSubmit={}
           >
             <form>
               <TextField
