@@ -32,17 +32,17 @@ export default function AllAccounts() {
     findAccounts();
   }, [findAccounts]);
 
-  const handleAccountDetails = async (accountId) => {
-    const id = accountId;
-    const accountToUpdate = [...accounts];
-    const indexOfProductToEdit = accountToUpdate.findIndex(
-      (account) => account.id === accountId
-    );
-    if (indexOfProductToEdit !== -1) {
-      setAccounts(accountToUpdate);
-    }
-    navigate(`/account/${id}/details`);
-  };
+  // const handleAccountDetails = async (accountId) => {
+  //   const id = accountId;
+  //   const accountToUpdate = [...accounts];
+  //   const indexOfProductToEdit = accountToUpdate.findIndex(
+  //     (account) => account.id === accountId
+  //   );
+  //   if (indexOfProductToEdit !== -1) {
+  //     setAccounts(accountToUpdate);
+  //   }
+  //   //navigate(`/account/${id}/details`);
+  // };
 
   
 
@@ -68,7 +68,7 @@ export default function AllAccounts() {
               </TableCell>
               <TableCell align="right">{row.email}</TableCell>
               <TableCell align="right">{String(row.confirmed)}</TableCell>
-              <TableCell align="right"><Button onClick={handleAccountDetails(row.id)}>Details</Button></TableCell>
+              <TableCell align="right"><Button >Details</Button></TableCell>
             </TableRow>
           ))}
         </TableBody>

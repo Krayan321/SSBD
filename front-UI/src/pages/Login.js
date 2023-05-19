@@ -39,7 +39,8 @@ const Login = () => {
     const {t} = useTranslation();
     const paperStyle = {padding: '30px 20px', margin: "auto", width: 400}
     const navigate = useNavigate();
-
+    // const [accessToken, setAccessToken] =               
+    //       useState(sessionStorage.getItem('jwtToken'));
 
     const setAuthToken = (token) => {
         if (token) {
@@ -52,7 +53,13 @@ const Login = () => {
     const onSubmit = async ({login, password}) => {
         const response = await signInAccount(login, password);
         const jwt = response.data.jwtToken;
-        localStorage.setItem('jwtToken', jwt);
+        // const { accessToken } = response.data;
+        // localStorage.setItem('accessToken', accessToken);
+        // console.log(localStorage.getItem('accessToken'));
+        //setAccessToken(jwt);
+        // console.log(jwt);
+        // localStorage.setItem('jwtToken', jwt);
+        // console.log(localStorage.getItem('jwtToken'));
         setAuthToken(jwt);
         navigate('/accounts');
     }

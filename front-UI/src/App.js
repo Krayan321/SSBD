@@ -17,6 +17,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.js';
 import LinearProgress from '@mui/material/LinearProgress';
 import EditChemist from './pages/EditChemist';
+import EditAdmin from './pages/EditAdmin';
+import EditPatient from './pages/EditPatient';
 
 
 
