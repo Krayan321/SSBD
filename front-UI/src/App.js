@@ -60,8 +60,8 @@ function App() {
           <Route path="/accounts/edit/:id" element={<EditSingleAccount />} />
           <Route path="*" element={<h1>Not Found</h1>} />
           <Route path="/edit-chemist/:id" element={<EditChemist />} />
-          <Route path="/edit-admin/:id" element={<EditAdmin />} />
-          <Route path="/edit-patient/:id" element={<EditPatient />} />
+          {/*<Route path="/edit-admin/:id" element={<EditAdmin />} />*/}
+          {/*<Route path="/edit-patient/:id" element={<EditPatient />} />*/}
         </Routes>
       </Router>
     </Suspense>
