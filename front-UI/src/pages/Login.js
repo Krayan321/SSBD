@@ -51,12 +51,9 @@ const Login = () => {
 
     const onSubmit = async ({login, password}) => {
         const response = await signInAccount(login, password);
-        console.log(response.data);
         const jwt = response.data.jwtToken;
-        console.log(jwt);
         localStorage.setItem('jwtToken', jwt);
         setAuthToken(jwt);
-        console.log(localStorage.getItem('jwtToken'));
         navigate('/accounts');
     }
 
