@@ -1537,4 +1537,83 @@ public class AccountControllerIT extends BaseTest {
               .statusCode(Response.Status.FORBIDDEN.getStatusCode());
     }
   }
+
+  @Nested
+  @Order(14)
+  @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+  class changeLanguageVersion {
+    private String etag;
+    private String chemistJwt;
+    private EditAccountDTO editAccountDTO;
+
+    @Test
+    @Order(1)
+    public void changeLanguage_correct() {
+      given()
+              .header("authorization", "Bearer " + adminJwt)
+              .get(getApiRoot() + "/account/details")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.OK.getStatusCode())
+              .body("language", equalTo("en"));
+
+      String newLanguage = "pl";
+      given()
+              .header("authorization", "Bearer " + adminJwt)
+              .put(getApiRoot() + "/account/change-language?language=" + newLanguage)
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.NO_CONTENT.getStatusCode());
+
+      given()
+              .header("authorization", "Bearer " + adminJwt)
+              .get(getApiRoot() + "/account/details")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.OK.getStatusCode())
+              .body("language", equalTo(newLanguage));
+    }
+
+    @Test
+    @Order(2)
+    public void changeLanguage_notALanguage() {
+      String newLanguage = "ajhsdkjs";
+      given()
+              .header("authorization", "Bearer " + adminJwt)
+              .put(getApiRoot() + "/account/change-language?language=" + newLanguage)
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.NOT_FOUND.getStatusCode())
+              .body("message", equalTo(EXCEPTION_LANGUAGE_NOT_FOUND));
+    }
+
+    @Test
+    @Order(3)
+    public void changeLanguage_unhandledLanguage() {
+      String newLanguage = "sk";
+      given()
+              .header("authorization", "Bearer " + adminJwt)
+              .get(getApiRoot() + "/account/change-language?language=" + newLanguage)
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.NOT_FOUND.getStatusCode());
+    }
+
+    @Test
+    @Order(4)
+    public void changeLanguage_empty() {
+      given()
+              .header("authorization", "Bearer " + adminJwt)
+              .get(getApiRoot() + "/account/change-language?language=")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.NOT_FOUND.getStatusCode());
+    }
+  }
 }

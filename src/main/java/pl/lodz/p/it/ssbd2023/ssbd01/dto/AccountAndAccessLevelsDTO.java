@@ -15,9 +15,9 @@ import pl.lodz.p.it.ssbd2023.ssbd01.common.SignableEntity;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class AccountAndAccessLevelsDTO extends AbstractEntityDTO implements SignableEntity {
+public class AccountAndAccessLevelsDTO extends AccountDTO {
 
-  @Builder
+  @Builder(builderMethodName = "accountAndAccessLevelsBuilder")
   public AccountAndAccessLevelsDTO(
       Long id,
       Long version,
@@ -26,33 +26,9 @@ public class AccountAndAccessLevelsDTO extends AbstractEntityDTO implements Sign
       String email,
       Boolean active,
       Boolean confirmed) {
-    super(id, version);
+    super(id, version, login, active, confirmed, email);
     this.accessLevels = accessLevels;
-    this.login = login;
-    this.active = active;
-    this.confirmed = confirmed;
-    this.email = email;
   }
 
   @ToString.Exclude Set<AccessLevelDTO> accessLevels;
-
-  @Size(max = 50, min = 5)
-  @NotNull
-  private String login;
-
-  @Email
-  @Size(max = 50, min = 5)
-  @NotNull
-  private String email;
-
-  @NotNull
-  private Boolean active;
-
-  @NotNull
-  private Boolean confirmed;
-
-  @Override
-  public String getSignablePayload() {
-    return String.format("%s.%d", login, getVersion());
-  }
 }

@@ -73,6 +73,10 @@ public class ApplicationException extends WebApplicationException {
     return new ApplicationExceptionEntityNotFound();
   }
 
+  public static ApplicationException createLanguageNotFoundException() {
+    return new ApplicationException(NOT_FOUND, EXCEPTION_LANGUAGE_NOT_FOUND);
+  }
+
   public static ApplicationException createOptimisticLockException() {
     return new ApplicationExceptionOptimisticLock();
   }
