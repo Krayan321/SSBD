@@ -5,6 +5,7 @@
   "dependencies": {
     "@emotion/react": "^11.11.0",
     "@emotion/styled": "^11.11.0",
+    "@fontsource/lato": "^4.5.10",
     "@hookform/resolvers": "^3.1.0",
     "@mui/icons-material": "^5.11.16",
     "@mui/material": "^5.13.0",
@@ -23,7 +24,7 @@
     "react-hook-form": "^7.43.9",
     "react-i18next": "^12.2.2",
     "react-router-dom": "^6.10.0",
-    "react-scripts": "5.0.1",
+    "react-scripts": "^5.0.1",
     "web-vitals": "^2.1.4",
     "yup": "^1.1.1"
   },

@@ -13,6 +13,15 @@
   }
 }
 
+body {
+  background-image: url("../public/pharmacy-shelves.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+
+}
+
 .App-header {
   background-color: #282c34;
   min-height: 100vh;
