@@ -9,10 +9,8 @@ export async function getAccount(id) {
 }
 
 export async function confirmAccount(token) {
-  const body = {
-    token: token,
-  };
-  return await post("account/confirm", body);
+
+  return await post(`account/confirm/${token}`);
 }
 
 export async function confirmEmailChange(token) {
