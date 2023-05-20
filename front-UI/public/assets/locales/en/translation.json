@@ -52,5 +52,8 @@
     "exception.token.not-found": "Token not found",
     "exception.token.expired": "Token expired",
     "error_during_confirmation": "Error during confirmation",
-    "account_confirmed_login": "Account confirmed. You can login now"
+    "account_confirmed_login": "Account confirmed. You can login now",
+    "account_details": "Account details",
+    "access_level": "Access level",
+    "work_phone_number": "Work phone number"
 }

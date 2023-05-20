@@ -54,6 +54,7 @@ export default function AllAccounts() {
             <TableCell>Account login</TableCell>
             <TableCell align="right">Email</TableCell>
             <TableCell align="right">Confimed</TableCell>
+            <TableCell align="right">Active</TableCell>
             <TableCell align="right">Details</TableCell>
           </TableRow>
         </TableHead>
@@ -68,6 +69,7 @@ export default function AllAccounts() {
               </TableCell>
               <TableCell align="right">{row.email}</TableCell>
               <TableCell align="right">{String(row.confirmed)}</TableCell>
+              <TableCell align="right">{String(row.active)}</TableCell>
               <TableCell align="right"><Button onClick={() => handleAccountDetails(row.id)}>Details</Button></TableCell>
             </TableRow>
           ))}
