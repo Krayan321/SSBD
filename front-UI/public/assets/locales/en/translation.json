@@ -42,5 +42,8 @@
     "exception.account.duplicate.nip": "NIP already exists",
     "exception.account.duplicate.phone_number": "Phone number already exists",
     "account_created_check_email": "Account created. Check your email to activate account",
-    "invalid_login_or_password": "Invalid login or password"
+    "invalid_login_or_password": "Invalid login or password",
+    "server_error": "Server error",
+    "activate_account_to_login": "Activate account to login",
+    "invalid_account_data": "Invalid account data"
 }

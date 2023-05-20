@@ -68,7 +68,6 @@ function SignUp() {
     });
 
 
-
     const paperStyle = {padding: '20px 20px', margin: "0px auto", width: 400}
     const headerStyle = {margin: 0}
     const [passwordShown, setPasswordShown] = useState(false);
@@ -89,9 +88,20 @@ function SignUp() {
             }
         ).catch(error => {
             setLoading(false)
-            toast.error(t(error.response.data.message), {
-                position: "top-center",
-            })
+
+            if (error.response.status === 400) {
+                toast.error(t("invalid_account_data"), {
+                    position: "top-center",
+                })
+            } else if (error.response.status === 409) {
+                toast.error(t(error.response.data.message), {
+                    position: "top-center",
+                })
+            } else {
+                toast.error(t("server_error"), {
+                    position: "top-center",
+                })
+            }
         })
     })
 
@@ -232,7 +242,7 @@ function SignUp() {
                         {...register("nip")}
                     />
                     {
-                        loading ? <CircularProgress style={{marginRight: "auto", marginLeft: "auto"}} /> :
+                        loading ? <CircularProgress style={{marginRight: "auto", marginLeft: "auto"}}/> :
                             <Button fullWidth
                                     onClick={onSubmit} type='submit' variant='contained'>{t("sign_up")}</Button>
                     }

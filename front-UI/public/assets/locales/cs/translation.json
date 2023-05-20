@@ -42,5 +42,8 @@
     "exception.account.duplicate.nip": "Účet s tímto nipem již existuje",
     "exception.account.duplicate.phone_number": "Účet s tímto telefonním číslem již existuje",
     "account_created_check_email": "Účet byl vytvořen. Zkontrolujte si email pro aktivaci účtu.",
-    "invalid_login_or_password": "Neplatné uživatelské jméno nebo heslo"
+    "invalid_login_or_password": "Neplatné uživatelské jméno nebo heslo",
+    "server_error": "Chyba serveru",
+    "activate_account_to_login": "Pro přihlášení je nutné aktivovat účet",
+    "invalid_account_data": "Neplatné údaje účtu"
 }

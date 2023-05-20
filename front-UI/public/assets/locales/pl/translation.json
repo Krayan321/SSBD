@@ -42,5 +42,8 @@
     "exception.account.duplicate.nip": "Podany nip jest już zajęty",
     "exception.account.duplicate.phone_number": "Podany numer telefonu jest już zajęty",
     "account_created_check_email": "Konto zostało utworzone. Sprawdź email w celu aktywacji konta",
-    "invalid_login_or_password": "Nieprawidłowy login lub hasło"
+    "invalid_login_or_password": "Nieprawidłowy login lub hasło",
+    "server_error": "Błąd serwera",
+    "activate_account_to_login": "Aktywuj konto, aby się zalogować",
+    "invalid_account_data": "Nieprawidłowe dane konta"
 }

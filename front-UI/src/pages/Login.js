@@ -65,10 +65,23 @@ const Login = () => {
             setAuthToken(jwt);
             navigate('/accounts');
         }).catch((error) => {
-            toast.error(t("invalid_login_or_password"), {
-                position: toast.POSITION.TOP_CENTER,
-            });
-            setLoading(false)
+            if (error.response.status === 403) {
+                toast.error(t("activate_account_to_login"), {
+                    position: toast.POSITION.TOP_CENTER,
+                });
+                setLoading(false)
+
+            } else if (error.response.status === 401) {
+                toast.error(t("invalid_login_or_password"), {
+                    position: toast.POSITION.TOP_CENTER,
+                });
+                setLoading(false)
+            } else {
+                toast.error(t("server_error"), {
+                    position: toast.POSITION.TOP_CENTER,
+                });
+                setLoading(false)
+            }
         })
     }
 
