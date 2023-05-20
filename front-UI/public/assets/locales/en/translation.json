@@ -4,6 +4,7 @@
     "sign_in": "Sign In",
     "sign_in_info": "to internet pharmacy",
     "password": "Password",
+    "confirm_password": "Confirm Password",
     "username": "Username",
     "name": "Name",
     "last_name": "Last Name",
@@ -34,5 +35,15 @@
     "pesel_length": "Pesel must have 11 digits",
     "nip_only_digits": "NIP can contain only digits",
     "nip_length": "NIP must have 10 digits",
-    "nip_required": "NIP is required"
+    "nip_required": "NIP is required",
+    "exception.account.duplicate.email": "Email already exists",
+    "exception.account.duplicate.login": "Login already exists",
+    "exception.account.duplicate.pesel": "Pesel already exists",
+    "exception.account.duplicate.nip": "NIP already exists",
+    "exception.account.duplicate.phone": "Phone number already exists",
+    "account_created_check_email": "Account created. Check your email to activate account",
+    "invalid_login_or_password": "Invalid login or password",
+    "server_error": "Server error",
+    "activate_account_to_login": "Activate account to login",
+    "invalid_account_data": "Invalid account data"
 }
