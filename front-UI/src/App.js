@@ -27,7 +27,7 @@ i18n
   .use(LanguageDetector)
   .use(HttpApi)
   .init({
-    supportedLngs: ['en', 'pl'],
+    supportedLngs: ['en', 'pl', 'cs'],
     backend: {
         loadPath: '/assets/locales/{{lng}}/translation.json',
     }, 
