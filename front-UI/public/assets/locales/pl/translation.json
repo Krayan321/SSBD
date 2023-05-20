@@ -45,5 +45,13 @@
     "invalid_login_or_password": "Nieprawidłowy login lub hasło",
     "server_error": "Błąd serwera",
     "activate_account_to_login": "Aktywuj konto, aby się zalogować",
-    "invalid_account_data": "Nieprawidłowe dane konta"
+    "invalid_account_data": "Nieprawidłowe dane konta",
+    "account_confirmed": "Konto zostało potwierdzone",
+    "exception.token.already-used": "Token został już wykorzystany",
+    "exception.token.bad-type": "Nieprawidłowy typ tokenu",
+    "exception.token.not-found": "Nie znaleziono tokenu",
+    "exception.token.expired": "Token wygasł",
+    "error_during_confirmation": "Wystąpił błąd podczas potwierdzania konta",
+    "account_confirmed_login": "Konto zostało potwierdzone. Możesz się zalogować"
+
 }
