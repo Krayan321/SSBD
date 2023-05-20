@@ -4,6 +4,7 @@
     "sign_in": "Zaloguj się",
     "sign_in_info": "do apteki internetowej",
     "password": "Hasło",
+    "confirm_password": "Potwierdź hasło",
     "username": "Nazwa użytkownika",
     "name": "Imię",
     "last_name": "Nazwisko",
@@ -34,5 +35,15 @@
     "pesel_length": "Pesel musi mieć 11 cyfr",
     "nip_only_digits": "NIP może zawierać tylko cyfry",
     "nip_length": "NIP musi mieć 10 cyfr",
-    "nip_required": "NIP jest wymagany"
+    "nip_required": "NIP jest wymagany",
+    "exception.account.duplicate.email": "Podany email jest już zajęty",
+    "exception.account.duplicate.login": "Podany login jest już zajęty",
+    "exception.account.duplicate.pesel": "Podany pesel jest już zajęty",
+    "exception.account.duplicate.nip": "Podany nip jest już zajęty",
+    "exception.account.duplicate.phone": "Podany numer telefonu jest już zajęty",
+    "account_created_check_email": "Konto zostało utworzone. Sprawdź email w celu aktywacji konta",
+    "invalid_login_or_password": "Nieprawidłowy login lub hasło",
+    "server_error": "Błąd serwera",
+    "activate_account_to_login": "Aktywuj konto, aby się zalogować",
+    "invalid_account_data": "Nieprawidłowe dane konta"
 }

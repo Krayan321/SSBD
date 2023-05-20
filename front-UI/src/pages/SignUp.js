@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Grid, Paper, TextField, Button, Box} from '@mui/material';
+import {Grid, Paper, TextField, Button, CircularProgress} from '@mui/material';
 import {useTranslation} from "react-i18next";
 import {signUpAccount} from "../api/mok/accountApi";
 import VisibilityIcon from '@mui/icons-material/Visibility';
@@ -9,6 +9,8 @@ import {yupResolver} from "@hookform/resolvers/yup";
 import {useForm} from "react-hook-form";
 import Typography from '@mui/material/Typography';
 import {Container, Stack} from '@mui/material';
+import 'react-toastify/dist/ReactToastify.css';
+import {ToastContainer, toast} from 'react-toastify';
 
 
 const signUpSchema = Yup.object().shape({
@@ -65,15 +67,42 @@ function SignUp() {
         resolver: yupResolver(signUpSchema),
     });
 
-    const onSubmit = handleSubmit(({name, lastName, login, email, password, phoneNumber, pesel, nip}) => {
-        signUpAccount(name, lastName, login, email, password, phoneNumber, pesel, nip)
-    })
-
     const paperStyle = {padding: '20px 20px', margin: "0px auto", width: 400}
     const headerStyle = {margin: 0}
     const [passwordShown, setPasswordShown] = useState(false);
     const [confirmPasswordShown, setConfirmPasswordShown] = useState(false);
     const {t} = useTranslation();
+    const [loading, setLoading] = useState(false)
+
+    const onSubmit = handleSubmit(({name, lastName, login, email, password, phoneNumber, pesel, nip}) => {
+
+        setLoading(true)
+
+        signUpAccount(name, lastName, login, email, password, phoneNumber, pesel, nip).then(
+            () => {
+                setLoading(false)
+                toast.success(t("account_created_check_email"), {
+                    position: "top-center",
+                })
+            }
+        ).catch(error => {
+            setLoading(false)
+
+            if (error.response.status === 400) {
+                toast.error(t("invalid_account_data"), {
+                    position: "top-center",
+                })
+            } else if (error.response.status === 409) {
+                toast.error(t(error.response.data.message), {
+                    position: "top-center",
+                })
+            } else {
+                toast.error(t("server_error"), {
+                    position: "top-center",
+                })
+            }
+        })
+    })
 
     return (
         // <Grid container spacing={2}>
@@ -210,10 +239,14 @@ function SignUp() {
                         sx={{mb: 4}}
                         {...register("nip")}
                     />
-                    <Button fullWidth
-                            onClick={onSubmit} type='submit' variant='contained'>{t("sign_up")}</Button>
+                    {
+                        loading ? <CircularProgress style={{marginRight: "auto", marginLeft: "auto"}}/> :
+                            <Button fullWidth
+                                    onClick={onSubmit} type='submit' variant='contained'>{t("sign_up")}</Button>
+                    }
                 </form>
             </Paper>
+            <ToastContainer/>
         </div>
     )
 }

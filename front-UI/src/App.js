@@ -17,6 +17,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.js';
 import LinearProgress from '@mui/material/LinearProgress';
 import EditChemist from './pages/EditChemist';
+import EditAdmin from './pages/EditAdmin';
+import EditPatient from './pages/EditPatient';
 
 
 
@@ -25,7 +27,7 @@ i18n
   .use(LanguageDetector)
   .use(HttpApi)
   .init({
-    supportedLngs: ['en', 'pl'],
+    supportedLngs: ['en', 'pl', 'cs'],
     backend: {
         loadPath: '/assets/locales/{{lng}}/translation.json',
     }, 
@@ -60,6 +62,7 @@ function App() {
           <Route path="/accounts/edit/:id" element={<EditSingleAccount />} />
           <Route path="*" element={<h1>Not Found</h1>} />
           <Route path="/edit-chemist/:id" element={<EditChemist />} />
+          <Route path="/accounts/:id/details" element={<SingleAccount />} />
           {/*<Route path="/edit-admin/:id" element={<EditAdmin />} />*/}
           {/*<Route path="/edit-patient/:id" element={<EditPatient />} />*/}
         </Routes>
