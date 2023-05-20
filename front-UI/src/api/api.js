@@ -3,8 +3,9 @@ const BASE_URL = "http://localhost:8080/api/account";
 
 
 const defaultHeaders = {
-    "Content-Type": "application/json",
-    Accept: "application/json",
+  "Authorization": "Bearer " + localStorage.getItem('token'),
+  "Content-Type": "application/json",
+  Accept: "application/json",
 };
 
 export async function getNoResponse(stringUrl, params) {
@@ -15,10 +16,7 @@ export async function getNoResponse(stringUrl, params) {
   
     try {
       const response = await axios.get(url, {
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
+        headers: defaultHeaders,
         withCredentials: true,
       });
       return response;
@@ -35,10 +33,7 @@ export async function get(stringUrl, params) {
   
     try {
       const response = await axios.get(url, {
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
+        headers: defaultHeaders,
         withCredentials: true,
       });
       return response;
@@ -50,15 +45,15 @@ export async function get(stringUrl, params) {
 export async function post(stringUrl, body) {
     const url = new URL(stringUrl, BASE_URL);
   
-    try {
+    //try {
       const response = await axios.post(url, body, {
         headers: defaultHeaders,
         withCredentials: true,
       });
       return response;
-    } catch (error) {
-      console.error(error);
-    }
+    // } catch (error) {
+    //   console.error(error);
+    // }
 };
 
 export async function put(stringUrl, body) {

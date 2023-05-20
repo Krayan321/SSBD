@@ -42,13 +42,6 @@ const Login = () => {
     // const [accessToken, setAccessToken] =               
     //       useState(sessionStorage.getItem('jwtToken'));
 
-    const setAuthToken = (token) => {
-        if (token) {
-            axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-        } else {
-            delete axios.defaults.headers.common['Authorization'];
-        }
-    };
 
     const onSubmit = async ({login, password}) => {
         const response = await signInAccount(login, password);
@@ -58,9 +51,8 @@ const Login = () => {
         // console.log(localStorage.getItem('accessToken'));
         //setAccessToken(jwt);
         // console.log(jwt);
-        // localStorage.setItem('jwtToken', jwt);
-        // console.log(localStorage.getItem('jwtToken'));
-        setAuthToken(jwt);
+        localStorage.setItem('token', jwt);
+        console.log(localStorage.getItem('token'));
         navigate('/accounts');
     }
 

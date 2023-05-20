@@ -15,21 +15,6 @@ export default function AllAccounts() {
   const [accounts, setAccounts] = useState([]);
   const navigate = useNavigate();
 
-  const setAuthToken = (token) => {
-    if (token) {
-        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-    } else {
-        delete axios.defaults.headers.common['Authorization'];
-    }
-  };
-
-  window.addEventListener('beforeunload', function (event) {
-    setAuthToken(localStorage.getItem('jwtToken'));
-    console.log(localStorage.getItem('jwtToken'));
-    event.preventDefault();
-    event.returnValue = '';
-  });
-  
 
   const findAccounts = useCallback(async () => {
     let response = await getAccounts();

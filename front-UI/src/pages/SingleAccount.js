@@ -1,9 +1,7 @@
 import React, { useEffect } from "react";
-import { useLocation } from "react-router-dom";
 import { getAccountDetails } from "../api/mok/accountApi";
 import { useParams } from "react-router-dom";
 import { useCallback, useState } from "react";
-import { use } from "i18next";
 import { Box, Typography } from "@mui/material";
 
 
@@ -11,11 +9,13 @@ function SingleAccount() {
   const { id } = useParams();
   const [account, setAccount] = useState([]);
   const findAccount = useCallback(async () => {
-    let response = await getAccountDetails(id);
+  let response = await getAccountDetails(id);
+  console.log("response")
+  console.log(response);
 
-
-    if (response.status === 200) {
+  if (response.status === 200) {
       setAccount(response.data);
+      console.log("response.data")
       console.log(response.data);
     } else {
       console.log('Nie udało się pobrać konta');
@@ -44,7 +44,7 @@ function SingleAccount() {
         Login: {account.login}
       </Typography>
       <Typography variant="h6" component="h6" gutterBottom>
-        Access level: {account.accessLevels[0].role}
+        Access level: {account}
       </Typography>
 
       
