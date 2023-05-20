@@ -15,6 +15,22 @@ export default function AllAccounts() {
   const [accounts, setAccounts] = useState([]);
   const navigate = useNavigate();
 
+  const setAuthToken = (token) => {
+    if (token) {
+        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    } else {
+        delete axios.defaults.headers.common['Authorization'];
+    }
+  };
+
+  window.addEventListener('beforeunload', function (event) {
+    setAuthToken(localStorage.getItem('jwtToken'));
+    console.log(localStorage.getItem('jwtToken'));
+    event.preventDefault();
+    event.returnValue = '';
+  });
+  
+
   const findAccounts = useCallback(async () => {
     let response = await getAccounts();
 
@@ -23,7 +39,6 @@ export default function AllAccounts() {
       setAccounts(response.data);
       console.log(response.data);
     } else {
-      //toast ?
       console.log('Nie udało się pobrać kont');
     }
   }, []);
@@ -32,17 +47,17 @@ export default function AllAccounts() {
     findAccounts();
   }, [findAccounts]);
 
-  // const handleAccountDetails = async (accountId) => {
-  //   const id = accountId;
-  //   const accountToUpdate = [...accounts];
-  //   const indexOfProductToEdit = accountToUpdate.findIndex(
-  //     (account) => account.id === accountId
-  //   );
-  //   if (indexOfProductToEdit !== -1) {
-  //     setAccounts(accountToUpdate);
-  //   }
-  //   //navigate(`/account/${id}/details`);
-  // };
+  const handleAccountDetails = async (accountId) => {
+    const id = accountId;
+    const accountToUpdate = [...accounts];
+    const indexOfProductToEdit = accountToUpdate.findIndex(
+      (account) => account.id === accountId
+    );
+    if (indexOfProductToEdit !== -1) {
+      setAccounts(accountToUpdate);
+    }
+    navigate(`/accounts/${id}/details`);
+  };
 
   
 
@@ -68,7 +83,7 @@ export default function AllAccounts() {
               </TableCell>
               <TableCell align="right">{row.email}</TableCell>
               <TableCell align="right">{String(row.confirmed)}</TableCell>
-              <TableCell align="right"><Button >Details</Button></TableCell>
+              <TableCell align="right"><Button onClick={() => handleAccountDetails(row.id)}>Details</Button></TableCell>
             </TableRow>
           ))}
         </TableBody>
