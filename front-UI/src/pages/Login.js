@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import { Paper} from "@mui/material";
+import {Paper, CircularProgress} from "@mui/material";
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import * as Yup from "yup";
@@ -10,6 +10,8 @@ import {useTranslation} from "react-i18next";
 import {signInAccount} from "../api/mok/accountApi";
 import axios from "axios";
 import {useNavigate} from "react-router-dom";
+import 'react-toastify/dist/ReactToastify.css';
+import {ToastContainer, toast} from 'react-toastify';
 
 const logInSchema = Yup.object().shape({
     login: Yup.string()
@@ -39,6 +41,8 @@ const Login = () => {
     const {t} = useTranslation();
     const paperStyle = {padding: '30px 20px', margin: "auto", width: 400}
     const navigate = useNavigate();
+
+
     // const [accessToken, setAccessToken] =               
     //       useState(sessionStorage.getItem('jwtToken'));
 
@@ -50,18 +54,35 @@ const Login = () => {
         }
     };
 
+    const [loading, setLoading] = useState(false)
     const onSubmit = async ({login, password}) => {
-        const response = await signInAccount(login, password);
-        const jwt = response.data.jwtToken;
-        // const { accessToken } = response.data;
-        // localStorage.setItem('accessToken', accessToken);
-        // console.log(localStorage.getItem('accessToken'));
-        //setAccessToken(jwt);
-        // console.log(jwt);
-        // localStorage.setItem('jwtToken', jwt);
-        // console.log(localStorage.getItem('jwtToken'));
-        setAuthToken(jwt);
-        navigate('/accounts');
+
+        setLoading(true)
+
+        signInAccount(login, password).then((response) => {
+            setLoading(false)
+            const jwt = response.data.jwtToken;
+            setAuthToken(jwt);
+            navigate('/accounts');
+        }).catch((error) => {
+            if (error.response.status === 403) {
+                toast.error(t("activate_account_to_login"), {
+                    position: toast.POSITION.TOP_CENTER,
+                });
+                setLoading(false)
+
+            } else if (error.response.status === 401) {
+                toast.error(t("invalid_login_or_password"), {
+                    position: toast.POSITION.TOP_CENTER,
+                });
+                setLoading(false)
+            } else {
+                toast.error(t("server_error"), {
+                    position: toast.POSITION.TOP_CENTER,
+                });
+                setLoading(false)
+            }
+        })
     }
 
 
@@ -103,10 +124,15 @@ const Login = () => {
                             }
                         }
                     />
-                    <Button fullWidth
-                            onClick={handleSubmit(onSubmit)} type='submit' variant='contained'>{t("sign_up")}</Button>
+                    {
+                        loading ? <CircularProgress/> :
+                            <Button fullWidth
+                                    onClick={handleSubmit(onSubmit)} type='submit'
+                                    variant='contained'>{t("sign_in")}</Button>
+                    }
                 </form>
             </Paper>
+            <ToastContainer/>
         </div>
 
     );
