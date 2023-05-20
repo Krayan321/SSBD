@@ -43,16 +43,9 @@ const Login = () => {
     const navigate = useNavigate();
 
 
-    // const [accessToken, setAccessToken] =               
+    // const [accessToken, setAccessToken] =
     //       useState(sessionStorage.getItem('jwtToken'));
 
-    const setAuthToken = (token) => {
-        if (token) {
-            axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-        } else {
-            delete axios.defaults.headers.common['Authorization'];
-        }
-    };
 
     const [loading, setLoading] = useState(false)
     const onSubmit = async ({login, password}) => {
@@ -62,7 +55,7 @@ const Login = () => {
         signInAccount(login, password).then((response) => {
             setLoading(false)
             const jwt = response.data.jwtToken;
-            setAuthToken(jwt);
+            localStorage.setItem('token', jwt);
             navigate('/accounts');
         }).catch((error) => {
             if (error.response.status === 403) {

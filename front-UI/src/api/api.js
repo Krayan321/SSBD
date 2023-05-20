@@ -16,6 +16,7 @@ export async function getNoResponse(stringUrl, params) {
     try {
       const response = await axios.get(url, {
         headers: {
+            "Authorization": "Bearer " + localStorage.getItem('token')
           "Content-Type": "application/json",
           Accept: "application/json",
         },
@@ -36,6 +37,7 @@ export async function get(stringUrl, params) {
     try {
       const response = await axios.get(url, {
         headers: {
+            "Authorization": "Bearer " + localStorage.getItem('token')
           "Content-Type": "application/json",
           Accept: "application/json",
         },
