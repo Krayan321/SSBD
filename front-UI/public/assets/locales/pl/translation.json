@@ -7,6 +7,7 @@
     "confirm_password": "Potwierdź hasło",
     "username": "Nazwa użytkownika",
     "name": "Imię",
+    "login": "Login",
     "last_name": "Nazwisko",
     "phone_number": "Numer telefonu",
     "first_name_length_min": "Imię musi mieć co najmniej 2 znaki",

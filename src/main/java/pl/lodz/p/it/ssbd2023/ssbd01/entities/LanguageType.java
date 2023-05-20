@@ -4,7 +4,8 @@ import java.util.Locale;
 
 public enum LanguageType {
     pl("pl"),
-    en("en");
+    en("en"),
+    cs("cs");
 
     String language;
 
