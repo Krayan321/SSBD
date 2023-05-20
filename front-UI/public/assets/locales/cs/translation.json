@@ -6,6 +6,7 @@
   "password": "Heslo",
   "confirm_password": "Potvrzení hesla",
   "username": "Uživatelské jméno",
+  "login": "Uživatelské jméno",
   "name": "Jméno",
   "last_name": "Příjmení",
   "phone_number": "Telefonní číslo",

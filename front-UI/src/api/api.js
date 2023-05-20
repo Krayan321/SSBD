@@ -1,5 +1,7 @@
 import axios from "axios";
-const BASE_URL = "http://localhost:8080/api/account";
+
+const BASE_URL = window.location.href.includes("lodz.pl") ?
+    "https://team-1.proj-sum.it.p.lodz.pl/api/account" : "http://localhost:8080/api/account";
 
 
 const defaultHeaders = {
@@ -16,7 +18,7 @@ export async function getNoResponse(stringUrl, params) {
     try {
       const response = await axios.get(url, {
         headers: {
-            "Authorization": "Bearer " + localStorage.getItem('token')
+            "Authorization": "Bearer " + localStorage.getItem('token'),
           "Content-Type": "application/json",
           Accept: "application/json",
         },
@@ -37,7 +39,7 @@ export async function get(stringUrl, params) {
     try {
       const response = await axios.get(url, {
         headers: {
-            "Authorization": "Bearer " + localStorage.getItem('token')
+            "Authorization": "Bearer " + localStorage.getItem('token'),
           "Content-Type": "application/json",
           Accept: "application/json",
         },

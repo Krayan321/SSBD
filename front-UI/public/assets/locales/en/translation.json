@@ -7,6 +7,7 @@
     "confirm_password": "Confirm Password",
     "username": "Username",
     "name": "Name",
+    "login": "Login",
     "last_name": "Last Name",
     "phone_number": "Phone Number",
     "first_name_length_min": "First name must have at least 2 characters",
