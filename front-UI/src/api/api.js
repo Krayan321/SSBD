@@ -1,5 +1,7 @@
 import axios from "axios";
-const BASE_URL = "http://localhost:8080/api/account";
+
+const BASE_URL = window.location.href.includes("lodz.pl") ?
+    "https://team-1.proj-sum.it.p.lodz.pl/api/account" : "http://localhost:8080/api/account";
 
 
 const defaultHeaders = {
