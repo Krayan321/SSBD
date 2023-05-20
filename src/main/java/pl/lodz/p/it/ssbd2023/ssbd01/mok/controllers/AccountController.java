@@ -59,10 +59,10 @@ public class AccountController extends AbstractController {
   }
 
   @POST
-  @Path("/confirm")
-  public Response confirmAccount(@Valid VerificationTokenDto token) {
+  @Path("/confirm/{token}")
+  public Response confirmAccount(@PathParam("token") String token) {
     repeatTransactionVoid(
-        accountManager, () -> accountManager.confirmAccountRegistration(token.getToken()));
+            accountManager, () -> accountManager.confirmAccountRegistration(token));
     return Response.ok().build();
   }
 

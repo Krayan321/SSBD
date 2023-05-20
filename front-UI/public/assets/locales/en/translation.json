@@ -45,5 +45,12 @@
     "invalid_login_or_password": "Invalid login or password",
     "server_error": "Server error",
     "activate_account_to_login": "Activate account to login",
-    "invalid_account_data": "Invalid account data"
+    "invalid_account_data": "Invalid account data",
+    "account_confirmed": "Account confirmed",
+    "exception.token.already-used": "Token already used",
+    "exception.token.bad-type": "Bad token type",
+    "exception.token.not-found": "Token not found",
+    "exception.token.expired": "Token expired",
+    "error_during_confirmation": "Error during confirmation",
+    "account_confirmed_login": "Account confirmed. You can login now"
 }

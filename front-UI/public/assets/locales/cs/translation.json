@@ -45,5 +45,12 @@
   "invalid_login_or_password": "Neplatné uživatelské jméno nebo heslo",
   "server_error": "Chyba serveru",
   "activate_account_to_login": "Pro přihlášení je nutné aktivovat účet",
-  "invalid_account_data": "Neplatné údaje účtu"
+  "invalid_account_data": "Neplatné údaje účtu",
+  "account_confirmed": "Účet byl potvrzen",
+  "exception.token.already-used": "Token již byl použit",
+  "exception.token.bad-type": "Neplatný typ tokenu",
+  "exception.token.not-found": "Token nebyl nalezen",
+  "exception.token.expired": "Token vypršel",
+  "error_during_confirmation": "Chyba při potvrzování účtu",
+  "account_confirmed_login": "Účet byl potvrzen. Nyní se můžete přihlásit"
 }
