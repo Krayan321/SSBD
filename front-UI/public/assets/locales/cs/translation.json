@@ -4,6 +4,7 @@
     "sign_in": "Přihlášení",
     "sign_in_info": "do internetové lékárny",
     "password": "Heslo",
+    "confirm_password": "Potvrzení hesla",
     "username": "Uživatelské jméno",
     "name": "Jméno",
     "last_name": "Příjmení",
@@ -34,5 +35,12 @@
     "pesel_required": "Pesel je povinný",
     "nip_only_digits": "NIP může obsahovat pouze číslice",
     "nip_length": "NIP musí mít 10 číslic",
-    "nip_required": "NIP je povinný"
+    "nip_required": "NIP je povinný",
+    "exception.account.duplicate.email": "Účet s tímto emailem již existuje",
+    "exception.account.duplicate.login": "Účet s tímto uživatelským jménem již existuje",
+    "exception.account.duplicate.pesel": "Účet s tímto peselem již existuje",
+    "exception.account.duplicate.nip": "Účet s tímto nipem již existuje",
+    "exception.account.duplicate.phone_number": "Účet s tímto telefonním číslem již existuje",
+    "account_created_check_email": "Účet byl vytvořen. Zkontrolujte si email pro aktivaci účtu.",
+    "invalid_login_or_password": "Neplatné uživatelské jméno nebo heslo"
 }
