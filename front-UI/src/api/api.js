@@ -50,15 +50,15 @@ export async function get(stringUrl, params) {
 export async function post(stringUrl, body) {
     const url = new URL(stringUrl, BASE_URL);
   
-    try {
+    // try {
       const response = await axios.post(url, body, {
         headers: defaultHeaders,
         withCredentials: true,
       });
       return response;
-    } catch (error) {
-      console.error(error);
-    }
+    // } catch (error) {
+    //   console.error(error);
+    // }
 };
 
 export async function put(stringUrl, body) {
