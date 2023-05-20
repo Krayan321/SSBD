@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "@fontsource/lato": "^4.5.10",
+    "@fontsource/montserrat": "^4.5.14",
+    "@fontsource/roboto": "^4.5.8"
+  }
+}
