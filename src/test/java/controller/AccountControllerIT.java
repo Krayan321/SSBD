@@ -1725,4 +1725,44 @@ public class AccountControllerIT extends BaseTest {
               .statusCode(Response.Status.NOT_FOUND.getStatusCode());
     }
   }
+
+  @Nested
+  @Order(15)
+  @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+  class GetAdminData {
+    @Test
+    @Order(1)
+    public void getAdminData_correct() {
+      given()
+              .header("authorization", "Bearer " + adminJwt)
+              .get(getApiRoot() + "/account/1/admin")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.OK.getStatusCode())
+              .body("id", equalTo(1));
+    }
+    @Test
+    @Order(2)
+    public void getAdminData_unauthorised() {
+      given()
+              .header("authorization", "Bearer " + "hehe")
+              .get(getApiRoot() + "/account/1/admin")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.UNAUTHORIZED.getStatusCode());
+    }
+    @Test
+    @Order(3)
+    public void getAdminData_no_user() {
+      given()
+              .header("authorization", "Bearer " + adminJwt)
+              .get(getApiRoot() + "/account/35/admin")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.NOT_FOUND.getStatusCode());
+    }
+  }
 }
