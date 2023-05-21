@@ -1616,4 +1616,43 @@ public class AccountControllerIT extends BaseTest {
               .statusCode(Response.Status.NOT_FOUND.getStatusCode());
     }
   }
+  @Nested
+  @Order(16)
+  @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+  class GetChemistData {
+    @Test
+    @Order(1)
+    public void getChemistData_correct() {
+      given()
+              .header("authorization", "Bearer " + adminJwt)
+              .get(getApiRoot() + "/account/2/chemist")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.OK.getStatusCode())
+              .body("id", equalTo(2));
+    }
+    @Test
+    @Order(2)
+    public void getChemistData_unauthorised() {
+      given()
+              .header("authorization", "Bearer " + "hehe")
+              .get(getApiRoot() + "/account/2/chemist")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.UNAUTHORIZED.getStatusCode());
+    }
+    @Test
+    @Order(3)
+    public void getChemistData_no_user() {
+      given()
+              .header("authorization", "Bearer " + adminJwt)
+              .get(getApiRoot() + "/account/35/chemist")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.NOT_FOUND.getStatusCode());
+    }
+  }
 }
