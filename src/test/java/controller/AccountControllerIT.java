@@ -1114,6 +1114,29 @@ public class AccountControllerIT extends BaseTest {
               .statusCode(Response.Status.NOT_FOUND.getStatusCode())
               .body("message", equalTo(EXCEPTION_ENTITY_NOT_FOUND)); //todo
     }
+    @Test
+    @Order(8)
+    public void blockRoleChemist_unauthorised() {
+      given()
+              .header("authorization", "Bearer " + "hehe")
+              .put(getApiRoot() + "/account/2/chemist/block")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.UNAUTHORIZED.getStatusCode()); //todo
+    }
+    @Test
+    @Order(11)
+    public void blockRoleChemist_no_user() {
+      given()
+              .header("authorization", "Bearer " + adminJwt)
+              .put(getApiRoot() + "/account/25/chemist/block")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.NOT_FOUND.getStatusCode())
+              .body("message", equalTo(EXCEPTION_ENTITY_NOT_FOUND)); //todo
+    }
   }
 
   @Nested
