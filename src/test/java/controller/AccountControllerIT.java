@@ -1765,4 +1765,43 @@ public class AccountControllerIT extends BaseTest {
               .statusCode(Response.Status.NOT_FOUND.getStatusCode());
     }
   }
+  @Nested
+  @Order(17)  //todo
+  @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+  class GetPatientData {
+    @Test
+    @Order(1)
+    public void getPatientData_correct() {
+      given()
+              .header("authorization", "Bearer " + adminJwt)
+              .get(getApiRoot() + "/account/3/patient")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.OK.getStatusCode())
+              .body("id", equalTo(3));
+    }
+    @Test
+    @Order(2)
+    public void getPatientData_unauthorised() {
+      given()
+              .header("authorization", "Bearer " + "hehe")
+              .get(getApiRoot() + "/account/2/chemist")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.UNAUTHORIZED.getStatusCode());
+    }
+    @Test
+    @Order(3)
+    public void getPatientData_no_user() {
+      given()
+              .header("authorization", "Bearer " + adminJwt)
+              .get(getApiRoot() + "/account/35/chemist")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.NOT_FOUND.getStatusCode());
+    }
+  }
 }
