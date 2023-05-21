@@ -1067,6 +1067,28 @@ public class AccountControllerIT extends BaseTest {
               .statusCode(Response.Status.OK.getStatusCode())
               .body("accessLevels.find{it.role=='ADMIN'}.active", equalTo(false));
     }
+    @Test
+    @Order(9)
+    public void blockRolePatient_unauthorised() {
+      given()
+              .header("authorization", "Bearer " + "hehe")
+              .put(getApiRoot() + "/account/3/patient/block")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.UNAUTHORIZED.getStatusCode()); //todo
+    }
+    @Test
+    @Order(10)
+    public void blockRoleAdmin_unauthorised() {
+      given()
+              .header("authorization", "Bearer " + "hehe")
+              .put(getApiRoot() + "/account/3/patient/block")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.UNAUTHORIZED.getStatusCode()); //todo
+    }
   }
 
   @Nested
