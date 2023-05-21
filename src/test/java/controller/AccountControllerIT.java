@@ -1089,6 +1089,31 @@ public class AccountControllerIT extends BaseTest {
               .all()
               .statusCode(Response.Status.UNAUTHORIZED.getStatusCode()); //todo
     }
+
+    @Test
+    @Order(12)
+    public void blockRolePatient_no_user() {
+      given()
+              .header("authorization", "Bearer " + "hehe")
+              .put(getApiRoot() + "/account/25/patient/block")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.NOT_FOUND.getStatusCode())
+              .body("message", equalTo(EXCEPTION_ENTITY_NOT_FOUND)); //todo
+    }
+    @Test
+    @Order(13)
+    public void blockRoleAdmin_no_user() {
+      given()
+              .header("authorization", "Bearer " + "hehe")
+              .put(getApiRoot() + "/account/25/admin/block")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.NOT_FOUND.getStatusCode())
+              .body("message", equalTo(EXCEPTION_ENTITY_NOT_FOUND)); //todo
+    }
   }
 
   @Nested
