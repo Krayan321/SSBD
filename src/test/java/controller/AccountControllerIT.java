@@ -1067,6 +1067,31 @@ public class AccountControllerIT extends BaseTest {
               .statusCode(Response.Status.OK.getStatusCode())
               .body("accessLevels.find{it.role=='ADMIN'}.active", equalTo(false));
     }
+
+    @Test
+    @Order(12)
+    public void blockRolePatient_no_user() {
+      given()
+              .header("authorization", "Bearer " + "hehe")
+              .put(getApiRoot() + "/account/25/patient/block")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.NOT_FOUND.getStatusCode())
+              .body("message", equalTo(EXCEPTION_ENTITY_NOT_FOUND)); //todo
+    }
+    @Test
+    @Order(13)
+    public void blockRoleAdmin_no_user() {
+      given()
+              .header("authorization", "Bearer " + "hehe")
+              .put(getApiRoot() + "/account/25/admin/block")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.NOT_FOUND.getStatusCode())
+              .body("message", equalTo(EXCEPTION_ENTITY_NOT_FOUND)); //todo
+    }
   }
 
   @Nested
