@@ -4,6 +4,7 @@ export const Pathnames = {
         signup: '/sign-up',
         home: '/',
         confirmAccount: '/confirm-account/:token',
+        resetPassword: '/accounts/reset-password',
     },
     auth: {
         landing: '/landing',
