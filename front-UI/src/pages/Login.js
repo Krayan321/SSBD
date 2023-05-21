@@ -9,9 +9,13 @@ import {Grid, TextField, Button, Box, Typography} from "@mui/material";
 import {useTranslation} from "react-i18next";
 import {signInAccount} from "../api/mok/accountApi";
 import axios from "axios";
+import {login as loginDispatch} from "../redux/UserSlice";
 import {useNavigate} from "react-router-dom";
 import 'react-toastify/dist/ReactToastify.css';
 import {ToastContainer, toast} from 'react-toastify';
+import jwtDecode from "jwt-decode";
+import {useDispatch} from "react-redux";
+
 
 const logInSchema = Yup.object().shape({
     login: Yup.string()
@@ -29,6 +33,9 @@ const logInSchema = Yup.object().shape({
 });
 const Login = () => {
 
+    const dispatch = useDispatch();
+    const JWT_TOKEN = "jwtToken";
+
     const {
         register,
         handleSubmit,
@@ -42,11 +49,6 @@ const Login = () => {
     const paperStyle = {padding: '30px 20px', margin: "auto", width: 400}
     const navigate = useNavigate();
 
-
-    // const [accessToken, setAccessToken] =
-    //       useState(sessionStorage.getItem('jwtToken'));
-
-
     const [loading, setLoading] = useState(false)
     const onSubmit = async ({login, password}) => {
 
@@ -55,8 +57,10 @@ const Login = () => {
         signInAccount(login, password).then((response) => {
             setLoading(false)
             const jwt = response.data.jwtToken;
-            localStorage.setItem('token', jwt);
-            navigate('/accounts');
+            localStorage.setItem('jwtToken', jwt);
+            const decodedJWT = jwtDecode(jwt);
+            dispatch(loginDispatch(decodedJWT));
+            navigate('/landing');
         }).catch((error) => {
             if (error.response.status === 403) {
                 toast.error(t("activate_account_to_login"), {

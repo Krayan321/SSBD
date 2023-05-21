@@ -20,6 +20,9 @@ import EditChemist from './pages/EditChemist';
 import EditAdmin from './pages/EditAdmin';
 import EditPatient from './pages/EditPatient';
 import ConfirmAccount from "./pages/ConfirmAccount";
+import {RoutesComponent} from "./router/RoutesComponent";
+import store from "./redux/Store";
+import {Provider} from "react-redux";
 
 
 i18n
@@ -50,25 +53,11 @@ const loading = (
 function App() {
     return (
         <Suspense fallback={loading}>
-            <Router>
-                <Navbar/>
-                <Routes>
-                    <Route path="/login" element={<Login/>}/>
-                    <Route path="/" element={<Home/>}/>
-                    <Route path="/sign-up" element={<SingUp/>}/>
-                    <Route path="/accounts" element={<AllAccounts/>}/>
-                    <Route path="/accounts:id" element={<SingleAccount/>}/>
-                    <Route path="/accounts/self" element={<AccountInfo/>}/>
-                    <Route path="/accounts/edit/:id" element={<EditSingleAccount/>}/>
-                    <Route path="*" element={<h1>Not Found</h1>}/>
-                    <Route path="/edit-chemist/:id" element={<EditChemist/>}/>
-                    <Route path="/accounts/:id/details" element={<SingleAccount/>}/>
-                    <Route path="/confirm-account/:token" element={<ConfirmAccount/>}/>
-
-                    {/*<Route path="/edit-admin/:id" element={<EditAdmin />} />*/}
-                    {/*<Route path="/edit-patient/:id" element={<EditPatient />} />*/}
-                </Routes>
-            </Router>
+            <Provider store={store}>
+                <Router>
+                    <RoutesComponent/>
+                </Router>
+            </Provider>
         </Suspense>
     );
 }
