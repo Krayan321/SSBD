@@ -56,5 +56,7 @@
     "account_confirmed_login": "Konto zostało potwierdzone. Możesz się zalogować",
     "account_details": "Szczegóły konta",
     "access_level": "Poziom dostępu",
-    "work_phone_number": "Numer telefonu służbowego"
+    "work_phone_number": "Numer telefonu służbowego",
+    "page_not_found_or_access_denied": "Nie znaleziono strony lub brak dostępu",
+    "welcome_back": "Witaj ponownie",
 }
