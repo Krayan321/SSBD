@@ -1490,8 +1490,6 @@ public class AccountControllerIT extends BaseTest {
     // todo więcej testów z edit self (podobnie jak w change user password)
   }
 
-  // todo Edit self account
-
   @Nested
   @Order(13)
   @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -1802,6 +1800,78 @@ public class AccountControllerIT extends BaseTest {
               .log()
               .all()
               .statusCode(Response.Status.NOT_FOUND.getStatusCode());
+    }
+  }
+
+  @Nested
+  @Order(18)  //todo
+  @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+  class editSelfAccount {
+
+    private String etag;
+    private EditAccountDTO editAccountDTO;
+
+    @BeforeEach
+    public void init() {
+      var response = given()
+              .header("authorization", "Bearer " + adminJwt)
+              .get(getApiRoot() + "/account/1")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.OK.getStatusCode())
+              .extract()
+              .response();
+      etag = response.getHeader("ETag").replace("\"", "");
+      Long version = response.getBody().jsonPath().getLong("version");
+      editAccountDTO = EditAccountDTO.builder()
+              .version(version)
+              .email("hehehe@o2.pl")
+              .login("admin123")
+              .build();
+    }
+
+    @Test
+    @Order(1)
+    public void editSelfAccount_correct() {
+      given()
+              .header("authorization", "Bearer " + adminJwt)
+              .header("If-Match", etag)
+              .body(editAccountDTO)
+              .put(getApiRoot() + "/account/")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.OK.getStatusCode())
+              .body("email", equalTo(editAccountDTO.getEmail()));
+    }
+    @Test
+    @Order(2)
+    public void editSelfAccount_bad_version() {
+      editAccountDTO.setVersion(-1L);
+      given()
+              .header("authorization", "Bearer " + adminJwt)
+              .header("If-Match", etag)
+              .body(editAccountDTO)
+              .put(getApiRoot() + "/account/")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.BAD_REQUEST.getStatusCode())
+              .body("message", equalTo(EXCEPTION_ETAG_INVALID));
+    }
+    @Test
+    @Order(3)
+    public void editSelfAccount_unauthorised() {
+      given()
+              .header("authorization", "Bearer " + "hehe")
+              .header("If-Match", etag)
+              .body(editAccountDTO)
+              .put(getApiRoot() + "/account/")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.UNAUTHORIZED.getStatusCode());
     }
   }
 }
