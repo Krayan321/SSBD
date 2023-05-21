@@ -53,5 +53,8 @@
   "exception.token.not-found": "Token nebyl nalezen",
   "exception.token.expired": "Token vypršel",
   "error_during_confirmation": "Chyba při potvrzování účtu",
-  "account_confirmed_login": "Účet byl potvrzen. Nyní se můžete přihlásit"
+  "account_confirmed_login": "Účet byl potvrzen. Nyní se můžete přihlásit",
+  "account_details": "Detaily účtu",
+  "access_level": "Úroveň přístupu",
+  "work_phone_number": "Pracovní telefonní číslo"
 }

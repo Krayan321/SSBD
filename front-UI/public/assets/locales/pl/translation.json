@@ -53,6 +53,8 @@
     "exception.token.not-found": "Nie znaleziono tokenu",
     "exception.token.expired": "Token wygasł",
     "error_during_confirmation": "Wystąpił błąd podczas potwierdzania konta",
-    "account_confirmed_login": "Konto zostało potwierdzone. Możesz się zalogować"
-
+    "account_confirmed_login": "Konto zostało potwierdzone. Możesz się zalogować",
+    "account_details": "Szczegóły konta",
+    "access_level": "Poziom dostępu",
+    "work_phone_number": "Numer telefonu służbowego"
 }
