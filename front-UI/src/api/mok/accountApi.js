@@ -88,7 +88,7 @@ export async function resetPassword(email) {
     email: email,
   };
 
-  return await post("account/reset-password", body);
+  return await put("account/reset-password", body);
 }
 
 export async function setNewPassword(token, password) {

@@ -2,6 +2,7 @@ import {Pathnames} from "./Pathnames";
 import Home from "../pages/Home";
 import Login from "../pages/Login";
 import SignUp from "../pages/SignUp";
+import ResetPassword from "../pages/ResetPassword";
 import SingleAccount from "../pages/SingleAccount";
 import AccountInfo from "../pages/AccountInfo";
 import Landing from "../pages/Landing";
@@ -23,6 +24,10 @@ export const publicRoutes = [
         path: Pathnames.public.signup,
         Component: SignUp,
     },
+    {
+        path: Pathnames.public.resetPassword,
+        Component: ResetPassword
+    },
 
 ]
 
@@ -35,7 +40,6 @@ export const AuthRoutes = [
         path: Pathnames.auth.landing,
         Component: Landing
     },
-
 ]
 
 export const PatientRoutes = []

@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {Paper, CircularProgress} from "@mui/material";
+import {Paper, CircularProgress, Link} from "@mui/material";
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import * as Yup from "yup";
@@ -15,6 +15,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import {ToastContainer, toast} from 'react-toastify';
 import jwtDecode from "jwt-decode";
 import {useDispatch} from "react-redux";
+import {Pathnames} from "../router/Pathnames";
 
 
 const logInSchema = Yup.object().shape({
@@ -81,6 +82,9 @@ const Login = () => {
             }
         })
     }
+    const onResetPassword = async () => {
+        navigate(Pathnames.public.resetPassword);
+    }
 
 
     return (
@@ -123,11 +127,14 @@ const Login = () => {
                     />
                     {
                         loading ? <CircularProgress/> :
-                            <Button fullWidth
+                            <Button fullWidth sx={{mb: 2}}
                                     onClick={handleSubmit(onSubmit)} type='submit'
                                     variant='contained'>{t("sign_in")}</Button>
                     }
                 </form>
+                <Button onClick={onResetPassword}>
+                    {t("to_reset_password")}
+                </Button>
             </Paper>
             <ToastContainer/>
         </div>
