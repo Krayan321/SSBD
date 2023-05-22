@@ -63,5 +63,19 @@
   "account_details": "Detaily účtu",
   "access_level": "Úroveň přístupu",
   "work_phone_number": "Pracovní telefonní číslo",
-  "welcome_back": "Welcome back"
+  "welcome_back": "Vítejte zpět",
+  "account_blocked": "Účet byl zablokován",
+  "account_blocked_error": "Chyba při blokování účtu",
+  "account_unblocked": "Účet byl odblokovan",
+  "account_unblocked_error": "Chyba při odblokování účtu",
+  "confirmed": "Potvrzený",
+  "active": "Aktivní",
+  "details": "Detaily",
+  "close": "Zavřít",
+  "block": "Zablokovat",
+  "unblock": "Odblokovat",
+  "block_account?": "Zablokovat účet?",
+  "unblock_account?": "Odblokovat účet?",
+  "unblock_account_description": "Účet bude odblokován",
+  "block_account_description": "Účet bude zablokován"
 }
