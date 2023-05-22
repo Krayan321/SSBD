@@ -7,24 +7,28 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import axios from "axios";
-import { getAccounts } from "../api/mok/accountApi";
+import {
+  getAccounts,
+  blockAccount,
+  unblockAccount,
+} from "../api/mok/accountApi";
 import { Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import LockIcon from "@mui/icons-material/Lock";
+import LockOpenIcon from "@mui/icons-material/LockOpen";
 
 export default function AllAccounts() {
   const [accounts, setAccounts] = useState([]);
   const navigate = useNavigate();
 
-
   const findAccounts = useCallback(async () => {
     let response = await getAccounts();
-
 
     if (response.status === 200) {
       setAccounts(response.data);
       console.log(response.data);
     } else {
-      console.log('Nie udało się pobrać kont');
+      console.log("Nie udało się pobrać kont");
     }
   }, []);
 
@@ -35,16 +39,27 @@ export default function AllAccounts() {
   const handleAccountDetails = async (accountId) => {
     const id = accountId;
     const accountToUpdate = [...accounts];
-    const indexOfProductToEdit = accountToUpdate.findIndex(
+    const indexOfAccountToEdit = accountToUpdate.findIndex(
       (account) => account.id === accountId
     );
-    if (indexOfProductToEdit !== -1) {
+    if (indexOfAccountToEdit !== -1) {
       setAccounts(accountToUpdate);
     }
     navigate(`/accounts/${id}/details`);
   };
 
-  
+  const handleAccountBlock = async (active, id) => {
+    const updatedAccount = accounts.map((account) =>
+      account.id === id ? { ...account, active: !active } : account
+    );
+    if (active) {
+      await blockAccount(id);
+    }
+    if (!active) {
+      await unblockAccount(id);
+    }
+    setAccounts(updatedAccount);
+  };
 
   return (
     <TableContainer component={Paper}>
@@ -61,7 +76,7 @@ export default function AllAccounts() {
         <TableBody>
           {accounts.map((row) => (
             <TableRow
-              key={row.name}
+              key={row.id}
               sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
             >
               <TableCell component="th" scope="row">
@@ -69,8 +84,17 @@ export default function AllAccounts() {
               </TableCell>
               <TableCell align="right">{row.email}</TableCell>
               <TableCell align="right">{String(row.confirmed)}</TableCell>
-              <TableCell align="right">{String(row.active)}</TableCell>
-              <TableCell align="right"><Button onClick={() => handleAccountDetails(row.id)}>Details</Button></TableCell>
+              <TableCell align="right">
+                {String(row.active)}
+                <Button onClick={() => handleAccountBlock(row.active, row.id)}>
+                  {row.active ? <LockOpenIcon /> : <LockIcon />}
+                </Button>
+              </TableCell>
+              <TableCell align="right">
+                <Button onClick={() => handleAccountDetails(row.id)}>
+                  Details
+                </Button>
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>
