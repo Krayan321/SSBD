@@ -12,7 +12,13 @@ import {
   blockAccount,
   unblockAccount,
 } from "../api/mok/accountApi";
-import { Button } from "@mui/material";
+import {
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogActions,
+  DialogContent,
+} from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import LockIcon from "@mui/icons-material/Lock";
 import LockOpenIcon from "@mui/icons-material/LockOpen";
@@ -20,6 +26,9 @@ import LockOpenIcon from "@mui/icons-material/LockOpen";
 export default function AllAccounts() {
   const [accounts, setAccounts] = useState([]);
   const navigate = useNavigate();
+
+  const [open, setOpen] = useState(false);
+  const [selectedId, setSelectedId] = useState(null);
 
   const findAccounts = useCallback(async () => {
     let response = await getAccounts();
@@ -48,17 +57,30 @@ export default function AllAccounts() {
     navigate(`/accounts/${id}/details`);
   };
 
-  const handleAccountBlock = async (active, id) => {
-    const updatedAccount = accounts.map((account) =>
-      account.id === id ? { ...account, active: !active } : account
-    );
-    if (active) {
-      await blockAccount(id);
+  const handleAccountBlock = async (active) => {
+    if (selectedId) {
+      const updatedAccount = accounts.map((account) =>
+        account.id === selectedId ? { ...account, active: !active } : account
+      );
+      setAccounts(updatedAccount);
+      if (active) {
+        await blockAccount(selectedId);
+      }
+      if (!active) {
+        await unblockAccount(selectedId);
+      }
     }
-    if (!active) {
-      await unblockAccount(id);
-    }
-    setAccounts(updatedAccount);
+    setOpen(false);
+  };
+
+  const handleCancel = () => {
+    setOpen(false);
+  };
+
+  const handleClick = (id) => {
+    setSelectedId(id);
+    console.log(id);
+    setOpen(true);
   };
 
   return (
@@ -86,9 +108,21 @@ export default function AllAccounts() {
               <TableCell align="right">{String(row.confirmed)}</TableCell>
               <TableCell align="right">
                 {String(row.active)}
-                <Button onClick={() => handleAccountBlock(row.active, row.id)}>
+                <Button onClick={() => handleClick(row.id)}>
                   {row.active ? <LockOpenIcon /> : <LockIcon />}
                 </Button>
+                <Dialog open={open} onClose={handleCancel}>
+                  <DialogTitle>Are you sure?</DialogTitle>
+                  <DialogContent>
+                    Are you sure you want to change the state?
+                  </DialogContent>
+                  <DialogActions>
+                    <Button onClick={handleCancel}>Cancel</Button>
+                    <Button onClick={() => handleAccountBlock(row.active)}>
+                      Confirm
+                    </Button>
+                  </DialogActions>
+                </Dialog>
               </TableCell>
               <TableCell align="right">
                 <Button onClick={() => handleAccountDetails(row.id)}>
