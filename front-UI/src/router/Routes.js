@@ -9,6 +9,7 @@ import Landing from "../pages/Landing";
 import EditSingleAccount from "../pages/EditSingleAccount";
 import EditChemist from "../pages/EditChemist";
 import AllAccounts from "../pages/AllAccounts";
+import AccountDetails from "../pages/AccountDetails";
 
 
 export const publicRoutes = [
@@ -28,13 +29,12 @@ export const publicRoutes = [
         path: Pathnames.public.resetPassword,
         Component: ResetPassword
     },
-
 ]
 
 export const AuthRoutes = [
     {
         path: Pathnames.auth.self,
-        Component: AccountInfo
+        Component: AccountDetails
     },
     {
         path: Pathnames.auth.landing,
