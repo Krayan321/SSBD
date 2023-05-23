@@ -93,6 +93,7 @@
   "exception.password.not-changed": "Błąd podczas zmiany hasła",
   "back_button": "Powrót",
   "change_password_button": "Zmień Hasło",
-  "exception.etag.not-valid": "Nieprawidłowy nagłówek Etag"
+  "exception.etag.not-valid": "Nieprawidłowy nagłówek Etag",
+  "confirm_change_password": "Potwierdz zmianę hasła użytkownika"
 
 }
