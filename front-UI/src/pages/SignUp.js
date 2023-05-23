@@ -11,51 +11,8 @@ import Typography from '@mui/material/Typography';
 import {Container, Stack} from '@mui/material';
 import 'react-toastify/dist/ReactToastify.css';
 import {ToastContainer, toast} from 'react-toastify';
+import {signUpSchema} from "../utils/Validations";
 
-
-const signUpSchema = Yup.object().shape({
-    name: Yup.string()
-        .min(2, 'first_name_length_min')
-        .max(50, 'first_name_length_max')
-        .required('first_name_required'),
-    lastName: Yup.string()
-        .min(2, 'last_name_lenght_min')
-        .max(50, 'last_name_length_max')
-        .required('last_name_required'),
-    login: Yup.string()
-        .min(5, 'login_length_min')
-        .max(50, 'login_length_max')
-        .required('login_required'),
-    email: Yup.string()
-        .email('email_valid')
-        .required('email_required'),
-    password: Yup.string()
-        .min(8, 'password_length_min')
-        .max(50, 'password_length_max')
-        .matches(
-            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-            "password_invalid"
-        )
-        .required('Password is required'),
-    confirmPassword: Yup.string()
-        .oneOf([Yup.ref('password'), null], 'passwords_not_match')
-        .required('confirm_password_required'),
-    phoneNumber: Yup.string()
-        .min(9, 'phone_number_length')
-        .max(9, 'phone_number_length')
-        .matches(/^[0-9]+$/, "phone_number_only_digits")
-        .required('phone_number_required'),
-    pesel: Yup.string()
-        .min(11, 'pesel_length')
-        .max(11, 'pesel_length')
-        .matches(/^[0-9]+$/, "pesel_only_digits")
-        .required('pesel_required'),
-    nip: Yup.string()
-        .min(10, 'nip_length')
-        .matches(/^[0-9]+$/, "nip_only_digits")
-        .max(10, 'nip_length')
-        .required('nip_required')
-});
 
 function SignUp() {
 
@@ -67,8 +24,6 @@ function SignUp() {
         resolver: yupResolver(signUpSchema),
     });
 
-    const paperStyle = {padding: '20px 20px', margin: "0px auto", width: 400}
-    const headerStyle = {margin: 0}
     const [passwordShown, setPasswordShown] = useState(false);
     const [confirmPasswordShown, setConfirmPasswordShown] = useState(false);
     const {t} = useTranslation();
@@ -106,14 +61,9 @@ function SignUp() {
 
     return (
         // <Grid container spacing={2}>
-        <div style={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignContent: 'center',
-            marginTop: '3rem'
-        }}>
-            <Paper elevation={20} style={paperStyle}>
-                <h2 style={{fontFamily: 'Lato'}}>
+        <div className="wrapper" >
+            <Paper elevation={20} className="paper">
+                <h2>
                     {t("sign_up")} </h2>
                 <form>
                     <Stack spacing={2} direction="row" sx={{marginBottom: 4}}>
