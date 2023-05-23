@@ -12,16 +12,16 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 
 const setPasswordSchema = Yup.object().shape({
     password: Yup.string()
-        .min(8, "Password must be at least 8 characters")
-        .max(50, "Password cannot exceed 50 characters")
+        .min(8, "password_length_min")
+        .max(50, "password_length_max")
         .matches(
             /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-            "Invalid password format"
+            "password_invalid"
         )
-        .required("Password is required"),
+        .required("password_required"),
     confirmPassword: Yup.string()
-        .oneOf([Yup.ref("password"), null], "Passwords don't match")
-        .required("Confirm Password is required"),
+        .oneOf([Yup.ref("password"), null], "passwords_not_match")
+        .required("confirm_password_required"),
 });
 
 function SetResetPassword() {
@@ -71,7 +71,7 @@ function SetResetPassword() {
             }}
         >
             <Paper elevation={20} style={paperStyle}>
-                <h2 style={{ fontFamily: "Lato" }}>{t("Set new password")}</h2>
+                <h2 style={{ fontFamily: "Lato" }}>{t("set_new_password")}</h2>
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <TextField
                         type={passwordShown ? "text" : "password"}
@@ -117,7 +117,7 @@ function SetResetPassword() {
                         <CircularProgress />
                     ) : (
                         <Button fullWidth type="submit" variant="contained">
-                            {t("Submit")}
+                            {t("submit")}
                         </Button>
                     )}
                 </form>
