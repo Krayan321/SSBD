@@ -1,16 +1,18 @@
 import {Navigate, Route, Routes} from "react-router-dom";
 import {Pathnames} from "./Pathnames";
 import {AdminRoutes, AuthRoutes, ChemistRoutes, PatientRoutes, publicRoutes} from "./Routes";
-import Navbar from "../components/Navbar";
+import PublicNavbar from "../components/PublicNavbar";
 import AuthNavbar from "../components/AuthNavbar";
 import jwtDecode from "jwt-decode";
 import {login as loginDispatch} from "../redux/UserSlice";
 import Error from "../pages/Error";
 import {useDispatch, useSelector} from "react-redux";
+import {JWT_TOKEN, ROLES} from "../constants/Constants";
+import AuthLayout from "../layout/AuthLayout";
+import PublicLayout from "../layout/PublicLayout";
 
 export const RoutesComponent = () => {
 
-    const JWT_TOKEN = "jwtToken";
     const user = useSelector((state) => state.user);
 
     const dispatch = useDispatch();
@@ -35,71 +37,65 @@ export const RoutesComponent = () => {
                     key={path}
                     path={path}
                     element={
-                        <>
-                            <Navbar/>
+                        <PublicLayout>
                             <Component/>
-                        </>
+                        </PublicLayout>
                     }
                 />
             ))}
             {
-                user.cur === "PATIENT" &&
+                user.cur === ROLES.PATIENT &&
                 PatientRoutes.map(({path, Component}) => (
                     <Route
                         key={path}
                         path={path}
                         element={
-                            <>
-                                <AuthNavbar/>
+                            <AuthLayout>
                                 <Component/>
-                            </>
+                            </AuthLayout>
                         }/>
                 ))}
             {
-                user.cur === "ADMIN" &&
+                user.cur === ROLES.ADMIN &&
                 AdminRoutes.map(({path, Component}) => (
                     <Route
                         key={path}
                         path={path}
                         element={
-                            <>
-                                <AuthNavbar/>
+                            <AuthLayout>
                                 <Component/>
-                            </>
+                            </AuthLayout>
                         }/>
                 ))}
             {
-                user.cur === "CHEMIST" &&
+                user.cur === ROLES.CHEMIST &&
                 ChemistRoutes.map(({path, Component}) => (
                     <Route
                         key={path}
                         path={path}
                         element={
-                            <>
-                                <AuthNavbar/>
+                            <AuthLayout>
                                 <Component/>
-                            </>
+                            </AuthLayout>
                         }/>
                 ))}
             {
-                (user.cur === "ADMIN" || user.cur === "PATIENT" || user.cur === "CHEMIST") &&
+                (user.cur === ROLES.ADMIN || user.cur === ROLES.PATIENT || user.cur === ROLES.CHEMIST) &&
                 AuthRoutes.map(({path, Component}) => (
                     <Route
                         key={path}
                         path={path}
                         element={
-                            <>
-                                <AuthNavbar/>
+                            <AuthLayout>
                                 <Component/>
-                            </>
+                            </AuthLayout>
                         }/>
                 ))}
 
             <Route path="*" element={
-                <>
-                    <Navbar/>
+                <PublicLayout>
                     <Error/>
-                </>
+                </PublicLayout>
             }/>
         </Routes>
     )
