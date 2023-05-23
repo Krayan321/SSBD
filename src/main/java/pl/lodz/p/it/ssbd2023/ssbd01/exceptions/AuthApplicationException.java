@@ -17,7 +17,7 @@ public class AuthApplicationException extends ApplicationException {
 
   public static AuthApplicationException createInvalidLoginOrPasswordException() {
     return new AuthApplicationException(
-        Response.Status.UNAUTHORIZED, EXCEPTION_AUTH_BAD_CREDENTIALS);
+        Response.Status.BAD_REQUEST, EXCEPTION_AUTH_BAD_CREDENTIALS);
   }
 
   public static AuthApplicationException accountBlockedException() {

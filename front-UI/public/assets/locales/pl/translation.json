@@ -82,5 +82,17 @@
   "confirm_logout": "Czy na pewno chcesz się wylogować?",
   "logout": "Wyloguj",
   "cancel": "Anuluj",
-  "choose_role": "Wybierz rolę"
+  "choose_role": "Wybierz rolę",
+  "exception.auth.bad-credentials": "Podane hasło jest nieprawidłowe",
+  "different_password": "Nowe hasło musi się różnić od starego",
+  "success": "Pomyślna akcja",
+  "oldPassword": "Stare Hasło",
+  "newPassword": "Nowe Hasło",
+  "change_password": "Zmień Hasło",
+  "exception.optimistic-lock": "Podane informacje są nieaktualne, proszę spróbować ponownie",
+  "exception.password.not-changed": "Błąd podczas zmiany hasła",
+  "back_button": "Powrót",
+  "change_password_button": "Zmień Hasło",
+  "exception.etag.not-valid": "Nieprawidłowy nagłówek Etag"
+
 }

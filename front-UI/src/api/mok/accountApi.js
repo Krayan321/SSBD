@@ -1,4 +1,4 @@
-import { post, put, get } from "../api";
+import { get, post, put, putWithEtag } from "../api";
 
 export async function getAccounts() {
   return await get("account");
@@ -64,21 +64,18 @@ export async function activateAccount(id) {
   return await put(`account/${id}/activate`);
 }
 
-export async function changeAccountPassword(password) {
+export async function changeAccountPassword(password, etag) {
   const body = {
     password: password,
   };
 
-  return await put("account/change-password", body);
+  return await putWithEtag("account/change-password", body, etag);
 }
 
-export async function changeSelfAccountPassword(oldPassword, newPasssword) {
-  const body = {
-    oldPassword: oldPassword,
-    newPassword: newPasssword,
-  };
+export async function changeSelfAccountPassword(body, etag) {
 
-  return await put("account/change-password", body);
+
+  return await putWithEtag("account/change-password", body, etag);
 }
 
 ///implementacja change email

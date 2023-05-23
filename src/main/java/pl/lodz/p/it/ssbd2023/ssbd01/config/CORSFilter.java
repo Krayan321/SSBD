@@ -19,7 +19,8 @@ public class CORSFilter implements Filter {
         // Authorize (allow) all domains to consume the content
         ((HttpServletResponse) servletResponse).addHeader("Access-Control-Allow-Origin","http://localhost:3000");
         ((HttpServletResponse) servletResponse).addHeader("Access-Control-Allow-Credentials","true");
-        ((HttpServletResponse) servletResponse).addHeader("Access-Control-Allow-Headers","origin, content-type, accept, authorization");
+        ((HttpServletResponse) servletResponse).addHeader("Access-Control-Allow-Headers","origin, content-type, accept, authorization, if-match");
+        ((HttpServletResponse) servletResponse).addHeader("Access-Control-Expose-Headers","etag");
         ((HttpServletResponse) servletResponse).addHeader("Access-Control-Allow-Methods","GET, OPTIONS, HEAD, PUT, POST");
         ((HttpServletResponse) servletResponse).addHeader("Access-Control-Max-Age","1209600");
         HttpServletResponse resp = (HttpServletResponse) servletResponse;
