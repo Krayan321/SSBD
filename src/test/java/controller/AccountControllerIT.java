@@ -1094,7 +1094,7 @@ public class AccountControllerIT extends BaseTest {
     @Order(12)
     public void blockRolePatient_no_user() {
       given()
-              .header("authorization", "Bearer " + "hehe")
+              .header("authorization", "Bearer " + adminJwt)
               .put(getApiRoot() + "/account/25/patient/block")
               .then()
               .log()
@@ -1106,7 +1106,7 @@ public class AccountControllerIT extends BaseTest {
     @Order(13)
     public void blockRoleAdmin_no_user() {
       given()
-              .header("authorization", "Bearer " + "hehe")
+              .header("authorization", "Bearer " + adminJwt)
               .put(getApiRoot() + "/account/25/admin/block")
               .then()
               .log()
