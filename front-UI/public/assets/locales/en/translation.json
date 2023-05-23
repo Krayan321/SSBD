@@ -8,6 +8,8 @@
   "confirm_password": "Confirm Password",
   "username": "Username",
   "name": "Name",
+  "name_invalid": "Name invalid",
+  "last_name_invalid": "Last name invalid",
   "login": "Login",
   "last_name": "Last Name",
   "phone_number": "Phone Number",
@@ -78,5 +80,18 @@
   "block_account?": "Are you sure you want to block account?",
   "unblock_account?": "Are you sure you want to unblock account?",
   "unblock_account_description": "Account will be unblocked",
-  "block_account_description": "Account will be blocked"
+  "block_account_description": "Account will be blocked",
+  "patient": "Patient",
+  "chemist": "Chemist",
+  "admin": "Admin",
+  "add_patient": "Add Patient",
+  "add_chemist": "Add Chemist",
+  "add_admin": "Add Administrator",
+  "choose_role": "Choose role",
+  "license_number": "Number of license",
+  "license_only_digits": "Number of license has 6 digits",
+  "license_required": "License Number is required",
+  "work_phone_number_required": "Work phone number is required",
+  "phone_number_invalid": "Phone number contains 9 digits",
+  "license_iinvalid": "License number contains 6 digits"
 }
