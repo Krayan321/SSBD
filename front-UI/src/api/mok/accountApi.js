@@ -91,6 +91,14 @@ export async function resetPassword(email) {
   return await put("account/reset-password", body);
 }
 
+export async function setResetPassword(token, newPassword) {
+  const body = {
+    token: token,
+    newPassword: newPassword,
+  };
+  return await post("account/new-password", body);
+}
+
 export async function setNewPassword(token, password) {
   const body = {
     token: token,
