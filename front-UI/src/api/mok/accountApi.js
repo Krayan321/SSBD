@@ -64,12 +64,9 @@ export async function activateAccount(id) {
   return await put(`account/${id}/activate`);
 }
 
-export async function changeAccountPassword(password, etag) {
-  const body = {
-    password: password,
-  };
+export async function changeAccountPassword(id, body, etag) {
 
-  return await putWithEtag("account/change-password", body, etag);
+  return await putWithEtag(`account/${id}/change-user-password`, body, etag);
 }
 
 export async function changeSelfAccountPassword(body, etag) {

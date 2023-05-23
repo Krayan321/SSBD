@@ -1,16 +1,16 @@
-import { getAccountDetails } from "../api/mok/accountApi";
-import { useParams } from "react-router-dom";
-import { Grid, Box, Paper, Typography, TextField, Button } from "@mui/material";
-import { useCallback, useEffect, useState } from "react";
+import { Box, Button, Grid, Paper, Stack, TextField, Typography } from "@mui/material";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Stack } from "@mui/material";
-
+import { useParams } from "react-router-dom";
+import { getAccountDetails } from "../api/mok/accountApi";
+import ChangeOtherPasswordForm from "../modules/accounts/ChangeOtherPasswordForm";
 function SingleAccount() {
   const { id } = useParams();
   const [account, setAccount] = useState({});
   const [accessLevels, setAccessLevels] = useState([]);
   const { t } = useTranslation();
-
+  const [changePass, setChangePass] = useState(false)
+  const [etag, setEtag] = useState("")
   const paperStyle = {
     backgroundColor: "rgba(255, 255, 255, 0.75)",
     padding: "20px 20px",
@@ -25,6 +25,7 @@ function SingleAccount() {
         const response = await getAccountDetails(id);
         setAccount(response.data);
         setAccessLevels(response.data.accessLevels[0].role);
+        setEtag(response.headers["etag"])
         setLoading(false);
       } catch (error) {
         console.error(error);
@@ -73,7 +74,10 @@ function SingleAccount() {
       </Grid>
     );
   };
-
+  
+  const handleChangePassword = () =>{
+    setChangePass((state) => !state)
+ }
   return (
     <div
       style={{
@@ -134,14 +138,23 @@ function SingleAccount() {
         >
           {account.email}
         </Typography>
-        <Grid container spacing={2}>
-          <Grid item xs={6}>
-            <Button>Edit Email</Button>
-          </Grid>
-          <Grid item xs={6}>
-            <Button>Change Password</Button>
-          </Grid>
-        </Grid>
+        {
+                    changePass?
+                                <>
+                                <ChangeOtherPasswordForm account={account} etag={etag} hideChange={setChangePass}/>
+                                <Grid item xs={6}>
+                                    <Button onClick={handleChangePassword}>{t("back_button")}</Button>
+                                </Grid>
+                                </>:
+                    <Grid container spacing={2}>
+                    <Grid item xs={6}>
+                        <Button>Edit Email</Button>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <Button onClick={handleChangePassword}>{t("change_password_button")}</Button>
+                    </Grid>
+                </Grid>
+                }
         <Typography
           style={{ fontFamily: "Lato", fontSize: 18, fontWeight: 400 }}
           variant="h6"
