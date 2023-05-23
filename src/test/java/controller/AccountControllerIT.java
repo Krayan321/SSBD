@@ -1698,7 +1698,7 @@ public class AccountControllerIT extends BaseTest {
               .log()
               .all()
               .statusCode(Response.Status.OK.getStatusCode())
-              .body("id", equalTo(2));
+              .body("role", equalTo("CHEMIST"));
     }
     @Test
     @Order(2)
@@ -1738,7 +1738,7 @@ public class AccountControllerIT extends BaseTest {
               .log()
               .all()
               .statusCode(Response.Status.OK.getStatusCode())
-              .body("id", equalTo(1));
+              .body("role", equalTo("ADMIN"));
     }
     @Test
     @Order(2)
@@ -1777,7 +1777,7 @@ public class AccountControllerIT extends BaseTest {
               .log()
               .all()
               .statusCode(Response.Status.OK.getStatusCode())
-              .body("id", equalTo(3));
+              .body("role", equalTo("PATIENT"));
     }
     @Test
     @Order(2)
