@@ -23,6 +23,10 @@ public class EmailService {
   @ConfigProperty(name = "email.address")
   private String EMAIL_ADDRESS;
 
+  @Inject
+  @ConfigProperty(name = "base.url")
+  private String BASE_URL;
+
   private ClientOptions options;
 
   private MailjetClient client;
@@ -87,7 +91,7 @@ public class EmailService {
 
   public void sendEmailResetPassword(String email, String name, Locale locale, String token) {
     String subject = i18n.getMessage(i18n.MAIL_PASSWORD_RESET_SUBJECT, locale);
-    String link = "https://team-1.proj-sum.it.p.lodz.pl/confirm-account/" + token;
+    String link = BASE_URL + "/confirm-account/" + token;
     String body = i18n.getMessage(i18n.MAIL_PASSWORD_RESET_BODY, locale, name, link);
 
     MailjetRequest request = getMailjetRequest(email, name, subject, body);
