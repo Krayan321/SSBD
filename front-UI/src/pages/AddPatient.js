@@ -11,6 +11,7 @@ import Typography from '@mui/material/Typography';
 import {Container, Stack} from '@mui/material';
 import 'react-toastify/dist/ReactToastify.css';
 import {ToastContainer, toast} from 'react-toastify';
+import {useNavigate} from "react-router-dom";
 
 
 const addPatientSchema = Yup.object().shape({
@@ -74,7 +75,8 @@ function AddPatient() {
     const [passwordShown, setPasswordShown] = useState(false);
     const [confirmPasswordShown, setConfirmPasswordShown] = useState(false);
     const {t} = useTranslation();
-    const [loading, setLoading] = useState(false)
+    const navigate = useNavigate();
+    const [loading, setLoading] = useState(false);
 
     const onSubmit = handleSubmit(({name, lastName, login, email, password, phoneNumber, pesel, nip}) => {
 
@@ -86,6 +88,7 @@ function AddPatient() {
                 toast.success(t("account_created_check_email"), {
                     position: "top-center",
                 })
+                navigate('/landing');
             }
         ).catch(error => {
             setLoading(false)
