@@ -2,7 +2,7 @@ import "./App.css";
 import Login from "./pages/Login";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
-import Navbar from "./components/Navbar";
+import PublicNavbar from "./components/PublicNavbar";
 import SingUp from "./pages/SignUp";
 import AllAccounts from "./pages/AllAccounts";
 import SingleAccount from "./pages/SingleAccount";

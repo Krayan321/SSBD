@@ -8,16 +8,14 @@ const Error = () => {
 
     const dispatch = useDispatch();
     const {t} = useTranslation();
-    const paperStyle = {padding: '30px 20px', margin: "auto", width: 400}
 
     useEffect(() => {
         dispatch(logout());
     }, [])
 
-
     return (
-        <div style={{display: 'flex', justifyContent: 'center', alignContent: 'center', marginTop: '3rem'}}>
-            <Paper elevation={20} style={paperStyle}>
+        <div className="wrapper">
+            <Paper elevation={20} className="paper">
                 <h2 style={{fontFamily: 'Lato'}}>
                     {t("page_not_found_or_access_denied")} </h2>
             </Paper>
