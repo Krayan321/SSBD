@@ -82,5 +82,18 @@
   "confirm_logout": "Are you sure you want to logout?",
   "logout": "Logout",
   "cancel": "Cancel",
-  "choose_role": "Choose role"
+  "choose_role": "Choose role",
+  "exception.auth.bad-credentials": "Invalid password",
+  "different_password": "new password must be different from old password",
+  "success": "Successful action",
+  "oldPassword": "Old Password",
+  "newPassword": "New Password",
+  "change_password": "Change Password",
+  "exception.optimistic-lock": "Provided information are not up to date, try again",
+  "exception.password.not-changed": "Error during changing password",
+  "back_button": "Back",
+  "change_password_button": "Change Password",
+  "exception.etag.not-valid": "Invalid Etag Header",
+  "confirm_change_password": "Confirm change password"
+
 }

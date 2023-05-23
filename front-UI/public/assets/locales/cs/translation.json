@@ -81,5 +81,17 @@
   "confirm_logout": "Opravdu se chcete odhlásit?",
   "logout": "Odhlásit",
   "cancel": "Zrušit",
-  "choose_role": "Vyberte roli"
+  "choose_role": "Vyberte roli",
+  "exception.auth.bad-credentials": "Zadané heslo je nesprávné",
+  "different_password": "Nové heslo se musí lišit od starého",
+  "success": "Úspěšná akce",
+  "oldPassword": "Staré heslo",
+  "newPassword": "Nové heslo",
+  "change_password": "Změnit heslo",
+  "exception.optimistic-lock": "Poskytnuté informace jsou zastaralé, zkuste to prosím znovu",
+  "exception.password.not-changed": "Při změně hesla došlo k chybě",
+  "back_button": "Vrátit se",
+  "change_password_button": "Změnit heslo",
+  "exception.etag.not-valid": "Neplatné záhlaví Etag",
+  "confirm_change_password": "Potvrďte změnu hesla"
 }

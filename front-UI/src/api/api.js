@@ -42,8 +42,7 @@ export async function get(stringUrl, params) {
         Authorization: "Bearer " + localStorage.getItem("jwtToken"),
         "Content-Type": "application/json",
         Accept: "application/json",
-      },
-      withCredentials: true,
+      }
     });
     return response;
   } catch (error) {
@@ -76,6 +75,24 @@ export async function put(stringUrl, body) {
       Accept: "application/json",
     },
     withCredentials: true,
+  });
+  return response;
+  // } catch (error) {
+  //   console.error(error);
+  // }
+}
+
+export async function putWithEtag(stringUrl, body, etag) {
+  const url = new URL(stringUrl, BASE_URL);
+
+  // try {
+  const response = await axios.put(url, body, {
+    headers: {
+      Authorization: "Bearer " + localStorage.getItem("jwtToken"),
+      "Content-Type": "application/json",
+      Accept: "application/json",
+      "If-Match": etag,
+    }
   });
   return response;
   // } catch (error) {
