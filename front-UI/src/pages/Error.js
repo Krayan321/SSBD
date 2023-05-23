@@ -1,12 +1,19 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {Paper} from "@mui/material";
 import {useTranslation} from "react-i18next";
+import {useDispatch} from "react-redux";
+import {logout} from "../redux/UserSlice";
 
 const Error = () => {
 
-
+    const dispatch = useDispatch();
     const {t} = useTranslation();
     const paperStyle = {padding: '30px 20px', margin: "auto", width: 400}
+
+    useEffect(() => {
+        dispatch(logout());
+    }, [])
+
 
     return (
         <div style={{display: 'flex', justifyContent: 'center', alignContent: 'center', marginTop: '3rem'}}>
