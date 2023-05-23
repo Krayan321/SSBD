@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {Paper, CircularProgress, Link} from "@mui/material";
+import {Paper, CircularProgress, Link, Dialog, DialogTitle, DialogActions} from "@mui/material";
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import * as Yup from "yup";
@@ -9,12 +9,12 @@ import {Grid, TextField, Button, Box, Typography} from "@mui/material";
 import {useTranslation} from "react-i18next";
 import {signInAccount} from "../api/mok/accountApi";
 import axios from "axios";
-import {login as loginDispatch} from "../redux/UserSlice";
+import {changeLevel, login as loginDispatch} from "../redux/UserSlice";
 import {useNavigate} from "react-router-dom";
 import 'react-toastify/dist/ReactToastify.css';
 import {ToastContainer, toast} from 'react-toastify';
 import jwtDecode from "jwt-decode";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {Pathnames} from "../router/Pathnames";
 
 
@@ -49,7 +49,9 @@ const Login = () => {
     const {t} = useTranslation();
     const paperStyle = {padding: '30px 20px', margin: "auto", width: 400}
     const navigate = useNavigate();
-
+    const [dialogOpen, setDialogOpen] = useState(false);
+    const userRoles = useSelector((state) => state.user.roles);
+    const user = useSelector((state) => state.user);
     const [loading, setLoading] = useState(false)
     const onSubmit = async ({login, password}) => {
 
@@ -58,10 +60,14 @@ const Login = () => {
         signInAccount(login, password).then((response) => {
             setLoading(false)
             const jwt = response.data.jwtToken;
-            localStorage.setItem('jwtToken', jwt);
+            localStorage.setItem(JWT_TOKEN, jwt);
             const decodedJWT = jwtDecode(jwt);
             dispatch(loginDispatch(decodedJWT));
-            navigate('/landing');
+            const roles = decodedJWT.roles;
+
+            if (roles.length > 0) {
+                setDialogOpen(true)
+            }
         }).catch((error) => {
             if (error.response.status === 403) {
                 toast.error(t("activate_account_to_login"), {
@@ -137,6 +143,27 @@ const Login = () => {
                 </Button>
             </Paper>
             <ToastContainer/>
+            <Dialog open={dialogOpen} onClose={() => {
+                setDialogOpen(false)
+            }}>
+                <DialogTitle>{t("choose_role")}</DialogTitle>
+                <DialogActions>
+                    {
+                        userRoles.map((role, index) => {
+                            return <Button onClick={() => {
+                                dispatch(changeLevel({
+                                    sub: user.sub,
+                                    roles: user.roles,
+                                    index: index,
+                                    exp: user.exp,
+                                }));
+                                navigate('/landing');
+                                setDialogOpen(false)
+                            }}>{role}</Button>
+                        })
+                    }
+                </DialogActions>
+            </Dialog>
         </div>
 
     );

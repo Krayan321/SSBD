@@ -78,5 +78,9 @@
   "block_account?": "Are you sure you want to block account?",
   "unblock_account?": "Are you sure you want to unblock account?",
   "unblock_account_description": "Account will be unblocked",
-  "block_account_description": "Account will be blocked"
+  "block_account_description": "Account will be blocked",
+  "confirm_logout": "Are you sure you want to logout?",
+  "logout": "Logout",
+  "cancel": "Cancel",
+  "choose_role": "Choose role"
 }

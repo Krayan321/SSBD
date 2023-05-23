@@ -77,5 +77,9 @@
   "block_account?": "Zablokovat účet?",
   "unblock_account?": "Odblokovat účet?",
   "unblock_account_description": "Účet bude odblokován",
-  "block_account_description": "Účet bude zablokován"
+  "block_account_description": "Účet bude zablokován",
+  "confirm_logout": "Opravdu se chcete odhlásit?",
+  "logout": "Odhlásit",
+  "cancel": "Zrušit",
+  "choose_role": "Vyberte roli"
 }

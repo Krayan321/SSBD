@@ -13,16 +13,52 @@ import i18n from "i18next";
 import LanguageIcon from '@mui/icons-material/Language';
 import {AccountCircle, Logout} from "@mui/icons-material";
 import {useTranslation} from "react-i18next";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {logout} from "../redux/UserSlice";
-import {blue} from "@mui/material/colors";
+import {blue, pink, red, purple} from "@mui/material/colors";
+import ConfirmationDialog from "./ConfirmationDialog";
+import {useEffect, useState} from "react";
 
 const guestTheme = createTheme({
     palette: {
         primary: blue,
-        //admin: blue,
-        //pharmacist: green,
-        //patient: yellow,
+    },
+    typography: {
+        fontFamily: [
+            'Lato',
+            'sans-serif',
+        ].join(','),
+    },
+});
+
+const adminTheme = createTheme({
+    palette: {
+        primary: red,
+    },
+    typography: {
+        fontFamily: [
+            'Lato',
+            'sans-serif',
+        ].join(','),
+    },
+});
+
+const chemistTheme = createTheme({
+    palette: {
+        primary: purple
+    },
+    typography: {
+        fontFamily: [
+            'Lato',
+            'sans-serif',
+        ].join(','),
+    },
+});
+
+const patientTheme = createTheme({
+    palette: {
+        primary: pink,
+
     },
     typography: {
         fontFamily: [
@@ -35,11 +71,36 @@ const guestTheme = createTheme({
 export default function AuthNavbar() {
     const navigate = useNavigate();
     const {t} = useTranslation();
+    const userRole = useSelector(state => state.user.cur)
     const dispatch = useDispatch();
+    const [currentTheme, setCurrentTheme] = useState(guestTheme);
 
+    useEffect(() => {
+
+        if (userRole == "ADMIN") {
+            setCurrentTheme(adminTheme)
+        } else if (userRole === "CHEMIST") {
+            setCurrentTheme(chemistTheme)
+        } else if (userRole === "PATIENT") {
+            setCurrentTheme(patientTheme)
+        }
+    }, [])
+
+    const [dialogOpen, setDialogOpen] = useState(false);
+
+    const accept = () => {
+        dispatch(logout())
+        navigate("/login")
+    }
+
+    const reject = () => {
+        setDialogOpen(false)
+    }
 
     return (
-        <ThemeProvider theme={guestTheme}>
+        <ThemeProvider theme={
+            currentTheme
+        }>
             <Box sx={{flexGrow: 1}}>
                 <AppBar position="static">
                     <Toolbar>
@@ -53,12 +114,19 @@ export default function AuthNavbar() {
                             <AccountCircle/>
                         </IconButton>
                         <IconButton color="inherit" onClick={() => {
-                            dispatch(logout())
-                            navigate("/login")
+                            setDialogOpen(true)
                         }}>
                             <Logout/>
                         </IconButton>
-
+                        <ConfirmationDialog
+                            open={dialogOpen}
+                            title={t("confirm_logout")}
+                            actions={[
+                                {label: t("logout"), handler: accept, color: 'primary'},
+                                {label: t("cancel"), handler: reject, color: 'secondary'},
+                            ]}
+                            onClose={() => setDialogOpen(false)}
+                        />
                     </Toolbar>
                 </AppBar>
             </Box>

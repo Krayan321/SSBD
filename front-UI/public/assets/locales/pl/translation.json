@@ -78,5 +78,9 @@
   "block_account?": "Czy na pewno chcesz zablokować konto?",
   "unblock_account?": "Czy na pewno chcesz odblokować konto?",
   "unblock_account_description": "Konto zostanie odblokowane",
-  "block_account_description": "Konto zostanie zablokowane"
+  "block_account_description": "Konto zostanie zablokowane",
+  "confirm_logout": "Czy na pewno chcesz się wylogować?",
+  "logout": "Wyloguj",
+  "cancel": "Anuluj",
+  "choose_role": "Wybierz rolę"
 }
