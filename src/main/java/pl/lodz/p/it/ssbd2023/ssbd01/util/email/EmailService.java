@@ -87,8 +87,8 @@ public class EmailService {
 
   public void sendEmailResetPassword(String email, String name, Locale locale, String token) {
     String subject = i18n.getMessage(i18n.MAIL_PASSWORD_RESET_SUBJECT, locale);
-    String body = i18n.getMessage(i18n.MAIL_PASSWORD_RESET_BODY, locale, name);
-    body += "http://localhost:3000/confirm-account/" + token;
+    String link = "https://team-1.proj-sum.it.p.lodz.pl/confirm-account/" + token;
+    String body = i18n.getMessage(i18n.MAIL_PASSWORD_RESET_BODY, locale, name, link);
 
     MailjetRequest request = getMailjetRequest(email, name, subject, body);
     try {
