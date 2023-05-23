@@ -167,7 +167,7 @@ function ChangePasswordForm({account, etag, hideChange}) {
   
                     <ConfirmationDialog
                             open={dialogOpen}
-                            title={t("confirm")}
+                            title={t("confirm_change_password")}
                             actions={[
                                 {label: t("proceed"), handler:handleReset, color: 'primary'},
                                 {label: t("cancel"), handler: () => setDialogOpen(false), color: 'secondary'},
