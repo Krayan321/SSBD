@@ -16,6 +16,10 @@ export const Pathnames = {
         editChemist: '/edit-chemist/:id',
         details: '/accounts/:id/details',
         account: '/accounts/:id',
+        createAccount: '/create-account',
+        addPatient: "/add-patient",
+        addChemist: "/add-chemist",
+        addAdministrator: "/add-administrator",
     },
     patient: {
 
