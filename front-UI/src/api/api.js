@@ -1,4 +1,5 @@
 import axios from "axios";
+import {JWT_TOKEN} from "../constants/Constants";
 
 const BASE_URL = window.location.href.includes("lodz.pl")
   ? "https://team-1.proj-sum.it.p.lodz.pl/api/account"
@@ -18,7 +19,7 @@ export async function getNoResponse(stringUrl, params) {
   try {
     const response = await axios.get(url, {
       headers: {
-        Authorization: "Bearer " + localStorage.getItem("jwtToken"),
+        Authorization: "Bearer " + localStorage.getItem(JWT_TOKEN),
         "Content-Type": "application/json",
         Accept: "application/json",
       },
@@ -39,7 +40,7 @@ export async function get(stringUrl, params) {
   try {
     const response = await axios.get(url, {
       headers: {
-        Authorization: "Bearer " + localStorage.getItem("jwtToken"),
+        Authorization: "Bearer " + localStorage.getItem(JWT_TOKEN),
         "Content-Type": "application/json",
         Accept: "application/json",
       }
@@ -70,7 +71,7 @@ export async function put(stringUrl, body) {
   // try {
   const response = await axios.put(url, body, {
     headers: {
-      Authorization: "Bearer " + localStorage.getItem("jwtToken"),
+      Authorization: "Bearer " + localStorage.getItem(JWT_TOKEN),
       "Content-Type": "application/json",
       Accept: "application/json",
     },
@@ -88,7 +89,7 @@ export async function putWithEtag(stringUrl, body, etag) {
   // try {
   const response = await axios.put(url, body, {
     headers: {
-      Authorization: "Bearer " + localStorage.getItem("jwtToken"),
+      Authorization: "Bearer " + localStorage.getItem(JWT_TOKEN),
       "Content-Type": "application/json",
       Accept: "application/json",
       "If-Match": etag,
@@ -106,7 +107,7 @@ export async function del(stringUrl) {
   try {
     const response = await axios.delete(url, {
       headers: {
-        Authorization: "Bearer " + localStorage.getItem("jwtToken"),
+        Authorization: "Bearer " + localStorage.getItem(JWT_TOKEN),
         "Content-Type": "application/json",
         Accept: "application/json",
       },
