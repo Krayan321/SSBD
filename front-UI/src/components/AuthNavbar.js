@@ -18,6 +18,8 @@ import {logout} from "../redux/UserSlice";
 import {blue, pink, red, purple} from "@mui/material/colors";
 import ConfirmationDialog from "./ConfirmationDialog";
 import {useEffect, useState} from "react";
+import {Pathnames} from "../router/Pathnames";
+import {ROLES} from "../constants/Constants";
 
 const guestTheme = createTheme({
     palette: {
@@ -77,11 +79,11 @@ export default function AuthNavbar() {
 
     useEffect(() => {
 
-        if (userRole == "ADMIN") {
+        if (userRole == ROLES.ADMIN) {
             setCurrentTheme(adminTheme)
-        } else if (userRole === "CHEMIST") {
+        } else if (userRole === ROLES.CHEMIST) {
             setCurrentTheme(chemistTheme)
-        } else if (userRole === "PATIENT") {
+        } else if (userRole === ROLES.PATIENT) {
             setCurrentTheme(patientTheme)
         }
     }, [])
@@ -90,7 +92,7 @@ export default function AuthNavbar() {
 
     const accept = () => {
         dispatch(logout())
-        navigate("/login")
+        navigate(Pathnames.public.login)
     }
 
     const reject = () => {
@@ -104,12 +106,12 @@ export default function AuthNavbar() {
             <Box sx={{flexGrow: 1}}>
                 <AppBar position="static">
                     <Toolbar>
-                        <Typography onClick={() => navigate("/landing")} variant="h6" component="div"
+                        <Typography onClick={() => navigate(Pathnames.auth.landing)} variant="h6" component="div"
                                     sx={{flexGrow: 1, cursor: 'pointer'}}>
                             {t('internet_pharmacy')}
                         </Typography>
                         <IconButton color="inherit" onClick={() => {
-                            navigate("/accounts/self")
+                            navigate(Pathnames.auth.self)
                         }}>
                             <AccountCircle/>
                         </IconButton>
