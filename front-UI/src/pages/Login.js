@@ -58,13 +58,13 @@ const Login = () => {
             }
         }).catch((error) => {
             if (error.response.status === 403) {
-                toast.error(t("activate_account_to_login"), {
+                toast.error(t(error.response.data.message), {
                     position: toast.POSITION.TOP_CENTER,
                 });
                 setLoading(false)
 
             } else if (error.response.status === 401) {
-                toast.error(t("invalid_login_or_password"), {
+                toast.error(t(error.response.data.message), {
                     position: toast.POSITION.TOP_CENTER,
                 });
                 setLoading(false)
