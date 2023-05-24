@@ -8,6 +8,8 @@
   "confirm_password": "Potwierdź hasło",
   "username": "Nazwa użytkownika",
   "name": "Imię",
+  "name_invalid": "Niepoprawne Imię",
+  "last_name_invalid": "Niepoprawne Nazwisko",
   "login": "Login",
   "last_name": "Nazwisko",
   "phone_number": "Numer telefonu",
@@ -105,6 +107,19 @@
   "licesne_number": "Numer licencji",
   "confirm_edit_account_data": "Potwierdź zmianę danych konta",
   "edit_account_details": "Edytuj detale konta",
-  "proceed": "Kontynuuj"
-
+  "proceed": "Kontynuuj",
+  "patient": "Pacjent",
+  "chemist": "Farmaceuta",
+  "admin": "Administrator",
+  "add_patient": "Dodaj Pacjenta",
+  "add_chemist": "Dodaj Farmaceutę",
+  "add_admin": "Dodaj Administratora",
+  "choose_role": "Wybierz rolę",
+  "license_number": "Numer licencji",
+  "license_only_digits": "Numer licencji ma 6 cyfr",
+  "license_required": "Wymagany numer licencji",
+  "work_phone_number_required": "Wymagany telefon służbowy",
+  "phone_number_invalid": "Numer telefonu musi zawierać 9 cyfr",
+  "license_invalid": "Numer licencji musi zawierać 6 cyfr",
+  "create_account": "Stwórz konto"
 }

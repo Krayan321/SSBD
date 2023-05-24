@@ -12,6 +12,10 @@ import EditChemist from "../pages/EditChemist";
 import AllAccounts from "../pages/AllAccounts";
 import AccountDetails from "../pages/AccountDetails";
 import ConfirmAccount from "../pages/ConfirmAccount";
+import RoleSelectionForm from "../pages/RoleSelection";
+import AddPatient from "../pages/AddPatient";
+import AddChemist from "../pages/AddChemist";
+import AddAdministrator from "../pages/AddAdministrator";
 
 
 export const publicRoutes = [
@@ -74,6 +78,22 @@ export const AdminRoutes = [
     {
         path: Pathnames.admin.accounts,
         Component: AllAccounts
+    },
+    {
+        path:Pathnames.admin.createAccount,
+        Component: RoleSelectionForm
+    },
+    {
+        path:Pathnames.admin.addPatient,
+        Component: AddPatient
+    },
+    {
+        path:Pathnames.admin.addChemist,
+        Component: AddChemist
+    },
+    {
+        path:Pathnames.admin.addAdministrator,
+        Component: AddAdministrator
     },
 ]
 
