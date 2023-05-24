@@ -24,7 +24,7 @@ public class EmailService {
   private String EMAIL_ADDRESS;
 
   @Inject
-  @ConfigProperty(name = "base.url")
+  @ConfigProperty(name = "server.url")
   private String BASE_URL;
 
   private ClientOptions options;
