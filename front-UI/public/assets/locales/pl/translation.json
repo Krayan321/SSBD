@@ -96,6 +96,15 @@
   "exception.etag.not-valid": "Nieprawidłowy nagłówek Etag",
   "confirm_change_password": "Potwierdz zmianę hasła",
   "welcome_public": "Witamy w aptece internetowej",
-  "login_or_register_to_continue": "Zaloguj się lub zarejestruj, aby kontynuować"
+  "login_or_register_to_continue": "Zaloguj się lub zarejestruj, aby kontynuować",
+  "licence_number_invalid": "Numer licencji musi zawierać 6 znaków",
+  "licence_number_required": "Numer licencji jest wymagany",
+  "work_phone_number_invalid": "Numer telefonu musi zawierać 9 znaków",
+  "work_phone_number_required": "Numer telefonu jest wymagany",
+  "edit_data": "Edytuj dane konta",
+  "licesne_number": "Numer licencji",
+  "confirm_edit_account_data": "Potwierdź zmianę danych konta",
+  "edit_account_details": "Edytuj detale konta",
+  "proceed": "Kontynuuj"
 
 }

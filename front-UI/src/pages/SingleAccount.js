@@ -1,7 +1,7 @@
 import { Box, Button, Grid, Paper, Stack, TextField, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { getAccountDetails } from "../api/mok/accountApi";
 import ChangeOtherPasswordForm from "../modules/accounts/ChangeOtherPasswordForm";
 function SingleAccount() {
@@ -11,6 +11,7 @@ function SingleAccount() {
   const { t } = useTranslation();
   const [changePass, setChangePass] = useState(false)
   const [etag, setEtag] = useState("")
+  const navigate = useNavigate();
   const paperStyle = {
     backgroundColor: "rgba(255, 255, 255, 0.75)",
     padding: "20px 20px",
@@ -77,6 +78,11 @@ function SingleAccount() {
   
   const handleChangePassword = () =>{
     setChangePass((state) => !state)
+ }
+
+ const handleEditAccountDetails = () =>{
+    navigate(`/accounts/edit/${id}`)
+ 
  }
   return (
     <div
@@ -394,7 +400,7 @@ function SingleAccount() {
             </Typography>
           </Box>
         )}
-        <Button>Edit Account Details</Button>
+        <Button onClick={handleEditAccountDetails}>{t("edit_account_details")}</Button>
       </Paper>
     </div>
   );
