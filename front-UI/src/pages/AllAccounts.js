@@ -134,11 +134,11 @@ export default function AllAccounts() {
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
         <TableHead>
           <TableRow>
-            <TableCell>Account login</TableCell>
+            <TableCell>Login</TableCell>
             <TableCell align="right">Email</TableCell>
-            <TableCell align="right">Confimed</TableCell>
-            <TableCell align="right">Active</TableCell>
-            <TableCell align="right">Details</TableCell>
+            <TableCell align="right">{t("confirmed")}</TableCell>
+            <TableCell align="right">{t("active")}</TableCell>
+            <TableCell align="right">{t("details")}</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -175,13 +175,13 @@ export default function AllAccounts() {
                       </DialogContent>
                       <DialogActions>
                         <Button onClick={() => handleCancel(row.id)}>
-                          Close
+                          {t("close")}
                         </Button>
                         <Button
                           onClick={() => handleAccountBlock(row.active, row.id)}
                           autoFocus
                         >
-                          Block
+                          {t("block")}
                         </Button>
                       </DialogActions>
                     </div>
@@ -197,13 +197,13 @@ export default function AllAccounts() {
                       </DialogContent>
                       <DialogActions>
                         <Button onClick={() => handleCancel(row.id)}>
-                          Close
+                          {t("close")}
                         </Button>
                         <Button
                           onClick={() => handleAccountBlock(row.active, row.id)}
                           autoFocus
                         >
-                          Unblock
+                          {t("unblock")}
                         </Button>
                       </DialogActions>
                     </div>
@@ -212,7 +212,7 @@ export default function AllAccounts() {
               </TableCell>
               <TableCell align="right">
                 <Button onClick={() => handleAccountDetails(row.id)}>
-                  Details
+                  {t("details")}
                 </Button>
               </TableCell>
             </TableRow>
