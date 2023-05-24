@@ -5,6 +5,8 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import java.util.List;
+import java.util.Optional;
+
 import pl.lodz.p.it.ssbd2023.ssbd01.common.AbstractFacade;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Category;
 
@@ -22,8 +24,19 @@ public class CategoryFacade extends AbstractFacade<Category> {
     super(Category.class);
   }
 
+  @Override
   public List<Category> findAll() {
-    TypedQuery<Category> tq = em.createNamedQuery("category.findAll", Category.class);
-    return tq.getResultList();
+    return super.findAll();
   }
+
+  @Override
+  public void create(Category category) {super.create(category);}
+
+  @Override
+  public void edit(Category category) {super.edit(category);}
+
+  @Override
+  public void editAndRefresh(Category category) {super.editAndRefresh(category);}
+
+  public Optional<Category> find(Long id) {return super.find(id);}
 }
