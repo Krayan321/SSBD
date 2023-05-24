@@ -93,5 +93,7 @@
   "back_button": "Vrátit se",
   "change_password_button": "Změnit heslo",
   "exception.etag.not-valid": "Neplatné záhlaví Etag",
-  "confirm_change_password": "Potvrďte změnu hesla"
+  "confirm_change_password": "Potvrďte změnu hesla",
+  "welcome_public": "Vítejte v internetové lékárně",
+  "login_or_register_to_continue": "Přihlaste se nebo zaregistrujte pro pokračování"
 }

@@ -13,6 +13,7 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import i18n from "i18next";
 import LanguageIcon from '@mui/icons-material/Language';
+import {Pathnames} from "../router/Pathnames";
 
 const guestTheme = createTheme({
   palette: {
@@ -47,7 +48,7 @@ const languages = [
   }
 ]
 
-export default function Navbar() {
+export default function PublicNavbar() {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -66,13 +67,13 @@ export default function Navbar() {
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
         <Toolbar>
-          <Typography onClick={()=>navigate("/")}variant="h6" component="div" sx={{ flexGrow: 1, cursor: 'pointer' }}>
+          <Typography onClick={()=>navigate(Pathnames.public.home)}variant="h6" component="div" sx={{ flexGrow: 1, cursor: 'pointer' }}>
             {t('internet_pharmacy')}
           </Typography>
-          <Button color="inherit" onClick={() => navigate("/sign-up")}>
+          <Button color="inherit" onClick={() => navigate(Pathnames.public.signup)}>
             {t('sign_up')}
           </Button>
-          <Button color="inherit" onClick={() => navigate("/login")}>
+          <Button color="inherit" onClick={() => navigate(Pathnames.public.login)}>
             Login
           </Button>
           <IconButton

@@ -16,26 +16,14 @@ import {ToastContainer, toast} from 'react-toastify';
 import jwtDecode from "jwt-decode";
 import {useDispatch, useSelector} from "react-redux";
 import {Pathnames} from "../router/Pathnames";
+import {logInSchema} from "../utils/Validations";
+import {JWT_TOKEN} from "../constants/Constants";
 
 
-const logInSchema = Yup.object().shape({
-    login: Yup.string()
-        .min(2, 'login_length_min')
-        .max(50, 'login_length_max')
-        .required('login_required'),
-    password: Yup.string()
-        .min(8, 'password_length_min')
-        .max(50, 'password_length_max')
-        .matches(
-            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-            "password_invalid"
-        )
-        .required('password_required'),
-});
+
 const Login = () => {
 
     const dispatch = useDispatch();
-    const JWT_TOKEN = "jwtToken";
 
     const {
         register,
@@ -47,7 +35,6 @@ const Login = () => {
 
     const [passwordShown, setPasswordShown] = useState(false);
     const {t} = useTranslation();
-    const paperStyle = {padding: '30px 20px', margin: "auto", width: 400}
     const navigate = useNavigate();
     const [dialogOpen, setDialogOpen] = useState(false);
     const userRoles = useSelector((state) => state.user.roles);
@@ -64,8 +51,9 @@ const Login = () => {
             const decodedJWT = jwtDecode(jwt);
             dispatch(loginDispatch(decodedJWT));
             const roles = decodedJWT.roles;
-
-            if (roles.length > 0) {
+            if (!roles.includes(",")) {
+                navigate(Pathnames.auth.landing)
+            } else {
                 setDialogOpen(true)
             }
         }).catch((error) => {
@@ -95,9 +83,9 @@ const Login = () => {
 
     return (
 
-        <div style={{display: 'flex', justifyContent: 'center', alignContent: 'center', marginTop: '3rem'}}>
-            <Paper elevation={20} style={paperStyle}>
-                <h2 style={{fontFamily: 'Lato'}}>
+        <div className="wrapper">
+            <Paper elevation={20} className="paper">
+                <h2>
                     {t("sign_in")} </h2>
                 <form>
                     <TextField
@@ -157,7 +145,7 @@ const Login = () => {
                                     index: index,
                                     exp: user.exp,
                                 }));
-                                navigate('/landing');
+                                navigate(Pathnames.auth.landing);
                                 setDialogOpen(false)
                             }}>{role}</Button>
                         })

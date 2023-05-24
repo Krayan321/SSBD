@@ -94,6 +94,8 @@
   "back_button": "Powrót",
   "change_password_button": "Zmień Hasło",
   "exception.etag.not-valid": "Nieprawidłowy nagłówek Etag",
-  "confirm_change_password": "Potwierdz zmianę hasła"
+  "confirm_change_password": "Potwierdz zmianę hasła",
+  "welcome_public": "Witamy w aptece internetowej",
+  "login_or_register_to_continue": "Zaloguj się lub zarejestruj, aby kontynuować"
 
 }

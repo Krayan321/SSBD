@@ -11,6 +11,7 @@ import EditSingleAccount from "../pages/EditSingleAccount";
 import EditChemist from "../pages/EditChemist";
 import AllAccounts from "../pages/AllAccounts";
 import AccountDetails from "../pages/AccountDetails";
+import ConfirmAccount from "../pages/ConfirmAccount";
 
 
 export const publicRoutes = [
@@ -33,6 +34,10 @@ export const publicRoutes = [
     {
         path:Pathnames.public.setResetPassword,
         Component: SetResetPassword
+    },
+    {
+        path: Pathnames.public.confirmAccount,
+        Component: ConfirmAccount
     },
 ]
 

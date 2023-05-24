@@ -5,6 +5,7 @@ import {useTranslation} from "react-i18next";
 import {useNavigate, useParams} from "react-router-dom";
 import {Button, CircularProgress, Paper, TextField} from "@mui/material";
 import 'react-toastify/dist/ReactToastify.css';
+import {Pathnames} from "../router/Pathnames";
 
 
 const ConfirmAccount = () => {
@@ -13,7 +14,6 @@ const ConfirmAccount = () => {
     const [loading, setLoading] = useState(false)
     const {t} = useTranslation();
     const navigate = useNavigate();
-    const paperStyle = {padding: '30px 20px', margin: "auto", width: 400}
     const [errorDuringConfirmation, setErrorDuringConfirmation] = useState(false)
 
     useEffect(() => {
@@ -41,18 +41,18 @@ const ConfirmAccount = () => {
 
 
     return (
-        <div style={{display: 'flex', justifyContent: 'center', alignContent: 'center', marginTop: '3rem'}}>
-            <Paper elevation={20} style={paperStyle}>
+        <div className="wrapper">
+            <Paper elevation={20} className="paper">
                 {
                     loading ? <CircularProgress/> :
                         <>
                             {
-                                errorDuringConfirmation ? <h2 style={{fontFamily: 'Lato'}}>
+                                errorDuringConfirmation ? <h2>
                                         {t("error_during_confirmation")} </h2> :
-                                    <div><h2 style={{fontFamily: 'Lato'}}>
+                                    <div><h2>
                                         {t("account_confirmed_login")} </h2>
                                         <Button fullWidth
-                                                onClick={() => navigate('/login')} type='submit'
+                                                onClick={() => navigate(Pathnames.public.login)} type='submit'
                                                 variant='contained'>{t("login")}</Button>
                                     </div>
 

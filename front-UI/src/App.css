@@ -13,6 +13,19 @@
   }
 }
 
+.wrapper {
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  margin-top: 3rem;
+}
+
+.paper {
+  padding: 30px 20px;
+  margin: auto;
+  width: 400px;
+}
+
 body {
   background-image: url("../public/pharmacy-shelves.jpg");
   background-repeat: no-repeat;

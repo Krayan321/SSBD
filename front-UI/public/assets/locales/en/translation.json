@@ -94,6 +94,8 @@
   "back_button": "Back",
   "change_password_button": "Change Password",
   "exception.etag.not-valid": "Invalid Etag Header",
-  "confirm_change_password": "Confirm change password"
+  "confirm_change_password": "Confirm change password",
+  "welcome_public": "Welcome to online pharmacy",
+  "login_or_register_to_continue": "Login or register to continue"
 
 }
