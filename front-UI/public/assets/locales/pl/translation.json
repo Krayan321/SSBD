@@ -114,13 +114,15 @@
   "add_patient": "Dodaj Pacjenta",
   "add_chemist": "Dodaj Farmaceutę",
   "add_admin": "Dodaj Administratora",
-  "choose_role": "Wybierz rolę",
   "license_number": "Numer licencji",
   "license_only_digits": "Numer licencji ma 6 cyfr",
   "license_required": "Wymagany numer licencji",
-  "work_phone_number_required": "Wymagany telefon służbowy",
   "phone_number_invalid": "Numer telefonu musi zawierać 9 cyfr",
   "license_invalid": "Numer licencji musi zawierać 6 cyfr",
   "create_account": "Stwórz konto",
-  "exception.account.not-confirmed": "Konto nie zostało potwierdzone"
+  "exception.account.not-confirmed": "Konto nie zostało potwierdzone",
+  "select_role": "Wybierz rolę",
+  "add_role": "Dodaj Rolę",
+  "confirm_add_role": "Czy na pewno chce dodać to konto?"
+
 }

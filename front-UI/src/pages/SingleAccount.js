@@ -4,11 +4,14 @@ import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import { getAccountDetails } from "../api/mok/accountApi";
 import ChangeOtherPasswordForm from "../modules/accounts/ChangeOtherPasswordForm";
+import AddRoleForm from "../modules/accounts/AddRoleForm";
+
 function SingleAccount() {
   const { id } = useParams();
   const [account, setAccount] = useState({});
   const [accessLevels, setAccessLevels] = useState([]);
-  const { t } = useTranslation();
+    const [addRole, setAddRole] = useState(false);
+    const { t } = useTranslation();
   const [changePass, setChangePass] = useState(false)
   const [etag, setEtag] = useState("")
   const navigate = useNavigate();
@@ -82,8 +85,13 @@ function SingleAccount() {
 
  const handleEditAccountDetails = () =>{
     navigate(`/accounts/edit/${id}`)
- 
+
  }
+
+ const handleAddRole = () =>{
+    setAddRole((state) => !state);
+ }
+
   return (
     <div
       style={{
@@ -160,7 +168,25 @@ function SingleAccount() {
                         <Button onClick={handleChangePassword}>{t("change_password_button")}</Button>
                     </Grid>
                 </Grid>
-                }
+        }
+        {
+          addRole ? (
+              <>
+                  <AddRoleForm userID={account.id} currentRoles={accessLevels} etag={etag} hideChange={setAddRole}/>
+                  <Grid item xs={6}>
+                    <Button onClick={handleAddRole}>{t("back_button")}</Button>
+                  </Grid>
+              </>
+          ) : (
+              <Grid container spacing={2}>
+                <Grid item xs={6}>
+                  <Button onClick={handleAddRole}>{t("add_role")}</Button>
+                </Grid>
+              </Grid>
+          )
+        }
+
+
         <Typography
           style={{ fontFamily: "Lato", fontSize: 18, fontWeight: 400 }}
           variant="h6"

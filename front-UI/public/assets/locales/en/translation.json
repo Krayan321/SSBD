@@ -123,4 +123,12 @@
   "license_invalid": "License number contains 6 digits",
   "create_account": "Create Account",
   "exception.account.not-confirmed": "Account not confirmed"
+  "login_or_register_to_continue": "Login or register to continue",
+  "select_role": "Select Role",
+  "patient": "Patient",
+  "chemist": "Chemist",
+  "admin": "Admin",
+  "add_role": "Add Role",
+  "confirm_add_role": "Are you sure you want to add this account?"
+
 }

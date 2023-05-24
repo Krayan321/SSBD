@@ -113,13 +113,15 @@
   "add_patient": "Přidat pacienta",
   "add_chemist": "Přidat lékárníka",
   "add_admin": "Přidat admin",
-  "choose_role": "Vybrat roli",
   "license_number": "Vyžadováno licenční",
   "license_only_digits": "Licenční číslo má 6 číslic",
   "license_required": "Je vyžadováno licenční číslo",
-  "work_phone_number_required": "Nutný pracovní telefon",
   "phone_number_invalid": "Telefonní číslo musí obsahovat 9 číslic",
   "license_invalid": "Číslo licence musí obsahovat 6 číslic",
   "create_account": "Vytvořit účet",
   "exception.account.not-confirmed": "Účet není potvrzen",
+  "select_role": "Vybrat roli",
+  "add_role": "Přidat roli",
+  "confirm_add_role": "Jste si jisti, že chcete přidat tento účet?"
+
 }
