@@ -11,15 +11,21 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import i18n from "i18next";
 import LanguageIcon from "@mui/icons-material/Language";
-import { AccountCircle, Logout } from "@mui/icons-material";
+import {
+  AccountCircle,
+  LoginTwoTone,
+  LogoDevOutlined,
+  Logout,
+} from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
-import { logout } from "../redux/UserSlice";
+import { changeLevel, logout } from "../redux/UserSlice";
 import { blue, pink, red, purple } from "@mui/material/colors";
 import ConfirmationDialog from "./ConfirmationDialog";
 import { useEffect, useState } from "react";
 import { Pathnames } from "../router/Pathnames";
 import { ROLES } from "../constants/Constants";
+import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 
 const guestTheme = createTheme({
   palette: {
@@ -61,9 +67,21 @@ export default function AuthNavbar() {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const userRole = useSelector((state) => state.user.cur);
-  const user = useSelector((state) => state.user.sub);
+  const user = useSelector((state) => state.user);
+  const login = useSelector((state) => state.user.sub);
+  const roles = useSelector((state) => state.user.roles);
   const dispatch = useDispatch();
   const [currentTheme, setCurrentTheme] = useState(guestTheme);
+  const [anchorEl, setAnchorEl] = React.useState(null);
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = (event) => {
+    event.stopPropagation();
+    setAnchorEl(null);
+  };
 
   useEffect(() => {
     if (userRole == ROLES.ADMIN) {
@@ -73,9 +91,7 @@ export default function AuthNavbar() {
     } else if (userRole === ROLES.PATIENT) {
       setCurrentTheme(patientTheme);
     }
-  }, []);
-
-  console.log(user);
+  }, [userRole]);
 
   const [dialogOpen, setDialogOpen] = useState(false);
 
@@ -110,9 +126,41 @@ export default function AuthNavbar() {
               </Button>
             )}
             <Box>
-              <Typography>{user}</Typography>
+              <Typography>{login}</Typography>
               <Typography>{userRole}</Typography>
             </Box>
+            <IconButton color="inherit" onClick={handleClick}>
+              <ManageAccountsIcon />
+              <Menu
+                id="simple-menu"
+                anchorEl={anchorEl}
+                open={Boolean(anchorEl)}
+                onClose={handleClose}
+                MenuListProps={{
+                  "aria-labelledby": "basic-button",
+                }}
+              >
+                {roles.map((role, index) => (
+                  <MenuItem
+                    disabled={role === userRole}
+                    key={role}
+                    onClick={(event) => {
+                      dispatch(
+                        changeLevel({
+                          sub: user.sub,
+                          roles: user.roles,
+                          index: index,
+                          exp: user.exp,
+                        })
+                      );
+                      handleClose(event);
+                    }}
+                  >
+                    {role}
+                  </MenuItem>
+                ))}
+              </Menu>
+            </IconButton>
             <IconButton
               color="inherit"
               onClick={() => {
