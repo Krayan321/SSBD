@@ -95,5 +95,12 @@
   "exception.etag.not-valid": "Neplatné záhlaví Etag",
   "confirm_change_password": "Potvrďte změnu hesla",
   "welcome_public": "Vítejte v internetové lékárně",
-  "login_or_register_to_continue": "Přihlaste se nebo zaregistrujte pro pokračování"
+  "login_or_register_to_continue": "Přihlaste se nebo zaregistrujte pro pokračování",
+  "select_role": "Vybrat roli",
+  "patient": "Trpěliví",
+  "chemist": "Farmaceut",
+  "admin": "Admin",
+  "add_role": "Přidat roli",
+  "confirm_add_role": "Jste si jisti, že chcete přidat tento účet?"
+
 }

@@ -96,6 +96,12 @@
   "exception.etag.not-valid": "Invalid Etag Header",
   "confirm_change_password": "Confirm change password",
   "welcome_public": "Welcome to online pharmacy",
-  "login_or_register_to_continue": "Login or register to continue"
+  "login_or_register_to_continue": "Login or register to continue",
+  "select_role": "Select Role",
+  "patient": "Patient",
+  "chemist": "Chemist",
+  "admin": "Admin",
+  "add_role": "Add Role",
+  "confirm_add_role": "Are you sure you want to add this account?"
 
 }

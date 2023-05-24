@@ -96,6 +96,12 @@
   "exception.etag.not-valid": "Nieprawidłowy nagłówek Etag",
   "confirm_change_password": "Potwierdz zmianę hasła",
   "welcome_public": "Witamy w aptece internetowej",
-  "login_or_register_to_continue": "Zaloguj się lub zarejestruj, aby kontynuować"
+  "login_or_register_to_continue": "Zaloguj się lub zarejestruj, aby kontynuować",
+  "select_role": "Wybierz rolę",
+  "patient": "Pacjent",
+  "chemist": "Farmaceuta",
+  "admin": "Admin",
+  "add_role": "Dodaj Rolę",
+  "confirm_add_role": "Czy na pewno chce dodać to konto?"
 
 }
