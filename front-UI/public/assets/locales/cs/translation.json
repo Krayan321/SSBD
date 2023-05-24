@@ -95,5 +95,14 @@
   "exception.etag.not-valid": "Neplatné záhlaví Etag",
   "confirm_change_password": "Potvrďte změnu hesla",
   "welcome_public": "Vítejte v internetové lékárně",
-  "login_or_register_to_continue": "Přihlaste se nebo zaregistrujte pro pokračování"
+  "login_or_register_to_continue": "Přihlaste se nebo zaregistrujte pro pokračování",
+  "licence_number_invalid": "Licenční číslo musí obsahovat 6 znaků",
+  "licence_number_required": "Licenční číslo je povinné",
+  "work_phone_number_invalid": "Telefonní číslo musí obsahovat 9 znaků",
+  "work_phone_number_required": "Telefonní číslo je povinné",
+  "edit_data": "Upravit podrobnosti účtu",
+  "licesne_number": "číslo licence",
+  "confirm_edit_account_data": "Potvrďte změnu údajů o účtu",
+  "edit_account_details": "Upravit podrobnosti účtu",
+  "proceed": "Pokračovat"
 }

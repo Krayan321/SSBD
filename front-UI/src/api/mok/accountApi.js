@@ -209,7 +209,7 @@ export async function putPatient(
 ) {
   const body = {
     id: id,
-    name: name,
+    firstName: name,
     lastName: lastName,
     login: login,
     email: email,
@@ -239,4 +239,16 @@ export async function putAdmin(id, workPhoneNumber) {
   };
 
   return await put("account/{id}/admin", body);
+}
+
+export async function editOtherPatientData(id, body, etag){
+  return await putWithEtag(`account/${id}/patient`, body, etag);
+}
+
+export async function editOtherChemistData(id, body, etag){
+  return await putWithEtag(`account/${id}/chemist`, body, etag);
+}
+
+export async function editOtherAdminData(id, body, etag){
+  return await putWithEtag(`account/${id}/admin`, body, etag);
 }
