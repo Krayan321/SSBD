@@ -61,6 +61,7 @@ export default function AuthNavbar() {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const userRole = useSelector((state) => state.user.cur);
+  const user = useSelector((state) => state.user.sub);
   const dispatch = useDispatch();
   const [currentTheme, setCurrentTheme] = useState(guestTheme);
 
@@ -73,6 +74,8 @@ export default function AuthNavbar() {
       setCurrentTheme(patientTheme);
     }
   }, []);
+
+  console.log(user);
 
   const [dialogOpen, setDialogOpen] = useState(false);
 
@@ -106,6 +109,10 @@ export default function AuthNavbar() {
                 {t("accounts")}
               </Button>
             )}
+            <Box>
+              <Typography>{user}</Typography>
+              <Typography>{userRole}</Typography>
+            </Box>
             <IconButton
               color="inherit"
               onClick={() => {
