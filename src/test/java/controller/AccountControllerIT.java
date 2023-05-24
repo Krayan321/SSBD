@@ -1341,7 +1341,7 @@ public class AccountControllerIT extends BaseTest {
 
     @Test
     @Order(3)
-    public void login_registeredButNotConfirmed() { //todo powinno być coś innego niż bad credentials
+    public void login_registeredButNotConfirmed() {
       given()
             .body(patientLoginDto)
             .post(getApiRoot() + "/auth/login")
@@ -1349,7 +1349,7 @@ public class AccountControllerIT extends BaseTest {
             .log()
             .all()
             .statusCode(Response.Status.UNAUTHORIZED.getStatusCode())
-            .body("message", equalTo(EXCEPTION_AUTH_BAD_CREDENTIALS));
+            .body("message", equalTo(EXCEPTION_ACCOUNT_NOT_CONFIRMED));
     }
 
     @Test

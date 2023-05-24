@@ -39,10 +39,15 @@ public class AuthController extends AbstractController {
   @POST
   @Path("/login")
   public Response authenticate(@Valid LoginDTO loginDto) {
+    Account account;
     try {
-      repeatTransaction(accountManager, () -> accountManager.findByLogin(loginDto.getLogin()));
+      account = repeatTransaction(accountManager, () -> accountManager.findByLogin(loginDto.getLogin()));
     } catch (ApplicationExceptionEntityNotFound e) {
       throw AuthApplicationException.createInvalidLoginOrPasswordException();
+    }
+
+    if (!account.getConfirmed()) {
+        throw AccountApplicationException.createAccountNotConfirmedException();
     }
 
     UsernamePasswordCredential credential =
