@@ -22,8 +22,11 @@ public class PrescriptionFacade extends AbstractFacade<Prescription> {
     super(Prescription.class);
   }
 
+
+  @Override
   public List<Prescription> findAll() {
-    TypedQuery<Prescription> tq = em.createNamedQuery("prescription.findAll", Prescription.class);
-    return tq.getResultList();
+    return super.findAll();
   }
+
+  // idk todo
 }

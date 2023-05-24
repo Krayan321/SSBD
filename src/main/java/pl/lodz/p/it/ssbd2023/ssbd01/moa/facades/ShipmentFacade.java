@@ -23,8 +23,10 @@ public class ShipmentFacade extends AbstractFacade<Shipment> {
     super(Shipment.class);
   }
 
+  @Override
   public List<Shipment> findAll() {
-    TypedQuery<Shipment> tq = em.createNamedQuery("account.findAll", Shipment.class);
-    return tq.getResultList();
+    return super.findAll();
   }
+
+  //idk todo
 }
