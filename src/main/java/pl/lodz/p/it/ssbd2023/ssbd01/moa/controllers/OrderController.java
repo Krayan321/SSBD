@@ -23,6 +23,7 @@ public class OrderController extends AbstractController {
     //moa 18
     @GET
     @Path("/")
+    @DenyAll
     public List<OrderDTO> getAllOrders() {
         throw new UnsupportedOperationException();
     }
@@ -30,6 +31,7 @@ public class OrderController extends AbstractController {
     //moa 17
     @GET
     @Path("/self")
+    @DenyAll
     public List<OrderDTO> getAllOrdersForSelf() {
         throw new UnsupportedOperationException();
     }
@@ -37,6 +39,7 @@ public class OrderController extends AbstractController {
     // moa 14 - chyba tak
     @PUT
     @Path("/{id}/cancel")
+    @DenyAll
     public void cancelOrder(@PathParam("id") Long id) {
         throw new UnsupportedOperationException();
     }
@@ -44,6 +47,7 @@ public class OrderController extends AbstractController {
     //moa 13
     @PUT
     @Path("/{id}/aprove")
+    @DenyAll
     public void aproveOrder(@PathParam("id") Long id) {
         throw new UnsupportedOperationException();
     }
@@ -51,6 +55,7 @@ public class OrderController extends AbstractController {
     //moa 12
     @GET
     @Path("/waiting")
+    @DenyAll
     public List<OrderDTO> getWaitingOrders() {
         throw new UnsupportedOperationException();
     }
@@ -58,6 +63,7 @@ public class OrderController extends AbstractController {
     // moa3
     @PUT
     @Path("/{id}/add")
+    @DenyAll
     public void addMedicationToOrder(@PathParam("id") Long id) {
         throw new UnsupportedOperationException();
     }
@@ -65,6 +71,7 @@ public class OrderController extends AbstractController {
     //moa 4
     @GET
     @Path("/{id}")
+    @DenyAll
     public OrderDTO getOrderDetails(@PathParam("id") Long id) {
         throw new UnsupportedOperationException();
     }
@@ -72,6 +79,7 @@ public class OrderController extends AbstractController {
     //moa 5
     @PUT
     @Path("/{id}/change")
+    @DenyAll
     public void changeNumberOfMedicationsInOrder(@PathParam("id") Long id) {
         throw new UnsupportedOperationException();
     }
@@ -79,6 +87,7 @@ public class OrderController extends AbstractController {
     //moa 6
     @PUT
     @Path("/{id}/remove")
+    @DenyAll
     public void removeMedicationFromOrder(@PathParam("id") Long id) {
         throw new UnsupportedOperationException();
     }
@@ -86,6 +95,7 @@ public class OrderController extends AbstractController {
     // moa 7
     @PUT
     @Path("/{id}/submit")
+    @DenyAll
     public void submitOrder(@PathParam("id") Long id) {
         throw new UnsupportedOperationException();
     }
@@ -93,6 +103,7 @@ public class OrderController extends AbstractController {
     // moa 8
     @PUT
     @Path("/{id}/withdraw")
+    @DenyAll
     public void withdrawOrder(@PathParam("id") Long id) {
         throw new UnsupportedOperationException();
     }
@@ -100,6 +111,7 @@ public class OrderController extends AbstractController {
     //moa 16
     @PUT
     @Path("/update-queue")
+    @DenyAll
     public void updateQueue() {
         throw new UnsupportedOperationException();
     }
@@ -107,6 +119,7 @@ public class OrderController extends AbstractController {
     //moa 15
     @GET
     @Path("/statistics")
+    @DenyAll
     public void showStatistics() {
         throw new UnsupportedOperationException();
     }

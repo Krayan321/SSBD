@@ -20,24 +20,28 @@ public class PrescriptionController extends AbstractController {
 
     @GET
     @Path("/")
+    @DenyAll
     public List<PrescriptionDTO> readAllPrescriptions() {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @GET
     @Path("/{id}")
+    @DenyAll
     public Response readPrescription(@PathParam("id") Long id) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @POST
     @Path("/create-prescription")
+    @DenyAll
     public Response createPrescription(PrescriptionDTO prescriptionDTO) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @PUT
     @Path("/update-prescription")
+    @DenyAll
     public PrescriptionDTO updatePrescription(PrescriptionDTO prescriptionDTO) {
         throw new UnsupportedOperationException("Not implemented yet");
     }

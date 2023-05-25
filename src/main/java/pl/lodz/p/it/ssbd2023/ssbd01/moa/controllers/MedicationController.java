@@ -23,6 +23,7 @@ public class MedicationController extends AbstractController {
     //moa 1
     @GET
     @Path("/")
+    @DenyAll
     @Produces(MediaType.APPLICATION_JSON)
     public List<MedicationDTO> getAllMedications() {
         throw new UnsupportedOperationException("Not supported yet.");
@@ -31,6 +32,7 @@ public class MedicationController extends AbstractController {
     //moa 2???
     @GET
     @Path("/{id}")
+    @DenyAll
     @Produces(MediaType.APPLICATION_JSON)
     public MedicationDTO getMedication(@PathParam("id") Long id) {
         throw new UnsupportedOperationException("Not supported yet.");
@@ -39,6 +41,7 @@ public class MedicationController extends AbstractController {
     //chyba moa 19 ale może w shimpment
     @POST
     @Path("/add-medication")
+    @DenyAll
     @Consumes(MediaType.APPLICATION_JSON)
     public Response addMedication(MedicationDTO medicationDTO) {
         throw new UnsupportedOperationException("Not supported yet.");
@@ -47,6 +50,7 @@ public class MedicationController extends AbstractController {
     //moa 20
     @PUT
     @Path("/{id}/edit-medication")
+    @DenyAll
     public MedicationDTO editMedication(MedicationDTO medicationDTO) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
@@ -54,6 +58,7 @@ public class MedicationController extends AbstractController {
     //moa 2???
     @GET
     @Path("/{id}/details")
+    @DenyAll
     @Produces(MediaType.APPLICATION_JSON)
     public MedicationDTO getMedicationDetails(@PathParam("id") Long id) {
         throw new UnsupportedOperationException("Not supported yet.");
