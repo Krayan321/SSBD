@@ -122,6 +122,10 @@
   "exception.account.not-confirmed": "Účet není potvrzen",
   "select_role": "Vybrat roli",
   "add_role": "Přidat roli",
-  "confirm_add_role": "Jste si jisti, že chcete přidat tento účet?"
+  "confirm_add_role": "Jste si jisti, že chcete přidat tento účet?",
+  "enter_new_email": "Zadejte nový Email",
+  "new_Email": "Nový Email",
+  "confirm_Email": "Potvrďte nový Email",
+  "change_email": "Změna Email"
 
 }
