@@ -1,18 +1,15 @@
-import { Button, CircularProgress, TextField, Paper } from "@mui/material";
+import { Button, CircularProgress, TextField } from "@mui/material";
 import React, { useState } from 'react';
 import { useTranslation } from "react-i18next";
 
 import { yupResolver } from "@hookform/resolvers/yup";
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from 'react-toastify';
 import * as Yup from "yup";
-import {editOtherPatientData, editOtherChemistData, editOtherAdminData} from "../../api/mok/accountApi";
+import { changeOtherAccountEmail } from "../../api/mok/accountApi";
 import ConfirmationDialog from "../../components/ConfirmationDialog";
-import {putWithEtag} from "../../api/api";
 const ChangeEmailSchema = Yup.object().shape({
 
     newEmail: Yup.string()
@@ -48,13 +45,15 @@ function ChangeOtherEmailForm({account, etag, hideChange}) {
             email: newEmail,
             version: account.version
         };
-        editOtherPatientData(account.id, body, tag).then((res) =>{
+        changeOtherAccountEmail(account.id, body, tag).then((res) =>{
+         
             setLoading((state)=> !state)
-            hideChange((state)=> !state)
-            navigate('/accounts');
+            setDialogOpen((state)=> !state)
+            //navigate('/accounts');
             toast.success(t("success"), {
                 position: "top-center",
             })
+           
         }).catch(error => {
             setLoading((state)=> !state)
 
@@ -83,8 +82,8 @@ function ChangeOtherEmailForm({account, etag, hideChange}) {
 
     return (
         <div style={{display: 'flex', justifyContent: 'center', alignContent: 'center', marginTop: '3rem'}}>
-            <Paper elevation={20} style={paperStyle}>
-                <h2 style={{ fontFamily: 'Lato' }}>{t("enter_new_email")}</h2>
+           
+               
 
             <form>
                 <TextField  sx={{mb: 4}}
@@ -128,7 +127,7 @@ function ChangeOtherEmailForm({account, etag, hideChange}) {
                 ]}
                 onClose={() => setDialogOpen(false)}
             />
-        </Paper>
+     <ToastContainer/>
         </div>
     );
 }

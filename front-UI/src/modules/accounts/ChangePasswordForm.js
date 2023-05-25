@@ -7,7 +7,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { toast } from 'react-toastify';
+import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import * as Yup from "yup";
 import { changeSelfAccountPassword } from "../../api/mok/accountApi";
@@ -73,8 +73,9 @@ function ChangePasswordForm({account, etag, hideChange}) {
                 position: "top-center",
             })
         }).catch(error => {
-            setLoading((state)=> !state)
-    
+            setDialogOpen((state)=> !state)
+            
+            
                 if (error.response.status === 500) {
                     toast.error(t("server_error"), {
                         position: "top-center",
@@ -167,14 +168,14 @@ function ChangePasswordForm({account, etag, hideChange}) {
   
                     <ConfirmationDialog
                             open={dialogOpen}
-                            title={t("confirm")}
+                            title={t("confirm_change_password")}
                             actions={[
                                 {label: t("proceed"), handler:handleReset, color: 'primary'},
                                 {label: t("cancel"), handler: () => setDialogOpen(false), color: 'secondary'},
                             ]}
                             onClose={() => setDialogOpen(false)}
                         />
-      
+       <ToastContainer/>
         </div>
     );
 }

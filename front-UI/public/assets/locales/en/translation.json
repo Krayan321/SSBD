@@ -133,5 +133,8 @@
   "enter_new_email": "Enter New Email",
   "new_Email": "New Email",
   "confirm_Email": "Confirm Email",
-  "change_email": "Change Email"
+  "change_email": "Change Email",
+
+  "emails_not_match": "Emails does not match",
+  "confirm_change_email": "Confirm change email"
 }

@@ -75,6 +75,12 @@ export async function changeSelfAccountEmail(body, etag) {
   return await putWithEtag("account", body, etag);
 }
 
+export async function changeOtherAccountEmail(id, body, etag) {
+
+
+  return await putWithEtag(`account/${id}`, body, etag);
+}
+
 ///implementacja change email
 
 export async function resetPassword(email) {

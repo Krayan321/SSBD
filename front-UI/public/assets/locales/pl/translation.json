@@ -127,6 +127,8 @@
   "enter_new_email": "Wprowadź nowy Email",
   "new_Email": "Nowy Email",
   "confirm_Email": "Potwierdź Email",
-  "change_email": "Zmień Email"
+  "change_email": "Zmień Email",
+  "emails_not_match": "Podaj taki sam email",
+  "confirm_change_email": "Potwierdź zmianę emaila"
 
 }
