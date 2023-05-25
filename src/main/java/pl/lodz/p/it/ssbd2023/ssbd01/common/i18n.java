@@ -22,12 +22,8 @@ public class i18n {
 
   public static final String EXCEPTION_ACCOUNT_CONSTRAINT_VIOLATION =
       "exception.account.constraint-violation";
-  public static final String EXCEPTION_ACCOUNT_DELETION_CONFIRMED =
-      "exception.account.deletion-confirmed";
   public static final String EXCEPTION_ACCOUNT_NOT_CONFIRMED =
           "exception.account.not-confirmed";
-  public static final String EXCEPTION_ACCOUNT_BLOCKED =
-          "exception.account.blocked";
   public static final String EXCEPTION_ACCOUNT_NO_SUCH_ACCESS_LEVEL =
       "exception.account.no-such-access-level";
   public static final String EXCEPTION_ACCOUNT_DUPLICATE_ACCESS_LEVEL =
