@@ -195,22 +195,29 @@ export default function AuthNavbar() {
             />
           </Toolbar>
         </AppBar>
-        {location.pathname
-          .split("/")
-          .filter((crumb) => crumb !== "")
-          .map((crumb) => {
-            if (!isNaN(crumb)) {
-              return null; // Ignore numbers in the URL
-            }
-            current += `/${crumb}`;
-            return (
-              <Breadcrumbs aria-label="breadcrumb">
-                <Link underline="hover" color="inherit" href={current}>
-                  {t(crumb)}
+        <Breadcrumbs separator=">" aria-label="breadcrumb">
+          {location.pathname
+            .split("/")
+            .filter((crumb) => crumb !== "")
+            .map((crumb) => {
+              if (!isNaN(crumb)) {
+                return null; // Ignore numbers in the URL
+              }
+              current += `/${crumb}`;
+              const capitalizedCrumb =
+                crumb.charAt(0).toUpperCase() + crumb.slice(1);
+              return (
+                <Link
+                  underline="hover"
+                  color="inherit"
+                  href={current}
+                  sx={{ fontSize: "18px" }}
+                >
+                  {t(capitalizedCrumb)}
                 </Link>
-              </Breadcrumbs>
-            );
-          })}
+              );
+            })}
+        </Breadcrumbs>
       </Box>
     </ThemeProvider>
   );
