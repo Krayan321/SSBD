@@ -26,6 +26,9 @@ import { useEffect, useState } from "react";
 import { Pathnames } from "../router/Pathnames";
 import { ROLES } from "../constants/Constants";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
+import { useLocation } from "react-router-dom";
+import Breadcrumbs from "@mui/material/Breadcrumbs";
+import Link from "@mui/material/Link";
 
 const guestTheme = createTheme({
   palette: {
@@ -103,6 +106,10 @@ export default function AuthNavbar() {
   const reject = () => {
     setDialogOpen(false);
   };
+
+  const location = useLocation();
+
+  let current = "";
 
   return (
     <ThemeProvider theme={currentTheme}>
@@ -188,6 +195,22 @@ export default function AuthNavbar() {
             />
           </Toolbar>
         </AppBar>
+        {location.pathname
+          .split("/")
+          .filter((crumb) => crumb !== "")
+          .map((crumb) => {
+            if (!isNaN(crumb)) {
+              return null; // Ignore numbers in the URL
+            }
+            current += `/${crumb}`;
+            return (
+              <Breadcrumbs aria-label="breadcrumb">
+                <Link underline="hover" color="inherit" href={current}>
+                  {t(crumb)}
+                </Link>
+              </Breadcrumbs>
+            );
+          })}
       </Box>
     </ThemeProvider>
   );
