@@ -1,4 +1,12 @@
-import { Box, Button, Grid, Paper, Stack, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Grid,
+  Paper,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
@@ -10,10 +18,10 @@ function SingleAccount() {
   const { id } = useParams();
   const [account, setAccount] = useState({});
   const [accessLevels, setAccessLevels] = useState([]);
-    const [addRole, setAddRole] = useState(false);
-    const { t } = useTranslation();
-  const [changePass, setChangePass] = useState(false)
-  const [etag, setEtag] = useState("")
+  const [addRole, setAddRole] = useState(false);
+  const { t } = useTranslation();
+  const [changePass, setChangePass] = useState(false);
+  const [etag, setEtag] = useState("");
   const navigate = useNavigate();
   const paperStyle = {
     backgroundColor: "rgba(255, 255, 255, 0.75)",
@@ -25,14 +33,14 @@ function SingleAccount() {
 
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        const response = await getAccountDetails(id);
+      const response = await getAccountDetails(id);
+      if (response.status === 200) {
         setAccount(response.data);
-        setAccessLevels(response.data.accessLevels[0].role);
-        setEtag(response.headers["etag"])
+        setAccessLevels(response.data.accessLevels);
+        setEtag(response.headers["etag"]);
         setLoading(false);
-      } catch (error) {
-        console.error(error);
+      } else {
+        navigate("/error", { replace: true });
       }
     };
 
@@ -51,9 +59,12 @@ function SingleAccount() {
   // }
   // , [fetchAccount]);
 
-  const isAdmin = accessLevels.includes("ADMIN");
-  const isChemist = accessLevels.includes("CHEMIST");
-  const isPatient = accessLevels.includes("PATIENT");
+  const isAdmin =
+    accessLevels && accessLevels.some((level) => level.role === "ADMIN");
+  const isChemist =
+    accessLevels && accessLevels.some((level) => level.role === "CHEMIST");
+  const isPatient =
+    accessLevels && accessLevels.some((level) => level.role === "PATIENT");
 
   console.log(account);
   console.log("isAdmin: " + isAdmin);
@@ -78,19 +89,18 @@ function SingleAccount() {
       </Grid>
     );
   };
-  
-  const handleChangePassword = () =>{
-    setChangePass((state) => !state)
- }
 
- const handleEditAccountDetails = () =>{
-    navigate(`/accounts/edit/${id}`)
+  const handleChangePassword = () => {
+    setChangePass((state) => !state);
+  };
 
- }
+  const handleEditAccountDetails = () => {
+    navigate(`/accounts/edit/${id}`);
+  };
 
- const handleAddRole = () =>{
+  const handleAddRole = () => {
     setAddRole((state) => !state);
- }
+  };
 
   return (
     <div
@@ -152,40 +162,48 @@ function SingleAccount() {
         >
           {account.email}
         </Typography>
-        {
-                    changePass?
-                                <>
-                                <ChangeOtherPasswordForm account={account} etag={etag} hideChange={setChangePass}/>
-                                <Grid item xs={6}>
-                                    <Button onClick={handleChangePassword}>{t("back_button")}</Button>
-                                </Grid>
-                                </>:
-                    <Grid container spacing={2}>
-                    <Grid item xs={6}>
-                        <Button>Edit Email</Button>
-                    </Grid>
-                    <Grid item xs={6}>
-                        <Button onClick={handleChangePassword}>{t("change_password_button")}</Button>
-                    </Grid>
-                </Grid>
-        }
-        {
-          addRole ? (
-              <>
-                  <AddRoleForm userID={account.id} currentRoles={accessLevels} etag={etag} hideChange={setAddRole}/>
-                  <Grid item xs={6}>
-                    <Button onClick={handleAddRole}>{t("back_button")}</Button>
-                  </Grid>
-              </>
-          ) : (
-              <Grid container spacing={2}>
-                <Grid item xs={6}>
-                  <Button onClick={handleAddRole}>{t("add_role")}</Button>
-                </Grid>
-              </Grid>
-          )
-        }
-
+        {changePass ? (
+          <>
+            <ChangeOtherPasswordForm
+              account={account}
+              etag={etag}
+              hideChange={setChangePass}
+            />
+            <Grid item xs={6}>
+              <Button onClick={handleChangePassword}>{t("back_button")}</Button>
+            </Grid>
+          </>
+        ) : (
+          <Grid container spacing={2}>
+            <Grid item xs={6}>
+              <Button>Edit Email</Button>
+            </Grid>
+            <Grid item xs={6}>
+              <Button onClick={handleChangePassword}>
+                {t("change_password_button")}
+              </Button>
+            </Grid>
+          </Grid>
+        )}
+        {addRole ? (
+          <>
+            <AddRoleForm
+              userID={account.id}
+              currentRoles={accessLevels}
+              etag={etag}
+              hideChange={setAddRole}
+            />
+            <Grid item xs={6}>
+              <Button onClick={handleAddRole}>{t("back_button")}</Button>
+            </Grid>
+          </>
+        ) : (
+          <Grid container spacing={2}>
+            <Grid item xs={6}>
+              <Button onClick={handleAddRole}>{t("add_role")}</Button>
+            </Grid>
+          </Grid>
+        )}
 
         <Typography
           style={{ fontFamily: "Lato", fontSize: 18, fontWeight: 400 }}
@@ -237,7 +255,7 @@ function SingleAccount() {
             readOnly: true,
           }}
         >
-          {account.accessLevels[0].role}
+          {accessLevels && accessLevels.map((level) => level.role).join(", ")}
         </Typography>
         {isAdmin && (
           <Box>
@@ -253,180 +271,247 @@ function SingleAccount() {
             >
               {t("work_phone_number")}
             </Typography>
-            <Typography
-              style={{ fontSize: 16 }}
-              variant="h6"
-              component="div"
-              sx={{ flexGrow: 1, mb: 2 }}
-              type="text"
-              fullWidth
-              InputProps={{
-                readOnly: true,
-              }}
-            >
-              {String(account.accessLevels[0].workPhoneNumber)}
-            </Typography>
+            {accessLevels.map((level) =>
+              level.workPhoneNumber ? (
+                <Typography
+                  style={{ fontSize: 16 }}
+                  variant="h6"
+                  component="div"
+                  sx={{ flexGrow: 1, mb: 2 }}
+                  type="text"
+                  fullWidth
+                  InputProps={{
+                    readOnly: true,
+                  }}
+                >
+                  dupa{String(level.workPhoneNumber)}
+                </Typography>
+              ) : null
+            )}
           </Box>
         )}
         {isChemist && (
           <Box>
-            <Typography
-              style={{ fontFamily: "Lato", fontSize: 18, fontWeight: 400 }}
-              component="div"
-              sx={{ flexGrow: 1, mb: 1 }}
-              type="text"
-              fullWidth
-              InputProps={{
-                readOnly: true,
-              }}
-            >
-              {t("licesne_number")}
-            </Typography>
-            <Typography
-              style={{ fontSize: 16 }}
-              variant="h6"
-              component="div"
-              sx={{ flexGrow: 1, mb: 2 }}
-              type="text"
-              fullWidth
-              InputProps={{
-                readOnly: true,
-              }}
-            >
-              {String(account.accessLevels[0].licenseNumber)}
-            </Typography>
+            {accessLevels.map((level) =>
+              level.licenseNumber ? (
+                <Box>
+                  <Typography
+                    style={{
+                      fontFamily: "Lato",
+                      fontSize: 18,
+                      fontWeight: 400,
+                    }}
+                    component="div"
+                    sx={{ flexGrow: 1, mb: 1 }}
+                    type="text"
+                    fullWidth
+                    InputProps={{
+                      readOnly: true,
+                    }}
+                  >
+                    {t("licesne_number")}
+                  </Typography>
+
+                  <Typography
+                    style={{ fontSize: 16 }}
+                    variant="h6"
+                    component="div"
+                    sx={{ flexGrow: 1, mb: 2 }}
+                    type="text"
+                    fullWidth
+                    InputProps={{
+                      readOnly: true,
+                    }}
+                  >
+                    {String(level.licenseNumber)}
+                  </Typography>
+                </Box>
+              ) : null
+            )}
           </Box>
         )}
         {isPatient && (
           <Box>
-            <Typography
-              style={{ fontFamily: "Lato", fontSize: 18, fontWeight: 400 }}
-              component="div"
-              sx={{ flexGrow: 1, mb: 1 }}
-              type="text"
-              fullWidth
-              InputProps={{
-                readOnly: true,
-              }}
-            >
-              {t("name")}
-            </Typography>
-            <Typography
-              style={{ fontSize: 16 }}
-              variant="h6"
-              component="div"
-              sx={{ flexGrow: 1, mb: 2 }}
-              type="text"
-              fullWidth
-              InputProps={{
-                readOnly: true,
-              }}
-            >
-              {String(account.accessLevels[0].name)}
-            </Typography>
-            <Typography
-              style={{ fontFamily: "Lato", fontSize: 18, fontWeight: 400 }}
-              component="div"
-              sx={{ flexGrow: 1, mb: 1 }}
-              type="text"
-              fullWidth
-              InputProps={{
-                readOnly: true,
-              }}
-            >
-              {t("last_name")}
-            </Typography>
-            <Typography
-              style={{ fontSize: 16 }}
-              variant="h6"
-              component="div"
-              sx={{ flexGrow: 1, mb: 2 }}
-              type="text"
-              fullWidth
-              InputProps={{
-                readOnly: true,
-              }}
-            >
-              {String(account.accessLevels[0].lastName)}
-            </Typography>
-            <Typography
-              style={{ fontFamily: "Lato", fontSize: 18, fontWeight: 400 }}
-              component="div"
-              sx={{ flexGrow: 1, mb: 1 }}
-              type="text"
-              fullWidth
-              InputProps={{
-                readOnly: true,
-              }}
-            >
-              {t("phone_number")}
-            </Typography>
-            <Typography
-              style={{ fontSize: 16 }}
-              variant="h6"
-              component="div"
-              sx={{ flexGrow: 1, mb: 2 }}
-              type="text"
-              fullWidth
-              InputProps={{
-                readOnly: true,
-              }}
-            >
-              {String(account.accessLevels[0].phoneNumber)}
-            </Typography>
-            <Typography
-              style={{ fontFamily: "Lato", fontSize: 18, fontWeight: 400 }}
-              component="div"
-              sx={{ flexGrow: 1, mb: 1 }}
-              type="text"
-              fullWidth
-              InputProps={{
-                readOnly: true,
-              }}
-            >
-              Pesel
-            </Typography>
-            <Typography
-              style={{ fontSize: 16 }}
-              variant="h6"
-              component="div"
-              sx={{ flexGrow: 1, mb: 2 }}
-              type="text"
-              fullWidth
-              InputProps={{
-                readOnly: true,
-              }}
-            >
-              {String(account.accessLevels[0].pesel)}
-            </Typography>
-            <Typography
-              style={{ fontFamily: "Lato", fontSize: 18, fontWeight: 400 }}
-              component="div"
-              sx={{ flexGrow: 1, mb: 1 }}
-              type="text"
-              fullWidth
-              InputProps={{
-                readOnly: true,
-              }}
-            >
-              NIP
-            </Typography>
-            <Typography
-              style={{ fontSize: 16 }}
-              variant="h6"
-              component="div"
-              sx={{ flexGrow: 1, mb: 2 }}
-              type="text"
-              fullWidth
-              InputProps={{
-                readOnly: true,
-              }}
-            >
-              {String(account.accessLevels[0].NIP)}
-            </Typography>
+            {accessLevels.map((level) =>
+              level.name ? (
+                <Box>
+                  <Typography
+                    style={{
+                      fontFamily: "Lato",
+                      fontSize: 18,
+                      fontWeight: 400,
+                    }}
+                    component="div"
+                    sx={{ flexGrow: 1, mb: 1 }}
+                    type="text"
+                    fullWidth
+                    InputProps={{
+                      readOnly: true,
+                    }}
+                  >
+                    {t("name")}
+                  </Typography>
+                  <Typography
+                    style={{ fontSize: 16 }}
+                    variant="h6"
+                    component="div"
+                    sx={{ flexGrow: 1, mb: 2 }}
+                    type="text"
+                    fullWidth
+                    InputProps={{
+                      readOnly: true,
+                    }}
+                  >
+                    {String(level.name)}
+                  </Typography>
+                </Box>
+              ) : null
+            )}
+            {accessLevels.map((level) =>
+              level.lastName ? (
+                <Box>
+                  <Typography
+                    style={{
+                      fontFamily: "Lato",
+                      fontSize: 18,
+                      fontWeight: 400,
+                    }}
+                    component="div"
+                    sx={{ flexGrow: 1, mb: 1 }}
+                    type="text"
+                    fullWidth
+                    InputProps={{
+                      readOnly: true,
+                    }}
+                  >
+                    {t("last_name")}
+                  </Typography>
+                  <Typography
+                    style={{ fontSize: 16 }}
+                    variant="h6"
+                    component="div"
+                    sx={{ flexGrow: 1, mb: 2 }}
+                    type="text"
+                    fullWidth
+                    InputProps={{
+                      readOnly: true,
+                    }}
+                  >
+                    {String(level.lastName)}
+                  </Typography>
+                </Box>
+              ) : null
+            )}
+            {accessLevels.map((level) =>
+              level.phoneNumber ? (
+                <Box>
+                  <Typography
+                    style={{
+                      fontFamily: "Lato",
+                      fontSize: 18,
+                      fontWeight: 400,
+                    }}
+                    component="div"
+                    sx={{ flexGrow: 1, mb: 1 }}
+                    type="text"
+                    fullWidth
+                    InputProps={{
+                      readOnly: true,
+                    }}
+                  >
+                    {t("phone_number")}
+                  </Typography>
+                  <Typography
+                    style={{ fontSize: 16 }}
+                    variant="h6"
+                    component="div"
+                    sx={{ flexGrow: 1, mb: 2 }}
+                    type="text"
+                    fullWidth
+                    InputProps={{
+                      readOnly: true,
+                    }}
+                  >
+                    {String(level.phoneNumber)}
+                  </Typography>
+                </Box>
+              ) : null
+            )}
+            {accessLevels.map((level) =>
+              level.pesel ? (
+                <Box>
+                  <Typography
+                    style={{
+                      fontFamily: "Lato",
+                      fontSize: 18,
+                      fontWeight: 400,
+                    }}
+                    component="div"
+                    sx={{ flexGrow: 1, mb: 1 }}
+                    type="text"
+                    fullWidth
+                    InputProps={{
+                      readOnly: true,
+                    }}
+                  >
+                    Pesel
+                  </Typography>
+                  <Typography
+                    style={{ fontSize: 16 }}
+                    variant="h6"
+                    component="div"
+                    sx={{ flexGrow: 1, mb: 2 }}
+                    type="text"
+                    fullWidth
+                    InputProps={{
+                      readOnly: true,
+                    }}
+                  >
+                    {String(level.pesel)}
+                  </Typography>
+                </Box>
+              ) : null
+            )}
+            {accessLevels.map((level) =>
+              level.NIP ? (
+                <Box>
+                  <Typography
+                    style={{
+                      fontFamily: "Lato",
+                      fontSize: 18,
+                      fontWeight: 400,
+                    }}
+                    component="div"
+                    sx={{ flexGrow: 1, mb: 1 }}
+                    type="text"
+                    fullWidth
+                    InputProps={{
+                      readOnly: true,
+                    }}
+                  >
+                    NIP
+                  </Typography>
+                  <Typography
+                    style={{ fontSize: 16 }}
+                    variant="h6"
+                    component="div"
+                    sx={{ flexGrow: 1, mb: 2 }}
+                    type="text"
+                    fullWidth
+                    InputProps={{
+                      readOnly: true,
+                    }}
+                  >
+                    {String(level.NIP)}
+                  </Typography>
+                </Box>
+              ) : null
+            )}
           </Box>
         )}
-        <Button onClick={handleEditAccountDetails}>{t("edit_account_details")}</Button>
+        <Button onClick={handleEditAccountDetails}>
+          {t("edit_account_details")}
+        </Button>
       </Paper>
     </div>
   );
