@@ -27,8 +27,6 @@ public class AccountControllerIT extends BaseTest {
 
   static String adminJwt;
 
-  static String patientJwt;
-
   @BeforeAll
   static void setUp() throws InterruptedException {
     System.out.println(getApiRoot());
@@ -1868,6 +1866,61 @@ public class AccountControllerIT extends BaseTest {
               .header("If-Match", etag)
               .body(editAccountDTO)
               .put(getApiRoot() + "/account/")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.UNAUTHORIZED.getStatusCode());
+    }
+  }
+
+  @Nested
+  @Order(19)
+  @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+  class NotifyAccessLevelChange {
+    private String patientJwt;
+
+    @BeforeEach
+    public void init() {
+      patientJwt = given()
+              .contentType("application/json")
+              .body(patientLoginDto)
+              .log().all()
+              .post(getApiRoot() + "/auth/login")
+              .then().log().all()
+              .statusCode(Response.Status.OK.getStatusCode())
+              .extract().response().jsonPath().getString("jwtToken");
+    }
+
+    @Test
+    @Order(0)
+    public void testNotify_correct() {
+      given()
+              .header("authorization", "Bearer " + patientJwt)
+              .post(getApiRoot() + "/auth/notify-access-level-change/" + "PATIENT")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.OK.getStatusCode());
+    }
+
+    @Test
+    @Order(1)
+    public void testNotify_noSuchRole() {
+      given()
+              .header("authorization", "Bearer " + patientJwt)
+              .post(getApiRoot() + "/auth/notify-access-level-change/" + "hehe")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.BAD_REQUEST.getStatusCode());
+    }
+
+    @Test
+    @Order(2)
+    public void testNotify_roleNotAssigned() {
+      given()
+              .header("authorization", "Bearer " + adminJwt)
+              .post(getApiRoot() + "/auth/notify-access-level-change/" + "PATIENT")
               .then()
               .log()
               .all()

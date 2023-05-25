@@ -102,6 +102,7 @@ public class AuthController extends AbstractController {
     } catch(ApplicationException e) {
       log.info(String.format("User %s tried to change role to %s, which they do not have",
               accountManager.getCurrentUserLogin(), role));
+      throw ApplicationException.createUnauthorisedException();
     }
     log.info(String.format("User %s changed role to %s",
             accountManager.getCurrentUserLogin(), role));
