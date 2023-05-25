@@ -57,8 +57,9 @@ function ChangePasswordForm({account, etag, hideChange}) {
           changeAccountPassword(account.id, body, tag).then((res) =>{
           
             setLoading((state)=> !state)
-            hideChange((state)=> !state)
-            navigate('/accounts');
+            setDialogOpen((state)=> !state)
+            //hideChange((state)=> !state)
+            //navigate('/accounts');
             toast.success(t("success"), {
                 position: "top-center",
             })
