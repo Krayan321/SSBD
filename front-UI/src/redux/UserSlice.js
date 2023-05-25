@@ -1,4 +1,6 @@
 import {createSlice} from "@reduxjs/toolkit";
+import {notifyAccessLevelChange} from "../api/mok/accountApi";
+import {toast} from "react-toastify";
 
 const initialState = {
     sub: "",
@@ -53,6 +55,7 @@ export const userSlice = createSlice({
                 exp: data.exp,
             };
             localStorage.setItem(ACCESS_LEVEL, res.cur);
+            notifyAccessLevelChange(res.cur).then().catch();
             return { ...state, ...res };
         },
     },
