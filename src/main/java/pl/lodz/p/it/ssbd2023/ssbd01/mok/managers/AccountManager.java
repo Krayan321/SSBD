@@ -446,6 +446,7 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
   }
 
   @Override
+  @RolesAllowed("confirmEmailChange")
   public void confirmEmailChange(String code) {
     verificationManager.confirmEmailChange(code);
   }
