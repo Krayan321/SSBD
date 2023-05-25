@@ -287,7 +287,7 @@ public class AccountController extends AbstractController {
         AccessLevelConverter.mapGrantPatientDataDTOtoPatientData(patientDataDTO);
     Account account =
         repeatTransaction(accountManager, () -> accountManager.grantAccessLevel(
-                id, patientData, patientDataDTO.getLogin(), patientData.getVersion()));
+                id, patientData, patientDataDTO.getLogin(), patientDataDTO.getVersion()));
     return AccountConverter.mapAccountToAccountAndAccessLevelsDto(account);
   }
 
