@@ -23,10 +23,6 @@ public interface TokenManagerLocal extends CommonManagerLocalInterface {
 
   void setNewPassword(String token, String newPassword);
 
-  Token findByAccountId(Long id);
-
-  void removeVerificationCode(Token token);
-
   List<Token> findTokensByTokenTypeAndExpirationDateBefore(
       TokenType verification, Date halfExpirationDate);
 }
