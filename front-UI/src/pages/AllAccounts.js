@@ -13,24 +13,28 @@ import {
   unblockAccount,
 } from "../api/mok/accountApi";
 import {
+  Box,
   Button,
   Dialog,
   DialogTitle,
   DialogActions,
   DialogContent,
   DialogContentText,
+  IconButton,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import LockIcon from "@mui/icons-material/Lock";
 import LockOpenIcon from "@mui/icons-material/LockOpen";
 import { useTranslation } from "react-i18next";
 import { toast, ToastContainer } from "react-toastify";
+import RefreshIcon from "@mui/icons-material/Refresh";
 
 export default function AllAccounts() {
   const [accounts, setAccounts] = useState([]);
   const navigate = useNavigate();
 
   const [dialogStates, setDialogStates] = useState({});
+  const [refreshing, setRefreshing] = useState(false);
 
   // const [open, setOpen] = useState(false);
   // const [selectedId, setSelectedId] = useState(null);
@@ -38,13 +42,14 @@ export default function AllAccounts() {
   const { t } = useTranslation();
 
   const findAccounts = useCallback(async () => {
+    setRefreshing(true);
     let response = await getAccounts();
-
+    setRefreshing(false);
     if (response.status === 200) {
       setAccounts(response.data);
       console.log(response.data);
     } else {
-      return <div>Nothing to show</div>;
+      navigate("/error", { replace: true });
     }
   }, []);
 
@@ -55,6 +60,10 @@ export default function AllAccounts() {
   const handleAccountDetails = async (accountId) => {
     const id = accountId;
     navigate(`/accounts/${id}/details`);
+  };
+
+  const handleRefresh = () => {
+    findAccounts();
   };
 
   const handleAccountBlock = async (active, accountId) => {
@@ -130,96 +139,111 @@ export default function AllAccounts() {
   };
 
   return (
-    <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 650 }} aria-label="simple table">
-        <TableHead>
-          <TableRow>
-            <TableCell>Login</TableCell>
-            <TableCell align="right">Email</TableCell>
-            <TableCell align="right">{t("confirmed")}</TableCell>
-            <TableCell align="right">{t("active")}</TableCell>
-            <TableCell align="right">{t("details")}</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {accounts.map((row) => (
-            <TableRow
-              key={row.id}
-              sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-            >
-              <TableCell component="th" scope="row">
-                {row.login}
-              </TableCell>
-              <TableCell align="right">{row.email}</TableCell>
-              <TableCell align="right">{String(row.confirmed)}</TableCell>
-              <TableCell align="right">
-                {String(row.active)}
-                <Button onClick={() => handleClick(row.id)}>
-                  {row.active ? <LockOpenIcon /> : <LockIcon />}
-                </Button>
-                <Dialog
-                  open={dialogStates[row.id] || false}
-                  onClose={() => handleCancel(row.id)}
-                  aria-labelledby="alert-dialog-title"
-                  aria-describedby="alert-dialog-description"
-                >
-                  {row.active ? (
-                    <div>
-                      <DialogTitle id="alert-dialog-title">
-                        {t("block_account?")}
-                      </DialogTitle>
-                      <DialogContent>
-                        <DialogContentText id="alert-dialog-description">
-                          {t("block_account_description")}
-                        </DialogContentText>
-                      </DialogContent>
-                      <DialogActions>
-                        <Button onClick={() => handleCancel(row.id)}>
-                          {t("close")}
-                        </Button>
-                        <Button
-                          onClick={() => handleAccountBlock(row.active, row.id)}
-                          autoFocus
-                        >
-                          {t("block")}
-                        </Button>
-                      </DialogActions>
-                    </div>
-                  ) : (
-                    <div>
-                      <DialogTitle id="alert-dialog-title">
-                        {t("unblock_account?")}
-                      </DialogTitle>
-                      <DialogContent>
-                        <DialogContentText id="alert-dialog-description">
-                          {t("unblock_account_description")}
-                        </DialogContentText>
-                      </DialogContent>
-                      <DialogActions>
-                        <Button onClick={() => handleCancel(row.id)}>
-                          {t("close")}
-                        </Button>
-                        <Button
-                          onClick={() => handleAccountBlock(row.active, row.id)}
-                          autoFocus
-                        >
-                          {t("unblock")}
-                        </Button>
-                      </DialogActions>
-                    </div>
-                  )}
-                </Dialog>
-              </TableCell>
-              <TableCell align="right">
-                <Button onClick={() => handleAccountDetails(row.id)}>
-                  {t("details")}
-                </Button>
-              </TableCell>
+    <div>
+      <Box sx={{ marginBottom: "10px", textAlign: "center" }}>
+        <IconButton
+          variant="contained"
+          onClick={handleRefresh}
+          disabled={refreshing}
+        >
+          <RefreshIcon />
+        </IconButton>
+      </Box>
+      <TableContainer component={Paper}>
+        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+          <TableHead sx={{ bgcolor: "pink" }}>
+            <TableRow>
+              <TableCell>Login</TableCell>
+              <TableCell align="right">Email</TableCell>
+              <TableCell align="right">{t("confirmed")}</TableCell>
+              <TableCell align="right">{t("active")}</TableCell>
+              <TableCell align="right">{t("details")}</TableCell>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-      <ToastContainer />
-    </TableContainer>
+          </TableHead>
+          <TableBody>
+            {accounts.map((row) => (
+              <TableRow
+                key={row.id}
+                sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+              >
+                <TableCell component="th" scope="row">
+                  {row.login}
+                </TableCell>
+                <TableCell align="right">{row.email}</TableCell>
+                <TableCell align="right">{String(row.confirmed)}</TableCell>
+                <TableCell align="right">
+                  {String(row.active)}
+                  <Button onClick={() => handleClick(row.id)}>
+                    {row.active ? <LockOpenIcon /> : <LockIcon />}
+                  </Button>
+                  <Dialog
+                    open={dialogStates[row.id] || false}
+                    onClose={() => handleCancel(row.id)}
+                    aria-labelledby="alert-dialog-title"
+                    aria-describedby="alert-dialog-description"
+                  >
+                    {row.active ? (
+                      <div>
+                        <DialogTitle id="alert-dialog-title">
+                          {t("block_account?")}
+                        </DialogTitle>
+                        <DialogContent>
+                          <DialogContentText id="alert-dialog-description">
+                            {t("block_account_description")}
+                          </DialogContentText>
+                        </DialogContent>
+                        <DialogActions>
+                          <Button onClick={() => handleCancel(row.id)}>
+                            {t("close")}
+                          </Button>
+                          <Button
+                            onClick={() =>
+                              handleAccountBlock(row.active, row.id)
+                            }
+                            autoFocus
+                          >
+                            {t("block")}
+                          </Button>
+                        </DialogActions>
+                      </div>
+                    ) : (
+                      <div>
+                        <DialogTitle id="alert-dialog-title">
+                          {t("unblock_account?")}
+                        </DialogTitle>
+                        <DialogContent>
+                          <DialogContentText id="alert-dialog-description">
+                            {t("unblock_account_description")}
+                          </DialogContentText>
+                        </DialogContent>
+                        <DialogActions>
+                          <Button onClick={() => handleCancel(row.id)}>
+                            {t("close")}
+                          </Button>
+                          <Button
+                            onClick={() =>
+                              handleAccountBlock(row.active, row.id)
+                            }
+                            autoFocus
+                          >
+                            {t("unblock")}
+                          </Button>
+                        </DialogActions>
+                      </div>
+                    )}
+                  </Dialog>
+                </TableCell>
+                <TableCell align="right">
+                  <Button onClick={() => handleAccountDetails(row.id)}>
+                    {t("details")}
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+        <ToastContainer />
+      </TableContainer>
+    </div>
   );
 }

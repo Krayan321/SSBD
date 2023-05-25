@@ -6,7 +6,6 @@ import PublicNavbar from "./components/PublicNavbar";
 import SingUp from "./pages/SignUp";
 import AllAccounts from "./pages/AllAccounts";
 import SingleAccount from "./pages/SingleAccount";
-import AccountInfo from "./pages/AccountInfo";
 import EditSingleAccount from "./pages/EditSingleAccount";
 import React, { Suspense } from "react";
 import i18n from "i18next";
