@@ -110,5 +110,12 @@
         <group-name>ADMIN</group-name>
     </security-role-mapping>
 
+    <security-role-mapping>
+        <role-name>confirmEmailChange</role-name>
+        <group-name>PATIENT</group-name>
+        <group-name>CHEMIST</group-name>
+        <group-name>ADMIN</group-name>
+    </security-role-mapping>
+
 
 </glassfish-web-app>
