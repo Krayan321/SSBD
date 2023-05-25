@@ -13,6 +13,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { getAccountDetails } from "../api/mok/accountApi";
 import ChangeOtherPasswordForm from "../modules/accounts/ChangeOtherPasswordForm";
 import AddRoleForm from "../modules/accounts/AddRoleForm";
+import LinearProgress from "@mui/material/LinearProgress";
 
 function SingleAccount() {
   const { id } = useParams();
@@ -47,18 +48,6 @@ function SingleAccount() {
     fetchData();
   }, []);
 
-  // const fetchAccount = useCallback(async () => {
-  //   const response = await getAccountDetails(id);
-  //   setAccount(response.data);
-  //   setAccessLevels(response.data.accessLevels[0].role)
-  // }
-  // , [id]);
-
-  // useEffect(() => {
-  //   fetchAccount();
-  // }
-  // , [fetchAccount]);
-
   const isAdmin =
     accessLevels && accessLevels.some((level) => level.role === "ADMIN");
   const isChemist =
@@ -72,23 +61,12 @@ function SingleAccount() {
   console.log("isPatient: " + isPatient);
 
   if (loading) {
-    return <p>Loading...</p>;
-  }
-
-  const DataDisplay = ({ label, data }) => {
     return (
-      <Grid container spacing={2}>
-        <Grid item xs={6}>
-          <Typography variant="subtitle1" color="textSecondary">
-            {label}
-          </Typography>
-        </Grid>
-        <Grid item xs={6}>
-          <Typography variant="subtitle1">{data}</Typography>
-        </Grid>
-      </Grid>
+      <div>
+        <LinearProgress />
+      </div>
     );
-  };
+  }
 
   const handleChangePassword = () => {
     setChangePass((state) => !state);
