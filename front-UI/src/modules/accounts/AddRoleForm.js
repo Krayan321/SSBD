@@ -1,100 +1,253 @@
-import React, { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { toast } from 'react-toastify';
-import {Button, CircularProgress, Paper, TextField,Radio, RadioGroup, FormControlLabel} from "@mui/material";
-import { useTranslation } from 'react-i18next';
-import 'react-toastify/dist/ReactToastify.css';
+import React, { useState } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
+import {
+  Button,
+  CircularProgress,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  TextField,
+} from "@mui/material";
+import { useTranslation } from "react-i18next";
+import "react-toastify/dist/ReactToastify.css";
 
-import { grantPatientRole, grantChemistRole, grantAdminRole } from '../../api/mok/accountApi';
-import ConfirmationDialog from '../../components/ConfirmationDialog';
+import {
+  grantAdminRole,
+  grantChemistRole,
+  grantPatientRole,
+} from "../../api/mok/accountApi";
+import ConfirmationDialog from "../../components/ConfirmationDialog";
+import { useNavigate } from "react-router-dom";
 
-const AddRoleForm = ({ userId, currentRoles }) => {
-    const [loading, setLoading] = useState(false);
-    const { register, handleSubmit } = useForm();
-    const { t } = useTranslation();
-    const [dialogOpen, setDialogOpen] = useState(false);
-    const [selectedRole, setSelectedRole] = useState('');
-    const paperStyle = {padding: '30px 20px', margin: "auto", width: 400}
+function AddRoleForm({ account, etag, hideChange }) {
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const navigate = useNavigate();
+  const { t } = useTranslation();
+  const [loading, setLoading] = useState(false);
+  const [selectedRole, setSelectedRole] = useState("");
+  const [showAdditionalForm, setShowAdditionalForm] = useState(false);
+  const { handleSubmit, register } = useForm();
 
-    const handleOpenDialog = (data) => {
-        setSelectedRole(data.role);
-        setDialogOpen(true);
+  const handleRoleChange = (event) => {
+    setSelectedRole(event.target.value);
+    setShowAdditionalForm(true);
+  };
+
+  const handleAdditionalFormSubmit = (data) => {
+    setLoading(true);
+    const tag = typeof etag === "string" ? etag.split('"').join("") : etag;
+    let body = {};
+
+    if (selectedRole === "admin") {
+      body = {
+        login: account.login,
+        workPhoneNumber: data.workPhoneNumber,
+        version: account.version,
+      };
+      grantAdminRole(account.id, body, tag)
+        .then((res) => {
+          setLoading(false);
+          hideChange(false);
+          navigate("/accounts");
+        })
+        .catch((error) => {
+          setLoading(false);
+          toast.error(t(error.response.data.message));
+        });
+    } else if (selectedRole === "chemist") {
+      body = {
+        login: account.login,
+        licenseNumber: data.licenseNumber,
+        version: account.version,
+      };
+      grantChemistRole(account.id, body, tag)
+        .then((res) => {
+          setLoading(false);
+          hideChange(false);
+          navigate("/accounts");
+        })
+        .catch((error) => {
+          setLoading(false);
+          toast.error(t(error.response.data.message));
+        });
+    } else if (selectedRole === "patient") {
+      body = {
+        login: account.login,
+        name: data.name,
+        lastName: data.lastName,
+        phoneNumber: data.phoneNumber,
+        pesel: data.pesel,
+        NIP: data.NIP,
+        version: account.version,
+      };
+      grantPatientRole(account.id, body, tag)
+        .then((res) => {
+          setLoading(false);
+          hideChange(false);
+          navigate("/accounts");
+        })
+        .catch((error) => {
+          setLoading(false);
+          toast.error(t(error.response.data.message));
+        });
+    }
+  };
+
+  const handleReset = async () => {
+    setLoading(true);
+    const tag = typeof etag === "string" ? etag.split('"').join("") : etag;
+    const bodyAdmin = {
+      login: account.login,
+      workPhoneNumber: "",
+      version: account.version,
+    };
+    const bodyChemist = {
+      login: account.login,
+      licenseNumber: "",
+      version: account.version,
+    };
+    const bodyPatient = {
+      login: account.login,
+      name: "",
+      lastName: "",
+      phoneNumber: "",
+      pesel: "",
+      NIP: "",
+      version: account.version,
     };
 
-    const handleRoleChange = (event) => {
-        setSelectedRole(event.target.value);
-    };
-
-    const handleAddRole = async () => {
-        setLoading(true);
-        let response;
-
-        switch (selectedRole) {
-            case 'PATIENT':
-                response = await grantPatientRole(userId);
-                break;
-            case 'CHEMIST':
-                response = await grantChemistRole(userId);
-                break;
-            case 'ADMIN':
-                response = await grantAdminRole(userId);
-                break;
-            default:
-                setLoading(false);
-                return;
-        }
-
+    Promise.all([
+      grantAdminRole(account.id, bodyAdmin, tag),
+      grantChemistRole(account.id, bodyChemist, tag),
+      grantPatientRole(account.id, bodyPatient, tag),
+    ])
+      .then((res) => {
         setLoading(false);
-        setDialogOpen(false);
+        hideChange(false);
+        navigate("/accounts");
+      })
+      .catch((error) => {
+        setLoading(false);
+        toast.error(t(error.response.data.message));
+      });
+  };
 
-        if (response.success) {
-            toast.success(t('role_added'));
-        } else {
-            toast.error(t('failed_to_add'));
-        }
-    };
+  return (
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignContent: "center",
+        marginTop: "3rem",
+      }}
+    >
+      <form onSubmit={handleSubmit(handleAdditionalFormSubmit)}>
+        <FormControl variant="outlined" fullWidth>
+          <InputLabel>Select Role</InputLabel>
+          <Select
+            value={selectedRole}
+            onChange={handleRoleChange}
+            label="Select Role"
+          >
+            <MenuItem value="admin">Admin</MenuItem>
+            <MenuItem value="chemist">Chemist</MenuItem>
+            <MenuItem value="patient">Patient</MenuItem>
+          </Select>
+        </FormControl>
 
-    const onSubmit = (data) => {
-        if (currentRoles.includes(data.role)) {
-            toast.error(t('role_already_assigned'));
-            return;
-        }
-
-        if (userId === data.userId) {
-            toast.error(t('cant_assign_role_to_yourself'));
-            return;
-        }
-
-        handleOpenDialog(data);
-    };
-
-    return (
-        <div style={{ display: 'flex', justifyContent: 'center', alignContent: 'center', marginTop: '3rem' }}>
-            <Paper elevation={20} style={paperStyle}>
-                <h2 style={{ fontFamily: 'Lato' }}>{t("choose_role")}</h2>
-            <form onSubmit={handleSubmit(onSubmit)}>
-                <RadioGroup value={selectedRole} onChange={handleRoleChange}>
-                    <FormControlLabel value="patient" control={<Radio />} label={t("patient")} />
-                    <FormControlLabel value="chemist" control={<Radio />} label={t("chemist")} />
-                    <FormControlLabel value="admin" control={<Radio />} label={t("admin")} />
-                </RadioGroup>
-                <Button fullWidth type="submit" variant="contained" disabled={loading}>
-                    {t('add_role')}
-                </Button>
-            </form>
-
-            <ConfirmationDialog
-                open={dialogOpen}
-                title={t('confirm_add_role')}
-                actions={[
-                    { label: t('proceed'), handler: handleAddRole, color: 'primary' },
-                    { label: t('cancel'), handler: () => setDialogOpen(false), color: 'secondary' },
-                ]}
-                onClose={() => setDialogOpen(false)}
+        {showAdditionalForm && selectedRole === "admin" && (
+          <>
+            <TextField
+              label="Work Phone Number"
+              variant="outlined"
+              fullWidth
+              margin="normal"
+              {...register("workPhoneNumber")}
             />
-            </Paper>
-        </div>
-    );
-};
+          </>
+        )}
+
+        {showAdditionalForm && selectedRole === "chemist" && (
+          <>
+            <TextField
+              label="License Number"
+              variant="outlined"
+              fullWidth
+              margin="normal"
+              {...register("licenseNumber")}
+            />
+          </>
+        )}
+
+        {showAdditionalForm && selectedRole === "patient" && (
+          <>
+            <TextField
+              label="Name"
+              variant="outlined"
+              fullWidth
+              margin="normal"
+              {...register("name")}
+            />
+            <TextField
+              label="Last Name"
+              variant="outlined"
+              fullWidth
+              margin="normal"
+              {...register("lastName")}
+            />
+            <TextField
+              label="Phone Number"
+              variant="outlined"
+              fullWidth
+              margin="normal"
+              {...register("phoneNumber")}
+            />
+            <TextField
+              label="PESEL"
+              variant="outlined"
+              fullWidth
+              margin="normal"
+              {...register("pesel")}
+            />
+            <TextField
+              label="NIP"
+              variant="outlined"
+              fullWidth
+              margin="normal"
+              {...register("NIP")}
+            />
+          </>
+        )}
+
+        {showAdditionalForm && (
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            disabled={loading}
+          >
+            {loading ? <CircularProgress size={24} /> : "Submit"}
+          </Button>
+        )}
+      </form>
+
+      <ConfirmationDialog
+        open={dialogOpen}
+        title={t("confirm_change_password")}
+        actions={[
+          { label: t("proceed"), handler: handleReset, color: "primary" },
+          {
+            label: t("cancel"),
+            handler: () => setDialogOpen(false),
+            color: "secondary",
+          },
+        ]}
+        onClose={() => setDialogOpen(false)}
+      />
+    </div>
+  );
+}
 
 export default AddRoleForm;

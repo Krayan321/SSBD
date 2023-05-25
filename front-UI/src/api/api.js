@@ -1,5 +1,5 @@
 import axios from "axios";
-import {JWT_TOKEN} from "../constants/Constants";
+import { JWT_TOKEN } from "../constants/Constants";
 
 const BASE_URL = window.location.href.includes("lodz.pl")
   ? "https://team-1.proj-sum.it.p.lodz.pl/api/account"
@@ -43,7 +43,7 @@ export async function get(stringUrl, params) {
         Authorization: "Bearer " + localStorage.getItem(JWT_TOKEN),
         "Content-Type": "application/json",
         Accept: "application/json",
-      }
+      },
     });
     return response;
   } catch (error) {
@@ -93,7 +93,25 @@ export async function putWithEtag(stringUrl, body, etag) {
       "Content-Type": "application/json",
       Accept: "application/json",
       "If-Match": etag,
-    }
+    },
+  });
+  return response;
+  // } catch (error) {
+  //   console.error(error);
+  // }
+}
+
+export async function postWithEtag(stringUrl, body, etag) {
+  const url = new URL(stringUrl, BASE_URL);
+
+  // try {
+  const response = await axios.put(url, body, {
+    headers: {
+      Authorization: "Bearer " + localStorage.getItem(JWT_TOKEN),
+      "Content-Type": "application/json",
+      Accept: "application/json",
+      "If-Match": etag,
+    },
   });
   return response;
   // } catch (error) {

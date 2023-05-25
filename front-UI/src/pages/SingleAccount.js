@@ -166,8 +166,7 @@ function SingleAccount() {
         {addRole ? (
           <>
             <AddRoleForm
-              userID={account.id}
-              currentRoles={accessLevels}
+              account={account}
               etag={etag}
               hideChange={setAddRole}
             />
