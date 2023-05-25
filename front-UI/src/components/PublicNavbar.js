@@ -14,6 +14,8 @@ import MenuItem from '@mui/material/MenuItem';
 import i18n from "i18next";
 import LanguageIcon from '@mui/icons-material/Language';
 import {Pathnames} from "../router/Pathnames";
+import {languages} from "../constants/Constants";
+
 
 const guestTheme = createTheme({
   palette: {
@@ -30,23 +32,6 @@ const guestTheme = createTheme({
   },
 });
 
-const languages = [
-  {
-    code: 'en',
-    name: 'English',
-    country_code: 'gb',
-  },
-  {
-    code: 'pl',
-    name: 'Polski',
-    country_code: 'pl'
-  },
-  {
-    code: 'cs',
-    name: 'Český',
-    country_code: 'cs'
-  }
-]
 
 export default function PublicNavbar() {
   const navigate = useNavigate();

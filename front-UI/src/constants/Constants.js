@@ -7,3 +7,21 @@ export const ROLES = {
     PATIENT: "PATIENT",
     CHEMIST: "CHEMIST",
 }
+
+export const languages = [
+    {
+        code: 'en',
+        name: 'English',
+        country_code: 'gb',
+    },
+    {
+        code: 'pl',
+        name: 'Polski',
+        country_code: 'pl'
+    },
+    {
+        code: 'cs',
+        name: 'Český',
+        country_code: 'cs'
+    }
+]

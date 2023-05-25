@@ -13,12 +13,6 @@ export async function confirmAccount(token) {
   return await post(`account/confirm/${token}`);
 }
 
-export async function confirmEmailChange(token) {
-  const body = {
-    token: token,
-  };
-  return await post("account/confirm-email-change", body);
-}
 
 export async function getSelfAccountDetails() {
   return await get("account/details");
@@ -73,6 +67,12 @@ export async function changeSelfAccountPassword(body, etag) {
 
 
   return await putWithEtag("account/change-password", body, etag);
+}
+
+export async function changeSelfAccountEmail(body, etag) {
+
+
+  return await putWithEtag("account", body, etag);
 }
 
 ///implementacja change email
@@ -219,6 +219,11 @@ export async function putPatient(
   };
 
   return await put("account/{id}/patient", body);
+}
+
+export async function changeLanguage(selectedLanguage) {
+
+  return await put("account/change-language?language=" + selectedLanguage);
 }
 
 //tymczasowa edycja danych
