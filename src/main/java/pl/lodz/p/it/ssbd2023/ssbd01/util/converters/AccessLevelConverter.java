@@ -13,6 +13,9 @@ import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccessLevel.EditPatientDataDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccount.grant.GrantAdminDataDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccount.grant.GrantChemistDataDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccount.grant.GrantPatientDataDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.editSelfAccessLevel.EditSelfAdminDataDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.editSelfAccessLevel.EditSelfChemistDataDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.editSelfAccessLevel.EditSelfPatientDataDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.AccessLevel;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.AdminData;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.ChemistData;
@@ -42,6 +45,16 @@ public class AccessLevelConverter {
         .phoneNumber(patientDataDTO.getPhoneNumber())
         .pesel(patientDataDTO.getPesel())
         .build();
+  }
+
+  public static PatientData mapEditSelfPatientDataDtoToPatientData(EditSelfPatientDataDTO patientDataDTO) {
+    return PatientData.builder()
+            .firstName(patientDataDTO.getFirstName())
+            .lastName(patientDataDTO.getLastName())
+            .NIP(patientDataDTO.getNip())
+            .phoneNumber(patientDataDTO.getPhoneNumber())
+            .pesel(patientDataDTO.getPesel())
+            .build();
   }
 
   public static Set<AccessLevelDTO> mapAccessLevelsToAccessLevelsDto(Set<AccessLevel> levels) {
@@ -120,6 +133,12 @@ public class AccessLevelConverter {
         .build();
   }
 
+  public static ChemistData mapEditSelfChemistDataDtoToChemistData(EditSelfChemistDataDTO chemistData) {
+    return ChemistData.builder()
+            .licenseNumber(chemistData.getLicenseNumber())
+            .build();
+  }
+
   public static ChemistData mapChemistDataDtoToChemistData(ChemistDataDTO chemistDataDTO) {
     return ChemistData.builder()
         .id(chemistDataDTO.getId())
@@ -153,6 +172,12 @@ public class AccessLevelConverter {
     return AdminData.builder()
         .workPhoneNumber(adminDataDTO.getWorkPhoneNumber())
         .build();
+  }
+
+  public static AdminData mapEditSelfAdminDataDtoToAdminData(EditSelfAdminDataDTO adminDataDTO) {
+    return AdminData.builder()
+            .workPhoneNumber(adminDataDTO.getWorkPhoneNumber())
+            .build();
   }
 
   public static AdminData mapGrantAdminDataDtoToAdminData(GrantAdminDataDTO addAdminAccountDto) {

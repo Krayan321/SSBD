@@ -55,10 +55,6 @@ public class AccountControllerIT extends BaseTest {
             .build();
   }
 
-  // todo test użycia jednego etagu z inną encją
-  // pomyśleć jakie różne akcje mogą się przeplatać
-  // sprawdzić czy przechodzą testy na remocie
-
   @Nested
   @Order(1)
   @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -1925,6 +1921,73 @@ public class AccountControllerIT extends BaseTest {
               .log()
               .all()
               .statusCode(Response.Status.UNAUTHORIZED.getStatusCode());
+    }
+  }
+
+  @Nested
+  @Order(20)
+  @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+  class EditPatientDataSelf {
+
+    private String etag;
+    private String patientJwt;
+
+    @BeforeEach
+    public void init() {
+      patientJwt = given()
+              .contentType("application/json")
+              .body(patientLoginDto)
+              .log().all()
+              .post(getApiRoot() + "/auth/login")
+              .then().log().all()
+              .statusCode(Response.Status.OK.getStatusCode())
+              .extract().response().jsonPath().getString("jwtToken");
+      var response = given()
+              .header("authorization", "Bearer " + patientJwt)
+              .get(getApiRoot() + "/account/details")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.OK.getStatusCode())
+              .extract()
+              .response();
+      etag = response.getHeader("ETag").replace("\"", "");
+      Long version = response.getBody().jsonPath().getLong("version");
+      patientDataDTOChangedName.setVersion(version);
+    }
+
+    @Test
+    @Order(1)
+    public void editPatientData_correct() {
+      patientDataDTOChangedName.setLastName("Testington");
+      given()
+              .header("authorization", "Bearer " + adminJwt)
+              .header("If-Match", etag)
+              .body(patientDataDTOChangedName)
+              .put(getApiRoot() + "/account/patient")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.OK.getStatusCode())
+              .body(
+                      "accessLevels",
+                      hasItem(hasEntry("lastName", patientDataDTOChangedName.getLastName())));
+    }
+
+    @Test
+    @Order(2)
+    public void editPatientData_badVersion() {
+      patientDataDTOChangedName.setVersion(-1L);
+      given()
+              .header("authorization", "Bearer " + adminJwt)
+              .header("If-Match", etag)
+              .body(patientDataDTOChangedName)
+              .put(getApiRoot() + "/account/patient")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.BAD_REQUEST.getStatusCode())
+              .body("message", equalTo(EXCEPTION_ETAG_INVALID));
     }
   }
 }
