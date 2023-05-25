@@ -8,6 +8,9 @@ function AccountDetails() {
     const [account, setAccount] = useState({});
     const [accessLevels, setAccessLevels] = useState([]);
     const [etag, setEtag] = useState("")
+    const [patientData, setPatientData] = useState({})
+    const [chemistData, setChemistdata] = useState({})
+    const [adminData, setAdminData] = useState({})
     const { t } = useTranslation();
 
     const paperStyle = {
@@ -24,9 +27,22 @@ function AccountDetails() {
             try {
                 const response = await getSelfAccountDetails();
                 setAccount(response.data);
-                setAccessLevels(response.data.accessLevels[0].role);
+                //setAccessLevels(response.data.accessLevels[0].role);
+                for (let obj of response.data.accessLevels) {
+                    if(obj.role === "ADMIN") {
+                        setAdminData(obj);
+                    }
+                    if(obj.role === "CHEMIST") {
+                        setChemistdata(obj);
+                    }
+                    if(obj.role === "PATIENT") {
+                        setPatientData(obj);
+                    }
+                    setAccessLevels(state => [...state, obj.role])
+                }
+
                 setEtag(response.headers["etag"])
-               
+
                 setLoading(false);
             } catch (error) {
                 console.error(error);
@@ -62,8 +78,18 @@ function AccountDetails() {
             </Grid>
         );
     };
+
+    function isUndefined(str) {
+        if(str === "undefined" || !str) {
+            return String("Empty")
+        }
+        return str
+    }
+
+
+
     const handleChangePassword = () =>{
-       setChangePass((state) => !state)
+        setChangePass((state) => !state)
     }
     return (
         <div
@@ -100,26 +126,26 @@ function AccountDetails() {
                         readOnly: true,
                     }}
                 >
-                    {account.email}
+                    {isUndefined(account.email)}
                 </Typography>
                 {
                     changePass?
-                                <>
-                                <ChangePasswordForm account={account} etag={etag} hideChange={setChangePass}/>
-                                <Grid item xs={6}>
-                                    <Button onClick={handleChangePassword}>{t("back_button")}</Button>
-                                </Grid>
-                                </>:
-                    <Grid container spacing={2}>
-                    <Grid item xs={6}>
-                        <Button>Edit Email</Button>
-                    </Grid>
-                    <Grid item xs={6}>
-                        <Button onClick={handleChangePassword}>{t("change_password_button")}</Button>
-                    </Grid>
-                </Grid>
+                        <>
+                            <ChangePasswordForm account={account} etag={etag} hideChange={setChangePass}/>
+                            <Grid item xs={6}>
+                                <Button onClick={handleChangePassword}>{t("back_button")}</Button>
+                            </Grid>
+                        </>:
+                        <Grid container spacing={2}>
+                            <Grid item xs={6}>
+                                <Button>Edit Email</Button>
+                            </Grid>
+                            <Grid item xs={6}>
+                                <Button onClick={handleChangePassword}>{t("change_password_button")}</Button>
+                            </Grid>
+                        </Grid>
                 }
-                
+
                 <Typography
                     style={{ fontFamily: "Lato", fontSize: 18, fontWeight: 400 }}
                     variant="h6"
@@ -144,36 +170,36 @@ function AccountDetails() {
                         readOnly: true,
                     }}
                 >
-                    {account.login}
-                </Typography>
-                <Typography
-                    style={{ fontFamily: "Lato", fontSize: 18, fontWeight: 400 }}
-                    variant="h6"
-                    component="div"
-                    sx={{ flexGrow: 1, mb: 1 }}
-                    type="text"
-                    fullWidth
-                    InputProps={{
-                        readOnly: true,
-                    }}
-                >
-                    {t("access_level")}
-                </Typography>
-                <Typography
-                    style={{ fontSize: 16 }}
-                    variant="h6"
-                    component="div"
-                    sx={{ flexGrow: 1, mb: 2 }}
-                    type="text"
-                    fullWidth
-                    InputProps={{
-                        readOnly: true,
-                    }}
-                >
-                    {account.accessLevels[0].role}
+                    {isUndefined(account.login)}
                 </Typography>
                 {isAdmin && (
                     <Box>
+                        <Typography
+                            style={{ fontFamily: "Lato", fontSize: 18, fontWeight: 400 }}
+                            variant="h6"
+                            component="div"
+                            sx={{ flexGrow: 1, mb: 1 }}
+                            type="text"
+                            fullWidth
+                            InputProps={{
+                                readOnly: true,
+                            }}
+                        >
+                            {t("access_level")}
+                        </Typography>
+                        <Typography
+                            style={{ fontSize: 16 }}
+                            variant="h6"
+                            component="div"
+                            sx={{ flexGrow: 1, mb: 2 }}
+                            type="text"
+                            fullWidth
+                            InputProps={{
+                                readOnly: true,
+                            }}
+                        >
+                            {isUndefined(adminData.role)}
+                        </Typography>
                         <Typography
                             style={{ fontFamily: "Lato", fontSize: 18, fontWeight: 400 }}
                             component="div"
@@ -197,12 +223,38 @@ function AccountDetails() {
                                 readOnly: true,
                             }}
                         >
-                            {String(account.accessLevels[0].workPhoneNumber)}
+                            {isUndefined(adminData.workPhoneNumber)}
                         </Typography>
                     </Box>
                 )}
                 {isChemist && (
                     <Box>
+                        <Typography
+                            style={{ fontFamily: "Lato", fontSize: 18, fontWeight: 400 }}
+                            variant="h6"
+                            component="div"
+                            sx={{ flexGrow: 1, mb: 1 }}
+                            type="text"
+                            fullWidth
+                            InputProps={{
+                                readOnly: true,
+                            }}
+                        >
+                            {t("access_level")}
+                        </Typography>
+                        <Typography
+                            style={{ fontSize: 16 }}
+                            variant="h6"
+                            component="div"
+                            sx={{ flexGrow: 1, mb: 2 }}
+                            type="text"
+                            fullWidth
+                            InputProps={{
+                                readOnly: true,
+                            }}
+                        >
+                            {isUndefined(chemistData.role)}
+                        </Typography>
                         <Typography
                             style={{ fontFamily: "Lato", fontSize: 18, fontWeight: 400 }}
                             component="div"
@@ -226,12 +278,38 @@ function AccountDetails() {
                                 readOnly: true,
                             }}
                         >
-                            {String(account.accessLevels[0].licenseNumber)}
+                            {isUndefined(chemistData.licenseNumber)}
                         </Typography>
                     </Box>
                 )}
                 {isPatient && (
                     <Box>
+                        <Typography
+                            style={{ fontFamily: "Lato", fontSize: 18, fontWeight: 400 }}
+                            variant="h6"
+                            component="div"
+                            sx={{ flexGrow: 1, mb: 1 }}
+                            type="text"
+                            fullWidth
+                            InputProps={{
+                                readOnly: true,
+                            }}
+                        >
+                            {t("access_level")}
+                        </Typography>
+                        <Typography
+                            style={{ fontSize: 16 }}
+                            variant="h6"
+                            component="div"
+                            sx={{ flexGrow: 1, mb: 2 }}
+                            type="text"
+                            fullWidth
+                            InputProps={{
+                                readOnly: true,
+                            }}
+                        >
+                            {isUndefined(patientData.role)}
+                        </Typography>
                         <Grid container spacing={2}>
                             <Grid item xs={6}>
                                 <Typography
@@ -257,7 +335,7 @@ function AccountDetails() {
                                         readOnly: true,
                                     }}
                                 >
-                                    {String(account.accessLevels[0].firstName)}
+                                    {isUndefined(patientData.firstName)}
                                 </Typography>
                             </Grid>
                             <Grid item xs={6}>
@@ -284,7 +362,7 @@ function AccountDetails() {
                                         readOnly: true,
                                     }}
                                 >
-                                    {String(account.accessLevels[0].lastName)}
+                                    {isUndefined(patientData.lastName)}
                                 </Typography>
                             </Grid>
                         </Grid>
@@ -311,7 +389,7 @@ function AccountDetails() {
                                 readOnly: true,
                             }}
                         >
-                            {String(account.accessLevels[0].phoneNumber)}
+                            {isUndefined(patientData.phoneNumber)}
                         </Typography>
                         <Typography
                             style={{ fontFamily: "Lato", fontSize: 18, fontWeight: 400 }}
@@ -336,7 +414,7 @@ function AccountDetails() {
                                 readOnly: true,
                             }}
                         >
-                            {String(account.accessLevels[0].pesel)}
+                            {isUndefined(patientData.pesel)}
                         </Typography>
                         <Typography
                             style={{ fontFamily: "Lato", fontSize: 18, fontWeight: 400 }}
@@ -361,7 +439,7 @@ function AccountDetails() {
                                 readOnly: true,
                             }}
                         >
-                            {String(account.accessLevels[0].nip)}
+                            {isUndefined(patientData.nip)}
                         </Typography>
                     </Box>
                 )}
