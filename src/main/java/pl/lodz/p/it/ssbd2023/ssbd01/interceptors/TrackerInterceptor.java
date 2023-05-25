@@ -18,7 +18,9 @@ public class TrackerInterceptor {
     Object result;
     try {
       message
-          .append(context.getMethod().toString())
+              .append(context.getMethod().getName())
+              .append(" Class: ")
+              .append(context.getTarget().getClass().getCanonicalName())
           .append(" user: ")
           .append(sessionContext.getCallerPrincipal().getName()).append(" ");
       log.fine(message.toString());
