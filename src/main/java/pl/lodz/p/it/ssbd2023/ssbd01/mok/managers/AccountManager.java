@@ -200,6 +200,18 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
   @RolesAllowed("editAccessLevel")
   public Account editAccessLevel(Long id, AccessLevel accessLevel, Long version) {
     Account account = getAccount(id);
+    return doEditAccessLevel(account, accessLevel, version);
+  }
+
+  @Override
+  @RolesAllowed("editSelfAccessLevel")
+  public Account editSelfAccessLevel(AccessLevel accessLevel, Long version) {
+    Account account = getCurrentUserWithAccessLevels();
+    return doEditAccessLevel(account, accessLevel, version);
+  }
+
+  @RolesAllowed({"editAccessLevel", "editSelfAccessLevel"})
+  private Account doEditAccessLevel(Account account, AccessLevel accessLevel, Long version) {
     AccessLevel found = AccessLevelFinder.findAccessLevel(account, accessLevel.getRole());
     if (!Objects.equals(found.getVersion(), version)) {
       throw ApplicationException.createOptimisticLockException();

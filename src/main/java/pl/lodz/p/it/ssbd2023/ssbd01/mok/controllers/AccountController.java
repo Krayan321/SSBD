@@ -425,6 +425,62 @@ public class AccountController extends AbstractController {
     return AccountConverter.mapAccountToAccountAndAccessLevelsDto(account);
   }
 
+  @PUT
+  @Path("/patient")
+  @RolesAllowed("editSelfAccessLevelPatient")
+  @Produces(MediaType.APPLICATION_JSON)
+  @Consumes(MediaType.APPLICATION_JSON)
+  @ETagFilterBinding
+  public AccountAndAccessLevelsDTO editPatientDataSelf(
+          @HeaderParam("If-Match") @NotEmpty String etag,
+          @Valid EditPatientDataDTO patientDataDTO) {
+    entityIdentitySignerVerifier.checkEtagIntegrity(patientDataDTO, etag);
+    PatientData patientData =
+            AccessLevelConverter.mapEditPatientDataDtoToPatientData(patientDataDTO);
+    Account account =
+            repeatTransaction(
+                    accountManager,
+                    () -> accountManager.editSelfAccessLevel(patientData, patientDataDTO.getVersion()));
+    return AccountConverter.mapAccountToAccountAndAccessLevelsDto(account);
+  }
+
+  @PUT
+  @Path("/chemist")
+  @RolesAllowed("editSelfAccessLevelChemist")
+  @Produces(MediaType.APPLICATION_JSON)
+  @Consumes(MediaType.APPLICATION_JSON)
+  @ETagFilterBinding
+  public AccountAndAccessLevelsDTO editChemistDataSelf(
+          @HeaderParam("If-Match") @NotEmpty String etag,
+          @Valid EditChemistDataDTO chemistDataDTO) {
+    entityIdentitySignerVerifier.checkEtagIntegrity(chemistDataDTO, etag);
+    ChemistData chemistData =
+            AccessLevelConverter.mapEditChemistDataDtoToChemistData(chemistDataDTO);
+    Account account =
+            repeatTransaction(
+                    accountManager,
+                    () -> accountManager.editSelfAccessLevel(chemistData, chemistDataDTO.getVersion()));
+    return AccountConverter.mapAccountToAccountAndAccessLevelsDto(account);
+  }
+
+  @PUT
+  @Path("/admin")
+  @RolesAllowed("editSelfAccessLevelAdmin")
+  @Produces(MediaType.APPLICATION_JSON)
+  @Consumes(MediaType.APPLICATION_JSON)
+  @ETagFilterBinding
+  public AccountAndAccessLevelsDTO editAdminDataSelf(
+          @HeaderParam("If-Match") @NotEmpty String etag,
+          @Valid EditAdminDataDTO adminDataDTO) {
+    entityIdentitySignerVerifier.checkEtagIntegrity(adminDataDTO, etag);
+    AdminData adminData = AccessLevelConverter.mapEditAdminDataDtoToAdminData(adminDataDTO);
+    Account account =
+            repeatTransaction(
+                    accountManager,
+                    () -> accountManager.editSelfAccessLevel(adminData, adminDataDTO.getVersion()));
+    return AccountConverter.mapAccountToAccountAndAccessLevelsDto(account);
+  }
+
 
 
   @PUT
