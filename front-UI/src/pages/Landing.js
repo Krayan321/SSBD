@@ -4,6 +4,8 @@ import {useTranslation} from "react-i18next";
 import { Paper, Button } from "@mui/material";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import i18n from "i18next";
+import {getSelfAccountDetails} from "../api/mok/accountApi";
 
 
 function Landing() {
@@ -12,6 +14,26 @@ function Landing() {
     const navigate = useNavigate();
     const isAdmin = user.roles.includes("ADMIN");
 
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await getSelfAccountDetails();
+                if (response.data.language === "en") {
+                    i18n.changeLanguage("en");
+                } else if (response.data.language === "pl") {
+                    i18n.changeLanguage("pl");
+                } else if (response.data.language === "cs") {
+                    i18n.changeLanguage("cs");
+                } else {
+                    i18n.changeLanguage("en");
+                }
+
+            } catch (error) {
+                console.error(error);
+            }
+        };
+        fetchData();
+    }, []);
 
 
     const handleCreateAccount = () => {
