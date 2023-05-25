@@ -14,6 +14,7 @@ import { getAccountDetails } from "../api/mok/accountApi";
 import ChangeOtherPasswordForm from "../modules/accounts/ChangeOtherPasswordForm";
 import AddRoleForm from "../modules/accounts/AddRoleForm";
 import LinearProgress from "@mui/material/LinearProgress";
+import ChangeOtherEmailForm from "../modules/accounts/ChangeOtherEmailForm";
 
 function SingleAccount() {
   const { id } = useParams();
@@ -22,6 +23,7 @@ function SingleAccount() {
   const [addRole, setAddRole] = useState(false);
   const { t } = useTranslation();
   const [changePass, setChangePass] = useState(false);
+  const [changeEmail, setChangeEmail] = useState(false);
   const [etag, setEtag] = useState("");
   const navigate = useNavigate();
   const paperStyle = {
@@ -78,6 +80,10 @@ function SingleAccount() {
 
   const handleAddRole = () => {
     setAddRole((state) => !state);
+  };
+
+  const handleChangeEmail = () => {
+    setChangeEmail((state) => !state);
   };
 
   return (
@@ -140,6 +146,23 @@ function SingleAccount() {
         >
           {account.email}
         </Typography>
+        {
+          changeEmail ? (
+              <>
+                <ChangeOtherEmailForm account={account} etag={etag} hideChange={setChangeEmail}/>
+                <Grid item xs={6}>
+                  <Button onClick={handleChangeEmail}>{t("back_button")}</Button>
+                </Grid>
+              </>
+          ) : (
+              <Grid container spacing={2}>
+                <Grid item xs={6}>
+                  <Button onClick={handleChangeEmail}>{t("change_email")}</Button>
+                </Grid>
+              </Grid>
+
+          )
+        }
         {changePass ? (
           <>
             <ChangeOtherPasswordForm
