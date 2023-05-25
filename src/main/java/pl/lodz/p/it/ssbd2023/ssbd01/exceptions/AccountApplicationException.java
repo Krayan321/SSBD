@@ -21,19 +21,9 @@ public class AccountApplicationException extends ApplicationException {
         EXPECTATION_FAILED, EXCEPTION_ACCOUNT_CONSTRAINT_VIOLATION, e);
   }
 
-  public static AccountApplicationException createConfirmedAccountDeletionException() {
-    return new AccountApplicationException(
-        EXPECTATION_FAILED, EXCEPTION_ACCOUNT_DELETION_CONFIRMED);
-  }
-
   public static AccountApplicationException createAccountNotConfirmedException() {
     return new AccountApplicationException(
             UNAUTHORIZED, EXCEPTION_ACCOUNT_NOT_CONFIRMED);
-  }
-
-  public static AccountApplicationException createAccountBlockedException() {
-    return new AccountApplicationException(
-            UNAUTHORIZED, EXCEPTION_ACCOUNT_BLOCKED);
   }
 
   public static AccountApplicationException createUndefinedAccessLevelException() {
