@@ -4,11 +4,11 @@
          xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_5_0.xsd"
          version="5.0">
 
-<!--    <error-page>-->
-<!--        <location>/index.html</location>-->
-<!--    </error-page>-->
+    <!--    <error-page>-->
+    <!--        <location>/index.html</location>-->
+    <!--    </error-page>-->
 
-<!--    <default-context-path>/</default-context-path>-->
+    <!--    <default-context-path>/</default-context-path>-->
 
     <security-role>
         <role-name>ADMIN</role-name>
@@ -23,15 +23,15 @@
         <role-name>ANONYMOUS</role-name>
     </security-role>
 
-<!--    <security-constraint>-->
-<!--        <web-resource-collection>-->
-<!--            <web-resource-name>ALL</web-resource-name>-->
-<!--            <url-pattern>/*</url-pattern>-->
-<!--        </web-resource-collection>-->
-<!--        <user-data-constraint>-->
-<!--            <transport-guarantee>CONFIDENTIAL</transport-guarantee>-->
-<!--        </user-data-constraint>-->
-<!--    </security-constraint>-->
+    <!--    <security-constraint>-->
+    <!--        <web-resource-collection>-->
+    <!--            <web-resource-name>ALL</web-resource-name>-->
+    <!--            <url-pattern>/*</url-pattern>-->
+    <!--        </web-resource-collection>-->
+    <!--        <user-data-constraint>-->
+    <!--            <transport-guarantee>CONFIDENTIAL</transport-guarantee>-->
+    <!--        </user-data-constraint>-->
+    <!--    </security-constraint>-->
 
     <!--dodano nazwe przestrzeni uwierzytelniania, odwolanie do stron formularza - na przyszlosc -->
     <login-config>
@@ -67,5 +67,67 @@
         <param-name>resteasy.preferJacksonOverJsonB</param-name>
         <param-value>true</param-value>
     </context-param>
+
+    <security-role>
+        <role-name>getAllAccounts</role-name>
+    </security-role>
+    <security-role>
+        <role-name>getCurrentUser</role-name>
+    </security-role>
+    <security-role>
+        <role-name>getCurrentUserWithAccessLevels</role-name>
+    </security-role>
+    <security-role>
+        <role-name>changeAccountLanguage</role-name>
+    </security-role>
+    <security-role>
+        <role-name>getAccountAndAccessLevels</role-name>
+    </security-role>
+    <security-role>
+        <role-name>grantAccessLevel</role-name>
+    </security-role>
+    <security-role>
+        <role-name>getAccessLevel</role-name>
+    </security-role>
+    <security-role>
+        <role-name>deactivateAccessLevel</role-name>
+    </security-role>
+    <security-role>
+        <role-name>getAccount</role-name>
+    </security-role>
+    <security-role>
+        <role-name>createAccount</role-name>
+    </security-role>
+    <security-role>
+        <role-name>editAccessLevel</role-name>
+    </security-role>
+    <security-role>
+        <role-name>activateUserAccount</role-name>
+    </security-role>
+    <security-role>
+        <role-name>blockAccount</role-name>
+    </security-role>
+    <security-role>
+        <role-name>updateUserPassword</role-name>
+    </security-role>
+    <security-role>
+        <role-name>updateOwnPassword</role-name>
+    </security-role>
+    <security-role>
+        <role-name>updateOwnEmail</role-name>
+    </security-role>
+    <security-role>
+        <role-name>updateUserEmail</role-name>
+    </security-role>
+    <security-role>
+        <role-name>confirmEmailChange</role-name>
+    </security-role>
+    <security-role>
+        <role-name>activateAccessLevel</role-name>
+    </security-role>
+    <security-role>
+        <role-name>unblockAccount</role-name>
+    </security-role>
+
 
 </web-app>
