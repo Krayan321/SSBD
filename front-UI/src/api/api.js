@@ -105,7 +105,7 @@ export async function postWithEtag(stringUrl, body, etag) {
   const url = new URL(stringUrl, BASE_URL);
 
   // try {
-  const response = await axios.put(url, body, {
+  const response = await axios.post(url, body, {
     headers: {
       Authorization: "Bearer " + localStorage.getItem(JWT_TOKEN),
       "Content-Type": "application/json",
