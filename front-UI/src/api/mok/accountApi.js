@@ -195,6 +195,11 @@ export async function signInAccount(login, password) {
   return await post("auth/login", body);
 }
 
+
+export async function notifyAccessLevelChange(role) {
+  return await post("auth/notify-access-level-change/" + role);
+}
+
 //na razie inne register
 
 export async function putPatient(
