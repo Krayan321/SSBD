@@ -7,14 +7,14 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import LinearProgress from "@mui/material/LinearProgress";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import { getAccountDetails } from "../api/mok/accountApi";
-import ChangeOtherPasswordForm from "../modules/accounts/ChangeOtherPasswordForm";
 import AddRoleForm from "../modules/accounts/AddRoleForm";
-import LinearProgress from "@mui/material/LinearProgress";
 import ChangeOtherEmailForm from "../modules/accounts/ChangeOtherEmailForm";
+import ChangeOtherPasswordForm from "../modules/accounts/ChangeOtherPasswordForm";
 
 function SingleAccount() {
   const { id } = useParams();
@@ -176,9 +176,7 @@ function SingleAccount() {
           </>
         ) : (
           <Grid container spacing={2}>
-            <Grid item xs={6}>
-              <Button>Edit Email</Button>
-            </Grid>
+
             <Grid item xs={6}>
               <Button onClick={handleChangePassword}>
                 {t("change_password_button")}

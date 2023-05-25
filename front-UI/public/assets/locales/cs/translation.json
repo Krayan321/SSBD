@@ -126,6 +126,8 @@
   "enter_new_email": "Zadejte nový Email",
   "new_Email": "Nový Email",
   "confirm_Email": "Potvrďte nový Email",
-  "change_email": "Změna Email"
+  "change_email": "Změna Email",
+  "emails_not_match": "Zadejte prosím stejný e-mail",
+  "confirm_change_email": "Potvrďte změnu emailu"
 
 }

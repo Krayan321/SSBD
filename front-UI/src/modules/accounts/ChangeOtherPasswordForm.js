@@ -7,8 +7,8 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from 'react-toastify';
 import * as Yup from "yup";
 import { changeAccountPassword } from "../../api/mok/accountApi";
 import ConfirmationDialog from "../../components/ConfirmationDialog";
@@ -55,12 +55,15 @@ function ChangePasswordForm({account, etag, hideChange}) {
             version: account.version
           };
           changeAccountPassword(account.id, body, tag).then((res) =>{
+          
             setLoading((state)=> !state)
             hideChange((state)=> !state)
             navigate('/accounts');
             toast.success(t("success"), {
                 position: "top-center",
             })
+           
+            
         }).catch(error => {
             setLoading((state)=> !state)
     
@@ -89,7 +92,7 @@ function ChangePasswordForm({account, etag, hideChange}) {
 
     return (
         <div style={{display: 'flex', justifyContent: 'center', alignContent: 'center', marginTop: '3rem'}}>
-           
+         
                
                    <form>
                           <TextField  sx={{mb: 4}}
@@ -145,7 +148,7 @@ function ChangePasswordForm({account, etag, hideChange}) {
                             ]}
                             onClose={() => setDialogOpen(false)}
                         />
-      
+         <ToastContainer/>
         </div>
     );
 }
