@@ -129,6 +129,10 @@
   "confirm_Email": "Potwierdź Email",
   "change_email": "Zmień Email",
   "emails_not_match": "Podaj taki sam email",
-  "confirm_change_email": "Potwierdź zmianę emaila"
-
+  "confirm_change_email": "Potwierdź zmianę emaila",
+  "new_email": "Nowy email",
+  "change_email_button": "Zmien email",
+  "email_length_min": "Email zbyt krotki",
+  "email_length_max": "Email zbyt dlugi",
+  "email_valid": "Niepoprawny format email"
 }
