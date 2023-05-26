@@ -13,7 +13,6 @@ export async function confirmAccount(token) {
   return await post(`account/confirm/${token}`);
 }
 
-
 export async function getSelfAccountDetails() {
   return await get("account/details");
 }

@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { ToastContainer } from 'react-toastify';
 import { getSelfAccountDetails } from "../api/mok/accountApi";
 import ChangePasswordForm from "../modules/accounts/ChangePasswordForm";
+import ChangeEmailForm from "../modules/accounts/ChangeEmailForm";
 function AccountDetails() {
     const [account, setAccount] = useState({});
     const [accessLevels, setAccessLevels] = useState([]);
@@ -21,13 +22,13 @@ function AccountDetails() {
     };
 
     const [loading, setLoading] = useState(true);
-    const [changePass, setChangePass] = useState(false)
+    const [changePass, setChangePass] = useState(false);
+    const [changeEmail, setChangeEmail] = useState(false);
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const response = await getSelfAccountDetails();
                 setAccount(response.data);
-                //setAccessLevels(response.data.accessLevels[0].role);
                 for (let obj of response.data.accessLevels) {
                     if(obj.role === "ADMIN") {
                         setAdminData(obj);
@@ -91,6 +92,10 @@ function AccountDetails() {
     const handleChangePassword = () =>{
         setChangePass((state) => !state)
     }
+
+    const handleChangeEmail = () =>{
+        setChangeEmail((state) => !state)
+    }
     return (
         <div
             style={{
@@ -138,14 +143,24 @@ function AccountDetails() {
                         </>:
                         <Grid container spacing={2}>
                             <Grid item xs={6}>
-                                <Button>Edit Email</Button>
-                            </Grid>
-                            <Grid item xs={6}>
                                 <Button onClick={handleChangePassword}>{t("change_password_button")}</Button>
                             </Grid>
                         </Grid>
                 }
-
+                {
+                    changeEmail?
+                        <>
+                            <ChangeEmailForm account={account} etag={etag} hideChange={setChangeEmail}/>
+                            <Grid item xs={6}>
+                                <Button onClick={handleChangeEmail}>{t("back_button")}</Button>
+                            </Grid>
+                        </>:
+                        <Grid container spacing={2}>
+                            <Grid item xs={6}>
+                                <Button onClick={handleChangeEmail}>{t("change_email_button")}</Button>
+                            </Grid>
+                        </Grid>
+                }
                 <Typography
                     style={{ fontFamily: "Lato", fontSize: 18, fontWeight: 400 }}
                     variant="h6"
