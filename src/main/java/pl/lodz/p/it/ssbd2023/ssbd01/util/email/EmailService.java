@@ -127,64 +127,17 @@ public class EmailService {
     }
   }
 
-  public void sendEmailChangeEmail(String email, String name, String token) {
-    MailjetRequest request =
-        new MailjetRequest(Emailv31.resource)
-            .property(
-                Emailv31.MESSAGES,
-                new JSONArray()
-                    .put(
-                        new JSONObject()
-                            .put(
-                                Emailv31.Message.FROM, new JSONObject().put("Email", EMAIL_ADDRESS))
-                            .put(
-                                Emailv31.Message.TO,
-                                new JSONArray()
-                                    .put(new JSONObject().put("Email", email).put("Name", name)))
-                            .put(Emailv31.Message.SUBJECT, "Email change")
-                            .put(
-                                Emailv31.Message.TEXTPART,
-                                "Dear "
-                                    + name
-                                    + ", welcome to Online Pharmacy! To change confirm changing"
-                                    + " your email click copy token below: "
-                                    + token)));
+  public void sendEmailChangeEmail(String email, String name, Locale locale, String token) {
+    String subject = i18n.getMessage(i18n.MAIL_CHANGE_EMAIL_SUBJECT, locale);
+    String link = BASE_URL + "/confirm-email-change/" + token;
+    String body = i18n.getMessage(i18n.MAIL_CHANGE_EMAIL_BODY, locale, name, link);
+
+    MailjetRequest request = getMailjetRequest(email, name, subject, body);
     try {
       client.post(request);
     } catch (MailjetException e) {
       e.printStackTrace();
     }
-  }
-
-  public String sendCatEmail(String email, String name) throws MailjetException {
-    MailjetRequest request =
-        new MailjetRequest(Emailv31.resource)
-            .property(
-                Emailv31.MESSAGES,
-                new JSONArray()
-                    .put(
-                        new JSONObject()
-                            .put(
-                                Emailv31.Message.FROM,
-                                new JSONObject()
-                                    .put("Email", EMAIL_ADDRESS)
-                                    .put("Name", "udalosie"))
-                            .put(
-                                Emailv31.Message.TO,
-                                new JSONArray()
-                                    .put(new JSONObject().put("Email", email).put("Name", name)))
-                            .put(Emailv31.Message.SUBJECT, "Some good cats for you!")
-                            .put(
-                                Emailv31.Message.TEXTPART,
-                                "Dear CatEnjoyer, welcome to CatDelievery! May the cat force be"
-                                    + " with you!")
-                            .put(
-                                Emailv31.Message.HTMLPART,
-                                "<h3>Hello stranger, look at some cats <a"
-                                    + " href=\"https://wallpapers.com/images/featured/y4upwj5zz45novpx.jpg:*/\">CatDelievery</a>!</h3><br"
-                                    + " />May the cat force be with you!")));
-
-    return client.post(request).getData().toString();
   }
 
   private MailjetRequest getMailjetRequest(

@@ -102,7 +102,7 @@ public class TokenManager extends AbstractManager
   public void sendEmailChangeEmail(Account account, String new_email) {
     Token token = makeToken(account, encodeEmail(new_email), TokenType.EMAIL_CHANGE_CONFIRM);
     tokenFacade.create(token);
-    emailService.sendEmailChangeEmail(new_email, account.getLogin(), token.getCode());
+    emailService.sendEmailChangeEmail(new_email, account.getLogin(), account.getLanguage(), token.getCode());
   }
 
   private String encodeEmail(String new_email) {
