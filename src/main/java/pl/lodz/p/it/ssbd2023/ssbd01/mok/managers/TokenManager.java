@@ -75,9 +75,9 @@ public class TokenManager extends AbstractManager
 
     token.setCreatedBy(account.getLogin());
 
-    tokenFacade.create(token);
-    emailService.sendRegistrationEmail(account.getEmail(), account.getLogin(),
-            account.getLanguage(), token.getCode());
+//    tokenFacade.create(token);
+//    emailService.sendRegistrationEmail(account.getEmail(), account.getLogin(),
+//            account.getLanguage(), token.getCode());
     return token;
   }
 
@@ -111,7 +111,7 @@ public class TokenManager extends AbstractManager
   public void sendEmailChangeEmail(Account account, String new_email) {
     Token token = makeToken(account, encodeEmail(new_email), TokenType.EMAIL_CHANGE_CONFIRM);
     tokenFacade.create(token);
-    emailService.sendEmailChangeEmail(new_email, account.getLogin(), token.getCode());
+    emailService.sendEmailChangeEmail(new_email, account.getLogin(), account.getLanguage(), token.getCode());
   }
 
   @RolesAllowed("updateOwnEmail")

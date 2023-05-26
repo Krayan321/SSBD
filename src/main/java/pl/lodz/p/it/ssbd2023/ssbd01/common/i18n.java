@@ -65,6 +65,8 @@ public class i18n {
 
   public static final String MAIL_PASSWORD_RESET_SUBJECT = "mail.password.reset.subject";
   public static final String MAIL_PASSWORD_RESET_BODY = "mail.password.reset.body";
+  public static final String MAIL_CHANGE_EMAIL_BODY = "mail.email.change.body";
+  public static final String MAIL_CHANGE_EMAIL_SUBJECT = "mail.email.change.subject";
 
   public static String getMessage(String message, Locale locale, Object... parameters) {
     ResourceBundle bundle = ResourceBundle.getBundle("i18n.messages", locale);
