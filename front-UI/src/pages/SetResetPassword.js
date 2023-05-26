@@ -9,6 +9,7 @@ import { toast, ToastContainer } from "react-toastify";
 import { useParams, useNavigate } from "react-router-dom";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import VisibilityIcon from "@mui/icons-material/Visibility";
+import {Pathnames} from "../router/Pathnames";
 
 const setPasswordSchema = Yup.object().shape({
     password: Yup.string()
@@ -51,7 +52,7 @@ function SetResetPassword() {
                     position: "top-center",
                 });
                 reset(); // Resetowanie formularza
-                navigate("/login");
+                navigate(Pathnames.public.login);
             })
             .catch((error) => {
                 setLoading(false);

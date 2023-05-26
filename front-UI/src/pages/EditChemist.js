@@ -26,7 +26,7 @@ export default function EditChemist() {
     formData.append("id", id);
     formData.append("licenseNumber", licenseNumber);
     await putChemist(Object.fromEntries(formData));
-    navigate("/accounts/{id}");
+    navigate(`/accounts/${id}`);
   };
 
   return (

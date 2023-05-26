@@ -12,6 +12,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import * as Yup from "yup";
 import { changeSelfAccountPassword } from "../../api/mok/accountApi";
 import ConfirmationDialog from "../../components/ConfirmationDialog";
+import {Pathnames} from "../../router/Pathnames";
 const ChangePasswordSchema = Yup.object().shape({
     oldPassword: Yup.string()
         .min(8, 'password_length_min')
@@ -68,7 +69,7 @@ function ChangePasswordForm({account, etag, hideChange}) {
         changeSelfAccountPassword(body, tag).then((res) =>{
             setLoading((state)=> !state)
             hideChange((state)=> !state)
-            navigate('/accounts/self');
+            navigate(Pathnames.auth.self);
             toast.success(t("success"), {
                 position: "top-center",
             })

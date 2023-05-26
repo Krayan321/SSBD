@@ -12,6 +12,7 @@ import {Container, Stack} from '@mui/material';
 import 'react-toastify/dist/ReactToastify.css';
 import {ToastContainer, toast} from 'react-toastify';
 import {useNavigate} from "react-router-dom";
+import {Pathnames} from "../router/Pathnames";
 
 
 const addChemistSchema = Yup.object().shape({
@@ -34,7 +35,7 @@ const addChemistSchema = Yup.object().shape({
         .oneOf([Yup.ref('password'), null], 'passwords_not_match')
         .required('confirm_password_required'),
     licenseNumber: Yup.string()
-        .matches(/^[0-6]{6}$/, "license_invalid")
+        .matches(/^[0-9]{6}$/, "license_invalid")
         .required('license_required')
 });
 
@@ -66,7 +67,7 @@ function AddChemist() {
                 toast.success(t("account_created_check_email"), {
                     position: "top-center",
                 })
-                navigate('/landing');
+                navigate(Pathnames.auth.landing);
             }
         ).catch(error => {
             setLoading(false)

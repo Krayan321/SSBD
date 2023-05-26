@@ -15,12 +15,15 @@ import { getAccountDetails } from "../api/mok/accountApi";
 import AddRoleForm from "../modules/accounts/AddRoleForm";
 import ChangeOtherEmailForm from "../modules/accounts/ChangeOtherEmailForm";
 import ChangeOtherPasswordForm from "../modules/accounts/ChangeOtherPasswordForm";
+import {Pathnames} from "../router/Pathnames";
+import EditRoleForm from "../modules/accounts/EditRoleForm";
 
 function SingleAccount() {
   const { id } = useParams();
   const [account, setAccount] = useState({});
   const [accessLevels, setAccessLevels] = useState([]);
   const [addRole, setAddRole] = useState(false);
+  const [editRole, setEditRole] = useState(false);
   const { t } = useTranslation();
   const [changePass, setChangePass] = useState(false);
   const [changeEmail, setChangeEmail] = useState(false);
@@ -43,7 +46,7 @@ function SingleAccount() {
         setEtag(response.headers["etag"]);
         setLoading(false);
       } else {
-        navigate("/error", { replace: true });
+        navigate(Pathnames.public.error, { replace: true });
       }
     };
 
@@ -70,11 +73,15 @@ function SingleAccount() {
   };
 
   const handleEditAccountDetails = () => {
-    navigate(`/accounts/edit/${id}`);
+    navigate(`/accounts/${id}/edit`);
   };
 
   const handleAddRole = () => {
     setAddRole((state) => !state);
+  };
+
+  const handleEditRole = () => {
+    setEditRole((state) => !state);
   };
 
   const handleChangeEmail = () => {
@@ -196,6 +203,24 @@ function SingleAccount() {
               <Button onClick={handleAddRole}>{t("add_role")}</Button>
             </Grid>
           </Grid>
+        )}
+        {editRole ? (
+            <>
+              <EditRoleForm
+                  account={account}
+                  etag={etag}
+                  hideChange={setEditRole}
+              />
+              <Grid item xs={6}>
+                <Button onClick={handleEditRole}>{t("back_button")}</Button>
+              </Grid>
+            </>
+        ) : (
+            <Grid container spacing={2}>
+              <Grid item xs={6}>
+                <Button onClick={handleEditRole}>{t("edit_account_details")}</Button>
+              </Grid>
+            </Grid>
         )}
 
         <Typography

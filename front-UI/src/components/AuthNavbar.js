@@ -170,6 +170,7 @@ export default function AuthNavbar() {
                                                 })
                                             );
                                             handleClose(event);
+                                            navigate(Pathnames.auth.landing);
                                         }}>
                                         {role}
                                     </MenuItem>

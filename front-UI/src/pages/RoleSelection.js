@@ -34,11 +34,11 @@ function RoleSelectionForm() {
         setLoading(false)
 
         if (selectedRole === 'patient') {
-            navigate('/add-patient');
+            navigate(Pathnames.admin.addPatient);
         } else if (selectedRole === 'chemist') {
-            navigate('/add-chemist');
+            navigate(Pathnames.admin.addChemist);
         } else if (selectedRole === 'admin') {
-            navigate('/add-administrator');
+            navigate(Pathnames.admin.addAdministrator);
         }
     };
 

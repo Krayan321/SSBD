@@ -6,13 +6,15 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import i18n from "i18next";
 import {getSelfAccountDetails} from "../api/mok/accountApi";
+import {Pathnames} from "../router/Pathnames";
 
 
 function Landing() {
     const user = useSelector((state) => state.user);
     const { t } = useTranslation();
     const navigate = useNavigate();
-    const isAdmin = user.roles.includes("ADMIN");
+    const userRole = useSelector((state) => state.user.cur);
+    const isAdmin = userRole === "ADMIN";
 
     useEffect(() => {
         const fetchData = async () => {
@@ -37,7 +39,7 @@ function Landing() {
 
 
     const handleCreateAccount = () => {
-        navigate("/create-account");
+        navigate(Pathnames.admin.createAccount);
     };
 
     return (

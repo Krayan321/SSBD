@@ -26,7 +26,7 @@ export default function EditAdmin() {
     formData.append("id", id);
     formData.append("workPhoneNumber", workPhoneNumber);
     await putAdmin(Object.fromEntries(formData));
-    navigate("/accounts/{id}");
+    navigate(`/accounts/${id}`);
   };
 
   return (
