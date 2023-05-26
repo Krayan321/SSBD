@@ -1,25 +1,26 @@
-package pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccessLevel;
+package pl.lodz.p.it.ssbd2023.ssbd01.dto.editSelfAccessLevel;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.NotNull;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import pl.lodz.p.it.ssbd2023.ssbd01.common.SignableEntity;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Role;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class AbstractEditAccessLevelDTO implements SignableEntity {
-
+public class AbstractEditSelfAccessLevel implements SignableEntity {
     @NotNull
     private Long version;
 
     @NotNull
-    private Role role;
+    private String login;
 
     @Override
     @JsonIgnore
     public String getSignablePayload() {
-        return String.format("%s.%d", role, version);
+        return String.format("%s.%d", login, version);
     }
 }

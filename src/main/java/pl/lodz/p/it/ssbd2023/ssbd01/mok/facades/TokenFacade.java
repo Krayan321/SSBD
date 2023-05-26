@@ -1,5 +1,7 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.mok.facades;
 
+import jakarta.annotation.security.DenyAll;
+import jakarta.annotation.security.PermitAll;
 import jakarta.ejb.Stateless;
 import jakarta.ejb.TransactionAttribute;
 import jakarta.ejb.TransactionAttributeType;
@@ -23,6 +25,7 @@ import pl.lodz.p.it.ssbd2023.ssbd01.interceptors.TrackerInterceptor;
         TokenFacadeInterceptor.class,
         TrackerInterceptor.class
 })
+@DenyAll
 public class TokenFacade extends AbstractFacade<Token> {
   @PersistenceContext(unitName = "ssbd01mokPU")
   private EntityManager em;
@@ -37,21 +40,18 @@ public class TokenFacade extends AbstractFacade<Token> {
   }
 
   @Override
+  @PermitAll
   public void edit(Token token) {
     super.edit(token);
   }
 
   @Override
+  @PermitAll
   public void editAndRefresh(Token token) {
     super.editAndRefresh(token);
   }
 
-  public Token findByAccount(Long id) {
-    TypedQuery<Token> tq = em.createNamedQuery("token.findByAccountId", Token.class);
-    tq.setParameter(1, id);
-    return tq.getSingleResult();
-  }
-
+  @PermitAll
   public List<Token> findByTypeAndBeforeGivenData(TokenType type, Date date) {
     TypedQuery<Token> tq =
         em.createNamedQuery(
@@ -61,6 +61,7 @@ public class TokenFacade extends AbstractFacade<Token> {
     return tq.getResultList();
   }
 
+  @PermitAll
   public Token findByCode(String code) {
     TypedQuery<Token> tq = em.createNamedQuery("token.findByCode", Token.class);
     tq.setParameter(1, code);
@@ -68,11 +69,13 @@ public class TokenFacade extends AbstractFacade<Token> {
   }
 
   @Override
+  @PermitAll
   public void create(Token token) {
     super.create(token);
   }
 
   @Override
+  @PermitAll
   public void remove(Token token) {
     super.remove(token);
   }

@@ -131,6 +131,18 @@
     <security-role>
         <role-name>notifyAccessLevelChange</role-name>
     </security-role>
+    <security-role>
+        <role-name>editSelfAccessLevel</role-name>
+    </security-role>
+    <security-role>
+        <role-name>editSelfAccessLevelPatient</role-name>
+    </security-role>
+    <security-role>
+        <role-name>editSelfAccessLevelChemist</role-name>
+    </security-role>
+    <security-role>
+        <role-name>editSelfAccessLevelAdmin</role-name>
+    </security-role>
 
 
 </web-app>
