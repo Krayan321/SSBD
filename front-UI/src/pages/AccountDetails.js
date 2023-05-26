@@ -1,463 +1,410 @@
 import { Box, Button, Grid, Paper, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { ToastContainer } from 'react-toastify';
+import { ToastContainer } from "react-toastify";
 import { getSelfAccountDetails } from "../api/mok/accountApi";
 import ChangePasswordForm from "../modules/accounts/ChangePasswordForm";
 import ChangeEmailForm from "../modules/accounts/ChangeEmailForm";
+import { useNavigate } from "react-router-dom";
+import { Pathnames } from "../router/Pathnames";
+import { useSelector } from "react-redux";
+
 function AccountDetails() {
-    const [account, setAccount] = useState({});
-    const [accessLevels, setAccessLevels] = useState([]);
-    const [etag, setEtag] = useState("")
-    const [patientData, setPatientData] = useState({})
-    const [chemistData, setChemistdata] = useState({})
-    const [adminData, setAdminData] = useState({})
-    const { t } = useTranslation();
+  const [account, setAccount] = useState({});
+  const [accessLevels, setAccessLevels] = useState([]);
+  const [etag, setEtag] = useState("");
+  const [patientData, setPatientData] = useState({});
+  const [chemistData, setChemistdata] = useState({});
+  const [adminData, setAdminData] = useState({});
+  const { t } = useTranslation();
+  const navigate = useNavigate();
+  const user = useSelector((state) => state.user);
+  const currentRole = user.cur;
+  console.log(user);
 
-    const paperStyle = {
-        backgroundColor: "rgba(255, 255, 255, 0.75)",
-        padding: "20px 20px",
-        margin: "0px auto",
-        width: 400,
+  const paperStyle = {
+    backgroundColor: "rgba(255, 255, 255, 0.75)",
+    padding: "20px 20px",
+    margin: "0px auto",
+    width: 400,
+  };
+
+  const [loading, setLoading] = useState(true);
+  const [changePass, setChangePass] = useState(false);
+  const [changeEmail, setChangeEmail] = useState(false);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await getSelfAccountDetails();
+        setAccount(response.data);
+        setAccessLevels(response.data.accessLevels);
+        setEtag(response.headers["etag"]);
+        setLoading(false);
+      } catch (error) {
+        navigate("/error", { replace: true });
+      }
     };
+    fetchData();
+  }, []);
 
-    const [loading, setLoading] = useState(true);
-    const [changePass, setChangePass] = useState(false);
-    const [changeEmail, setChangeEmail] = useState(false);
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await getSelfAccountDetails();
-                setAccount(response.data);
-                for (let obj of response.data.accessLevels) {
-                    if(obj.role === "ADMIN") {
-                        setAdminData(obj);
-                    }
-                    if(obj.role === "CHEMIST") {
-                        setChemistdata(obj);
-                    }
-                    if(obj.role === "PATIENT") {
-                        setPatientData(obj);
-                    }
-                    setAccessLevels(state => [...state, obj.role])
-                }
+  const handleEdit = () => {
+    navigate(Pathnames.auth.editSelf);
+  };
 
-                setEtag(response.headers["etag"])
+  const isAdmin = accessLevels.includes("ADMIN");
+  const isChemist = accessLevels.includes("CHEMIST");
+  const isPatient = accessLevels.includes("PATIENT");
 
-                setLoading(false);
-            } catch (error) {
-                console.error(error);
-            }
-        };
-        fetchData();
-    }, []);
+  const isSuperAdmin = currentRole === "ADMIN";
+  const isSuperChemist = currentRole === "CHEMIST";
+  const isSuperPatient = currentRole === "PATIENT";
 
-    const isAdmin = accessLevels.includes("ADMIN");
-    const isChemist = accessLevels.includes("CHEMIST");
-    const isPatient = accessLevels.includes("PATIENT");
+  const alfa = accessLevels[0];
+  console.log(alfa);
+  const beta = accessLevels[1];
+  console.log(beta);
+  const gamma = accessLevels[2];
 
-    if (loading) {
-        return <p>Loading...</p>;
-    }
+  if (loading) {
+    return <p>Loading...</p>;
+  }
 
-    const DataDisplay = ({ label, data }) => {
-        return (
-            <Grid container spacing={2}>
-                <Grid item xs={6}>
-                    <Typography variant="subtitle1" color="textSecondary">
-                        {label}
-                    </Typography>
-                </Grid>
-                <Grid item xs={6}>
-                    <Typography variant="subtitle1">{data}</Typography>
-                </Grid>
-            </Grid>
-        );
-    };
+  const handleChangePassword = () => {
+    setChangePass((state) => !state);
+  };
 
-    function isUndefined(str) {
-        if(str === "undefined" || !str) {
-            return String("Empty")
-        }
-        return str
-    }
-
-
-
-    const handleChangePassword = () =>{
-        setChangePass((state) => !state)
-    }
-
-    const handleChangeEmail = () =>{
-        setChangeEmail((state) => !state)
-    }
-    return (
-        <div
-            style={{
-                display: "flex",
-                justifyContent: "center",
-                alignContent: "center",
-                marginTop: "3rem",
-            }}
+  const handleChangeEmail = () => {
+    setChangeEmail((state) => !state);
+  };
+  return (
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignContent: "center",
+        marginTop: "3rem",
+      }}
+    >
+      <Paper elevation={20} style={paperStyle}>
+        <h2 style={{ fontFamily: "Lato" }}>{t("account_details")} </h2>
+        <Typography
+          style={{ fontFamily: "Lato", fontSize: 18, fontWeight: 400 }}
+          variant="h6"
+          component="div"
+          sx={{ flexGrow: 1, mb: 1 }}
+          type="text"
+          fullWidth
+          InputProps={{
+            readOnly: true,
+          }}
         >
-            <Paper elevation={20} style={paperStyle}>
-                <h2 style={{ fontFamily: "Lato" }}>{t("account_details")} </h2>
+          Email
+        </Typography>
+        <Typography
+          style={{ fontSize: 16 }}
+          variant="h6"
+          component="div"
+          sx={{ flexGrow: 1, mb: 2 }}
+          type="text"
+          fullWidth
+          InputProps={{
+            readOnly: true,
+          }}
+        >
+          {account.email}
+        </Typography>
+        {changePass ? (
+          <>
+            <ChangePasswordForm
+              account={account}
+              etag={etag}
+              hideChange={setChangePass}
+            />
+            <Grid item xs={6}>
+              <Button onClick={handleChangePassword}>{t("back_button")}</Button>
+            </Grid>
+          </>
+        ) : (
+          <Grid container spacing={2}>
+            <Grid item xs={6}>
+              <Button onClick={handleChangePassword}>
+                {t("change_password_button")}
+              </Button>
+            </Grid>
+          </Grid>
+        )}
+        {changeEmail ? (
+          <>
+            <ChangeEmailForm
+              account={account}
+              etag={etag}
+              hideChange={setChangeEmail}
+            />
+            <Grid item xs={6}>
+              <Button onClick={handleChangeEmail}>{t("back_button")}</Button>
+            </Grid>
+          </>
+        ) : (
+          <Grid container spacing={2}>
+            <Grid item xs={6}>
+              <Button onClick={handleChangeEmail}>
+                {t("change_email_button")}
+              </Button>
+            </Grid>
+          </Grid>
+        )}
+        <Typography
+          style={{ fontFamily: "Lato", fontSize: 18, fontWeight: 400 }}
+          variant="h6"
+          component="div"
+          sx={{ flexGrow: 1, mb: 1, mt: 1 }}
+          type="text"
+          fullWidth
+          InputProps={{
+            readOnly: true,
+          }}
+        >
+          Login
+        </Typography>
+        <Typography
+          style={{ fontSize: 16 }}
+          variant="h6"
+          component="div"
+          sx={{ flexGrow: 1, mb: 2 }}
+          type="text"
+          fullWidth
+          InputProps={{
+            readOnly: true,
+          }}
+        >
+          {account.login}
+        </Typography>
+        {isSuperAdmin && (
+          <Box>
+            <Typography
+              style={{ fontFamily: "Lato", fontSize: 18, fontWeight: 400 }}
+              component="div"
+              sx={{ flexGrow: 1, mb: 1 }}
+              type="text"
+              fullWidth
+              InputProps={{
+                readOnly: true,
+              }}
+            >
+              {t("work_phone_number")}
+            </Typography>
+            {accessLevels.map((level) =>
+              level.workPhoneNumber ? (
                 <Typography
-                    style={{ fontFamily: "Lato", fontSize: 18, fontWeight: 400 }}
-                    variant="h6"
-                    component="div"
-                    sx={{ flexGrow: 1, mb: 1 }}
-                    type="text"
-                    fullWidth
-                    InputProps={{
-                        readOnly: true,
-                    }}
+                  style={{ fontSize: 16 }}
+                  variant="h6"
+                  component="div"
+                  sx={{ flexGrow: 1, mb: 2 }}
+                  type="text"
+                  fullWidth
+                  InputProps={{
+                    readOnly: true,
+                  }}
                 >
-                    Email
+                  {level.workPhoneNumber}
                 </Typography>
+              ) : null
+            )}
+          </Box>
+        )}
+        {isSuperChemist && (
+          <Box>
+            <Typography
+              style={{ fontFamily: "Lato", fontSize: 18, fontWeight: 400 }}
+              component="div"
+              sx={{ flexGrow: 1, mb: 1 }}
+              type="text"
+              fullWidth
+              InputProps={{
+                readOnly: true,
+              }}
+            >
+              {t("licesne_number")}
+            </Typography>
+            {accessLevels.map((level) =>
+              level.licenseNumber ? (
                 <Typography
-                    style={{ fontSize: 16 }}
-                    variant="h6"
-                    component="div"
-                    sx={{ flexGrow: 1, mb: 2 }}
-                    type="text"
-                    fullWidth
-                    InputProps={{
-                        readOnly: true,
-                    }}
+                  style={{ fontSize: 16 }}
+                  variant="h6"
+                  component="div"
+                  sx={{ flexGrow: 1, mb: 2 }}
+                  type="text"
+                  fullWidth
+                  InputProps={{
+                    readOnly: true,
+                  }}
                 >
-                    {isUndefined(account.email)}
+                  {level.licenseNumber}
                 </Typography>
-                {
-                    changePass?
-                        <>
-                            <ChangePasswordForm account={account} etag={etag} hideChange={setChangePass}/>
-                            <Grid item xs={6}>
-                                <Button onClick={handleChangePassword}>{t("back_button")}</Button>
-                            </Grid>
-                        </>:
-                        <Grid container spacing={2}>
-                            <Grid item xs={6}>
-                                <Button onClick={handleChangePassword}>{t("change_password_button")}</Button>
-                            </Grid>
-                        </Grid>
-                }
-                {
-                    changeEmail?
-                        <>
-                            <ChangeEmailForm account={account} etag={etag} hideChange={setChangeEmail}/>
-                            <Grid item xs={6}>
-                                <Button onClick={handleChangeEmail}>{t("back_button")}</Button>
-                            </Grid>
-                        </>:
-                        <Grid container spacing={2}>
-                            <Grid item xs={6}>
-                                <Button onClick={handleChangeEmail}>{t("change_email_button")}</Button>
-                            </Grid>
-                        </Grid>
-                }
+              ) : null
+            )}
+          </Box>
+        )}
+        {isSuperPatient && (
+          <Box>
+            <Grid container spacing={2}>
+              <Grid item xs={6}>
                 <Typography
-                    style={{ fontFamily: "Lato", fontSize: 18, fontWeight: 400 }}
-                    variant="h6"
-                    component="div"
-                    sx={{ flexGrow: 1, mb: 1, mt: 1 }}
-                    type="text"
-                    fullWidth
-                    InputProps={{
-                        readOnly: true,
-                    }}
+                  style={{ fontFamily: "Lato", fontSize: 18, fontWeight: 400 }}
+                  component="div"
+                  sx={{ flexGrow: 1, mb: 1 }}
+                  type="text"
+                  fullWidth
+                  InputProps={{
+                    readOnly: true,
+                  }}
                 >
-                    Login
+                  {t("First name")}
                 </Typography>
-                <Typography
-                    style={{ fontSize: 16 }}
-                    variant="h6"
-                    component="div"
-                    sx={{ flexGrow: 1, mb: 2 }}
-                    type="text"
-                    fullWidth
-                    InputProps={{
+                {accessLevels.map((level) =>
+                  level.name ? (
+                    <Typography
+                      style={{ fontSize: 16 }}
+                      variant="h6"
+                      component="div"
+                      sx={{ flexGrow: 1, mb: 2 }}
+                      type="text"
+                      fullWidth
+                      InputProps={{
                         readOnly: true,
-                    }}
-                >
-                    {isUndefined(account.login)}
-                </Typography>
-                {isAdmin && (
-                    <Box>
-                        <Typography
-                            style={{ fontFamily: "Lato", fontSize: 18, fontWeight: 400 }}
-                            variant="h6"
-                            component="div"
-                            sx={{ flexGrow: 1, mb: 1 }}
-                            type="text"
-                            fullWidth
-                            InputProps={{
-                                readOnly: true,
-                            }}
-                        >
-                            {t("access_level")}
-                        </Typography>
-                        <Typography
-                            style={{ fontSize: 16 }}
-                            variant="h6"
-                            component="div"
-                            sx={{ flexGrow: 1, mb: 2 }}
-                            type="text"
-                            fullWidth
-                            InputProps={{
-                                readOnly: true,
-                            }}
-                        >
-                            {isUndefined(adminData.role)}
-                        </Typography>
-                        <Typography
-                            style={{ fontFamily: "Lato", fontSize: 18, fontWeight: 400 }}
-                            component="div"
-                            sx={{ flexGrow: 1, mb: 1 }}
-                            type="text"
-                            fullWidth
-                            InputProps={{
-                                readOnly: true,
-                            }}
-                        >
-                            {t("work_phone_number")}
-                        </Typography>
-                        <Typography
-                            style={{ fontSize: 16 }}
-                            variant="h6"
-                            component="div"
-                            sx={{ flexGrow: 1, mb: 2 }}
-                            type="text"
-                            fullWidth
-                            InputProps={{
-                                readOnly: true,
-                            }}
-                        >
-                            {isUndefined(adminData.workPhoneNumber)}
-                        </Typography>
-                    </Box>
+                      }}
+                    >
+                      {level.firstName}
+                    </Typography>
+                  ) : null
                 )}
-                {isChemist && (
-                    <Box>
-                        <Typography
-                            style={{ fontFamily: "Lato", fontSize: 18, fontWeight: 400 }}
-                            variant="h6"
-                            component="div"
-                            sx={{ flexGrow: 1, mb: 1 }}
-                            type="text"
-                            fullWidth
-                            InputProps={{
-                                readOnly: true,
-                            }}
-                        >
-                            {t("access_level")}
-                        </Typography>
-                        <Typography
-                            style={{ fontSize: 16 }}
-                            variant="h6"
-                            component="div"
-                            sx={{ flexGrow: 1, mb: 2 }}
-                            type="text"
-                            fullWidth
-                            InputProps={{
-                                readOnly: true,
-                            }}
-                        >
-                            {isUndefined(chemistData.role)}
-                        </Typography>
-                        <Typography
-                            style={{ fontFamily: "Lato", fontSize: 18, fontWeight: 400 }}
-                            component="div"
-                            sx={{ flexGrow: 1, mb: 1 }}
-                            type="text"
-                            fullWidth
-                            InputProps={{
-                                readOnly: true,
-                            }}
-                        >
-                            {t("licesne_number")}
-                        </Typography>
-                        <Typography
-                            style={{ fontSize: 16 }}
-                            variant="h6"
-                            component="div"
-                            sx={{ flexGrow: 1, mb: 2 }}
-                            type="text"
-                            fullWidth
-                            InputProps={{
-                                readOnly: true,
-                            }}
-                        >
-                            {isUndefined(chemistData.licenseNumber)}
-                        </Typography>
-                    </Box>
+              </Grid>
+              <Grid item xs={6}>
+                <Typography
+                  style={{ fontFamily: "Lato", fontSize: 18, fontWeight: 400 }}
+                  component="div"
+                  sx={{ flexGrow: 1, mb: 1 }}
+                  type="text"
+                  fullWidth
+                  InputProps={{
+                    readOnly: true,
+                  }}
+                >
+                  {t("last_name")}
+                </Typography>
+                {accessLevels.map((level) =>
+                  level.lastName ? (
+                    <Typography
+                      style={{ fontSize: 16 }}
+                      variant="h6"
+                      component="div"
+                      sx={{ flexGrow: 1, mb: 2 }}
+                      type="text"
+                      fullWidth
+                      InputProps={{
+                        readOnly: true,
+                      }}
+                    >
+                      {level.lastName}
+                    </Typography>
+                  ) : null
                 )}
-                {isPatient && (
-                    <Box>
-                        <Typography
-                            style={{ fontFamily: "Lato", fontSize: 18, fontWeight: 400 }}
-                            variant="h6"
-                            component="div"
-                            sx={{ flexGrow: 1, mb: 1 }}
-                            type="text"
-                            fullWidth
-                            InputProps={{
-                                readOnly: true,
-                            }}
-                        >
-                            {t("access_level")}
-                        </Typography>
-                        <Typography
-                            style={{ fontSize: 16 }}
-                            variant="h6"
-                            component="div"
-                            sx={{ flexGrow: 1, mb: 2 }}
-                            type="text"
-                            fullWidth
-                            InputProps={{
-                                readOnly: true,
-                            }}
-                        >
-                            {isUndefined(patientData.role)}
-                        </Typography>
-                        <Grid container spacing={2}>
-                            <Grid item xs={6}>
-                                <Typography
-                                    style={{ fontFamily: "Lato", fontSize: 18, fontWeight: 400 }}
-                                    component="div"
-                                    sx={{ flexGrow: 1, mb: 1 }}
-                                    type="text"
-                                    fullWidth
-                                    InputProps={{
-                                        readOnly: true,
-                                    }}
-                                >
-                                    {t("First name")}
-                                </Typography>
-                                <Typography
-                                    style={{ fontSize: 16 }}
-                                    variant="h6"
-                                    component="div"
-                                    sx={{ flexGrow: 1, mb: 2 }}
-                                    type="text"
-                                    fullWidth
-                                    InputProps={{
-                                        readOnly: true,
-                                    }}
-                                >
-                                    {isUndefined(patientData.firstName)}
-                                </Typography>
-                            </Grid>
-                            <Grid item xs={6}>
-                                <Typography
-                                    style={{ fontFamily: "Lato", fontSize: 18, fontWeight: 400 }}
-                                    component="div"
-                                    sx={{ flexGrow: 1, mb: 1 }}
-                                    type="text"
-                                    fullWidth
-                                    InputProps={{
-                                        readOnly: true,
-                                    }}
-                                >
-                                    {t("last_name")}
-                                </Typography>
-                                <Typography
-                                    style={{ fontSize: 16 }}
-                                    variant="h6"
-                                    component="div"
-                                    sx={{ flexGrow: 1, mb: 2 }}
-                                    type="text"
-                                    fullWidth
-                                    InputProps={{
-                                        readOnly: true,
-                                    }}
-                                >
-                                    {isUndefined(patientData.lastName)}
-                                </Typography>
-                            </Grid>
-                        </Grid>
-                        <Typography
-                            style={{ fontFamily: "Lato", fontSize: 18, fontWeight: 400 }}
-                            component="div"
-                            sx={{ flexGrow: 1, mb: 1 }}
-                            type="text"
-                            fullWidth
-                            InputProps={{
-                                readOnly: true,
-                            }}
-                        >
-                            {t("phone_number")}
-                        </Typography>
-                        <Typography
-                            style={{ fontSize: 16 }}
-                            variant="h6"
-                            component="div"
-                            sx={{ flexGrow: 1, mb: 2 }}
-                            type="text"
-                            fullWidth
-                            InputProps={{
-                                readOnly: true,
-                            }}
-                        >
-                            {isUndefined(patientData.phoneNumber)}
-                        </Typography>
-                        <Typography
-                            style={{ fontFamily: "Lato", fontSize: 18, fontWeight: 400 }}
-                            component="div"
-                            sx={{ flexGrow: 1, mb: 1 }}
-                            type="text"
-                            fullWidth
-                            InputProps={{
-                                readOnly: true,
-                            }}
-                        >
-                            Pesel
-                        </Typography>
-                        <Typography
-                            style={{ fontSize: 16 }}
-                            variant="h6"
-                            component="div"
-                            sx={{ flexGrow: 1, mb: 2 }}
-                            type="text"
-                            fullWidth
-                            InputProps={{
-                                readOnly: true,
-                            }}
-                        >
-                            {isUndefined(patientData.pesel)}
-                        </Typography>
-                        <Typography
-                            style={{ fontFamily: "Lato", fontSize: 18, fontWeight: 400 }}
-                            component="div"
-                            sx={{ flexGrow: 1, mb: 1 }}
-                            type="text"
-                            fullWidth
-                            InputProps={{
-                                readOnly: true,
-                            }}
-                        >
-                            NIP
-                        </Typography>
-                        <Typography
-                            style={{ fontSize: 16 }}
-                            variant="h6"
-                            component="div"
-                            sx={{ flexGrow: 1, mb: 2 }}
-                            type="text"
-                            fullWidth
-                            InputProps={{
-                                readOnly: true,
-                            }}
-                        >
-                            {isUndefined(patientData.nip)}
-                        </Typography>
-                    </Box>
-                )}
-                <Button>Edit Account Details</Button>
-            </Paper>
-            <ToastContainer/>
-        </div>
-    );
+              </Grid>
+            </Grid>
+            <Typography
+              style={{ fontFamily: "Lato", fontSize: 18, fontWeight: 400 }}
+              component="div"
+              sx={{ flexGrow: 1, mb: 1 }}
+              type="text"
+              fullWidth
+              InputProps={{
+                readOnly: true,
+              }}
+            >
+              {t("phone_number")}
+            </Typography>
+            {accessLevels.map((level) =>
+              level.phoneNumber ? (
+                <Typography
+                  style={{ fontSize: 16 }}
+                  variant="h6"
+                  component="div"
+                  sx={{ flexGrow: 1, mb: 2 }}
+                  type="text"
+                  fullWidth
+                  InputProps={{
+                    readOnly: true,
+                  }}
+                >
+                  {level.phoneNumber}
+                </Typography>
+              ) : null
+            )}
+            <Typography
+              style={{ fontFamily: "Lato", fontSize: 18, fontWeight: 400 }}
+              component="div"
+              sx={{ flexGrow: 1, mb: 1 }}
+              type="text"
+              fullWidth
+              InputProps={{
+                readOnly: true,
+              }}
+            >
+              Pesel
+            </Typography>
+            {accessLevels.map((level) =>
+              level.pesel ? (
+                <Typography
+                  style={{ fontSize: 16 }}
+                  variant="h6"
+                  component="div"
+                  sx={{ flexGrow: 1, mb: 2 }}
+                  type="text"
+                  fullWidth
+                  InputProps={{
+                    readOnly: true,
+                  }}
+                >
+                  {level.pesel}
+                </Typography>
+              ) : null
+            )}
+            <Typography
+              style={{ fontFamily: "Lato", fontSize: 18, fontWeight: 400 }}
+              component="div"
+              sx={{ flexGrow: 1, mb: 1 }}
+              type="text"
+              fullWidth
+              InputProps={{
+                readOnly: true,
+              }}
+            >
+              NIP
+            </Typography>
+            {accessLevels.map((level) =>
+              level.NIP ? (
+                <Typography
+                  style={{ fontSize: 16 }}
+                  variant="h6"
+                  component="div"
+                  sx={{ flexGrow: 1, mb: 2 }}
+                  type="text"
+                  fullWidth
+                  InputProps={{
+                    readOnly: true,
+                  }}
+                >
+                  {level.NIP}
+                </Typography>
+              ) : null
+            )}
+          </Box>
+        )}
+        <Button onClick={handleEdit}>Edit Account Details</Button>
+      </Paper>
+      <ToastContainer />
+    </div>
+  );
 }
 
 export default AccountDetails;
