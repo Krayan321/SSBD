@@ -20,109 +20,91 @@ import {
 } from "../../api/mok/accountApi";
 import ConfirmationDialog from "../../components/ConfirmationDialog";
 import { useNavigate } from "react-router-dom";
+import {
+  adminSchema,
+  chemistSchema,
+  signUpSchema,
+} from "../../utils/Validations";
+import { yupResolver } from "@hookform/resolvers/yup";
 
 function AddRoleForm({ account, etag, hideChange }) {
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [dialogOpen2, setDialogOpen2] = useState(false);
+  const [dialogOpen3, setDialogOpen3] = useState(false);
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [selectedRole, setSelectedRole] = useState("");
   const [showAdditionalForm, setShowAdditionalForm] = useState(false);
-  const { handleSubmit, register } = useForm();
+  const [bodyToSend, setBodyToSend] = useState({});
+  const [usedRole, setUsedRole] = useState(["ADMIN", "CHEMIST", "PATIENT"]);
 
-  const handleRoleChange = (event) => {
-    setSelectedRole(event.target.value);
-    setShowAdditionalForm(true);
-  };
+  const {
+    handleSubmit,
+    register,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(signUpSchema),
+  });
 
-  const handleAdditionalFormSubmit = (data) => {
-    setLoading(true);
-    const tag = typeof etag === "string" ? etag.split('"').join("") : etag;
-    let body = {};
+  const {
+    handleSubmit: handleSubmitAdmin,
+    register: registerAdmin,
+    formState: { errors: errorsAdmin },
+  } = useForm({
+    resolver: yupResolver(adminSchema),
+  });
 
-    if (selectedRole === "admin") {
-      body = {
-        login: account.login,
-        workPhoneNumber: data.workPhoneNumber,
-        version: account.version,
-      };
-      grantAdminRole(account.id, body, tag)
-        .then((res) => {
-          setLoading(false);
-          hideChange(false);
-          navigate("/accounts");
-        })
-        .catch((error) => {
-          setLoading(false);
-          toast.error(t(error.response.data.message));
-        });
-    } else if (selectedRole === "chemist") {
-      body = {
-        login: account.login,
-        licenseNumber: data.licenseNumber,
-        version: account.version,
-      };
-      grantChemistRole(account.id, body, tag)
-        .then((res) => {
-          setLoading(false);
-          hideChange(false);
-          navigate("/accounts");
-        })
-        .catch((error) => {
-          setLoading(false);
-          toast.error(t(error.response.data.message));
-        });
-    } else if (selectedRole === "patient") {
-      body = {
-        login: account.login,
-        name: data.name,
-        lastName: data.lastName,
-        phoneNumber: data.phoneNumber,
-        pesel: data.pesel,
-        NIP: data.NIP,
-        version: account.version,
-      };
-      grantPatientRole(account.id, body, tag)
-        .then((res) => {
-          setLoading(false);
-          hideChange(false);
-          navigate("/accounts");
-        })
-        .catch((error) => {
-          setLoading(false);
-          toast.error(t(error.response.data.message));
-        });
-    }
-  };
+  const {
+    handleSubmit: handleSubmitChemist,
+    register: registerChemist,
+    formState: { errors: errorsChemist },
+  } = useForm({
+    resolver: yupResolver(chemistSchema),
+  });
 
-  const handleReset = async () => {
-    setLoading(true);
-    const tag = typeof etag === "string" ? etag.split('"').join("") : etag;
+  const onSubmitAdmin = handleSubmitAdmin(({ workPhoneNumber }) => {
     const bodyAdmin = {
       login: account.login,
-      workPhoneNumber: "",
+      workPhoneNumber: workPhoneNumber,
       version: account.version,
     };
+    setBodyToSend(bodyAdmin);
+    setDialogOpen2(true);
+  });
+
+  const onSubmitChemist = handleSubmitChemist(({ licenseNumber }) => {
     const bodyChemist = {
       login: account.login,
-      licenseNumber: "",
+      licenseNumber: licenseNumber,
       version: account.version,
     };
-    const bodyPatient = {
-      login: account.login,
-      name: "",
-      lastName: "",
-      phoneNumber: "",
-      pesel: "",
-      NIP: "",
-      version: account.version,
-    };
+    setBodyToSend(bodyChemist);
+    setDialogOpen3(true);
+  });
 
-    Promise.all([
-      grantAdminRole(account.id, bodyAdmin, tag),
-      grantChemistRole(account.id, bodyChemist, tag),
-      grantPatientRole(account.id, bodyPatient, tag),
-    ])
+  const onSubmitPatient = handleSubmit(
+    ({ name, lastName, phoneNumber, pesel, nip }) => {
+      const bodyPatient = {
+        login: account.login,
+        name: name,
+        lastName: lastName,
+        phoneNumber: phoneNumber,
+        pesel: pesel,
+        NIP: nip,
+        version: account.version,
+      };
+
+      setBodyToSend(bodyPatient);
+      setDialogOpen(true);
+    }
+  );
+
+  const onSendAdmin = () => {
+    const tag = typeof etag === "string" ? etag.split('"').join("") : etag;
+
+    console.log(bodyToSend);
+    grantAdminRole(account.id, bodyToSend, tag)
       .then((res) => {
         setLoading(false);
         hideChange(false);
@@ -134,16 +116,46 @@ function AddRoleForm({ account, etag, hideChange }) {
       });
   };
 
+  const onSendChemist = () => {
+    const tag = typeof etag === "string" ? etag.split('"').join("") : etag;
+
+    console.log(bodyToSend);
+    grantChemistRole(account.id, bodyToSend, tag)
+      .then((res) => {
+        setLoading(false);
+        hideChange(false);
+        navigate("/accounts");
+      })
+      .catch((error) => {
+        setLoading(false);
+        toast.error(t(error.response.data.message));
+      });
+  };
+
+  const onSendPatient = () => {
+    const tag = typeof etag === "string" ? etag.split('"').join("") : etag;
+
+    console.log(bodyToSend);
+    grantPatientRole(account.id, bodyToSend, tag)
+      .then((res) => {
+        setLoading(false);
+        hideChange(false);
+        navigate("/accounts");
+      })
+      .catch((error) => {
+        setLoading(false);
+        toast.error(t(error.response.data.message));
+      });
+  };
+
+  const handleRoleChange = (event) => {
+    setSelectedRole(event.target.value);
+    setShowAdditionalForm(true);
+  };
+
   return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        alignContent: "center",
-        marginTop: "3rem",
-      }}
-    >
-      <form onSubmit={handleSubmit(handleAdditionalFormSubmit)}>
+    <div>
+      <form>
         <FormControl variant="outlined" fullWidth>
           <InputLabel>Select Role</InputLabel>
           <Select
@@ -151,93 +163,150 @@ function AddRoleForm({ account, etag, hideChange }) {
             onChange={handleRoleChange}
             label="Select Role"
           >
-            <MenuItem value="admin">Admin</MenuItem>
-            <MenuItem value="chemist">Chemist</MenuItem>
-            <MenuItem value="patient">Patient</MenuItem>
+            {usedRole.map(
+              (role) =>
+                account.accessLevels.filter(
+                  (accessLevel) => accessLevel.role === role
+                ).length === 0 && <MenuItem value={role}>{role}</MenuItem>
+            )}
           </Select>
         </FormControl>
 
-        {showAdditionalForm && selectedRole === "admin" && (
+        {showAdditionalForm && selectedRole === "ADMIN" && (
           <>
             <TextField
-              label="Work Phone Number"
+              {...registerAdmin("workPhoneNumber")}
+              type="text"
               variant="outlined"
+              color="secondary"
+              label={t("workPhoneNumber")}
               fullWidth
-              margin="normal"
-              {...register("workPhoneNumber")}
+              sx={{ my: 4 }}
+              required
+              error={errorsAdmin.workPhoneNumber}
+              helperText={t(errorsAdmin.workPhoneNumber?.message)}
             />
+            <Button
+              fullWidth
+              sx={{ mb: 4 }}
+              onClick={onSubmitAdmin}
+              color="primary"
+              type="submit"
+              variant="contained"
+            >
+              {t("add_access_level")}
+            </Button>
           </>
         )}
 
-        {showAdditionalForm && selectedRole === "chemist" && (
+        {showAdditionalForm && selectedRole === "CHEMIST" && (
           <>
             <TextField
-              label="License Number"
+              {...registerChemist("licenseNumber")}
+              type="text"
               variant="outlined"
+              color="secondary"
+              sx={{ my: 4 }}
+              label={t("licenseNumber")}
               fullWidth
-              margin="normal"
-              {...register("licenseNumber")}
+              required
+              error={errorsChemist.licenseNumber}
+              helperText={t(errorsChemist.licenseNumber?.message)}
             />
+            <Button
+              sx={{ mb: 4 }}
+              fullWidth
+              onClick={onSubmitChemist}
+              color="primary"
+              type="submit"
+              variant="contained"
+            >
+              {t("add_access_level")}
+            </Button>
           </>
         )}
 
-        {showAdditionalForm && selectedRole === "patient" && (
+        {showAdditionalForm && selectedRole === "PATIENT" && (
           <>
             <TextField
-              label="Name"
-              variant="outlined"
-              fullWidth
-              margin="normal"
               {...register("name")}
+              type="text"
+              variant="outlined"
+              color="secondary"
+              sx={{ my: 4 }}
+              label={t("name")}
+              fullWidth
+              required
+              error={errors.name}
+              helperText={t(errors.name?.message)}
             />
             <TextField
-              label="Last Name"
+              type="text"
               variant="outlined"
+              color="secondary"
+              sx={{ mb: 4 }}
+              label={t("last_name")}
               fullWidth
-              margin="normal"
+              required
+              error={errors.lastName}
+              helperText={t(errors.lastName?.message)}
               {...register("lastName")}
             />
             <TextField
-              label="Phone Number"
+              type="text"
               variant="outlined"
+              color="secondary"
+              label={t("phone_number")}
+              required
               fullWidth
-              margin="normal"
+              error={errors.phoneNumber}
+              helperText={t(errors.phoneNumber?.message)}
+              sx={{ mb: 4 }}
               {...register("phoneNumber")}
             />
             <TextField
-              label="PESEL"
+              type="text"
               variant="outlined"
+              color="secondary"
+              label={t("pesel")}
+              required
               fullWidth
-              margin="normal"
+              error={errors.pesel}
+              helperText={t(errors.pesel?.message)}
+              sx={{ mb: 4 }}
               {...register("pesel")}
             />
             <TextField
-              label="NIP"
+              type="text"
               variant="outlined"
+              color="secondary"
+              label={t("nip")}
+              required
               fullWidth
-              margin="normal"
-              {...register("NIP")}
+              error={errors.nip}
+              helperText={t(errors.nip?.message)}
+              sx={{ mb: 4 }}
+              {...register("nip")}
             />
+            <Button
+              fullWidth
+              sx={{ mb: 4 }}
+              onClick={onSubmitPatient}
+              color="primary"
+              type="submit"
+              variant="contained"
+            >
+              {t("add_access_level")}
+            </Button>
           </>
-        )}
-
-        {showAdditionalForm && (
-          <Button
-            type="submit"
-            variant="contained"
-            color="primary"
-            disabled={loading}
-          >
-            {loading ? <CircularProgress size={24} /> : "Submit"}
-          </Button>
         )}
       </form>
 
       <ConfirmationDialog
         open={dialogOpen}
-        title={t("confirm_change_password")}
+        title={t("confirm_add_access_level")}
         actions={[
-          { label: t("proceed"), handler: handleReset, color: "primary" },
+          { label: t("proceed"), handler: onSendPatient, color: "primary" },
           {
             label: t("cancel"),
             handler: () => setDialogOpen(false),
@@ -245,6 +314,32 @@ function AddRoleForm({ account, etag, hideChange }) {
           },
         ]}
         onClose={() => setDialogOpen(false)}
+      />
+      <ConfirmationDialog
+        open={dialogOpen2}
+        title={t("confirm_add_access_level")}
+        actions={[
+          { label: t("proceed"), handler: onSendAdmin, color: "primary" },
+          {
+            label: t("cancel"),
+            handler: () => setDialogOpen2(false),
+            color: "secondary",
+          },
+        ]}
+        onClose={() => setDialogOpen2(false)}
+      />
+      <ConfirmationDialog
+        open={dialogOpen3}
+        title={t("confirm_add_access_level")}
+        actions={[
+          { label: t("proceed"), handler: onSendChemist, color: "primary" },
+          {
+            label: t("cancel"),
+            handler: () => setDialogOpen3(false),
+            color: "secondary",
+          },
+        ]}
+        onClose={() => setDialogOpen3(false)}
       />
     </div>
   );

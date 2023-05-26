@@ -123,6 +123,15 @@
   "exception.account.not-confirmed": "Konto nie zostało potwierdzone",
   "select_role": "Wybierz rolę",
   "add_role": "Dodaj Rolę",
-  "confirm_add_role": "Czy na pewno chce dodać to konto?"
-
+  "confirm_add_role": "Czy na pewno chce dodać to konto?",
+  "add_role": "Dodaj Rolę",
+  "confirm_add_role": "Czy na pewno chce dodać to konto?",
+  "add_access_level": "Dodaj Poziom Dostępu",
+  "license_number_length": "Numer licencji musi zawierać 6 cyfr",
+  "license_number_only_digits": "Numer licencji może zawierać tylko cyfry",
+  "license_number_required": "Numer licencji jest wymagany",
+  "phone_number_length": "Numer telefonu musi zawierać 9 cyfr",
+  "phone_number_only_digits": "Numer telefonu może zawierać tylko cyfry",
+  "phone_number_required": "Numer telefonu jest wymagany",
+  "confirm_add_access_level": "Czy na pewno chcesz dodać ten poziom dostępu?"
 }

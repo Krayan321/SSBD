@@ -261,7 +261,7 @@ function SingleAccount() {
                     readOnly: true,
                   }}
                 >
-                  dupa{String(level.workPhoneNumber)}
+                  {String(level.workPhoneNumber)}
                 </Typography>
               ) : null
             )}

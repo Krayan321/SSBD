@@ -122,6 +122,15 @@
   "exception.account.not-confirmed": "Účet není potvrzen",
   "select_role": "Vybrat roli",
   "add_role": "Přidat roli",
-  "confirm_add_role": "Jste si jisti, že chcete přidat tento účet?"
-
+  "confirm_add_role": "Jste si jisti, že chcete přidat tento účet?",
+  "add_role": "Přidat roli",
+  "confirm_add_role": "Jste si jisti, že chcete přidat tento účet?",
+  "add_access_level": "Přidat úroveň přístupu",
+  "license_number_length": "Licenční číslo musí obsahovat 6 číslic",
+  "license_number_only_digits": "Licenční číslo musí obsahovat pouze číslice",
+  "license_number_required": "Licenční číslo je povinné",
+  "phone_number_length": "Telefonní číslo musí obsahovat 9 číslic",
+  "phone_number_only_digits": "Telefonní číslo musí obsahovat pouze číslice",
+  "phone_number_required": "Telefonní číslo je povinné",
+  "confirm_add_access_level": "Jste si jisti, že chcete přidat tuto úroveň přístupu?"
 }

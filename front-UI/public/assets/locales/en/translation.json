@@ -129,5 +129,15 @@
   "chemist": "Chemist",
   "admin": "Admin",
   "add_role": "Add Role",
-  "confirm_add_role": "Are you sure you want to add this account?"
+  "confirm_add_role": "Are you sure you want to add this account?",
+  "add_role": "Add Role",
+  "confirm_add_role": "Are you sure you want to add this account?",
+  "add_access_level": "Add Access Level",
+  "license_number_length": "License number must have 6 digits",
+  "license_number_only_digits": "License number can contain only digits",
+  "license_number_required": "License number is required",
+  "phone_number_length": "Phone number must have 9 digits",
+  "phone_number_only_digits": "Phone number can contain only digits",
+  "phone_number_required": "Phone number is required",
+  "confirm_add_access_level": "Are you sure you want to add this access level?"
 }
