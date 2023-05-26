@@ -138,5 +138,19 @@
   "license_number_length": "Numer licencji musi zawierać 6 cyfr",
   "license_number_only_digits": "Numer licencji może zawierać tylko cyfry",
   "license_number_required": "Numer licencji jest wymagany",
-  "confirm_add_access_level": "Czy na pewno chcesz dodać ten poziom dostępu?"
+  "confirm_add_access_level": "Czy na pewno chcesz dodać ten poziom dostępu?",
+  "Accounts": "Konta",
+  "Add-administrator": "Dodaj administratora",
+  "Add-chemist": "Dodaj aptekarza",
+  "Add-patient": "Dodaj pacjenta",
+  "Confirm-account": "Potwierdź konto",
+  "Create-account": "Utwórz konto",
+  "Edit": "Edytuj",
+  "Error": "Błąd",
+  "Home": "Strona główna",
+  "Login": "Zaloguj",
+  "New-password": "Nowe hasło",
+  "Reset-password": "Resetuj hasło",
+  "Self": "Informacje o koncie",
+  "Sign-up": "Zarejestruj"
 }

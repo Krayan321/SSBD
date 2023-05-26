@@ -138,5 +138,19 @@
   "license_number_length": "License number must have 6 digits",
   "license_number_only_digits": "License number can contain only digits",
   "license_number_required": "License number is required",
-  "confirm_add_access_level": "Are you sure you want to add this access level?"
+  "confirm_add_access_level": "Are you sure you want to add this access level?",
+  "Accounts": "Accounts",
+  "Add-administrator": "Add administrator",
+  "Add-chemist": "Add chemist",
+  "Add-patient": "Add patient",
+  "Confirm-account": "Confirm account",
+  "Create-account": "Create account",
+  "Edit": "Edit",
+  "Error": "Error",
+  "Home": "Home",
+  "Login": "Login",
+  "New-password": "New password",
+  "Reset-password": "Reset password",
+  "Self": "Account information",
+  "Sign-up": "Sign up"
 }

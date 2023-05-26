@@ -19,9 +19,9 @@ export const Pathnames = {
         details: '/accounts/:id/details',
         account: '/accounts/:id',
         createAccount: '/accounts/create-account',
-        addPatient: "/accounts/add-patient",
-        addChemist: "/accounts/add-chemist",
-        addAdministrator: "/accounts/add-administrator",
+        addPatient: "/accounts/create-account/add-patient",
+        addChemist: "/accounts/create-account/add-chemist",
+        addAdministrator: "/accounts/create-account/add-administrator",
     },
     patient: {
 
