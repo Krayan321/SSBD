@@ -73,49 +73,37 @@ export default function AllAccounts() {
       );
       setAccounts(updatedAccount);
       if (active) {
-        await blockAccount(accountId)
-          .then(() => {
-            toast.success(t("account_blocked"), {
-              position: "top-center",
-            });
-          })
-          .catch((error) => {
-            if (error.response.status === 401) {
-              toast.error(t("account_blocked_error"), {
-                position: "top-center",
-              });
-            } else if (error.response.status === 404) {
-              toast.error(t("account_blocked_error"), {
-                position: "top-center",
-              });
-            } else if (error.response.status === 500) {
-              toast.error(t("account_blocked_error"), {
-                position: "top-center",
-              });
-            }
-          });
+        try {
+          await blockAccount(accountId);
+          toast.success(t("account_blocked"), { position: "top-center" });
+        } catch (error) {
+          if (error.response.status === 401) {
+            toast.error(t("account_blocked_error"), { position: "top-center" });
+          } else if (error.response.status === 404) {
+            toast.error(t("account_blocked_error"), { position: "top-center" });
+          } else if (error.response.status === 500) {
+            toast.error(t("account_blocked_error"), { position: "top-center" });
+          }
+        }
       } else {
-        await unblockAccount(accountId)
-          .then(() => {
-            toast.success(t("account_unblocked"), {
+        try {
+          await unblockAccount(accountId);
+          toast.success(t("account_unblocked"), { position: "top-center" });
+        } catch (error) {
+          if (error.response.status === 401) {
+            toast.error(t("account_unblocked_error"), {
               position: "top-center",
             });
-          })
-          .catch((error) => {
-            if (error.response.status === 401) {
-              toast.error(t("account_unblocked_error"), {
-                position: "top-center",
-              });
-            } else if (error.response.status === 403) {
-              toast.error(t("account_unblocked_error"), {
-                position: "top-center",
-              });
-            } else if (error.response.status === 500) {
-              toast.error(t("account_unblocked_error"), {
-                position: "top-center",
-              });
-            }
-          });
+          } else if (error.response.status === 403) {
+            toast.error(t("account_unblocked_error"), {
+              position: "top-center",
+            });
+          } else if (error.response.status === 500) {
+            toast.error(t("account_unblocked_error"), {
+              position: "top-center",
+            });
+          }
+        }
       }
     }
     setDialogStates((prevState) => ({

@@ -134,5 +134,9 @@
   "change_email_button": "Zmien email",
   "email_length_min": "Email zbyt krotki",
   "email_length_max": "Email zbyt dlugi",
-  "email_valid": "Niepoprawny format email"
+  "add_access_level": "Dodaj Poziom Dostępu",
+  "license_number_length": "Numer licencji musi zawierać 6 cyfr",
+  "license_number_only_digits": "Numer licencji może zawierać tylko cyfry",
+  "license_number_required": "Numer licencji jest wymagany",
+  "confirm_add_access_level": "Czy na pewno chcesz dodać ten poziom dostępu?"
 }

@@ -1,4 +1,4 @@
-import { get, post, put, putWithEtag } from "../api";
+import { get, post, put, putWithEtag, postWithEtag } from "../api";
 
 export async function getAccounts() {
   return await get("account");
@@ -9,7 +9,6 @@ export async function getAccount(id) {
 }
 
 export async function confirmAccount(token) {
-
   return await post(`account/confirm/${token}`);
 }
 
@@ -58,19 +57,14 @@ export async function activateAccount(id) {
 }
 
 export async function changeAccountPassword(id, body, etag) {
-
   return await putWithEtag(`account/${id}/change-user-password`, body, etag);
 }
 
 export async function changeSelfAccountPassword(body, etag) {
-
-
   return await putWithEtag("account/change-password", body, etag);
 }
 
 export async function changeSelfAccountEmail(body, etag) {
-
-
   return await putWithEtag("account", body, etag);
 }
 
@@ -123,16 +117,16 @@ export async function addAdmin(body) {
 
 //nadanie roli pacjenta, aptekarza, admina
 
-export async function grantPatientRole(id) {
-  return await put(`account/${id}/patient`);
+export async function grantPatientRole(id, body, etag) {
+  return await postWithEtag(`account/${id}/patient`, body, etag);
 }
 
-export async function grantChemistRole(id) {
-  return await put(`account/${id}/chemist`);
+export async function grantChemistRole(id, body, etag) {
+  return await postWithEtag(`account/${id}/chemist`, body, etag);
 }
 
-export async function grantAdminRole(id) {
-  return await put(`account/${id}/admin`);
+export async function grantAdminRole(id, body, etag) {
+  return await postWithEtag(`account/${id}/admin`, body, etag);
 }
 
 //pobranie danych pacjenta, aptekarza, admina
@@ -232,7 +226,6 @@ export async function putPatient(
 }
 
 export async function changeLanguage(selectedLanguage) {
-
   return await put("account/change-language?language=" + selectedLanguage);
 }
 
@@ -256,14 +249,14 @@ export async function putAdmin(id, workPhoneNumber) {
   return await put("account/{id}/admin", body);
 }
 
-export async function editOtherPatientData(id, body, etag){
+export async function editOtherPatientData(id, body, etag) {
   return await putWithEtag(`account/${id}/patient`, body, etag);
 }
 
-export async function editOtherChemistData(id, body, etag){
+export async function editOtherChemistData(id, body, etag) {
   return await putWithEtag(`account/${id}/chemist`, body, etag);
 }
 
-export async function editOtherAdminData(id, body, etag){
+export async function editOtherAdminData(id, body, etag) {
   return await putWithEtag(`account/${id}/admin`, body, etag);
 }

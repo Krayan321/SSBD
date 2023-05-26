@@ -128,6 +128,10 @@
   "confirm_Email": "Potvrďte nový Email",
   "change_email": "Změna Email",
   "emails_not_match": "Zadejte prosím stejný e-mail",
-  "confirm_change_email": "Potvrďte změnu emailu"
-
+  "confirm_change_email": "Potvrďte změnu emailu",
+  "add_access_level": "Přidat úroveň přístupu",
+  "license_number_length": "Licenční číslo musí obsahovat 6 číslic",
+  "license_number_only_digits": "Licenční číslo musí obsahovat pouze číslice",
+  "license_number_required": "Licenční číslo je povinné",
+  "confirm_add_access_level": "Jste si jisti, že chcete přidat tuto úroveň přístupu?"
 }

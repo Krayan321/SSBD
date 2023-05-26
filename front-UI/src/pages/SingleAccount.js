@@ -187,8 +187,7 @@ function SingleAccount() {
         {addRole ? (
           <>
             <AddRoleForm
-              userID={account.id}
-              currentRoles={accessLevels}
+              account={account}
               etag={etag}
               hideChange={setAddRole}
             />
@@ -283,7 +282,7 @@ function SingleAccount() {
                     readOnly: true,
                   }}
                 >
-                  dupa{String(level.workPhoneNumber)}
+                  {String(level.workPhoneNumber)}
                 </Typography>
               ) : null
             )}
