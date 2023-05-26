@@ -129,7 +129,7 @@ public class EmailService {
 
   public void sendEmailChangeEmail(String email, String name, Locale locale, String token) {
     String subject = i18n.getMessage(i18n.MAIL_CHANGE_EMAIL_SUBJECT, locale);
-    String link = BASE_URL + "/confirm-email-change/" + token;
+    String link = BASE_URL + "/confirm-account/" + token;
     String body = i18n.getMessage(i18n.MAIL_CHANGE_EMAIL_BODY, locale, name, link);
 
     MailjetRequest request = getMailjetRequest(email, name, subject, body);

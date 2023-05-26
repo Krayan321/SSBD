@@ -313,6 +313,7 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
     if(!account.getVersion().equals(version)) {
       throw ApplicationException.createOptimisticLockException();
     }
+    account.setConfirmed(false);
     account.setEmail(email);
     account.setModifiedBy(getCurrentUserLogin());
     accountFacade.edit(account);
