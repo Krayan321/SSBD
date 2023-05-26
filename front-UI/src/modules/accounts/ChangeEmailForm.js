@@ -8,6 +8,7 @@ import {useForm} from "react-hook-form";
 import {yupResolver} from "@hookform/resolvers/yup";
 import {changeSelfAccountEmail} from "../../api/mok/accountApi";
 import ConfirmationDialog from "../../components/ConfirmationDialog";
+import {Pathnames} from "../../router/Pathnames";
 
 const changeEmailSchema = Yup.object().shape({
     newEmail: Yup.string()
@@ -44,7 +45,7 @@ function ChangeEmailForm({account, etag, hideChange}) {
         changeSelfAccountEmail(body, tag).then((res) => {
             setLoading((state) => !state)
             hideChange((state) => !state)
-            navigate('/accounts/self');
+            navigate(Pathnames.auth.self);
             toast.success(t("success"), {
                 position: "top-center",
             })

@@ -45,7 +45,7 @@ export default function EditPatient() {
     formData.append("phoneNumber", phoneNumber);
     formData.append("nip", nip);
     await putPatient(Object.fromEntries(formData));
-    navigate("/accounts/{id}");
+    navigate(`/accounts/${id}`);
   };
 
   return (

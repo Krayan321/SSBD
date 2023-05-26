@@ -28,6 +28,7 @@ import LockOpenIcon from "@mui/icons-material/LockOpen";
 import { useTranslation } from "react-i18next";
 import { toast, ToastContainer } from "react-toastify";
 import RefreshIcon from "@mui/icons-material/Refresh";
+import {Pathnames} from "../router/Pathnames";
 
 export default function AllAccounts() {
   const [accounts, setAccounts] = useState([]);
@@ -48,7 +49,7 @@ export default function AllAccounts() {
     if (response.status === 200) {
       setAccounts(response.data);
     } else {
-      navigate("/error", { replace: true });
+      navigate(Pathnames.public.error, { replace: true });
     }
   }, []);
 

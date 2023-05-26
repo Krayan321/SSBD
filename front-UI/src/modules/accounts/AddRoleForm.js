@@ -26,6 +26,7 @@ import {
   signUpSchema,
 } from "../../utils/Validations";
 import { yupResolver } from "@hookform/resolvers/yup";
+import {Pathnames} from "../../router/Pathnames";
 
 function AddRoleForm({ account, etag, hideChange }) {
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -108,7 +109,7 @@ function AddRoleForm({ account, etag, hideChange }) {
       .then((res) => {
         setLoading(false);
         hideChange(false);
-        navigate("/accounts");
+        navigate(Pathnames.admin.accounts);
       })
       .catch((error) => {
         setLoading(false);
@@ -124,7 +125,7 @@ function AddRoleForm({ account, etag, hideChange }) {
       .then((res) => {
         setLoading(false);
         hideChange(false);
-        navigate("/accounts");
+        navigate(Pathnames.admin.accounts);
       })
       .catch((error) => {
         setLoading(false);
@@ -140,7 +141,7 @@ function AddRoleForm({ account, etag, hideChange }) {
       .then((res) => {
         setLoading(false);
         hideChange(false);
-        navigate("/accounts");
+        navigate(Pathnames.admin.accounts);
       })
       .catch((error) => {
         setLoading(false);

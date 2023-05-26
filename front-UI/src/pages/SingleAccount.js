@@ -15,6 +15,7 @@ import { getAccountDetails } from "../api/mok/accountApi";
 import AddRoleForm from "../modules/accounts/AddRoleForm";
 import ChangeOtherEmailForm from "../modules/accounts/ChangeOtherEmailForm";
 import ChangeOtherPasswordForm from "../modules/accounts/ChangeOtherPasswordForm";
+import {Pathnames} from "../router/Pathnames";
 
 function SingleAccount() {
   const { id } = useParams();
@@ -43,7 +44,7 @@ function SingleAccount() {
         setEtag(response.headers["etag"]);
         setLoading(false);
       } else {
-        navigate("/error", { replace: true });
+        navigate(Pathnames.public.error, { replace: true });
       }
     };
 

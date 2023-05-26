@@ -12,6 +12,7 @@ import {Container, Stack} from '@mui/material';
 import 'react-toastify/dist/ReactToastify.css';
 import {ToastContainer, toast} from 'react-toastify';
 import {useNavigate} from "react-router-dom";
+import {Pathnames} from "../router/Pathnames";
 
 
 const addAdminSchema = Yup.object().shape({
@@ -66,7 +67,7 @@ function AddAdministrator() {
                 toast.success(t("account_created_check_email"), {
                     position: "top-center",
                 })
-                navigate('/landing');
+                navigate(Pathnames.auth.landing);
             }
         ).catch(error => {
             setLoading(false)
