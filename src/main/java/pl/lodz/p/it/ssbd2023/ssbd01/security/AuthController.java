@@ -100,8 +100,12 @@ public class AuthController extends AbstractController {
     try {
       AccessLevelFinder.findAccessLevel(account, roleEnum);
     } catch(ApplicationException e) {
+      log.info(String.format("User %s tried to change role to %s, which they do not have",
+              accountManager.getCurrentUserLogin(), role));
       throw ApplicationException.createUnauthorisedException();
     }
+    log.info(String.format("User %s changed role to %s",
+            accountManager.getCurrentUserLogin(), role));
     return Response.ok().build();
   }
 }
