@@ -19,7 +19,6 @@ public class GenericManagerExceptionsInterceptor {
     } catch (EJBAccessException | AccessLocalException e) {
       throw ApplicationException.createAccessDeniedException();
     } catch (Exception e) {
-      // todo diversify exceptions
       log.warning(e.getMessage());
       throw ApplicationException.createGeneralException(e);
     }

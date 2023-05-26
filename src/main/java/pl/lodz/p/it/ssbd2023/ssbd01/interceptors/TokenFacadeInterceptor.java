@@ -20,7 +20,6 @@ public class TokenFacadeInterceptor {
     } catch(NoResultException e) {
       throw ApplicationException.createEntityNotFoundException();
     } catch (PersistenceException e) {
-      // todo diversify exceptions
       log.warning(e.getMessage());
       throw ApplicationException.createGeneralException(e);
     }

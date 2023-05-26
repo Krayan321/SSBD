@@ -112,7 +112,6 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
     if(!account.getLogin().equals(login)) {
       throw ApplicationException.createMismatchedPayloadException();
     }
-    log.severe(String.format("account: %d, sent: %d", account.getVersion(), version));
     if(!account.getVersion().equals(version)) {
       throw ApplicationException.createOptimisticLockException();
     }
@@ -200,22 +199,24 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
   @RolesAllowed("editAccessLevel")
   public Account editAccessLevel(Long id, AccessLevel accessLevel, Long version) {
     Account account = getAccount(id);
-    return doEditAccessLevel(account, accessLevel, version);
+    AccessLevel found = AccessLevelFinder.findAccessLevel(account, accessLevel.getRole());
+    if (!Objects.equals(found.getVersion(), version)) {
+      throw ApplicationException.createOptimisticLockException();
+    }
+    AccessLevelMerger.mergeAccessLevels(found, accessLevel);
+    found.setModifiedBy(getCurrentUserLogin());
+    accountFacade.edit(account);
+    return account;
   }
 
   @Override
   @RolesAllowed("editSelfAccessLevel")
   public Account editSelfAccessLevel(AccessLevel accessLevel, Long version) {
     Account account = getCurrentUserWithAccessLevels();
-    return doEditAccessLevel(account, accessLevel, version);
-  }
-
-  @RolesAllowed({"editAccessLevel", "editSelfAccessLevel"})
-  private Account doEditAccessLevel(Account account, AccessLevel accessLevel, Long version) {
-    AccessLevel found = AccessLevelFinder.findAccessLevel(account, accessLevel.getRole());
-    if (!Objects.equals(found.getVersion(), version)) {
+    if (!Objects.equals(account.getVersion(), version)) {
       throw ApplicationException.createOptimisticLockException();
     }
+    AccessLevel found = AccessLevelFinder.findAccessLevel(account, accessLevel.getRole());
     AccessLevelMerger.mergeAccessLevels(found, accessLevel);
     found.setModifiedBy(getCurrentUserLogin());
     accountFacade.edit(account);
@@ -296,7 +297,6 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
   @RolesAllowed("updateOwnPassword")
   public Account updateOwnPassword(String oldPassword, String newPassword, String login, Long version) {
     Account account = getCurrentUser();
-    log.severe(String.format("current %s, payload: %s", account.getLogin(), login));
     if(!account.getLogin().equals(login)) {
       throw ApplicationException.createMismatchedPayloadException();
     }

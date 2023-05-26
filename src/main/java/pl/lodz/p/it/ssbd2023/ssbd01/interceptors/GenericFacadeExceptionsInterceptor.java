@@ -22,7 +22,6 @@ public class GenericFacadeExceptionsInterceptor {
     } catch (ApplicationException e) {
       throw e;
     } catch (Exception e) {
-      // todo diversify exceptions
       log.warning(e.getMessage());
       throw ApplicationException.createGeneralException(e);
     }
