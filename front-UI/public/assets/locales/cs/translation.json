@@ -147,5 +147,11 @@
   "New-password": "Nové heslo",
   "Reset-password": "Obnovit heslo",
   "Self": "Informace o účtu",
-  "Sign-up": "Registrovat se"
+  "Sign-up": "Registrovat se",
+  "access_level_sucessfully_blocked": "Úroveň přístupu byla úspěšně zablokována",
+  "access_level_blocked_error": "Chyba při blokování úrovně přístupu",
+  "access_level_unblocked_error": "Chyba při odblokování úrovně přístupu",
+  "access_level_sucessfully_unblocked": "Úroveň přístupu byla úspěšně odblokována",
+  "block_access_level_confirmation": "Jste si jisti, že chcete zablokovat tuto úroveň přístupu?",
+  "unblock_access_level_confirmation": "Jste si jisti, že chcete odblokovat tuto úroveň přístupu?"
 }

@@ -152,5 +152,11 @@
   "New-password": "New password",
   "Reset-password": "Reset password",
   "Self": "Account information",
-  "Sign-up": "Sign up"
+  "Sign-up": "Sign up",
+  "access_level_sucessfully_blocked": "Access level successfully blocked",
+  "access_level_blocked_error": "Error during blocking access level",
+  "access_level_unblocked_error": "Error during unblocking access level",
+  "access_level_sucessfully_unblocked": "Access level successfully unblocked",
+  "block_access_level_confirmation": "Are you sure you want to block access level?",
+  "unblock_access_level_confirmation": "Are you sure you want to unblock access level?"
 }

@@ -8,15 +8,24 @@ import {
   Typography,
 } from "@mui/material";
 import LinearProgress from "@mui/material/LinearProgress";
+import LockOpenIcon from "@mui/icons-material/LockOpen";
+import LockIcon from "@mui/icons-material/Lock";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
-import { getAccountDetails } from "../api/mok/accountApi";
+import ConfirmationDialog from "../components/ConfirmationDialog";
+
+import {
+  blockRoleAdmin,
+  blockRoleChemist,
+  blockRolePatient,
+  getAccountDetails,
+  unblockRoleAdmin, unblockRoleChemist, unblockRolePatient
+} from "../api/mok/accountApi";
 import AddRoleForm from "../modules/accounts/AddRoleForm";
 import ChangeOtherEmailForm from "../modules/accounts/ChangeOtherEmailForm";
 import ChangeOtherPasswordForm from "../modules/accounts/ChangeOtherPasswordForm";
-import {Pathnames} from "../router/Pathnames";
-import EditRoleForm from "../modules/accounts/EditRoleForm";
+import {toast, ToastContainer} from "react-toastify";
 
 function SingleAccount() {
   const { id } = useParams();
@@ -28,6 +37,10 @@ function SingleAccount() {
   const [changePass, setChangePass] = useState(false);
   const [changeEmail, setChangeEmail] = useState(false);
   const [etag, setEtag] = useState("");
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [idToBlockOrUnblok, setIdToBlockOrUnblok] = useState(0);
+  const [accessLevelToBlockOrUnblock, setAccessLevelToBlockOrUnblock] = useState("");
+  const [blockOrUnblok, setBlockOrUnblock] = useState(false);
   const navigate = useNavigate();
   const paperStyle = {
     backgroundColor: "rgba(255, 255, 255, 0.75)",
@@ -36,6 +49,96 @@ function SingleAccount() {
     width: 400,
   };
   const [loading, setLoading] = useState(true);
+
+  const accept = () => {
+
+    if (blockOrUnblok) {
+
+      if (accessLevelToBlockOrUnblock === "ADMIN") {
+        blockRoleAdmin(idToBlockOrUnblok).then((response) => {
+          toast.success(t("access_level_sucessfully_blocked"), {position: "top-center"});
+
+        }).catch((error) => {
+          if (error.response.status === 401) {
+            toast.error(t("access_level_blocked_error"), {position: "top-center"});
+          } else if (error.response.status === 404) {
+            toast.error(t("access_level_blocked_error"), {position: "top-center"});
+          } else if (error.response.status === 500) {
+            toast.error(t("server_error"), {position: "top-center"});
+          }
+        })
+      } else if (accessLevelToBlockOrUnblock === "CHEMIST") {
+        blockRoleChemist(idToBlockOrUnblok).then((response) => {
+
+          toast.success(t("access_level_sucessfully_blocked"), {position: "top-center"});
+        }).catch((error) => {
+          if (error.response.status === 401) {
+            toast.error(t("access_level_blocked_error"), {position: "top-center"});
+          } else if (error.response.status === 404) {
+            toast.error(t("access_level_blocked_error"), {position: "top-center"});
+          } else if (error.response.status === 500) {
+            toast.error(t("server_error"), {position: "top-center"});
+          }
+        })
+      } else if (accessLevelToBlockOrUnblock === "PATIENT") {
+        blockRolePatient(idToBlockOrUnblok).then((response) => {
+          toast.success(t("access_level_sucessfully_blocked"), {position: "top-center"});
+        }).catch((error) => {
+          if (error.response.status === 401) {
+            toast.error(t("access_level_blocked_error"), {position: "top-center"});
+          } else if (error.response.status === 404) {
+            toast.error(t("access_level_blocked_error"), {position: "top-center"});
+          } else if (error.response.status === 500) {
+            toast.error(t("server_error"), {position: "top-center"});
+          }
+        })
+      }
+    } else {
+      if (accessLevelToBlockOrUnblock === "ADMIN") {
+        unblockRoleAdmin(idToBlockOrUnblok).then((response) => {
+          toast.success(t("access_level_sucessfully_unblocked"), {position: "top-center"});
+        }).catch((error) => {
+          if (error.response.status === 401) {
+            toast.error(t("access_level_unblocked_error"), {position: "top-center"});
+          } else if (error.response.status === 404) {
+            toast.error(t("access_level_unblocked_error"), {position: "top-center"});
+          } else if (error.response.status === 500) {
+            toast.error(t("server_error"), {position: "top-center"});
+          }
+        })
+      } else if (accessLevelToBlockOrUnblock === "CHEMIST") {
+        unblockRoleChemist(idToBlockOrUnblok).then((response) => {
+          toast.success(t("access_level_sucessfully_unblocked"), {position: "top-center"});
+        }).catch((error) => {
+          if (error.response.status === 401) {
+            toast.error(t("access_level_unblocked_error"), {position: "top-center"});
+          } else if (error.response.status === 404) {
+            toast.error(t("access_level_unblocked_error"), {position: "top-center"});
+          } else if (error.response.status === 500) {
+            toast.error(t("server_error"), {position: "top-center"});
+          }
+        })
+      } else if (accessLevelToBlockOrUnblock === "PATIENT") {
+        unblockRolePatient(idToBlockOrUnblok).then((response) => {
+          toast.success(t("access_level_sucessfully_unblocked"), {position: "top-center"});
+        }).catch((error) => {
+          if (error.response.status === 401) {
+            toast.error(t("access_level_unblocked_error"), {position: "top-center"});
+          } else if (error.response.status === 404) {
+            toast.error(t("access_level_unblocked_error"), {position: "top-center"});
+          } else if (error.response.status === 500) {
+            toast.error(t("server_error"), {position: "top-center"});
+          }
+        })
+      }
+    }
+    setDialogOpen(false)
+
+  };
+
+  const reject = () => {
+    setDialogOpen(false);
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -97,6 +200,15 @@ function SingleAccount() {
         marginTop: "3rem",
       }}
     >
+      <ConfirmationDialog
+          open={dialogOpen}
+          title={blockOrUnblok === true ? t("block_access_level_confirmation") : t("unblock_access_level_confirmation")}
+          actions={[
+            {label: t("confirm"), handler: accept, color: "primary"},
+            {label: t("cancel"), handler: reject, color: "secondary"},
+          ]}
+          onClose={() => setDialogOpen(false)}
+      />
       <Paper elevation={20} style={paperStyle}>
         <h2 style={{ fontFamily: "Lato" }}>{t("account_details")} </h2>
         <Stack spacing={2} direction="row" sx={{ marginBottom: 4 }}>
@@ -204,24 +316,6 @@ function SingleAccount() {
             </Grid>
           </Grid>
         )}
-        {editRole ? (
-            <>
-              <EditRoleForm
-                  account={account}
-                  etag={etag}
-                  hideChange={setEditRole}
-              />
-              <Grid item xs={6}>
-                <Button onClick={handleEditRole}>{t("back_button")}</Button>
-              </Grid>
-            </>
-        ) : (
-            <Grid container spacing={2}>
-              <Grid item xs={6}>
-                <Button onClick={handleEditRole}>{t("edit_account_details")}</Button>
-              </Grid>
-            </Grid>
-        )}
 
         <Typography
           style={{ fontFamily: "Lato", fontSize: 18, fontWeight: 400 }}
@@ -262,19 +356,23 @@ function SingleAccount() {
         >
           {t("access_level")}
         </Typography>
-        <Typography
-          style={{ fontSize: 16 }}
-          variant="h6"
-          component="div"
-          sx={{ flexGrow: 1, mb: 2 }}
-          type="text"
-          fullWidth
-          InputProps={{
-            readOnly: true,
-          }}
-        >
-          {accessLevels && accessLevels.map((level) => level.role).join(", ")}
-        </Typography>
+        {
+          <div style={{display: 'flex'}}>
+            {accessLevels.map((level) => (
+                <div key={level.role} style={{marginRight: '10px'}}>
+                  <h6>{level.role}</h6>
+                  <Button onClick={() => {
+                    setIdToBlockOrUnblok(account.id);
+                    setAccessLevelToBlockOrUnblock(level.role)
+                    setDialogOpen(true)
+                    level.active ? setBlockOrUnblock(true) : setBlockOrUnblock(false)
+                  }}>
+                    {level.active ? <LockOpenIcon/> : <LockIcon/>}
+                  </Button>
+                </div>
+            ))}
+          </div>
+        }
         {isAdmin && (
           <Box>
             <Typography
@@ -531,6 +629,7 @@ function SingleAccount() {
           {t("edit_account_details")}
         </Button>
       </Paper>
+      <ToastContainer/>
     </div>
   );
 }
