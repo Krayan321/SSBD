@@ -17,7 +17,6 @@ export default function EditPatient() {
 
   const navigate = useNavigate();
   const location = useLocation();
-  console.log(location);
 
   const paperStyle = {
     padding: "30px 20px",

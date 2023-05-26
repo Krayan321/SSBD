@@ -227,13 +227,10 @@ function EditSingleAccount() {
 
   const proceed = (data) =>{
     if (isAdmin) {
-      console.log("admin")
       setWorkPhoneNumber(data.workPhoneNumber)
     } else if (isChemist) {
-      console.log("chemist")
       setLicenseNumber(data.licenceNumber)
     } else {
-      console.log("else")
       setName(data.name);
       setLastName(data.lastName);
       setPhoneNumber(data.phoneNumber);

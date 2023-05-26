@@ -112,7 +112,6 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
     if(!account.getLogin().equals(login)) {
       throw ApplicationException.createMismatchedPayloadException();
     }
-    log.severe(String.format("account: %d, sent: %d", account.getVersion(), version));
     if(!account.getVersion().equals(version)) {
       throw ApplicationException.createOptimisticLockException();
     }
@@ -284,7 +283,6 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
   @RolesAllowed("updateOwnPassword")
   public Account updateOwnPassword(String oldPassword, String newPassword, String login, Long version) {
     Account account = getCurrentUser();
-    log.severe(String.format("current %s, payload: %s", account.getLogin(), login));
     if(!account.getLogin().equals(login)) {
       throw ApplicationException.createMismatchedPayloadException();
     }

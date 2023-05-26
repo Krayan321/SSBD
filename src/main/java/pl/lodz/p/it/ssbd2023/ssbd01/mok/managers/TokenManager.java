@@ -175,7 +175,6 @@ public class TokenManager extends AbstractManager
       throw tokenExpiredException();
     }
     if (token.isUsed()) {
-      log.warning("MAGNO MANGO ZET Token already used"); // todo huh?
       throw tokenAlreadyUsedException();
     }
     if (type == TokenType.VERIFICATION

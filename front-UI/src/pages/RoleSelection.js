@@ -33,7 +33,6 @@ function RoleSelectionForm() {
         //e.preventDefault();
         setLoading(false)
 
-        //console.log('Wybrana rola:', selectedRole);
         if (selectedRole === 'patient') {
             navigate('/add-patient');
         } else if (selectedRole === 'chemist') {

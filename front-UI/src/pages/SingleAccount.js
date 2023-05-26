@@ -55,11 +55,6 @@ function SingleAccount() {
   const isPatient =
     accessLevels && accessLevels.some((level) => level.role === "PATIENT");
 
-  console.log(account);
-  console.log("isAdmin: " + isAdmin);
-  console.log("isChemist: " + isChemist);
-  console.log("isPatient: " + isPatient);
-
   if (loading) {
     return (
       <div>

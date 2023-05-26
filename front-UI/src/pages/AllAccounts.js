@@ -47,7 +47,6 @@ export default function AllAccounts() {
     setRefreshing(false);
     if (response.status === 200) {
       setAccounts(response.data);
-      console.log(response.data);
     } else {
       navigate("/error", { replace: true });
     }
