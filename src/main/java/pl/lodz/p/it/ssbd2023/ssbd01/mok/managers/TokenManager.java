@@ -109,7 +109,7 @@ public class TokenManager extends AbstractManager
   @Override
   @RolesAllowed("updateOwnEmail")
   public void sendEmailChangeEmail(Account account, String new_email) {
-    Token token = makeToken(account, encodeEmail(new_email), TokenType.EMAIL_CHANGE_CONFIRM);
+    Token token = makeToken(account, encodeEmail(new_email), TokenType.VERIFICATION);
     tokenFacade.create(token);
     emailService.sendEmailChangeEmail(new_email, account.getLogin(), account.getLanguage(), token.getCode());
   }
@@ -129,7 +129,7 @@ public class TokenManager extends AbstractManager
   @RolesAllowed("confirmEmailChange")
   public void confirmEmailChange(String code) {
     Token token = tokenFacade.findByCode(code);
-    checkIfTokenIsValid(token, TokenType.EMAIL_CHANGE_CONFIRM);
+    checkIfTokenIsValid(token, TokenType.VERIFICATION);
     Account account = token.getAccount();
     account.setEmail(decodeEmail(code));
     account.setModifiedBy(account.getLogin());
