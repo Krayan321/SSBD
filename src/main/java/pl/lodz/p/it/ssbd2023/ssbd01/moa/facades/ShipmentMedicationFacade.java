@@ -1,5 +1,6 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.moa.facades;
 
+import jakarta.annotation.security.DenyAll;
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -21,7 +22,7 @@ public class ShipmentMedicationFacade extends AbstractFacade<ShipmentMedication>
   public ShipmentMedicationFacade() {
     super(ShipmentMedication.class);
   }
-
+  @DenyAll
   public List<ShipmentMedication> findAll() {
     TypedQuery<ShipmentMedication> tq =
         em.createNamedQuery("shipmentMedication.findAll", ShipmentMedication.class);

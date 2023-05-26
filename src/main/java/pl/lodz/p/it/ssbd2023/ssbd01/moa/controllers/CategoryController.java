@@ -22,6 +22,7 @@ public class CategoryController extends AbstractController {
     //moa 22
     @GET
     @Path("/")
+    @DenyAll
     @Produces(MediaType.APPLICATION_JSON)
     public List<CategoryDTO> getAllCategories() {
         throw new UnsupportedOperationException();
@@ -30,6 +31,7 @@ public class CategoryController extends AbstractController {
 
     @GET
     @Path("/{id}")
+    @DenyAll
     @Produces(MediaType.APPLICATION_JSON)
     public CategoryDTO getCategory(@PathParam("id") Long id) {
         throw new UnsupportedOperationException();
@@ -38,6 +40,7 @@ public class CategoryController extends AbstractController {
     //moa 21
     @POST
     @Path("/add-category")
+    @DenyAll
     @Consumes(MediaType.APPLICATION_JSON)
     public Response addCategory(CategoryDTO categoryDto) {
         throw new UnsupportedOperationException();
@@ -45,6 +48,7 @@ public class CategoryController extends AbstractController {
 
     //moa 23
     @PUT
+    @DenyAll
     @Path("/{id}/edit-category")
     public CategoryDTO editCategory(@PathParam("id") Long id) {
         throw new UnsupportedOperationException();
