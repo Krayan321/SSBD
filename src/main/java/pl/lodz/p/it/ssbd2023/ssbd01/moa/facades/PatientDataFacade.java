@@ -1,5 +1,6 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.moa.facades;
 
+import jakarta.annotation.security.DenyAll;
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -22,7 +23,7 @@ public class PatientDataFacade extends AbstractFacade<PatientData> {
   public PatientDataFacade() {
     super(PatientData.class);
   }
-
+  @DenyAll
   public List<PatientData> findAll() {
     TypedQuery<PatientData> tq = em.createNamedQuery("patientData.findAll", PatientData.class);
     return tq.getResultList();

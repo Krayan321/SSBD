@@ -129,5 +129,12 @@
   "chemist": "Chemist",
   "admin": "Admin",
   "add_role": "Add Role",
-  "confirm_add_role": "Are you sure you want to add this account?"
+  "confirm_add_role": "Are you sure you want to add this account?",
+  "enter_new_email": "Enter New Email",
+  "new_Email": "New Email",
+  "confirm_Email": "Confirm Email",
+  "change_email": "Change Email",
+
+  "emails_not_match": "Emails does not match",
+  "confirm_change_email": "Confirm change email"
 }

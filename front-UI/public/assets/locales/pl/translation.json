@@ -123,6 +123,12 @@
   "exception.account.not-confirmed": "Konto nie zostało potwierdzone",
   "select_role": "Wybierz rolę",
   "add_role": "Dodaj Rolę",
-  "confirm_add_role": "Czy na pewno chce dodać to konto?"
+  "confirm_add_role": "Czy na pewno chce dodać to konto?",
+  "enter_new_email": "Wprowadź nowy Email",
+  "new_Email": "Nowy Email",
+  "confirm_Email": "Potwierdź Email",
+  "change_email": "Zmień Email",
+  "emails_not_match": "Podaj taki sam email",
+  "confirm_change_email": "Potwierdź zmianę emaila"
 
 }

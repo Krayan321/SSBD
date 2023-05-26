@@ -21,24 +21,28 @@ public class ShipmentController extends AbstractController {
 
     @GET
     @Path("/")
+    @DenyAll
     public List<ShipmentDTO> readAllShipments() {
         throw new UnsupportedOperationException();
     }
 
     @GET
     @Path("/{id}")
+    @DenyAll
     public Response readShipment(@PathParam("id") Long id) {
         throw new UnsupportedOperationException();
     }
 
     @POST
     @Path("/create-shipment")
+    @DenyAll
     public Response createShipment(ShipmentDTO shipmentDTO) {
         throw new UnsupportedOperationException();
     }
 
     @PUT
     @Path("/update-shipment")
+    @DenyAll
     public ShipmentDTO updateShipment(ShipmentDTO shipmentDTO) {
         throw new UnsupportedOperationException();
     }

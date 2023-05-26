@@ -20,6 +20,9 @@ import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccount.EditAccountDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.auth.LoginDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccount.UpdateOtherUserPasswordDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccount.grant.GrantAdminDataDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.editSelfAccessLevel.EditSelfAdminDataDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.editSelfAccessLevel.EditSelfChemistDataDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.editSelfAccessLevel.EditSelfPatientDataDTO;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestClassOrder(ClassOrderer.OrderAnnotation.class)
@@ -54,10 +57,6 @@ public class AccountControllerIT extends BaseTest {
             .log(LogDetail.ALL)
             .build();
   }
-
-  // todo test użycia jednego etagu z inną encją
-  // pomyśleć jakie różne akcje mogą się przeplatać
-  // sprawdzić czy przechodzą testy na remocie
 
   @Nested
   @Order(1)
@@ -453,7 +452,7 @@ public class AccountControllerIT extends BaseTest {
   }
 
   @Nested
-  @Order(3)
+  @Order(4)
   @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
   class GrantAccessLevel {
 
@@ -565,7 +564,7 @@ public class AccountControllerIT extends BaseTest {
   }
 
   @Nested
-  @Order(4)
+  @Order(5)
   @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
   class EditPatientData {
     private String etag;
@@ -653,7 +652,7 @@ public class AccountControllerIT extends BaseTest {
   }
 
   @Nested
-  @Order(5)
+  @Order(6)
   @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
   class EditChemistData {
     private String etag;
@@ -741,7 +740,7 @@ public class AccountControllerIT extends BaseTest {
   }
 
   @Nested
-  @Order(6)
+  @Order(7)
   @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
   class EditAdminData {
     private String etag;
@@ -829,7 +828,7 @@ public class AccountControllerIT extends BaseTest {
   }
 
   @Nested
-  @Order(7)
+  @Order(8)
   @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
   class ReadAccount {
     @Test
@@ -921,7 +920,7 @@ public class AccountControllerIT extends BaseTest {
   }
 
   @Nested
-  @Order(8)
+  @Order(9)
   @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
   class BlockAndUnblockAccessLevel {
     @Test
@@ -1138,7 +1137,7 @@ public class AccountControllerIT extends BaseTest {
   }
 
   @Nested
-  @Order(9)
+  @Order(10)
   @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
   class BlockAndUnblockAccount {
     @Test
@@ -1219,7 +1218,7 @@ public class AccountControllerIT extends BaseTest {
   }
 
   @Nested
-  @Order(10)
+  @Order(11)
   @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
   class AddAccountWithAccessLevel {
     @Test
@@ -1304,7 +1303,7 @@ public class AccountControllerIT extends BaseTest {
   }
 
   @Nested
-  @Order(11)
+  @Order(12)
   @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
   class Login {
     @Test
@@ -1405,7 +1404,7 @@ public class AccountControllerIT extends BaseTest {
   }
 
   @Nested
-  @Order(12)
+  @Order(13)
   @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
   class EditUserAccount {
 
@@ -1489,7 +1488,7 @@ public class AccountControllerIT extends BaseTest {
   }
 
   @Nested
-  @Order(13)
+  @Order(14)
   @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
   class MultipleAccessLevels {
 
@@ -1605,7 +1604,7 @@ public class AccountControllerIT extends BaseTest {
   }
 
   @Nested
-  @Order(14)
+  @Order(15)
   @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
   class changeLanguageVersion {
     private String etag;
@@ -1723,7 +1722,7 @@ public class AccountControllerIT extends BaseTest {
   }
 
   @Nested
-  @Order(15)
+  @Order(17)
   @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
   class GetAdminData {
     @Test
@@ -1762,7 +1761,7 @@ public class AccountControllerIT extends BaseTest {
     }
   }
   @Nested
-  @Order(17)  //todo
+  @Order(18)
   @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
   class GetPatientData {
     @Test
@@ -1802,7 +1801,7 @@ public class AccountControllerIT extends BaseTest {
   }
 
   @Nested
-  @Order(18)  //todo
+  @Order(19)
   @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
   class editSelfAccount {
 
@@ -1874,7 +1873,7 @@ public class AccountControllerIT extends BaseTest {
   }
 
   @Nested
-  @Order(19)
+  @Order(20)
   @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
   class NotifyAccessLevelChange {
     private String patientJwt;
@@ -1925,6 +1924,223 @@ public class AccountControllerIT extends BaseTest {
               .log()
               .all()
               .statusCode(Response.Status.UNAUTHORIZED.getStatusCode());
+    }
+  }
+
+  @Nested
+  @Order(21)
+  @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+  class EditPatientDataSelf {
+
+    private String etag;
+    private String patientJwt;
+
+    private EditSelfPatientDataDTO patientDataDTO = EditSelfPatientDataDTO.builder()
+            .login(patientLoginDto.getLogin())
+            .firstName(patientDataDTOChangedName.getFirstName())
+            .lastName(patientDataDTOChangedName.getLastName())
+            .nip(patientDataDTOChangedName.getNip())
+            .pesel(patientDataDTOChangedName.getPesel())
+            .phoneNumber(patientDataDTOChangedName.getPhoneNumber())
+            .version(-1L)
+            .build();
+
+    @BeforeEach
+    public void init() {
+      patientJwt = given()
+              .contentType("application/json")
+              .body(patientLoginDto)
+              .log().all()
+              .post(getApiRoot() + "/auth/login")
+              .then().log().all()
+              .statusCode(Response.Status.OK.getStatusCode())
+              .extract().response().jsonPath().getString("jwtToken");
+      var response = given()
+              .header("authorization", "Bearer " + patientJwt)
+              .get(getApiRoot() + "/account/details")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.OK.getStatusCode())
+              .extract()
+              .response();
+      etag = response.getHeader("ETag").replace("\"", "");
+      Long version = response.getBody().jsonPath().getLong("version");
+      patientDataDTO.setVersion(version);
+    }
+
+    @Test
+    @Order(1)
+    public void editPatientData_correct() {
+      patientDataDTO.setLastName("Testington");
+      given()
+              .header("authorization", "Bearer " + patientJwt)
+              .header("If-Match", etag)
+              .body(patientDataDTO)
+              .put(getApiRoot() + "/account/patient")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.OK.getStatusCode())
+              .body(
+                      "accessLevels",
+                      hasItem(hasEntry("lastName", patientDataDTO.getLastName())));
+    }
+
+    @Test
+    @Order(2)
+    public void editPatientData_badVersion() {
+      patientDataDTO.setLastName("Bill");
+      patientDataDTO.setVersion(-1L);
+      given()
+              .header("authorization", "Bearer " + patientJwt)
+              .header("If-Match", etag)
+              .body(patientDataDTO)
+              .put(getApiRoot() + "/account/patient")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.BAD_REQUEST.getStatusCode())
+              .body("message", equalTo(EXCEPTION_ETAG_INVALID));
+    }
+  }
+
+  @Nested
+  @Order(22)
+  @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+  class EditChemistDataSelf {
+
+    private String etag;
+    private String chemistJwt;
+
+    private EditSelfChemistDataDTO chemistDataDTO = EditSelfChemistDataDTO.builder()
+            .login(chemistLoginDto.getLogin())
+            .licenseNumber(chemistDataDTOChangedLiscence.getLicenseNumber())
+            .version(-1L)
+            .build();
+
+    @BeforeEach
+    public void init() {
+      chemistJwt = given()
+              .contentType("application/json")
+              .body(chemistLoginDto)
+              .log().all()
+              .post(getApiRoot() + "/auth/login")
+              .then().log().all()
+              .statusCode(Response.Status.OK.getStatusCode())
+              .extract().response().jsonPath().getString("jwtToken");
+      var response = given()
+              .header("authorization", "Bearer " + chemistJwt)
+              .get(getApiRoot() + "/account/details")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.OK.getStatusCode())
+              .extract()
+              .response();
+      etag = response.getHeader("ETag").replace("\"", "");
+      Long version = response.getBody().jsonPath().getLong("version");
+      chemistDataDTO.setVersion(version);
+    }
+
+    @Test
+    @Order(1)
+    public void editChemistData_correct() {
+      chemistDataDTO.setLicenseNumber("888778");
+      given()
+              .header("authorization", "Bearer " + chemistJwt)
+              .header("If-Match", etag)
+              .body(chemistDataDTO)
+              .put(getApiRoot() + "/account/chemist")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.OK.getStatusCode())
+              .body(
+                      "accessLevels",
+                      hasItem(hasEntry("licenseNumber", chemistDataDTO.getLicenseNumber())));
+    }
+
+    @Test
+    @Order(2)
+    public void editChemistData_badVersion() {
+      chemistDataDTO.setLicenseNumber("788778");
+      chemistDataDTO.setVersion(-1L);
+      given()
+              .header("authorization", "Bearer " + chemistJwt)
+              .header("If-Match", etag)
+              .body(chemistDataDTO)
+              .put(getApiRoot() + "/account/chemist")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.BAD_REQUEST.getStatusCode())
+              .body("message", equalTo(EXCEPTION_ETAG_INVALID));
+    }
+  }
+
+  @Nested
+  @Order(23)
+  @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+  class EditAdminDataSelf {
+
+    private String etag;
+
+    private EditSelfAdminDataDTO adminDataDTO = EditSelfAdminDataDTO.builder()
+            .login(adminLoginDto.getLogin())
+            .workPhoneNumber(adminDataDTOChangedPhone.getWorkPhoneNumber())
+            .version(-1L)
+            .build();
+
+    @BeforeEach
+    public void init() {
+      var response = given()
+              .header("authorization", "Bearer " + adminJwt)
+              .get(getApiRoot() + "/account/details")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.OK.getStatusCode())
+              .extract()
+              .response();
+      etag = response.getHeader("ETag").replace("\"", "");
+      Long version = response.getBody().jsonPath().getLong("version");
+      adminDataDTO.setVersion(version);
+    }
+
+    @Test
+    @Order(1)
+    public void editPatientData_correct() {
+      adminDataDTO.setWorkPhoneNumber("666666666");
+      given()
+              .header("authorization", "Bearer " + adminJwt)
+              .header("If-Match", etag)
+              .body(adminDataDTO)
+              .put(getApiRoot() + "/account/admin")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.OK.getStatusCode())
+              .body(
+                      "accessLevels",
+                      hasItem(hasEntry("workPhoneNumber", adminDataDTO.getWorkPhoneNumber())));
+    }
+
+    @Test
+    @Order(2)
+    public void editPatientData_badVersion() {
+      adminDataDTO.setWorkPhoneNumber("777777777");
+      adminDataDTO.setVersion(-1L);
+      given()
+              .header("authorization", "Bearer " + adminJwt)
+              .header("If-Match", etag)
+              .body(adminDataDTO)
+              .put(getApiRoot() + "/account/admin")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.BAD_REQUEST.getStatusCode())
+              .body("message", equalTo(EXCEPTION_ETAG_INVALID));
     }
   }
 }

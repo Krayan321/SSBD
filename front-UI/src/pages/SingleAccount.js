@@ -7,13 +7,14 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import LinearProgress from "@mui/material/LinearProgress";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import { getAccountDetails } from "../api/mok/accountApi";
-import ChangeOtherPasswordForm from "../modules/accounts/ChangeOtherPasswordForm";
 import AddRoleForm from "../modules/accounts/AddRoleForm";
-import LinearProgress from "@mui/material/LinearProgress";
+import ChangeOtherEmailForm from "../modules/accounts/ChangeOtherEmailForm";
+import ChangeOtherPasswordForm from "../modules/accounts/ChangeOtherPasswordForm";
 
 function SingleAccount() {
   const { id } = useParams();
@@ -22,6 +23,7 @@ function SingleAccount() {
   const [addRole, setAddRole] = useState(false);
   const { t } = useTranslation();
   const [changePass, setChangePass] = useState(false);
+  const [changeEmail, setChangeEmail] = useState(false);
   const [etag, setEtag] = useState("");
   const navigate = useNavigate();
   const paperStyle = {
@@ -73,6 +75,10 @@ function SingleAccount() {
 
   const handleAddRole = () => {
     setAddRole((state) => !state);
+  };
+
+  const handleChangeEmail = () => {
+    setChangeEmail((state) => !state);
   };
 
   return (
@@ -135,6 +141,23 @@ function SingleAccount() {
         >
           {account.email}
         </Typography>
+        {
+          changeEmail ? (
+              <>
+                <ChangeOtherEmailForm account={account} etag={etag} hideChange={setChangeEmail}/>
+                <Grid item xs={6}>
+                  <Button onClick={handleChangeEmail}>{t("back_button")}</Button>
+                </Grid>
+              </>
+          ) : (
+              <Grid container spacing={2}>
+                <Grid item xs={6}>
+                  <Button onClick={handleChangeEmail}>{t("change_email")}</Button>
+                </Grid>
+              </Grid>
+
+          )
+        }
         {changePass ? (
           <>
             <ChangeOtherPasswordForm
@@ -148,9 +171,7 @@ function SingleAccount() {
           </>
         ) : (
           <Grid container spacing={2}>
-            <Grid item xs={6}>
-              <Button>Edit Email</Button>
-            </Grid>
+
             <Grid item xs={6}>
               <Button onClick={handleChangePassword}>
                 {t("change_password_button")}

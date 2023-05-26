@@ -34,6 +34,9 @@ import pl.lodz.p.it.ssbd2023.ssbd01.dto.auth.VerificationTokenDto;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccount.grant.GrantAdminDataDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccount.grant.GrantChemistDataDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccount.grant.GrantPatientDataDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.editSelfAccessLevel.EditSelfAdminDataDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.editSelfAccessLevel.EditSelfChemistDataDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.editSelfAccessLevel.EditSelfPatientDataDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.register.RegisterPatientDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.*;
 import pl.lodz.p.it.ssbd2023.ssbd01.mok.managers.AccountManagerLocal;
@@ -422,6 +425,62 @@ public class AccountController extends AbstractController {
             repeatTransaction(
                     accountManager,
                     () -> accountManager.editAccessLevel(id, adminData, adminDataDTO.getVersion()));
+    return AccountConverter.mapAccountToAccountAndAccessLevelsDto(account);
+  }
+
+  @PUT
+  @Path("/patient")
+  @RolesAllowed("editSelfAccessLevel")
+  @Produces(MediaType.APPLICATION_JSON)
+  @Consumes(MediaType.APPLICATION_JSON)
+  @ETagFilterBinding
+  public AccountAndAccessLevelsDTO editPatientDataSelf(
+          @HeaderParam("If-Match") @NotEmpty String etag,
+          @Valid EditSelfPatientDataDTO patientDataDTO) {
+    entityIdentitySignerVerifier.checkEtagIntegrity(patientDataDTO, etag);
+    PatientData patientData =
+            AccessLevelConverter.mapEditSelfPatientDataDtoToPatientData(patientDataDTO);
+    Account account =
+            repeatTransaction(
+                    accountManager,
+                    () -> accountManager.editSelfAccessLevel(patientData, patientDataDTO.getVersion()));
+    return AccountConverter.mapAccountToAccountAndAccessLevelsDto(account);
+  }
+
+  @PUT
+  @Path("/chemist")
+  @RolesAllowed("editSelfAccessLevel")
+  @Produces(MediaType.APPLICATION_JSON)
+  @Consumes(MediaType.APPLICATION_JSON)
+  @ETagFilterBinding
+  public AccountAndAccessLevelsDTO editChemistDataSelf(
+          @HeaderParam("If-Match") @NotEmpty String etag,
+          @Valid EditSelfChemistDataDTO chemistDataDTO) {
+    entityIdentitySignerVerifier.checkEtagIntegrity(chemistDataDTO, etag);
+    ChemistData chemistData =
+            AccessLevelConverter.mapEditSelfChemistDataDtoToChemistData(chemistDataDTO);
+    Account account =
+            repeatTransaction(
+                    accountManager,
+                    () -> accountManager.editSelfAccessLevel(chemistData, chemistDataDTO.getVersion()));
+    return AccountConverter.mapAccountToAccountAndAccessLevelsDto(account);
+  }
+
+  @PUT
+  @Path("/admin")
+  @RolesAllowed("editSelfAccessLevel")
+  @Produces(MediaType.APPLICATION_JSON)
+  @Consumes(MediaType.APPLICATION_JSON)
+  @ETagFilterBinding
+  public AccountAndAccessLevelsDTO editAdminDataSelf(
+          @HeaderParam("If-Match") @NotEmpty String etag,
+          @Valid EditSelfAdminDataDTO adminDataDTO) {
+    entityIdentitySignerVerifier.checkEtagIntegrity(adminDataDTO, etag);
+    AdminData adminData = AccessLevelConverter.mapEditSelfAdminDataDtoToAdminData(adminDataDTO);
+    Account account =
+            repeatTransaction(
+                    accountManager,
+                    () -> accountManager.editSelfAccessLevel(adminData, adminDataDTO.getVersion()));
     return AccountConverter.mapAccountToAccountAndAccessLevelsDto(account);
   }
 

@@ -1,5 +1,6 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.moa.facades;
 
+import jakarta.annotation.security.DenyAll;
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -22,7 +23,7 @@ public class PrescriptionFacade extends AbstractFacade<Prescription> {
     super(Prescription.class);
   }
 
-
+  @DenyAll
   @Override
   public List<Prescription> findAll() {
     return super.findAll();

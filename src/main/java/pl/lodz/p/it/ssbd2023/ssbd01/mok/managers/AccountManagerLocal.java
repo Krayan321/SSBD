@@ -33,6 +33,7 @@ public interface AccountManagerLocal extends CommonManagerLocalInterface {
   Account registerAccount(Account account);
 
   Account editAccessLevel(Long id, AccessLevel accessLevel, Long version);
+  Account editSelfAccessLevel(AccessLevel accessLevel, Long version);
 
   void confirmEmailChange(String token);
 
