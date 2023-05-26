@@ -69,9 +69,9 @@ public class TokenManager extends AbstractManager
 
     token.setCreatedBy(account.getLogin());
 
-    tokenFacade.create(token);
-    emailService.sendRegistrationEmail(account.getEmail(), account.getLogin(),
-            account.getLanguage(), token.getCode());
+//    tokenFacade.create(token);
+//    emailService.sendRegistrationEmail(account.getEmail(), account.getLogin(),
+//            account.getLanguage(), token.getCode());
     return token;
   }
 
