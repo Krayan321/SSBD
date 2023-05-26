@@ -56,11 +56,6 @@ function AccountDetails() {
     const isChemist = accessLevels.includes("CHEMIST");
     const isPatient = accessLevels.includes("PATIENT");
 
-    console.log(account);
-    console.log("isAdmin: " + isAdmin);
-    console.log("isChemist: " + isChemist);
-    console.log("isPatient: " + isPatient);
-
     if (loading) {
         return <p>Loading...</p>;
     }

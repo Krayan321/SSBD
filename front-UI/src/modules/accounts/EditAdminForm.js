@@ -18,7 +18,6 @@ export function EditAdminForm({
           defaultValue={workPhoneNumber}
           onChange={(e) => {
             setWorkPhoneNumber(e.target.value);
-            console.log(`e.target.value: ${e.target.value}`);
           }}
         />
         <Button

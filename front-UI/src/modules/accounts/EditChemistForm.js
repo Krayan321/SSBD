@@ -14,7 +14,6 @@ export function EditChemistForm({
           defaultValue={licenseNumber}
           onChange={(e) => {
             setLicenseNumber(e.target.value);
-            console.log(`e.target.value: ${e.target.value}`);
           }}
         />
         <Button

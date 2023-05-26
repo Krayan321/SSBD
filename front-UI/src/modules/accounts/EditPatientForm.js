@@ -22,7 +22,6 @@ export function EditPatientForm({
         defaultValue={pesel}
         onChange={(e) => {
           setPesel(e.target.value);
-          console.log(`e.target.value: ${e.target.value}`);
         }}
       />
       <TextField
@@ -30,7 +29,6 @@ export function EditPatientForm({
         defaultValue={firstName}
         onChange={(e) => {
           setFirstName(e.target.value);
-          console.log(`e.target.value: ${e.target.value}`);
         }}
       />
       <TextField
@@ -38,7 +36,6 @@ export function EditPatientForm({
         defaultValue={lastName}
         onChange={(e) => {
           setLastName(e.target.value);
-          console.log(`e.target.value: ${e.target.value}`);
         }}
       />
       <TextField
@@ -46,7 +43,6 @@ export function EditPatientForm({
         defaultValue={phoneNumber}
         onChange={(e) => {
           setPhoneNumber(e.target.value);
-          console.log(`e.target.value: ${e.target.value}`);
         }}
       />
       <TextField
@@ -54,7 +50,6 @@ export function EditPatientForm({
         defaultValue={nip}
         onChange={(e) => {
           setNip(e.target.value);
-          console.log(`e.target.value: ${e.target.value}`);
         }}
       />
       <Button
