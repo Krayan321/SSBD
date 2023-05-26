@@ -104,15 +104,15 @@ export async function setNewPassword(token, password) {
 //dodanie pacjenta, aptekarza, admina
 
 export async function addPatient(body) {
-  return await post("account/patient", body);
+  return await post("account/add-patient", body);
 }
 
 export async function addChemist(body) {
-  return await post("account/chemist", body);
+  return await post("account/add-chemist", body);
 }
 
 export async function addAdmin(body) {
-  return await post("account/admin", body);
+  return await post("account/add-admin", body);
 }
 
 //nadanie roli pacjenta, aptekarza, admina

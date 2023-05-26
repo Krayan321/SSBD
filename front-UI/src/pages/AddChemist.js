@@ -34,7 +34,7 @@ const addChemistSchema = Yup.object().shape({
         .oneOf([Yup.ref('password'), null], 'passwords_not_match')
         .required('confirm_password_required'),
     licenseNumber: Yup.string()
-        .matches(/^[0-6]{6}$/, "license_invalid")
+        .matches(/^[0-9]{6}$/, "license_invalid")
         .required('license_required')
 });
 
