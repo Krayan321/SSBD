@@ -133,5 +133,11 @@
   "license_number_length": "Licenční číslo musí obsahovat 6 číslic",
   "license_number_only_digits": "Licenční číslo musí obsahovat pouze číslice",
   "license_number_required": "Licenční číslo je povinné",
-  "confirm_add_access_level": "Jste si jisti, že chcete přidat tuto úroveň přístupu?"
+  "confirm_add_access_level": "Jste si jisti, že chcete přidat tuto úroveň přístupu?",
+  "access_level_sucessfully_blocked": "Úroveň přístupu byla úspěšně zablokována",
+  "access_level_blocked_error": "Chyba při blokování úrovně přístupu",
+  "access_level_unblocked_error": "Chyba při odblokování úrovně přístupu",
+  "access_level_sucessfully_unblocked": "Úroveň přístupu byla úspěšně odblokována",
+  "block_access_level_confirmation": "Jste si jisti, že chcete zablokovat tuto úroveň přístupu?",
+  "unblock_access_level_confirmation": "Jste si jisti, že chcete odblokovat tuto úroveň přístupu?"
 }

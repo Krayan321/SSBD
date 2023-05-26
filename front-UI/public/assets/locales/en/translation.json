@@ -138,5 +138,11 @@
   "license_number_length": "License number must have 6 digits",
   "license_number_only_digits": "License number can contain only digits",
   "license_number_required": "License number is required",
-  "confirm_add_access_level": "Are you sure you want to add this access level?"
+  "confirm_add_access_level": "Are you sure you want to add this access level?",
+  "access_level_sucessfully_blocked": "Access level successfully blocked",
+  "access_level_blocked_error": "Error during blocking access level",
+  "access_level_unblocked_error": "Error during unblocking access level",
+  "access_level_sucessfully_unblocked": "Access level successfully unblocked",
+  "block_access_level_confirmation": "Are you sure you want to block access level?",
+  "unblock_access_level_confirmation": "Are you sure you want to unblock access level?"
 }
