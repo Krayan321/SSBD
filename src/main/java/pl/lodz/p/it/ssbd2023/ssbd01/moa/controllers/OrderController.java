@@ -10,6 +10,8 @@ import jakarta.ws.rs.PathParam;
 import pl.lodz.p.it.ssbd2023.ssbd01.common.AbstractController;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.order.OrderDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.moa.facades.OrderFacade;
+import pl.lodz.p.it.ssbd2023.ssbd01.moa.managers.OrderManager;
+import pl.lodz.p.it.ssbd2023.ssbd01.moa.managers.OrderManagerLocal;
 
 import java.util.List;
 
@@ -18,7 +20,7 @@ import java.util.List;
 @DenyAll
 public class OrderController extends AbstractController {
 
-    @Inject private OrderFacade orderFacade;
+    @Inject private OrderManagerLocal orderManagerLocal;
 
     //moa 18
     @GET

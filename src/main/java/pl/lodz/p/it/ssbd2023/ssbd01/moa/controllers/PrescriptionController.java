@@ -16,7 +16,7 @@ import java.util.List;
 @DenyAll
 public class PrescriptionController extends AbstractController {
 
-    @Inject private PrescriptionManagerLocal prescriptionManagerLocal;
+    @Inject private  PrescriptionManagerLocal prescriptionManagerLocal;
 
     @GET
     @Path("/")

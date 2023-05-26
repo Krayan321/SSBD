@@ -2,12 +2,18 @@ package pl.lodz.p.it.ssbd2023.ssbd01.moa.managers;
 
 import jakarta.annotation.security.DenyAll;
 import jakarta.ejb.SessionSynchronization;
+import jakarta.inject.Inject;
 import pl.lodz.p.it.ssbd2023.ssbd01.common.AbstractManager;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Prescription;
+import pl.lodz.p.it.ssbd2023.ssbd01.moa.facades.PrescriptionFacade;
 
 import java.util.List;
 
 public class PrescriptionManager extends AbstractManager implements PrescriptionManagerLocal, SessionSynchronization {
+
+    @Inject
+    private PrescriptionFacade prescriptionFacade;
+
     @Override
     @DenyAll
     public Prescription createPrescription(Prescription prescription) {

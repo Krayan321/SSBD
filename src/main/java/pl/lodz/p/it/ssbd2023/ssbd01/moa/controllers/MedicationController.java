@@ -9,6 +9,8 @@ import jakarta.ws.rs.core.Response;
 import pl.lodz.p.it.ssbd2023.ssbd01.common.AbstractController;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.medication.MedicationDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.moa.facades.MedicationFacade;
+import pl.lodz.p.it.ssbd2023.ssbd01.moa.managers.MedicationManager;
+import pl.lodz.p.it.ssbd2023.ssbd01.moa.managers.MedicationManagerLocal;
 
 import java.util.List;
 
@@ -17,8 +19,7 @@ import java.util.List;
 @DenyAll
 public class MedicationController extends AbstractController {
 
-    @Inject
-    private MedicationFacade medicationFacade;
+    @Inject private MedicationManagerLocal medicationManagerLocal;
 
     //moa 1
     @GET

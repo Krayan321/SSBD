@@ -9,6 +9,7 @@ import jakarta.ws.rs.core.Response;
 import pl.lodz.p.it.ssbd2023.ssbd01.common.AbstractController;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.category.CategoryDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.moa.facades.CategoryFacade;
+import pl.lodz.p.it.ssbd2023.ssbd01.moa.managers.CategoryManagerLocal;
 
 import java.util.List;
 
@@ -17,7 +18,7 @@ import java.util.List;
 @DenyAll
 public class CategoryController extends AbstractController {
 
-    @Inject private CategoryFacade categoryFacade;
+    @Inject private CategoryManagerLocal categoryManagerLocal;
 
     //moa 22
     @GET

@@ -2,12 +2,17 @@ package pl.lodz.p.it.ssbd2023.ssbd01.moa.managers;
 
 import jakarta.annotation.security.DenyAll;
 import jakarta.ejb.SessionSynchronization;
+import jakarta.inject.Inject;
 import pl.lodz.p.it.ssbd2023.ssbd01.common.AbstractManager;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Order;
+import pl.lodz.p.it.ssbd2023.ssbd01.moa.facades.OrderFacade;
 
 import java.util.List;
 
 public class OrderManager extends AbstractManager implements OrderManagerLocal, SessionSynchronization {
+
+    @Inject
+    private OrderFacade orderFacade;
     @Override
     @DenyAll
     public Order createOrder(Order order) {
