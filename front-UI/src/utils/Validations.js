@@ -72,3 +72,29 @@ export const chemistSchema = Yup.object().shape({
     .matches(/^[0-9]+$/, "license_number_only_digits")
     .required("license_number_required"),
 });
+
+export const patientSchema = Yup.object().shape({
+  name: Yup.string()
+      .min(2, "first_name_length_min")
+      .max(50, "first_name_length_max")
+      .required("first_name_required"),
+  lastName: Yup.string()
+      .min(2, "last_name_lenght_min")
+      .max(50, "last_name_length_max")
+      .required("last_name_required"),
+  phoneNumber: Yup.string()
+      .min(9, "phone_number_length")
+      .max(9, "phone_number_length")
+      .matches(/^[0-9]+$/, "phone_number_only_digits")
+      .required("phone_number_required"),
+  pesel: Yup.string()
+      .min(11, "pesel_length")
+      .max(11, "pesel_length")
+      .matches(/^[0-9]+$/, "pesel_only_digits")
+      .required("pesel_required"),
+  nip: Yup.string()
+      .min(10, "nip_length")
+      .matches(/^[0-9]+$/, "nip_only_digits")
+      .max(10, "nip_length")
+      .required("nip_required"),
+});
