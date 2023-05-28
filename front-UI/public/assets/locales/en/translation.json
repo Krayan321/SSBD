@@ -158,5 +158,6 @@
   "access_level_unblocked_error": "Error during unblocking access level",
   "access_level_sucessfully_unblocked": "Access level successfully unblocked",
   "block_access_level_confirmation": "Are you sure you want to block access level?",
-  "unblock_access_level_confirmation": "Are you sure you want to unblock access level?"
+  "unblock_access_level_confirmation": "Are you sure you want to unblock access level?",
+  "access_level_added_successfully": "Access level added successfully"
 }
