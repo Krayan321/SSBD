@@ -153,5 +153,6 @@
   "access_level_unblocked_error": "Chyba při odblokování úrovně přístupu",
   "access_level_sucessfully_unblocked": "Úroveň přístupu byla úspěšně odblokována",
   "block_access_level_confirmation": "Jste si jisti, že chcete zablokovat tuto úroveň přístupu?",
-  "unblock_access_level_confirmation": "Jste si jisti, že chcete odblokovat tuto úroveň přístupu?"
+  "unblock_access_level_confirmation": "Jste si jisti, že chcete odblokovat tuto úroveň přístupu?",
+  "access_level_added_successfully": "Úroveň přístupu byla úspěšně přidána"
 }

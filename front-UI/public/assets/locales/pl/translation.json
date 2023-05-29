@@ -159,5 +159,6 @@
   "access_level_sucessfully_unblocked": "Poziom dostępu został odblokowany",
   "confirm": "Potwierdź",
   "block_access_level_confirmation": "Czy na pewno chcesz zablokować ten poziom dostępu?",
-  "unblock_access_level_confirmation": "Czy na pewno chcesz odblokować ten poziom dostępu?"
+  "unblock_access_level_confirmation": "Czy na pewno chcesz odblokować ten poziom dostępu?",
+  "access_level_added_successfully": "Poziom dostępu został dodany"
 }

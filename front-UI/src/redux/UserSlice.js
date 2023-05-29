@@ -1,6 +1,5 @@
 import {createSlice} from "@reduxjs/toolkit";
 import {notifyAccessLevelChange} from "../api/mok/accountApi";
-import {toast} from "react-toastify";
 
 const initialState = {
     sub: "",
