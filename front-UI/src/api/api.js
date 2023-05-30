@@ -25,8 +25,10 @@ apiWithConfig.interceptors.request.use((config) => {
 apiWithConfig.interceptors.response.use(
     (response) => response,
     (error) => {
-        localStorage.removeItem(JWT_TOKEN)
-        localStorage.removeItem(ACCESS_LEVEL)
+        if (error.code === "ERR_NETWORK") {
+            localStorage.removeItem(JWT_TOKEN)
+            localStorage.removeItem(ACCESS_LEVEL)
+        }
         return Promise.reject(error)
     },
 )
