@@ -1,138 +1,88 @@
 import axios from "axios";
-import { JWT_TOKEN } from "../constants/Constants";
+import {ACCESS_LEVEL, JWT_TOKEN} from "../constants/Constants";
 
 const BASE_URL = window.location.href.includes("lodz.pl")
-  ? "https://team-1.proj-sum.it.p.lodz.pl/api/account"
-  : "http://localhost:8080/api/account";
+    ? "https://team-1.proj-sum.it.p.lodz.pl/api/account"
+    : "http://localhost:8080/api/account";
 
 const defaultHeaders = {
-  "Content-Type": "application/json",
-  Accept: "application/json",
+    "Content-Type": "application/json",
+    Accept: "application/json",
 };
 
-export async function getNoResponse(stringUrl, params) {
-  const url = new URL(stringUrl, BASE_URL);
-  if (params) {
-    url.search = new URLSearchParams(params).toString();
-  }
 
-  try {
-    const response = await axios.get(url, {
-      headers: {
-        Authorization: "Bearer " + localStorage.getItem(JWT_TOKEN),
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-      withCredentials: true,
-    });
-    return response;
-  } catch (error) {
-    console.error(error);
-  }
+const apiWithConfig = axios.create({
+    baseURL: BASE_URL,
+    headers: defaultHeaders,
+});
+
+apiWithConfig.interceptors.request.use((config) => {
+    const token = localStorage.getItem(JWT_TOKEN)
+    if (token && config.headers) config.headers.Authorization = 'Bearer ' + token.toString().replaceAll('"', '')
+    return config
+})
+
+apiWithConfig.interceptors.response.use(
+    (response) => response,
+    (error) => {
+        if (error.code === "ERR_NETWORK") {
+            localStorage.removeItem(JWT_TOKEN)
+            localStorage.removeItem(ACCESS_LEVEL)
+        }
+        return Promise.reject(error)
+    },
+)
+
+export async function getNoResponse(stringUrl, params) {
+    const url = new URL(stringUrl, BASE_URL);
+    if (params) {
+        url.search = new URLSearchParams(params).toString();
+    }
+    return await apiWithConfig.get(url);
 }
 
 export async function get(stringUrl, params) {
-  const url = new URL(stringUrl, BASE_URL);
-  if (params) {
-    url.search = new URLSearchParams(params).toString();
-  }
-
-  try {
-    const response = await axios.get(url, {
-      headers: {
-        Authorization: "Bearer " + localStorage.getItem(JWT_TOKEN),
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-    });
-    return response;
-  } catch (error) {
-    console.error(error);
-  }
+    const url = new URL(stringUrl, BASE_URL);
+    if (params) {
+        url.search = new URLSearchParams(params).toString();
+    }
+    return await apiWithConfig.get(url);
 }
 
 export async function post(stringUrl, body) {
-  const url = new URL(stringUrl, BASE_URL);
+    const url = new URL(stringUrl, BASE_URL);
 
-  // try {
-  const response = await axios.post(url, body, {
-    headers: defaultHeaders,
-    withCredentials: true,
-  });
-  return response;
-  // } catch (error) {
-  //   console.error(error);
-  // }
+    return await apiWithConfig.post(url, body);
 }
 
 export async function put(stringUrl, body) {
-  const url = new URL(stringUrl, BASE_URL);
+    const url = new URL(stringUrl, BASE_URL);
 
-  // try {
-  const response = await axios.put(url, body, {
-    headers: {
-      Authorization: "Bearer " + localStorage.getItem(JWT_TOKEN),
-      "Content-Type": "application/json",
-      Accept: "application/json",
-    },
-    withCredentials: true,
-  });
-  return response;
-  // } catch (error) {
-  //   console.error(error);
-  // }
+    return await apiWithConfig.put(url, body);
 }
 
 export async function putWithEtag(stringUrl, body, etag) {
-  const url = new URL(stringUrl, BASE_URL);
+    const url = new URL(stringUrl, BASE_URL);
 
-  // try {
-  const response = await axios.put(url, body, {
-    headers: {
-      Authorization: "Bearer " + localStorage.getItem(JWT_TOKEN),
-      "Content-Type": "application/json",
-      Accept: "application/json",
-      "If-Match": etag,
-    },
-  });
-  return response;
-  // } catch (error) {
-  //   console.error(error);
-  // }
+    return await apiWithConfig.put(url, body, {
+        headers: {
+            "If-Match": etag,
+        },
+    });
 }
 
 export async function postWithEtag(stringUrl, body, etag) {
-  const url = new URL(stringUrl, BASE_URL);
+    const url = new URL(stringUrl, BASE_URL);
 
-  // try {
-  const response = await axios.post(url, body, {
-    headers: {
-      Authorization: "Bearer " + localStorage.getItem(JWT_TOKEN),
-      "Content-Type": "application/json",
-      Accept: "application/json",
-      "If-Match": etag,
-    },
-  });
-  return response;
-  // } catch (error) {
-  //   console.error(error);
-  // }
+    return await apiWithConfig.post(url, body, {
+        headers: {
+            "If-Match": etag,
+        },
+    });
 }
 
 export async function del(stringUrl) {
-  const url = new URL(stringUrl, BASE_URL);
+    const url = new URL(stringUrl, BASE_URL);
 
-  try {
-    const response = await axios.delete(url, {
-      headers: {
-        Authorization: "Bearer " + localStorage.getItem(JWT_TOKEN),
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-      withCredentials: true,
-    });
-    return response;
-  } catch (error) {
-    console.error(error);
-  }
+    return await apiWithConfig.delete(url);
 }

@@ -154,5 +154,7 @@
   "access_level_sucessfully_unblocked": "Úroveň přístupu byla úspěšně odblokována",
   "block_access_level_confirmation": "Jste si jisti, že chcete zablokovat tuto úroveň přístupu?",
   "unblock_access_level_confirmation": "Jste si jisti, že chcete odblokovat tuto úroveň přístupu?",
-  "access_level_added_successfully": "Úroveň přístupu byla úspěšně přidána"
+  "access_level_added_successfully": "Úroveň přístupu byla úspěšně přidána",
+  "session_expired_login_again": "Vaše relace vypršela, přihlaste se prosím znovu",
+  "exception.access-denied": "Přístup odepřen"
 }

@@ -1,5 +1,6 @@
 import {createSlice} from "@reduxjs/toolkit";
 import {notifyAccessLevelChange} from "../api/mok/accountApi";
+import {ACCESS_LEVEL, JWT_TOKEN} from "../constants/Constants";
 
 const initialState = {
     sub: "",
@@ -7,9 +8,6 @@ const initialState = {
     cur: "",
     exp: "",
 };
-
-const ACCESS_LEVEL = "currentAccessLevel";
-const JWT_TOKEN = "jwtToken";
 
 export const userSlice = createSlice({
     name: "user",

@@ -1,10 +1,7 @@
-import {Navigate, Route, Routes} from "react-router-dom";
-import {Pathnames} from "./Pathnames";
+import {Route, Routes, useLocation, useNavigate} from "react-router-dom";
 import {AdminRoutes, AuthRoutes, ChemistRoutes, PatientRoutes, publicRoutes} from "./Routes";
-import PublicNavbar from "../components/PublicNavbar";
-import AuthNavbar from "../components/AuthNavbar";
 import jwtDecode from "jwt-decode";
-import {login as loginDispatch} from "../redux/UserSlice";
+import {login as loginDispatch, logout} from "../redux/UserSlice";
 import Error from "../pages/Error";
 import {useDispatch, useSelector} from "react-redux";
 import {JWT_TOKEN, ROLES} from "../constants/Constants";
@@ -14,7 +11,6 @@ import PublicLayout from "../layout/PublicLayout";
 export const RoutesComponent = () => {
 
     const user = useSelector((state) => state.user);
-
     const dispatch = useDispatch();
     const token = localStorage.getItem(JWT_TOKEN);
     try {
@@ -28,7 +24,6 @@ export const RoutesComponent = () => {
     } catch (error) {
         console.error(error);
     }
-
 
     return (
         <Routes>
