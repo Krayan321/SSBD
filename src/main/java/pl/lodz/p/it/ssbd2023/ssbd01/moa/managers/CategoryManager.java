@@ -22,7 +22,8 @@ public class CategoryManager extends AbstractManager implements CategoryManagerL
     @Override
     @DenyAll
     public Category createCategory(Category category) {
-        throw new UnsupportedOperationException();
+        categoryFacade.create(category);
+        return category;
     }
 
     @Override

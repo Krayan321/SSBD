@@ -3,12 +3,16 @@ package pl.lodz.p.it.ssbd2023.ssbd01.moa.controllers;
 import jakarta.annotation.security.DenyAll;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import pl.lodz.p.it.ssbd2023.ssbd01.common.AbstractController;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.category.CategoryDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.entities.Category;
 import pl.lodz.p.it.ssbd2023.ssbd01.moa.facades.CategoryFacade;
+import pl.lodz.p.it.ssbd2023.ssbd01.moa.managers.CategoryManager;
 
 import java.util.List;
 
@@ -17,7 +21,7 @@ import java.util.List;
 @DenyAll
 public class CategoryController extends AbstractController {
 
-    @Inject private CategoryFacade categoryFacade;
+    @Inject private CategoryManager categoryManager;
 
     //moa 22
     @GET
@@ -42,8 +46,9 @@ public class CategoryController extends AbstractController {
     @Path("/add-category")
     @DenyAll
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response addCategory(CategoryDTO categoryDto) {
-        throw new UnsupportedOperationException();
+    public Response addCategory(@NotNull @Valid CategoryDTO categoryDto) {
+        repeatTransaction(categoryManager, () -> categoryManager.createCategory(new Category(categoryDto.getName(), categoryDto.getIsOnPrescription())));
+        return Response.status(Response.Status.CREATED).build();
     }
 
     //moa 23
