@@ -58,19 +58,19 @@ function SingleAccount() {
                 blockRoleAdmin(idToBlockOrUnblok).then((response) => {
                     toast.success(t("access_level_sucessfully_blocked"), {position: "top-center"});
                 }).catch((error) => {
-                    toast.error(t(error.response.status), {position: "top-center"});
+                    toast.error(t(error.response.data.message), {position: "top-center"});
                 })
             } else if (accessLevelToBlockOrUnblock === "CHEMIST") {
                 blockRoleChemist(idToBlockOrUnblok).then((response) => {
                     toast.success(t("access_level_sucessfully_blocked"), {position: "top-center"});
                 }).catch((error) => {
-                    toast.error(t(error.response.status), {position: "top-center"});
+                    toast.error(t(error.response.data.message), {position: "top-center"});
                 })
             } else if (accessLevelToBlockOrUnblock === "PATIENT") {
                 blockRolePatient(idToBlockOrUnblok).then((response) => {
                     toast.success(t("access_level_sucessfully_blocked"), {position: "top-center"});
                 }).catch((error) => {
-                    toast.error(t(error.response.status), {position: "top-center"});
+                    toast.error(t(error.response.data.message), {position: "top-center"});
                 })
             }
         } else {
@@ -78,21 +78,19 @@ function SingleAccount() {
                 unblockRoleAdmin(idToBlockOrUnblok).then((response) => {
                     toast.success(t("access_level_sucessfully_unblocked"), {position: "top-center"});
                 }).catch((error) => {
-                    toast.error(t(error.response.status), {position: "top-center"});
-
+                    toast.error(t(error.response.data.message), {position: "top-center"});
                 })
             } else if (accessLevelToBlockOrUnblock === "CHEMIST") {
                 unblockRoleChemist(idToBlockOrUnblok).then((response) => {
                     toast.success(t("access_level_sucessfully_unblocked"), {position: "top-center"});
                 }).catch((error) => {
-                    toast.error(t(error.response.status), {position: "top-center"});
-
+                    toast.error(t(error.response.data.message), {position: "top-center"});
                 })
             } else if (accessLevelToBlockOrUnblock === "PATIENT") {
                 unblockRolePatient(idToBlockOrUnblok).then((response) => {
                     toast.success(t("access_level_sucessfully_unblocked"), {position: "top-center"});
                 }).catch((error) => {
-                    toast.error(t(error.response.status), {position: "top-center"});
+                    toast.error(t(error.response.data.message), {position: "top-center"});
                 })
             }
         }
@@ -105,19 +103,18 @@ function SingleAccount() {
     };
 
     useEffect(() => {
-        const fetchData = async () => {
-            const response = await getAccountDetails(id);
-            if (response.status === 200) {
+
+        getAccountDetails(id).then(
+            (response) => {
                 setAccount(response.data);
                 setAccessLevels(response.data.accessLevels);
                 setEtag(response.headers["etag"]);
                 setLoading(false);
-            } else {
-                navigate(Pathnames.public.error, {replace: true});
-            }
-        };
+            })
+            .catch((error) => {
+                toast.error(t(error.response.data.message), {position: "top-center"});
+            });
 
-        fetchData();
     }, []);
 
     const isAdmin =
