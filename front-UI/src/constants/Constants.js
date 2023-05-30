@@ -1,6 +1,7 @@
 
 
 export const JWT_TOKEN = "jwtToken";
+export const ACCESS_LEVEL = "currentAccessLevel";
 
 export const ROLES = {
     ADMIN: "ADMIN",
