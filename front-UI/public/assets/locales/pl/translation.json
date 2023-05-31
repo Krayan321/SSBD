@@ -162,5 +162,9 @@
   "unblock_access_level_confirmation": "Czy na pewno chcesz odblokować ten poziom dostępu?",
   "access_level_added_successfully": "Poziom dostępu został dodany",
   "session_expired_login_again": "Twoja sesja wygasła. Zaloguj się ponownie",
-  "exception.access-denied": "Brak dostępu"
+  "exception.access-denied": "Brak dostępu",
+  "welcome_back": "Witaj ponownie",
+  "create_account": "Utwórz konto",
+  "accounts": "Konta",
+  "logout": "Wyloguj"
 }

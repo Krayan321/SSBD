@@ -156,5 +156,9 @@
   "unblock_access_level_confirmation": "Jste si jisti, že chcete odblokovat tuto úroveň přístupu?",
   "access_level_added_successfully": "Úroveň přístupu byla úspěšně přidána",
   "session_expired_login_again": "Vaše relace vypršela, přihlaste se prosím znovu",
-  "exception.access-denied": "Přístup odepřen"
+  "exception.access-denied": "Přístup odepřen",
+  "welcome_back": "Vítejte zpět",
+  "create_account": "Vytvořit účet",
+  "accounts": "Účty",
+  "logout": "Odhlásit se"
 }

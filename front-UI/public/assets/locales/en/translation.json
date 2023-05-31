@@ -161,5 +161,9 @@
   "unblock_access_level_confirmation": "Are you sure you want to unblock access level?",
   "access_level_added_successfully": "Access level added successfully",
   "session_expired_login_again": "Session expired. Login again",
-  "exception.access-denied": "Access denied"
+  "exception.access-denied": "Access denied",
+  "welcome_back": "Welcome back",
+  "create_account": "Create account",
+  "accounts": "Accounts",
+  "logout": "Logout"
 }
