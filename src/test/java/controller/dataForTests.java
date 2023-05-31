@@ -10,7 +10,10 @@ import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccessLevel.EditChemistDataDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccessLevel.EditPatientDataDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccount.grant.GrantAdminDataDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccount.grant.GrantChemistDataDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.medication.MedicationDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.register.RegisterPatientDTO;
+
+import java.math.BigDecimal;
 
 public class dataForTests {
 
@@ -155,4 +158,11 @@ public class dataForTests {
 
   public static CategoryDTO categoryDto =
         CategoryDTO.builder().name("Antydepresanty").isOnPrescription(false).build();
+
+  public static MedicationDTO medicationDto =
+        MedicationDTO.builder().name("Prozac")
+                .stock(100)
+                .price(new BigDecimal("10.0"))
+                .categoryId(1L)
+                .build();
 }

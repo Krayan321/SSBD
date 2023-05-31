@@ -1,17 +1,32 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.moa.managers;
 
 import jakarta.annotation.security.DenyAll;
+import jakarta.annotation.security.PermitAll;
 import jakarta.ejb.SessionSynchronization;
+import jakarta.ejb.Stateful;
+import jakarta.ejb.TransactionAttribute;
+import jakarta.ejb.TransactionAttributeType;
+import jakarta.inject.Inject;
+import lombok.extern.java.Log;
 import pl.lodz.p.it.ssbd2023.ssbd01.common.AbstractManager;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Medication;
+import pl.lodz.p.it.ssbd2023.ssbd01.moa.facades.MedicationFacade;
 
 import java.util.List;
 
+@Stateful
+@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+@Log
+@DenyAll
 public class MedicationManager extends AbstractManager implements MedicationManagerLocal, SessionSynchronization {
+
+    @Inject
+    private MedicationFacade medicationFacade;
     @Override
-    @DenyAll
+    @PermitAll
     public Medication createMedication(Medication medication) {
-        throw new UnsupportedOperationException();
+        medicationFacade.create(medication);
+        return medication;
     }
 
     @Override

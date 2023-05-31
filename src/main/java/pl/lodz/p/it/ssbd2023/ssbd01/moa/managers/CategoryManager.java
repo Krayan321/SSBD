@@ -9,9 +9,11 @@ import jakarta.interceptor.Interceptors;
 import lombok.extern.java.Log;
 import pl.lodz.p.it.ssbd2023.ssbd01.common.AbstractManager;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Category;
+import pl.lodz.p.it.ssbd2023.ssbd01.exceptions.ApplicationException;
 import pl.lodz.p.it.ssbd2023.ssbd01.moa.facades.CategoryFacade;
 
 import java.util.List;
+import java.util.Optional;
 
 @Stateful
 @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
@@ -35,7 +37,12 @@ public class CategoryManager extends AbstractManager implements CategoryManagerL
 
     @Override
     public Category getCategory(Long id) {
-        throw new UnsupportedOperationException();
+        Optional<Category> category = categoryFacade.find(id);
+        if (category.isPresent()) {
+            return category.get();
+        } else {
+            throw ApplicationException.createEntityNotFoundException();
+        }
     }
 
     @Override
