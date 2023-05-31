@@ -10,7 +10,7 @@ import java.util.List;
 public class ShipmentManager extends AbstractManager implements ShipmentManagerLocal, SessionSynchronization {
     @Override
     @DenyAll
-    public Shipment createShipment(Shipment shipment) {
+    public void createShipment(Shipment shipment) {
         throw new UnsupportedOperationException();
     }
 
@@ -22,7 +22,7 @@ public class ShipmentManager extends AbstractManager implements ShipmentManagerL
 
     @Override
     @DenyAll
-    public Shipment editShipment(Shipment shipment) {
+    public Shipment editShipment(Long id, Shipment shipment) {
         throw new UnsupportedOperationException();
     }
 
