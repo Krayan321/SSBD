@@ -20,6 +20,7 @@ import pl.lodz.p.it.ssbd2023.ssbd01.moa.facades.ShipmentFacade;
 import pl.lodz.p.it.ssbd2023.ssbd01.moa.managers.ShipmentManager;
 import pl.lodz.p.it.ssbd2023.ssbd01.moa.managers.ShipmentManagerLocal;
 import pl.lodz.p.it.ssbd2023.ssbd01.util.converters.ShipmentConverter;
+import pl.lodz.p.it.ssbd2023.ssbd01.util.converters.ShipmentMedicationConverter;
 
 import java.util.List;
 
@@ -39,9 +40,7 @@ public class ShipmentController extends AbstractController {
     public List<ShipmentDTO> readAllShipments() {
         List<Shipment> shipments = repeatTransaction(shipmentManager,
                 () -> shipmentManager.getAllShipments());
-        return shipments.stream()
-                .map(ShipmentConverter::mapShipmentToShipmentDto)
-                .toList();
+        return ShipmentConverter.mapShipmentsToShipmentsDto(shipments);
     }
 
     @GET

@@ -143,6 +143,17 @@
     <security-role>
         <role-name>editSelfAccessLevelAdmin</role-name>
     </security-role>
-
+    <security-role>
+        <role-name>readAllShipments</role-name>
+    </security-role>
+    <security-role>
+        <role-name>readShipment</role-name>
+    </security-role>
+    <security-role>
+        <role-name>createShipment</role-name>
+    </security-role>
+    <security-role>
+        <role-name>updateShipment</role-name>
+    </security-role>
 
 </web-app>

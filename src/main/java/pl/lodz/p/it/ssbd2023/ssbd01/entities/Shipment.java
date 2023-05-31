@@ -17,9 +17,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+
+import lombok.*;
+import lombok.AccessLevel;
 
 @Entity
 @NoArgsConstructor
@@ -30,14 +30,20 @@ import lombok.Setter;
     indexes = {
       @Index(name = "shipment_index", columnList = "id", unique = true),
     })
-@NamedQuery(name = "shipment.findAll", query = "SELECT o FROM Shipment o")
 public class Shipment extends AbstractEntity implements Serializable {
 
   public static final long serialVersionUID = 1L;
 
+  @Builder(builderMethodName = "createBuilder")
+  public Shipment(Date shipmentDate,
+                  List<ShipmentMedication> shipmentMedications) {
+    this.shipmentDate = shipmentDate;
+    this.shipmentMedications = shipmentMedications;
+  }
+
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Setter(lombok.AccessLevel.NONE)
+  @Setter(AccessLevel.NONE)
   private Long id;
 
   @Column(nullable = false, name = "shipment_date", updatable = false)

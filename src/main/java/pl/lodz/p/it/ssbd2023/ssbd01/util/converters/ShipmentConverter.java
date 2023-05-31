@@ -5,22 +5,46 @@ import pl.lodz.p.it.ssbd2023.ssbd01.dto.shipment.ShipmentDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.shipment.UpdateShipmentDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Shipment;
 
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
 public class ShipmentConverter {
     private ShipmentConverter() {}
 
-    public static ShipmentDTO mapShipmentToShipmentDto(Shipment shipment) {
-        return null;
+    public static List<ShipmentDTO> mapShipmentsToShipmentsDto(List<Shipment> shipments) {
+        return shipments == null ?
+                null :
+                shipments.stream()
+                        .filter(Objects::nonNull)
+                        .map(ShipmentConverter::mapShipmentToShipmentDto)
+                        .collect(Collectors.toList());
     }
 
-    public static Shipment mapShipmentDtoToShipment(ShipmentDTO shipment) {
-        return null;
+    public static ShipmentDTO mapShipmentToShipmentDto(Shipment shipment) {
+        return ShipmentDTO.builder()
+                .id(shipment.getId())
+                .version(shipment.getVersion())
+                .shipmentDate(shipment.getShipmentDate())
+                .shipmentMedications(
+                        ShipmentMedicationConverter.mapShipmentMedsToShipmentMedsDto(
+                                shipment.getShipmentMedications()))
+                .build();
     }
+
+
 
     public static Shipment mapCreateShipmentDtoToShipment(CreateShipmentDTO shipment) {
-        return null;
+        return Shipment.createBuilder()
+                .shipmentDate(shipment.getShipmentDate())
+                .shipmentMedications(ShipmentMedicationConverter
+                        .mapShipmentMedsDtoToShipmentMeds(shipment.getShipmentMedications()))
+                .build();
     }
 
     public static Shipment mapUpdateShipmentDtoToShipment(UpdateShipmentDTO shipment) {
         return null;
     }
+
+
 }

@@ -4,9 +4,13 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
+
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import javax.print.attribute.standard.Media;
 
 @Entity
 @Getter
@@ -22,6 +26,12 @@ import lombok.Setter;
 public class ShipmentMedication extends AbstractEntity implements Serializable {
 
   private static final long serialVersionUID = 1L;
+
+  @Builder
+  public ShipmentMedication(Medication medication, Integer quantity) {
+    this.medication = medication;
+    this.quantity = quantity;
+  }
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -22,10 +22,5 @@ public class ShipmentMedicationFacade extends AbstractFacade<ShipmentMedication>
   public ShipmentMedicationFacade() {
     super(ShipmentMedication.class);
   }
-  @DenyAll
-  public List<ShipmentMedication> findAll() {
-    TypedQuery<ShipmentMedication> tq =
-        em.createNamedQuery("shipmentMedication.findAll", ShipmentMedication.class);
-    return tq.getResultList();
-  }
+
 }
