@@ -1,6 +1,7 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.moa.controllers;
 
 import jakarta.annotation.security.DenyAll;
+import jakarta.annotation.security.PermitAll;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
@@ -8,20 +9,22 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import lombok.extern.java.Log;
 import pl.lodz.p.it.ssbd2023.ssbd01.common.AbstractController;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.category.CategoryDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Category;
-import pl.lodz.p.it.ssbd2023.ssbd01.moa.facades.CategoryFacade;
-import pl.lodz.p.it.ssbd2023.ssbd01.moa.managers.CategoryManager;
+import pl.lodz.p.it.ssbd2023.ssbd01.moa.managers.CategoryManagerLocal;
 
 import java.util.List;
 
 @Path("category")
 @RequestScoped
 @DenyAll
+@Log
 public class CategoryController extends AbstractController {
 
-    @Inject private CategoryManager categoryManager;
+    @Inject
+    private CategoryManagerLocal categoryManager;
 
     //moa 22
     @GET
@@ -44,10 +47,14 @@ public class CategoryController extends AbstractController {
     //moa 21
     @POST
     @Path("/add-category")
-    @DenyAll
+    @PermitAll
     @Consumes(MediaType.APPLICATION_JSON)
     public Response addCategory(@NotNull @Valid CategoryDTO categoryDto) {
-        repeatTransaction(categoryManager, () -> categoryManager.createCategory(new Category(categoryDto.getName(), categoryDto.getIsOnPrescription())));
+        //create category
+        Category category = new Category();
+        category.setName(categoryDto.getName());
+        category.setIsOnPrescription(categoryDto.getIsOnPrescription());
+        categoryManager.createCategory(category);
         return Response.status(Response.Status.CREATED).build();
     }
 

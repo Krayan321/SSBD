@@ -24,10 +24,10 @@ public class Category extends AbstractEntity implements Serializable {
   private Long id;
 
   @NotNull
-  @Column(nullable = false, unique = true, name = "category_name")
+  @Column(nullable = false, unique = true)
   private String name;
 
-  @Column(nullable = false, name = "is_on_prescription")
+  @Column(nullable = false)
   @NotNull
   private Boolean isOnPrescription;
 

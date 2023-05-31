@@ -1,7 +1,11 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.moa.facades;
 
 import jakarta.annotation.security.DenyAll;
+import jakarta.annotation.security.PermitAll;
 import jakarta.ejb.Stateless;
+import jakarta.ejb.TransactionAttribute;
+import jakarta.ejb.TransactionAttributeType;
+import jakarta.interceptor.Interceptors;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
@@ -12,6 +16,8 @@ import pl.lodz.p.it.ssbd2023.ssbd01.common.AbstractFacade;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Category;
 
 @Stateless(name = "CategoryFacade")
+@TransactionAttribute(TransactionAttributeType.MANDATORY)
+@DenyAll
 public class CategoryFacade extends AbstractFacade<Category> {
   @PersistenceContext(unitName = "ssbd01moaPU")
   private EntityManager em;
@@ -26,23 +32,23 @@ public class CategoryFacade extends AbstractFacade<Category> {
   }
 
   @Override
-  @DenyAll
+  @PermitAll
   public List<Category> findAll() {
     return super.findAll();
   }
 
   @Override
-  @DenyAll
+  @PermitAll
   public void create(Category category) {super.create(category);}
 
   @Override
-  @DenyAll
+  @PermitAll
   public void edit(Category category) {super.edit(category);}
 
   @Override
-  @DenyAll
+  @PermitAll
   public void editAndRefresh(Category category) {super.editAndRefresh(category);}
 
-  @DenyAll
+  @PermitAll
   public Optional<Category> find(Long id) {return super.find(id);}
 }
