@@ -6,7 +6,6 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import axios from "axios";
 import {
     getAccounts,
     blockAccount,
@@ -20,7 +19,7 @@ import {
     DialogActions,
     DialogContent,
     DialogContentText,
-    IconButton,
+    IconButton, useTheme,
 } from "@mui/material";
 import {useNavigate} from "react-router-dom";
 import LockIcon from "@mui/icons-material/Lock";
@@ -32,7 +31,7 @@ import RefreshIcon from "@mui/icons-material/Refresh";
 export default function AllAccounts() {
     const [accounts, setAccounts] = useState([]);
     const navigate = useNavigate();
-
+    const theme = useTheme();
     const [dialogStates, setDialogStates] = useState({});
     const [refreshing, setRefreshing] = useState(false);
 
@@ -105,7 +104,12 @@ export default function AllAccounts() {
     };
 
     return (
-        <div>
+        <div style={{
+            display: "flex",
+            justifyContent: "center",
+            alignContent: "center",
+            flexDirection: "column"
+        }}>
             <Box sx={{marginBottom: "10px", textAlign: "center"}}>
                 <IconButton
                     variant="contained"
@@ -115,15 +119,15 @@ export default function AllAccounts() {
                     <RefreshIcon/>
                 </IconButton>
             </Box>
-            <TableContainer component={Paper}>
-                <Table sx={{minWidth: 650}} aria-label="simple table">
-                    <TableHead sx={{bgcolor: "pink"}}>
-                        <TableRow>
-                            <TableCell>Login</TableCell>
-                            <TableCell align="right">Email</TableCell>
-                            <TableCell align="right">{t("confirmed")}</TableCell>
-                            <TableCell align="right">{t("active")}</TableCell>
-                            <TableCell align="right">{t("details")}</TableCell>
+            <TableContainer sx={{maxWidth: "800px", margin: "auto"}} component={Paper}>
+                <Table aria-label="simple table">
+                    <TableHead sx={{backgroundColor: theme.palette.primary.main}}>
+                        <TableRow sx={{color: "white"}}>
+                            <TableCell sx={{color: "white"}}>Login</TableCell>
+                            <TableCell sx={{color: "white"}} align="right">Email</TableCell>
+                            <TableCell sx={{color: "white"}} align="right">{t("confirmed")}</TableCell>
+                            <TableCell sx={{color: "white"}} align="right">{t("active")}</TableCell>
+                            <TableCell sx={{color: "white"}} align="right">{t("details")}</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>

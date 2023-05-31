@@ -46,11 +46,6 @@ function Landing() {
         <div className="wrapper">
             <Paper elevation={20} className="paper">
                 <h2>{t("welcome_back")} {user.sub} </h2>
-                {isAdmin  && (
-                    <Button variant="contained" onClick={handleCreateAccount}>
-                        {t("create_account")}
-                    </Button>)}
-
             </Paper>
         </div>
     );
