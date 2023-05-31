@@ -2,6 +2,7 @@ package controller;
 
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.addAsAdmin.AddAdminAccountDto;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.addAsAdmin.AddChemistAccountDto;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.category.CategoryDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccount.EditAccountDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.auth.LoginDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccessLevel.EditAdminDataDTO;
@@ -151,4 +152,7 @@ public class dataForTests {
           .build();
 
   public static EditAccountDTO editEmailDto = new EditAccountDTO("new@email.local");
+
+  public static CategoryDTO categoryDto =
+        CategoryDTO.builder().name("Antydepresanty").isOnPrescription(false).build();
 }
