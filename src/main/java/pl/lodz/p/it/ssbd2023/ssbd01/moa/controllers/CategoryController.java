@@ -54,7 +54,8 @@ public class CategoryController extends AbstractController {
         Category category = new Category();
         category.setName(categoryDto.getName());
         category.setIsOnPrescription(categoryDto.getIsOnPrescription());
-        categoryManager.createCategory(category);
+        repeatTransaction(categoryManager, () ->
+            categoryManager.createCategory(category));
         return Response.status(Response.Status.CREATED).build();
     }
 
