@@ -3,13 +3,17 @@ package pl.lodz.p.it.ssbd2023.ssbd01.moa.controllers;
 import jakarta.annotation.security.DenyAll;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
+import jakarta.validation.Valid;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.core.Response;
 import pl.lodz.p.it.ssbd2023.ssbd01.common.AbstractController;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.order.OrderDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.order.OrderMedicationDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.moa.facades.OrderFacade;
+import pl.lodz.p.it.ssbd2023.ssbd01.moa.managers.OrderManager;
 
 import java.util.List;
 
@@ -18,7 +22,7 @@ import java.util.List;
 @DenyAll
 public class OrderController extends AbstractController {
 
-    @Inject private OrderFacade orderFacade;
+    @Inject private OrderManager orderManager;
 
     //moa 18
     @GET
@@ -64,8 +68,9 @@ public class OrderController extends AbstractController {
     @PUT
     @Path("/{id}/add")
     @DenyAll
-    public void addMedicationToOrder(@PathParam("id") Long id) {
-        throw new UnsupportedOperationException();
+    public Response addMedicationToOrder(@PathParam("id") Long id, @Valid OrderMedicationDTO orderMedicationDTO) {
+        repeatTransactionVoid(orderManager, () -> orderManager.addMedicationToOrder(id, orderMedicationDTO.dtoToEntity(), orderMedicationDTO.getVersion()));
+        return Response.status(Response.Status.OK).build();
     }
 
     //moa 4
