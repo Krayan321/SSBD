@@ -1,17 +1,24 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.moa.facades;
 
 import jakarta.annotation.security.DenyAll;
+import jakarta.annotation.security.PermitAll;
 import jakarta.ejb.Stateless;
+import jakarta.ejb.TransactionAttribute;
+import jakarta.ejb.TransactionAttributeType;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.LockModeType;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import java.util.List;
 import java.util.Optional;
 
+import jakarta.validation.ConstraintViolationException;
 import pl.lodz.p.it.ssbd2023.ssbd01.common.AbstractFacade;
+import pl.lodz.p.it.ssbd2023.ssbd01.entities.Category;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Medication;
 
 @Stateless
+@TransactionAttribute(TransactionAttributeType.MANDATORY)
 public class MedicationFacade extends AbstractFacade<Medication> {
   @PersistenceContext(unitName = "ssbd01moaPU")
   private EntityManager em;
@@ -32,8 +39,15 @@ public class MedicationFacade extends AbstractFacade<Medication> {
   }
 
   @Override
-  @DenyAll
-  public void create(Medication medication) { super.create(medication);}
+  @PermitAll
+  public void create(Medication medication) {
+    try {
+      em.lock(medication.getCategory(), LockModeType.OPTIMISTIC_FORCE_INCREMENT);
+      super.create(medication);
+    } catch (ConstraintViolationException e) {
+      throw e;
+    }
+  }
 
   @Override
   @DenyAll

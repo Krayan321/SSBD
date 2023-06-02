@@ -1,5 +1,6 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.moa.managers;
 
+import jakarta.annotation.security.PermitAll;
 import jakarta.ejb.SessionSynchronization;
 import jakarta.ejb.Stateful;
 import jakarta.ejb.TransactionAttribute;
@@ -36,6 +37,7 @@ public class CategoryManager extends AbstractManager implements CategoryManagerL
     }
 
     @Override
+    @PermitAll
     public Category getCategory(Long id) {
         Optional<Category> category = categoryFacade.find(id);
         if (category.isPresent()) {

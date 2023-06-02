@@ -16,7 +16,7 @@ import pl.lodz.p.it.ssbd2023.ssbd01.common.AbstractFacade;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Category;
 
 @Stateless(name = "CategoryFacade")
-@TransactionAttribute(TransactionAttributeType.MANDATORY)
+@TransactionAttribute(TransactionAttributeType.REQUIRED)
 @DenyAll
 public class CategoryFacade extends AbstractFacade<Category> {
   @PersistenceContext(unitName = "ssbd01moaPU")
