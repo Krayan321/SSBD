@@ -166,5 +166,8 @@
   "welcome_back": "Witaj ponownie",
   "create_account": "Utwórz konto",
   "accounts": "Konta",
-  "logout": "Wyloguj"
+  "logout": "Wyloguj",
+  "edit_admin_data": "Edytuj dane admina",
+  "edit_chemist_data": "Edytuj dane aptekarza",
+  "edit_patient_data": "Edytuj dane pacjenta"
 }
