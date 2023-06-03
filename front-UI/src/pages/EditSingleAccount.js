@@ -64,7 +64,10 @@ const adminSchema = Yup.object().shape({
 function EditSingleAccount() {
 
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [etag, setEtag] = useState('')
+  const [patientEtag, setPatientEtag] = useState('')
+  const [chemistEtag, setChemistEtag] = useState('')
+  const [adminEtag, setAdminEtag] = useState('')
+
   const [name, setName] = useState('');
   const [lastName, setLastName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -78,28 +81,33 @@ function EditSingleAccount() {
   const [accessLevels, setAccessLevels] = useState([]);
   const { t } = useTranslation();
   const navigate = useNavigate();
+
+  const [patient, setPatient] = useState(false)
+  const [chemist, setChemist] = useState(false)
+  const [admin, setAdmin] = useState(false)
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await getAccountDetails(id);
         setAccount(response.data);
+      
        
-       
-        setAccessLevels(response.data.accessLevels[0].role);
-        if (response.data.accessLevels[0].role.includes("PATIENT")){
+        setAccessLevels(response.data.accessLevels);
+        if ( response.data.accessLevels.some((level) => level.role === "PATIENT")){
           const etag_response = await getPatientData(id) 
-          setEtag(etag_response.headers["etag"])
+          setPatientEtag(etag_response.headers["etag"])
+          
           
         }
-        if (response.data.accessLevels[0].role.includes("CHEMIST")){
+        if ( response.data.accessLevels.some((level) => level.role === "CHEMIST")){
           const etag_response = await getChemistData(id) 
-          setEtag(etag_response.headers["etag"])
-         
+          setChemistEtag(etag_response.headers["etag"])
+        
         }
-        if (response.data.accessLevels[0].role.includes("ADMIN")){
+        if ( response.data.accessLevels.some((level) => level.role === "ADMIN")){
           const etag_response = await getAdminData(id) 
-          setEtag(etag_response.headers["etag"])
-         
+          setAdminEtag(etag_response.headers["etag"])
+       
         }
       
       } catch (error) {
@@ -110,9 +118,12 @@ function EditSingleAccount() {
     fetchData();
   }, []);
 
-  const isAdmin = accessLevels.includes("ADMIN");
-  const isChemist = accessLevels.includes("CHEMIST");
-  const isPatient = accessLevels.includes("PATIENT");
+  const isAdmin =
+  accessLevels && accessLevels.some((level) => level.role === "ADMIN");
+const isChemist =
+  accessLevels && accessLevels.some((level) => level.role === "CHEMIST");
+const isPatient =
+  accessLevels && accessLevels.some((level) => level.role === "PATIENT");
 
  
   let selectedSchema;
@@ -133,19 +144,19 @@ function EditSingleAccount() {
   const handleEditPatient = () =>{
     setLoading((true))
     setDialogOpen(false)
-    const tag = etag.split('"').join("")
-    if (isPatient){
+  
+    if (patient){
     const body = {
         id: id,
-        role: accessLevels,
+        role: accessLevels.find((level) => level.role === "PATIENT").role,
         firstName: name,
         lastName: lastName,
         phoneNumber: phoneNumber,
         pesel: pesel,
         nip: nip,
-        version: account.accessLevels[0].version
+        version: accessLevels.find((level) => level.role === "PATIENT").version
       };
-
+      const tag = patientEtag.split('"').join("")
       editOtherPatientData(id, body, tag).then((res)=>{
         setLoading((state)=> !state)
         navigate(`/accounts/${id}/details`);
@@ -165,15 +176,15 @@ function EditSingleAccount() {
                 })
             } 
         })
-      }else if (isChemist){
+      }else if (chemist){
         const body = {
           id: id,
           licenseNumber: licenseNumber,
           active: account.active,
-          role: accessLevels,
-          version: account.accessLevels[0].version
+          role: accessLevels.find((level) => level.role === "CHEMIST").role,
+          version: accessLevels.find((level) => level.role === "CHEMIST").version
         }
-
+        const tag = chemistEtag.split('"').join("")
         editOtherChemistData(id, body, tag).then((res)=>{
           setLoading((state)=> !state)
           navigate(`/accounts/${id}/details`);
@@ -199,10 +210,10 @@ function EditSingleAccount() {
           id: id,
           workPhoneNumber: workPhoneNumber,
           active: account.active,
-          role: accessLevels,
-          version: account.accessLevels[0].version
+          role: accessLevels.find((level) => level.role === "ADMIN").role,
+          version: accessLevels.find((level) => level.role === "ADMIN").version
         }
-
+        const tag = adminEtag.split('"').join("")
         editOtherAdminData(id, body, tag).then((res)=>{
           setLoading((state)=> !state)
           navigate(`/accounts/${id}/details`);
@@ -225,20 +236,26 @@ function EditSingleAccount() {
       }
   }
 
-  const proceed = (data) =>{
-    if (isAdmin) {
-      setWorkPhoneNumber(data.workPhoneNumber)
-    } else if (isChemist) {
-      setLicenseNumber(data.licenceNumber)
-    } else {
-      setName(data.name);
-      setLastName(data.lastName);
-      setPhoneNumber(data.phoneNumber);
-      setPesel(data.pesel);
-      setNip(data.nip);
+  const proceedPatient = (data) =>{
+    setPatient(true)
+    setName(data.name);
+    setLastName(data.lastName);
+    setPhoneNumber(data.phoneNumber);
+    setPesel(data.pesel);
+    setNip(data.nip);
 
-    }
     setDialogOpen(true)
+}
+const proceedChemist = (data) =>{
+  setChemist(true)
+  setLicenseNumber(data.licenceNumber)
+  setDialogOpen(true)
+}
+const proceedAdmin = (data) =>{
+  setAdmin(true)
+  setWorkPhoneNumber(data.workPhoneNumber)
+  
+  setDialogOpen(true)
 }
   return <div
       style={{
@@ -264,14 +281,14 @@ function EditSingleAccount() {
                             required
                             error={errors.workPhoneNumber}
                             helperText={t(errors.workPhoneNumber?.message)}
-                            defaultValue={account.accessLevels[0].workPhoneNumber}
+                            defaultValue={accessLevels.find((level) => level.role === "ADMIN").workPhoneNumber}
                         />
                         <Box sx={{ marginBottom: 2 }} />
 
                         {
                 loading ? <CircularProgress style={{marginRight: "auto", marginLeft: "auto"}}/> :
                 <Button fullWidth
-                onClick={handleSubmit(proceed)} type='submit' variant='contained'>{t("edit_data")}</Button>
+                onClick={handleSubmit(proceedAdmin)} type='submit' variant='contained'>{t("edit_admin_data")}</Button>
               }
           </Box>
         )}
@@ -287,14 +304,14 @@ function EditSingleAccount() {
                             required
                             error={errors.licenceNumber}
                             helperText={t(errors.licenceNumber?.message)}
-                            defaultValue={account.accessLevels[0].licenseNumber}
+                            defaultValue={accessLevels.find((level) => level.role === "CHEMIST").licenseNumber}
                         />
                         <Box sx={{ marginBottom: 2 }} />
 
                         {
                 loading ? <CircularProgress style={{marginRight: "auto", marginLeft: "auto"}}/> :
                 <Button fullWidth
-                onClick={handleSubmit(proceed)} type='submit' variant='contained'>{t("edit_data")}</Button>
+                onClick={handleSubmit(proceedChemist)} type='submit' variant='contained'>{t("edit_chemist_data")}</Button>
               }
           </Box>
         )}
@@ -311,7 +328,7 @@ function EditSingleAccount() {
                             required
                             error={errors.name}
                             helperText={t(errors.name?.message)}
-                            defaultValue={account.accessLevels[0].firstName}
+                            defaultValue={accessLevels.find((level) => level.role === "PATIENT").firstName}
                         />
             <Box sx={{ marginBottom: 2 }} />
             <TextField
@@ -324,7 +341,7 @@ function EditSingleAccount() {
                             required
                             error={errors.last_name}
                             helperText={t(errors.last_name?.message)}
-                            defaultValue={account.accessLevels[0].lastName}
+                            defaultValue={accessLevels.find((level) => level.role === "PATIENT").lastName}
                         />
                         <Box sx={{ marginBottom: 2 }} />
               <TextField
@@ -337,7 +354,7 @@ function EditSingleAccount() {
                             required
                             error={errors.phone_number}
                             helperText={t(errors.phone_number?.message)}
-                            defaultValue={account.accessLevels[0].phoneNumber}
+                            defaultValue={accessLevels.find((level) => level.role === "PATIENT").phoneNumber}
                         />
                         <Box sx={{ marginBottom: 2 }} />
              <TextField
@@ -350,7 +367,7 @@ function EditSingleAccount() {
                             required
                             error={errors.pesel}
                             helperText={t(errors.pesel?.message)}
-                            defaultValue={account.accessLevels[0].pesel}
+                            defaultValue={accessLevels.find((level) => level.role === "PATIENT").pesel}
                         />
                         <Box sx={{ marginBottom: 2 }} />
              <TextField
@@ -363,7 +380,7 @@ function EditSingleAccount() {
                             required
                             error={errors.nip}
                             helperText={t(errors.pesel?.nip)}
-                            defaultValue={account.accessLevels[0].nip}
+                            defaultValue={accessLevels.find((level) => level.role === "PATIENT").nip}
                         />
 
                         <Box sx={{ marginBottom: 4 }} />
@@ -372,7 +389,7 @@ function EditSingleAccount() {
               {
                 loading ? <CircularProgress style={{marginRight: "auto", marginLeft: "auto"}}/> :
                 <Button fullWidth
-                onClick={handleSubmit(proceed)} type='submit' variant='contained'>{t("edit_data")}</Button>
+                onClick={handleSubmit(proceedPatient)} type='submit' variant='contained'>{t("edit_patient_data")}</Button>
               }
               </form>
 

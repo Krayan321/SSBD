@@ -160,5 +160,8 @@
   "welcome_back": "Vítejte zpět",
   "create_account": "Vytvořit účet",
   "accounts": "Účty",
-  "logout": "Odhlásit se"
+  "logout": "Odhlásit se",
+  "edit_admin_data": "Upravit podrobnosti správce",
+  "edit_chemist_data": "Upravit údaje o lékárníkovi",
+  "edit_patient_data": "Upravit údaje o pacientovi"
 }
