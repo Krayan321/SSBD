@@ -9,7 +9,10 @@ import jakarta.ejb.TransactionAttributeType;
 import jakarta.inject.Inject;
 import lombok.extern.java.Log;
 import pl.lodz.p.it.ssbd2023.ssbd01.common.AbstractManager;
+import pl.lodz.p.it.ssbd2023.ssbd01.entities.Category;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Medication;
+import pl.lodz.p.it.ssbd2023.ssbd01.exceptions.ApplicationException;
+import pl.lodz.p.it.ssbd2023.ssbd01.moa.facades.CategoryFacade;
 import pl.lodz.p.it.ssbd2023.ssbd01.moa.facades.MedicationFacade;
 
 import java.util.List;
@@ -22,9 +25,15 @@ public class MedicationManager extends AbstractManager implements MedicationMana
 
     @Inject
     private MedicationFacade medicationFacade;
+
+    @Inject
+    private CategoryFacade categoryFacade;
     @Override
     @PermitAll
     public Medication createMedication(Medication medication) {
+        Long categoryId = medication.getCategory().getId();
+        Category managedCategory = categoryFacade.find(categoryId).orElseThrow(ApplicationException::createEntityNotFoundException);
+        medication.setCategory(managedCategory);
         medicationFacade.create(medication);
         return medication;
     }

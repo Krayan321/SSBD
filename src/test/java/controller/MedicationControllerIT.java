@@ -7,8 +7,7 @@ import io.restassured.http.ContentType;
 import jakarta.ws.rs.core.Response;
 import org.junit.jupiter.api.*;
 
-import static controller.dataForTests.adminLoginDto;
-import static controller.dataForTests.medicationDto;
+import static controller.dataForTests.*;
 import static io.restassured.RestAssured.given;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -44,8 +43,19 @@ public class MedicationControllerIT extends BaseTest {
                         .build();
     }
 
+
     @Test
     @Order(1)
+    public void addCategory() {
+        given()
+                .header("Authorization", "Bearer " + adminJwt)
+                .body(categoryDto)
+                .post(getApiRoot() + "/category/add-category")
+                .then()
+                .statusCode(Response.Status.CREATED.getStatusCode());
+    }
+    @Test
+    @Order(2)
     public void addMedication() {
         given()
                 .header("Authorization", "Bearer " + adminJwt)

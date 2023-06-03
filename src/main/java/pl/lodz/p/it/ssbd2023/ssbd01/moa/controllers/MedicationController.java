@@ -59,14 +59,13 @@ public class MedicationController extends AbstractController {
         medication.setName(medicationDTO.getName());
         medication.setStock(medicationDTO.getStock());
         medication.setPrice(medicationDTO.getPrice());
-        medication.setCategory(categoryManager.getCategory(medicationDTO.getCategoryId()));
-        try {
-            repeatTransaction(medicationManager, () ->
-                    medicationManager.createMedication(medication));
-            return Response.status(Response.Status.CREATED).build();
-        } catch (Exception e) {
-            return Response.status(Response.Status.CONFLICT).build();
-        }
+
+        // Retrieve the category by ID
+        Category category = categoryManager.getCategory(medicationDTO.getCategoryId());
+        medication.setCategory(category);
+
+        repeatTransaction(medicationManager, () -> medicationManager.createMedication(medication));
+        return Response.status(Response.Status.CREATED).build();
     }
 
     //moa 20

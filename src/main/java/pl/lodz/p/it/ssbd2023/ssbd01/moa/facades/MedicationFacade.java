@@ -41,12 +41,7 @@ public class MedicationFacade extends AbstractFacade<Medication> {
   @Override
   @PermitAll
   public void create(Medication medication) {
-    try {
-      em.lock(medication.getCategory(), LockModeType.OPTIMISTIC_FORCE_INCREMENT);
-      super.create(medication);
-    } catch (ConstraintViolationException e) {
-      throw e;
-    }
+    super.create(medication);
   }
 
   @Override
