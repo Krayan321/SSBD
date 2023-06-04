@@ -15,12 +15,13 @@ import lombok.ToString;
 @Entity
 @Table(
     name = "medication",
-    indexes = {@Index(name = "category_index", columnList = "category_id", unique = true)})
+    indexes = {@Index(name = "category_index", columnList = "category_id", unique = false)})
 @ToString
 @Getter
 @Setter
 @NoArgsConstructor
 @NamedQuery(name = "medication.findAll", query = "SELECT o FROM Medication o")
+@NamedQuery(name = "medication.findByName", query = "SELECT o FROM Medication o WHERE o.name = ?1")
 public class Medication extends AbstractEntity implements Serializable {
 
   @Id

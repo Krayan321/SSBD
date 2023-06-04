@@ -1,10 +1,8 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.dto.medication;
 
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,7 +11,7 @@ import java.math.BigDecimal;
 
 @Data
 @NoArgsConstructor
-public class MedicationDTO {
+public class AddMedicationDTO {
 
     @NotNull
     @Size(max = 50, min = 2)
@@ -29,7 +27,7 @@ public class MedicationDTO {
     private Long categoryId;
 
     @Builder
-    public MedicationDTO(String name, Integer stock, BigDecimal price, Long categoryId) {
+    public AddMedicationDTO(String name, Integer stock, BigDecimal price, Long categoryId) {
         this.name = name;
         this.stock = stock;
         this.price = price;

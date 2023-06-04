@@ -19,6 +19,8 @@ public class i18n {
   public static final String EXCEPTION_ETAG_INVALID = "exception.etag.not-valid";
   public static final String EXCEPTION_OPTIMISTIC_LOCK = "exception.optimistic-lock";
   public static final String EXCEPTION_ENTITY_NOT_FOUND = "exception.entity-not-found";
+  public static final String EXCEPTION_MEDICATION_ALREADY_EXISTS =
+      "exception.medication.already-exists";
 
   public static final String EXCEPTION_ACCOUNT_CONSTRAINT_VIOLATION =
       "exception.account.constraint-violation";

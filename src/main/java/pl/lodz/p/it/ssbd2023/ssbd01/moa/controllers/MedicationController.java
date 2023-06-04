@@ -10,10 +10,9 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import lombok.extern.java.Log;
 import pl.lodz.p.it.ssbd2023.ssbd01.common.AbstractController;
-import pl.lodz.p.it.ssbd2023.ssbd01.dto.medication.MedicationDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.medication.AddMedicationDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Category;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Medication;
-import pl.lodz.p.it.ssbd2023.ssbd01.moa.facades.MedicationFacade;
 import pl.lodz.p.it.ssbd2023.ssbd01.moa.managers.CategoryManagerLocal;
 import pl.lodz.p.it.ssbd2023.ssbd01.moa.managers.MedicationManagerLocal;
 
@@ -36,7 +35,7 @@ public class MedicationController extends AbstractController {
     @Path("/")
     @DenyAll
     @Produces(MediaType.APPLICATION_JSON)
-    public List<MedicationDTO> getAllMedications() {
+    public List<AddMedicationDTO> getAllMedications() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -45,7 +44,7 @@ public class MedicationController extends AbstractController {
     @Path("/{id}")
     @DenyAll
     @Produces(MediaType.APPLICATION_JSON)
-    public MedicationDTO getMedication(@PathParam("id") Long id) {
+    public AddMedicationDTO getMedication(@PathParam("id") Long id) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -54,15 +53,15 @@ public class MedicationController extends AbstractController {
     @Path("/add-medication")
     @PermitAll
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response addMedication(@Valid MedicationDTO medicationDTO) {
-        Medication medication = new Medication();
-        medication.setName(medicationDTO.getName());
-        medication.setStock(medicationDTO.getStock());
-        medication.setPrice(medicationDTO.getPrice());
-
-        // Retrieve the category by ID
-        Category category = categoryManager.getCategory(medicationDTO.getCategoryId());
-        medication.setCategory(category);
+    public Response addMedication(@Valid AddMedicationDTO addMedicationDTO) {
+        Category category = categoryManager.getCategory(addMedicationDTO.getCategoryId());
+        Medication medication =
+                Medication.builder()
+                        .name(addMedicationDTO.getName())
+                        .stock(addMedicationDTO.getStock())
+                        .price(addMedicationDTO.getPrice())
+                        .category(category)
+                        .build();
 
         repeatTransaction(medicationManager, () -> medicationManager.createMedication(medication));
         return Response.status(Response.Status.CREATED).build();
@@ -72,7 +71,7 @@ public class MedicationController extends AbstractController {
     @PUT
     @Path("/{id}/edit-medication")
     @DenyAll
-    public MedicationDTO editMedication(MedicationDTO medicationDTO) {
+    public AddMedicationDTO editMedication(AddMedicationDTO addMedicationDTO) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -81,7 +80,7 @@ public class MedicationController extends AbstractController {
     @Path("/{id}/details")
     @DenyAll
     @Produces(MediaType.APPLICATION_JSON)
-    public MedicationDTO getMedicationDetails(@PathParam("id") Long id) {
+    public AddMedicationDTO getMedicationDetails(@PathParam("id") Long id) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

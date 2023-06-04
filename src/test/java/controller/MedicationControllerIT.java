@@ -56,12 +56,34 @@ public class MedicationControllerIT extends BaseTest {
     }
     @Test
     @Order(2)
-    public void addMedication() {
+    public void addMedication_correct() {
         given()
                 .header("Authorization", "Bearer " + adminJwt)
-                .body(medicationDto)
+                .body(addMedicationDto)
                 .post(getApiRoot() + "/medication/add-medication")
                 .then()
                 .statusCode(Response.Status.CREATED.getStatusCode());
+    }
+
+    @Test
+    @Order(3)
+    public void addMedication_sameName() {
+        given()
+                .header("Authorization", "Bearer " + adminJwt)
+                .body(addMedicationDto)
+                .post(getApiRoot() + "/medication/add-medication")
+                .then()
+                .statusCode(Response.Status.CONFLICT.getStatusCode());
+    }
+
+    @Test
+    @Order(4)
+    public void addMedication_noSuchCategory() {
+        given()
+                .header("Authorization", "Bearer " + adminJwt)
+                .body(addMedicationDto)
+                .post(getApiRoot() + "/medication/add-medication")
+                .then()
+                .statusCode(Response.Status.BAD_REQUEST.getStatusCode());
     }
 }

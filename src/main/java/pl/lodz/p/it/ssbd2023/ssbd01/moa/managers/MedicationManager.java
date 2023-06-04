@@ -28,6 +28,13 @@ public class MedicationManager extends AbstractManager implements MedicationMana
 
     @Inject
     private CategoryFacade categoryFacade;
+
+    @Override
+    @PermitAll
+    public Medication findByName(String name) {
+        return medicationFacade.findByName(name);
+    }
+
     @Override
     @PermitAll
     public Medication createMedication(Medication medication) {
