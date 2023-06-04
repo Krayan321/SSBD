@@ -3,6 +3,7 @@ package pl.lodz.p.it.ssbd2023.ssbd01.dto.medication;
 import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import lombok.*;
+import pl.lodz.p.it.ssbd2023.ssbd01.entities.Category;
 
 @ToString
 @EqualsAndHashCode
@@ -11,7 +12,7 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class MedicationDTO {
+public class EditMedicationDTO {
 
   @NotNull private Long version;
 
@@ -21,5 +22,5 @@ public class MedicationDTO {
 
   @NotNull private BigDecimal price;
 
-  @NotNull private Long categoryId;
+  @NotNull private Category category;
 }
