@@ -50,7 +50,6 @@ public class CategoryController extends AbstractController {
     @PermitAll
     @Consumes(MediaType.APPLICATION_JSON)
     public Response addCategory(@NotNull @Valid CategoryDTO categoryDto) {
-        //create category
         Category category = new Category();
         category.setName(categoryDto.getName());
         category.setIsOnPrescription(categoryDto.getIsOnPrescription());

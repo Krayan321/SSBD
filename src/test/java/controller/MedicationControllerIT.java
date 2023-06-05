@@ -7,16 +7,13 @@ import io.restassured.http.ContentType;
 import jakarta.ws.rs.core.Response;
 import org.junit.jupiter.api.*;
 
-import static controller.dataForTests.adminLoginDto;
-import static controller.dataForTests.categoryDto;
+import static controller.dataForTests.*;
 import static io.restassured.RestAssured.given;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class CategoryControllerIT extends BaseTest {
+public class MedicationControllerIT extends BaseTest {
 
     static String adminJwt;
-
-
 
     @BeforeAll
     static void setUp() throws InterruptedException {
@@ -47,7 +44,6 @@ public class CategoryControllerIT extends BaseTest {
     }
 
 
-
     @Test
     @Order(1)
     public void addCategory() {
@@ -57,5 +53,37 @@ public class CategoryControllerIT extends BaseTest {
                 .post(getApiRoot() + "/category/add-category")
                 .then()
                 .statusCode(Response.Status.CREATED.getStatusCode());
+    }
+    @Test
+    @Order(2)
+    public void addMedication_correct() {
+        given()
+                .header("Authorization", "Bearer " + adminJwt)
+                .body(addMedicationDto)
+                .post(getApiRoot() + "/medication/add-medication")
+                .then()
+                .statusCode(Response.Status.CREATED.getStatusCode());
+    }
+
+    @Test
+    @Order(3)
+    public void addMedication_sameName() {
+        given()
+                .header("Authorization", "Bearer " + adminJwt)
+                .body(addMedicationDto)
+                .post(getApiRoot() + "/medication/add-medication")
+                .then()
+                .statusCode(Response.Status.CONFLICT.getStatusCode());
+    }
+
+    @Test
+    @Order(4)
+    public void addMedication_noSuchCategory() {
+        given()
+                .header("Authorization", "Bearer " + adminJwt)
+                .body(addMedicationDto)
+                .post(getApiRoot() + "/medication/add-medication")
+                .then()
+                .statusCode(Response.Status.BAD_REQUEST.getStatusCode());
     }
 }

@@ -16,7 +16,7 @@ import pl.lodz.p.it.ssbd2023.ssbd01.common.AbstractFacade;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Category;
 
 @Stateless(name = "CategoryFacade")
-@TransactionAttribute(TransactionAttributeType.MANDATORY)
+@TransactionAttribute(TransactionAttributeType.REQUIRED)
 @DenyAll
 public class CategoryFacade extends AbstractFacade<Category> {
   @PersistenceContext(unitName = "ssbd01moaPU")
@@ -51,4 +51,11 @@ public class CategoryFacade extends AbstractFacade<Category> {
 
   @PermitAll
   public Optional<Category> find(Long id) {return super.find(id);}
+
+  @PermitAll
+  public Category findByName(String name) {
+    TypedQuery<Category> tq = em.createNamedQuery("category.findByName", Category.class);
+    tq.setParameter(1, name);
+    return tq.getSingleResult();
+  }
 }
