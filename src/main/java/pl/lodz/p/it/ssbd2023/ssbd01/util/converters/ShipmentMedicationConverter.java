@@ -1,6 +1,9 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.util.converters;
 
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.shipment.CreateShipmentMedicationDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.shipment.MedicationCreateShipmentDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.shipment.ShipmentMedicationDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.entities.Medication;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.ShipmentMedication;
 
 import java.util.List;
@@ -28,23 +31,29 @@ public class ShipmentMedicationConverter {
                 .build();
     }
 
-    public static List<ShipmentMedication> mapShipmentMedsDtoToShipmentMeds(
-            List<ShipmentMedicationDTO> shipmentMedicationDTOs) {
-        return shipmentMedicationDTOs == null ?
+    public static List<ShipmentMedication> mapCreateShipmentMedsDtoToShipmentMeds(
+            List<CreateShipmentMedicationDTO> createShipmentMedicationDTOS) {
+        return createShipmentMedicationDTOS == null ?
                 null :
-                shipmentMedicationDTOs.stream()
+                createShipmentMedicationDTOS.stream()
                         .filter(Objects::nonNull)
-                        .map(ShipmentMedicationConverter::mapShipmentMedDtoToShipmentMed)
+                        .map(ShipmentMedicationConverter::mapCreateShipmentMedDtoToShipmentMed)
                         .collect(Collectors.toList());
     }
 
-    public static ShipmentMedication mapShipmentMedDtoToShipmentMed(
-            ShipmentMedicationDTO shipmentMedicationDTO) {
+    public static ShipmentMedication mapCreateShipmentMedDtoToShipmentMed(
+            CreateShipmentMedicationDTO createShipmentMedicationDTO) {
         return ShipmentMedication.builder()
-                .medication(MedicationConverter.
-                        mapMedicationDtoToMedication(
-                                shipmentMedicationDTO.getMedication()))
-                .quantity(shipmentMedicationDTO.getQuantity())
+                .medication(ShipmentMedicationConverter.mapMedicationCreateShipmentDtoToMedication(
+                                createShipmentMedicationDTO.getMedication()))
+                .quantity(createShipmentMedicationDTO.getQuantity())
+                .build();
+    }
+
+    public static Medication mapMedicationCreateShipmentDtoToMedication(
+            MedicationCreateShipmentDTO medicationCreateShipmentDTO) {
+        return Medication.builder()
+                .name(medicationCreateShipmentDTO.getName())
                 .build();
     }
 }

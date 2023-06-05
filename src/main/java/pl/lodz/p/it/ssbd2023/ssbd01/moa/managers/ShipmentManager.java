@@ -39,10 +39,4 @@ public class ShipmentManager extends AbstractManager implements ShipmentManagerL
         }
         return shipmentOpt.get();
     }
-
-    @Override
-    @RolesAllowed("updateShipment")
-    public Shipment editShipment(Long id, Shipment shipment) {
-        throw new UnsupportedOperationException();
-    }
 }

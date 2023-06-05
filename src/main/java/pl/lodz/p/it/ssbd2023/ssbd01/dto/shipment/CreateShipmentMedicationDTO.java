@@ -5,14 +5,13 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import pl.lodz.p.it.ssbd2023.ssbd01.dto.medication.MedicationDTO;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ShipmentMedicationDTO {
+@AllArgsConstructor
+public class CreateShipmentMedicationDTO {
     @Min(value = 0)
     private Integer quantity;
-    private MedicationDTO medication;
+    private MedicationCreateShipmentDTO medication;
 }

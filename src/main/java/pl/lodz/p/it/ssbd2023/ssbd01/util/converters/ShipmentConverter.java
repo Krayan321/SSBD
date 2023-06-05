@@ -2,7 +2,6 @@ package pl.lodz.p.it.ssbd2023.ssbd01.util.converters;
 
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.shipment.CreateShipmentDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.shipment.ShipmentDTO;
-import pl.lodz.p.it.ssbd2023.ssbd01.dto.shipment.UpdateShipmentDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Shipment;
 
 import java.util.List;
@@ -38,12 +37,8 @@ public class ShipmentConverter {
         return Shipment.createBuilder()
                 .shipmentDate(shipment.getShipmentDate())
                 .shipmentMedications(ShipmentMedicationConverter
-                        .mapShipmentMedsDtoToShipmentMeds(shipment.getShipmentMedications()))
+                        .mapCreateShipmentMedsDtoToShipmentMeds(shipment.getShipmentMedications()))
                 .build();
-    }
-
-    public static Shipment mapUpdateShipmentDtoToShipment(UpdateShipmentDTO shipment) {
-        return null;
     }
 
 

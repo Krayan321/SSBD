@@ -31,8 +31,6 @@ public class ShipmentController extends AbstractController {
 
     @Inject private ShipmentManagerLocal shipmentManager;
 
-    @Inject private EntityIdentitySignerVerifier entityIdentitySignerVerifier;
-
     @GET
     @Path("/")
     @RolesAllowed("readAllShipments")
@@ -63,22 +61,5 @@ public class ShipmentController extends AbstractController {
         repeatTransactionVoid(shipmentManager,
                 () -> shipmentManager.createShipment(shipment));
         return Response.status(Response.Status.CREATED).build();
-    }
-
-    @PUT
-    @Path("/{id}")
-    @ETagFilterBinding
-    @RolesAllowed("updateShipment")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public ShipmentDTO updateShipment(
-            @HeaderParam("If-Match") @NotEmpty String etag,
-            @PathParam("id") Long id,
-            @Valid UpdateShipmentDTO shipmentDTO) {
-        entityIdentitySignerVerifier.checkEtagIntegrity(shipmentDTO, etag);
-        Shipment shipment = repeatTransaction(shipmentManager,
-                () -> shipmentManager.editShipment(
-                        id, ShipmentConverter.mapUpdateShipmentDtoToShipment(shipmentDTO)));
-        return ShipmentConverter.mapShipmentToShipmentDto(shipment);
     }
 }

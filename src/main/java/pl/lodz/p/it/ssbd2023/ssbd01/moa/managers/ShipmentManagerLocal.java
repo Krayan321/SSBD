@@ -11,7 +11,5 @@ public interface ShipmentManagerLocal extends CommonManagerLocalInterface {
 
     Shipment getShipment(Long id);
 
-    Shipment editShipment(Long id, Shipment shipment);
-
     List<Shipment> getAllShipments();
 }

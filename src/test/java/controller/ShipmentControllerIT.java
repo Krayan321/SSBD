@@ -7,7 +7,7 @@ import io.restassured.http.ContentType;
 import jakarta.ws.rs.core.Response;
 import org.junit.jupiter.api.*;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.shipment.CreateShipmentDTO;
-import pl.lodz.p.it.ssbd2023.ssbd01.dto.shipment.ShipmentMedicationDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.shipment.CreateShipmentMedicationDTO;
 
 import java.sql.Date;
 import java.time.Instant;
@@ -46,24 +46,24 @@ public class ShipmentControllerIT extends BaseTest {
     @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
     class CreateShipment {
 
-        static List<ShipmentMedicationDTO> shipmentMedicationDTOs = new ArrayList<>();
+        static List<CreateShipmentMedicationDTO> createShipmentMedicationDTOS = new ArrayList<>();
         static CreateShipmentDTO createShipmentDTO;
 
         @BeforeAll
         static void setUp() {
-            shipmentMedicationDTOs.add(ShipmentMedicationDTO.builder()
+            createShipmentMedicationDTOS.add(CreateShipmentMedicationDTO.builder()
                     .quantity(2)
                     .medication(null)
                     .build());
 
-            shipmentMedicationDTOs.add(ShipmentMedicationDTO.builder()
+            createShipmentMedicationDTOS.add(CreateShipmentMedicationDTO.builder()
                     .quantity(5)
                     .medication(null)
                     .build());
 
             createShipmentDTO = CreateShipmentDTO.builder()
                     .shipmentDate(Date.from(Instant.now()))
-                    .shipmentMedications(shipmentMedicationDTOs)
+                    .shipmentMedications(createShipmentMedicationDTOS)
                     .build();
         }
 
