@@ -1,19 +1,6 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.entities;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Index;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -35,6 +22,9 @@ import lombok.Setter;
       @Index(name = "patient_data_index", columnList = "patient_data_id", unique = true),
       @Index(name = "chemist_data_index", columnList = "chemist_data_id", unique = true),
     })
+@NamedQuery(
+        name = "Order.findByPatientDataId",
+        query = "SELECT o FROM Order o WHERE o.patientData.id = :patientDataId")
 public class Order extends AbstractEntity implements Serializable {
 
   @Id
@@ -49,7 +39,7 @@ public class Order extends AbstractEntity implements Serializable {
   @Column(nullable = false, name = "order_date")
   private Date orderDate;
 
-  @OneToMany(
+  @OneToMany(fetch = FetchType.EAGER,
       mappedBy = "order",
       cascade = {CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.MERGE},
       orphanRemoval = true)
