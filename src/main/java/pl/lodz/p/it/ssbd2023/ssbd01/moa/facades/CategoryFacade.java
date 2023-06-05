@@ -51,4 +51,11 @@ public class CategoryFacade extends AbstractFacade<Category> {
 
   @PermitAll
   public Optional<Category> find(Long id) {return super.find(id);}
+
+  @PermitAll
+  public Category findByName(String name) {
+    TypedQuery<Category> tq = em.createNamedQuery("category.findByName", Category.class);
+    tq.setParameter(1, name);
+    return tq.getSingleResult();
+  }
 }

@@ -6,7 +6,6 @@ import jakarta.ejb.Stateful;
 import jakarta.ejb.TransactionAttribute;
 import jakarta.ejb.TransactionAttributeType;
 import jakarta.inject.Inject;
-import jakarta.interceptor.Interceptors;
 import lombok.extern.java.Log;
 import pl.lodz.p.it.ssbd2023.ssbd01.common.AbstractManager;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Category;
@@ -50,5 +49,10 @@ public class CategoryManager extends AbstractManager implements CategoryManagerL
     @Override
     public Category editCategory(Category category) {
         throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Category findByName(String name) {
+        return categoryFacade.findByName(name);
     }
 }

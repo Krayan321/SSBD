@@ -163,6 +163,6 @@ public class dataForTests {
         AddMedicationDTO.builder().name("Prozac")
                 .stock(100)
                 .price(new BigDecimal("10.0"))
-                .categoryId(1L)
+                .categoryName(categoryDto.getName())
                 .build();
 }
