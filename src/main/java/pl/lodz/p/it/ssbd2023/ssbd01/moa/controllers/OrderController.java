@@ -44,7 +44,7 @@ public class OrderController extends AbstractController {
     @RolesAllowed("getAllOrdersForSelf")
     @Path("/self")
     public Response getAllOrdersForSelf() {
-        List<OrderDTO> orderDTOs = repeatTransaction(orderManager, () -> orderManager.getAllOrdersForSelf(accountManager.getCurrentUser()).stream()
+        List<OrderDTO> orderDTOs = repeatTransaction(orderManager, () -> orderManager.getAllOrdersForSelf(accountManager.getCurrentUserWithAccessLevels()).stream()
                 .map(OrderConverter::mapOrderToOrderDTO)
                 .collect(Collectors.toList()));
         return Response.ok(orderDTOs).build();

@@ -26,7 +26,7 @@ public class Account extends AbstractEntity implements Serializable {
 
   public static final long serialVersionUID = 1L;
 
-  @OneToMany(fetch = FetchType.EAGER,
+  @OneToMany(
       cascade = {CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.MERGE, CascadeType.REFRESH},
       mappedBy = "account")
   @ToString.Exclude
