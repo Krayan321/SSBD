@@ -53,16 +53,15 @@ public class OrderManager extends AbstractManager implements OrderManagerLocal, 
         // Sprawdzenie, czy w bazie są wszystkie leki potrzebne do realizacji zamówienia
         boolean allMedicationsAvailable = checkAllMedicationsAvailable(order);
         order.setInQueue(!allMedicationsAvailable);
-        //nie ma pola do zatwierdzenia
-        /*if (order.getPrescription() != null) {
-            order.setInQueue(false); // Zamówienie wymaga zatwierdzenia przez aptekarza
-        }*/
 
-
+        if(!order.getInQueue()) {
+            decreaseMedicationStock(order);
+            if (order.getPrescription() != null) {
+                order.setInQueue(true); // Zamówienie wymaga zatwierdzenia przez aptekarza
+            }
+        }
 
         orderFacade.create(order);
-        if(!order.getInQueue())
-        decreaseMedicationStock(order);
 
         return order;
     }
