@@ -1,13 +1,31 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.moa.managers;
 
 import jakarta.annotation.security.DenyAll;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.ejb.SessionSynchronization;
+import jakarta.ejb.Stateful;
+import jakarta.ejb.TransactionAttribute;
+import jakarta.ejb.TransactionAttributeType;
+import jakarta.inject.Inject;
+import jakarta.interceptor.Interceptors;
 import pl.lodz.p.it.ssbd2023.ssbd01.common.AbstractManager;
+import pl.lodz.p.it.ssbd2023.ssbd01.entities.Account;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Order;
+import pl.lodz.p.it.ssbd2023.ssbd01.exceptions.OrderException;
+import pl.lodz.p.it.ssbd2023.ssbd01.interceptors.GenericManagerExceptionsInterceptor;
+import pl.lodz.p.it.ssbd2023.ssbd01.interceptors.TrackerInterceptor;
+import pl.lodz.p.it.ssbd2023.ssbd01.moa.facades.OrderFacade;
 
 import java.util.List;
 
+@Stateful
+@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+@Interceptors({GenericManagerExceptionsInterceptor.class, TrackerInterceptor.class})
 public class OrderManager extends AbstractManager implements OrderManagerLocal, SessionSynchronization {
+
+    @Inject
+    OrderFacade orderFacade;
+
     @Override
     @DenyAll
     public Order createOrder(Order order) {
@@ -33,9 +51,17 @@ public class OrderManager extends AbstractManager implements OrderManagerLocal, 
     }
 
     @Override
-    @DenyAll
-    public List<Order> getAllOrdersForSelf() {
-        throw new UnsupportedOperationException();
+    @RolesAllowed("getAllOrdersForSelf")
+    public List<Order> getAllOrdersForSelf(Account account) {
+        account
+                .getAccessLevels()
+                .forEach(
+                        accessLevel -> {
+                            if (!accessLevel.getRole().getRoleName().equals("PATIENT")) {
+                                throw OrderException.onlyPatientCanListOrders();
+                            }
+                        });
+        return orderFacade.findAllByPatientId(account.getId());
     }
 
     @Override

@@ -38,6 +38,12 @@ public class OrderFacade extends AbstractFacade<Order> {
     super.create(order);
   }
 
+  public List<Order> findAllByPatientId(Long id) {
+    TypedQuery<Order> query = em.createNamedQuery("Order.findByPatientDataId", Order.class);
+    query.setParameter("patientDataId", id);
+    return query.getResultList();
+  }
+
   @Override
   @DenyAll
   public void edit(Order order) {
