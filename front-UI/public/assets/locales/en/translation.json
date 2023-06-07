@@ -168,5 +168,15 @@
   "logout": "Logout",
   "edit_admin_data": "Edit admin data",
   "edit_chemist_data": "Edit chemist data",
-  "edit_patient_data": "Edit patient data"
+  "edit_patient_data": "Edit patient data",
+  "orders": "Orders",
+  "yes": "Yes",
+  "no": "No",
+  "is_order_in_queue": "Is order in queue?",
+  "order_date": "Order date",
+  "medication_name": "Medication name",
+  "medication_quantity": "Medication quantity",
+  "medication_price": "Medication price",
+  "order_total_price": "Order total price",
+  "prescription_number": "Prescription number"
 }
