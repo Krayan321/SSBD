@@ -15,7 +15,8 @@ public class MedicationConverter {
         .build();
   }
 
-    public static Medication mapMedicationDtoToMedication(MedicationDTO medicationDTO) {
+  public static Medication mapMedicationDtoToMedication(MedicationDTO medicationDTO) {
         return null;
     }
+
 }

@@ -6,7 +6,9 @@ import jakarta.ejb.SessionSynchronization;
 import jakarta.inject.Inject;
 import pl.lodz.p.it.ssbd2023.ssbd01.common.AbstractManager;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Shipment;
+import pl.lodz.p.it.ssbd2023.ssbd01.entities.ShipmentMedication;
 import pl.lodz.p.it.ssbd2023.ssbd01.exceptions.ApplicationException;
+import pl.lodz.p.it.ssbd2023.ssbd01.moa.facades.MedicationFacade;
 import pl.lodz.p.it.ssbd2023.ssbd01.moa.facades.ShipmentFacade;
 
 import java.util.List;
@@ -17,9 +19,17 @@ public class ShipmentManager extends AbstractManager implements ShipmentManagerL
     @Inject
     private ShipmentFacade shipmentFacade;
 
+    @Inject
+    private MedicationFacade medicationFacade;
+
+
     @Override
     @RolesAllowed("createShipment")
     public void createShipment(Shipment shipment) {
+
+        for(ShipmentMedication shipmentMedication : shipment.getShipmentMedications()) {
+
+        }
         shipmentFacade.create(shipment);
         // todo mechanizm przeliczania kolejki
     }

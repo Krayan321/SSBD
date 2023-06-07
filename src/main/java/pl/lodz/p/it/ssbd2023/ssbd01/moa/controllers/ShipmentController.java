@@ -5,22 +5,15 @@ import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import pl.lodz.p.it.ssbd2023.ssbd01.common.AbstractController;
-import pl.lodz.p.it.ssbd2023.ssbd01.config.ETagFilterBinding;
-import pl.lodz.p.it.ssbd2023.ssbd01.config.EntityIdentitySignerVerifier;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.shipment.CreateShipmentDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.shipment.ShipmentDTO;
-import pl.lodz.p.it.ssbd2023.ssbd01.dto.shipment.UpdateShipmentDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Shipment;
-import pl.lodz.p.it.ssbd2023.ssbd01.moa.facades.ShipmentFacade;
-import pl.lodz.p.it.ssbd2023.ssbd01.moa.managers.ShipmentManager;
 import pl.lodz.p.it.ssbd2023.ssbd01.moa.managers.ShipmentManagerLocal;
 import pl.lodz.p.it.ssbd2023.ssbd01.util.converters.ShipmentConverter;
-import pl.lodz.p.it.ssbd2023.ssbd01.util.converters.ShipmentMedicationConverter;
 
 import java.util.List;
 

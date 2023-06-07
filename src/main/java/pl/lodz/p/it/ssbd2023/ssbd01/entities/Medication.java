@@ -54,4 +54,8 @@ public class Medication extends AbstractEntity implements Serializable {
     this.price = price;
     this.category = category;
   }
+
+  public Medication(long id) {
+    this.id = id;
+  }
 }

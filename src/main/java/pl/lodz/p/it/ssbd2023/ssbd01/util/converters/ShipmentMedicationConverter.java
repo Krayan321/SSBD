@@ -27,7 +27,7 @@ public class ShipmentMedicationConverter {
         return ShipmentMedicationDTO.builder()
                 .quantity(shipmentMedication.getQuantity())
                 .medication(MedicationConverter
-                        .mapMedicationToMedicationDto(shipmentMedication.getMedication()))
+                        .mapMedicationToMedicationDTO(shipmentMedication.getMedication()))
                 .build();
     }
 
@@ -52,8 +52,6 @@ public class ShipmentMedicationConverter {
 
     public static Medication mapMedicationCreateShipmentDtoToMedication(
             MedicationCreateShipmentDTO medicationCreateShipmentDTO) {
-        return Medication.builder()
-                .name(medicationCreateShipmentDTO.getName())
-                .build();
+        return new Medication(medicationCreateShipmentDTO.getId());
     }
 }
