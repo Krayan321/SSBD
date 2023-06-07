@@ -24,9 +24,7 @@ export const Pathnames = {
         addAdministrator: "/accounts/create-account/add-administrator",
     },
     patient: {
-
+        selfOrders: '/orders/self',
     },
-    chemist: {
-
-    }
+    chemist: {}
 }
