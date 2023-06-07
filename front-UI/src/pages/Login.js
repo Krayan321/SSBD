@@ -119,12 +119,13 @@ const Login = () => {
                             }
                         }
                     />
-                    {
-                        loading ? <CircularProgress/> :
-                            <Button fullWidth sx={{mb: 2}}
-                                    onClick={handleSubmit(onSubmit)} type='submit'
-                                    variant='contained'>{t("sign_in")}</Button>
-                    }
+                    <Box sx={{ mb: 2 }} display="flex" justifyContent="center" alignItems="center">
+                        {loading ? <CircularProgress /> : (
+                            <Button fullWidth  onClick={handleSubmit(onSubmit)} type='submit' variant='contained'>
+                                {t("sign_in")}
+                            </Button>
+                        )}
+                    </Box>
                 </form>
                 <Button onClick={onResetPassword}>
                     {t("to_reset_password")}
