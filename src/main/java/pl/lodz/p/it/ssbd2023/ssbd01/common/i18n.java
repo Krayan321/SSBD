@@ -68,6 +68,9 @@ public class i18n {
   public static final String MAIL_CHANGE_EMAIL_BODY = "mail.email.change.body";
   public static final String MAIL_CHANGE_EMAIL_SUBJECT = "mail.email.change.subject";
 
+  public static final String EXCEPTION_ORDER_ONLY_PATIENT_CAN_ORDER =
+          "exception.order.only.patient.can.order";
+
   public static String getMessage(String message, Locale locale, Object... parameters) {
     ResourceBundle bundle = ResourceBundle.getBundle("i18n.messages", locale);
     String fmtString = bundle.getString(message);
