@@ -80,4 +80,8 @@ public class ApplicationException extends WebApplicationException {
   public static ApplicationException createOptimisticLockException() {
     return new ApplicationExceptionOptimisticLock();
   }
+
+  public static Exception createMedicationAlreadyExistsException() {
+    return new ApplicationException(CONFLICT, EXCEPTION_MEDICATION_ALREADY_EXISTS);
+  }
 }

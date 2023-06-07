@@ -1,39 +1,58 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.moa.managers;
 
-import jakarta.annotation.security.DenyAll;
-import jakarta.ejb.SessionSynchronization;;
+import jakarta.annotation.security.PermitAll;
+import jakarta.ejb.SessionSynchronization;
+import jakarta.ejb.Stateful;
+import jakarta.ejb.TransactionAttribute;
+import jakarta.ejb.TransactionAttributeType;
 import jakarta.inject.Inject;
+import lombok.extern.java.Log;
 import pl.lodz.p.it.ssbd2023.ssbd01.common.AbstractManager;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Category;
+import pl.lodz.p.it.ssbd2023.ssbd01.exceptions.ApplicationException;
 import pl.lodz.p.it.ssbd2023.ssbd01.moa.facades.CategoryFacade;
 
 import java.util.List;
+import java.util.Optional;
 
+@Stateful
+@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+@Log
 public class CategoryManager extends AbstractManager implements CategoryManagerLocal, SessionSynchronization {
 
-    @Inject private CategoryFacade categoryFacade;
+
+    @Inject
+    private CategoryFacade categoryFacade;
 
     @Override
-    @DenyAll
     public List<Category> getAllCategories() {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    @DenyAll
     public Category createCategory(Category category) {
-        throw new UnsupportedOperationException();
+        categoryFacade.create(category);
+        return category;
     }
 
     @Override
-    @DenyAll
+    @PermitAll
     public Category getCategory(Long id) {
-        throw new UnsupportedOperationException();
+        Optional<Category> category = categoryFacade.find(id);
+        if (category.isPresent()) {
+            return category.get();
+        } else {
+            throw ApplicationException.createEntityNotFoundException();
+        }
     }
 
     @Override
-    @DenyAll
     public Category editCategory(Category category) {
         throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Category findByName(String name) {
+        return categoryFacade.findByName(name);
     }
 }

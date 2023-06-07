@@ -144,6 +144,10 @@
         <role-name>editSelfAccessLevelAdmin</role-name>
     </security-role>
     <security-role>
+        <role-name>getAllOrdersForSelf</role-name>
+    </security-role>
+
+    <security-role>
         <role-name>readAllShipments</role-name>
     </security-role>
     <security-role>

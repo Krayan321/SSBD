@@ -1,4 +1,31 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.dto.order;
 
+import jakarta.validation.constraints.NotNull;
+import lombok.*;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.ChemistDataDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.PatientDataDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.prescrription.PrescriptionDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.entities.Prescription;
+
+import java.util.Date;
+import java.util.List;
+
+@ToString
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class OrderDTO {
+
+    @NotNull
+    private Boolean inQueue;
+
+    @NotNull
+    private Date orderDate;
+
+    private PrescriptionDTO prescription;
+
+    @NotNull
+    private List<OrderMedicationDTO> orderMedication;
 }

@@ -54,6 +54,9 @@ GRANT SELECT, UPDATE ON TABLE public.access_level_id_seq TO ssbd01mok;
 GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.token TO ssbd01mok;
 GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.token_id_seq TO ssbd01mok;
 
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.category_id_seq TO ssbd01moa;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.medication_id_seq TO ssbd01moa;
+
 insert into account (active, confirmed, created_by, creation_date, email, language, last_negative_login, last_positive_login, logical_address, login,incorrect_login_attempts, modification_date, modified_by, password, version) values (true, true, null, now(), 'admin@o2.pl', 'en', null, null, null, 'admin123', 0, null, null,  'b03ddf3ca2e714a6548e7495e2a03f5e824eaac9837cd7f159c67b90fb4b7342', 0);
 insert into account (active, confirmed, created_by, creation_date, email, language, last_negative_login, last_positive_login, logical_address, login,incorrect_login_attempts, modification_date, modified_by, password, version) values (true, true, null, now(), 'chemist@o2.pl', 'en', null, null, null, 'chemist123', 0, null, null,  '52d7a0431ddd469b9e0929a09ef67fefe99e3511893edb0c2fa0b09892df1e52', 0);
 

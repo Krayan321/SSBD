@@ -16,6 +16,7 @@ import lombok.ToString;
 @Setter
 @NoArgsConstructor
 @NamedQuery(name = "category.findAll", query = "SELECT o FROM Category o")
+@NamedQuery(name = "category.findByName", query = "SELECT o FROM Category o WHERE o.name = ?1")
 public class Category extends AbstractEntity implements Serializable {
 
   @Id
@@ -24,10 +25,10 @@ public class Category extends AbstractEntity implements Serializable {
   private Long id;
 
   @NotNull
-  @Column(nullable = false, unique = true, name = "category_name")
+  @Column(nullable = false, unique = true)
   private String name;
 
-  @Column(nullable = false, name = "is_on_prescription")
+  @Column(nullable = false)
   @NotNull
   private Boolean isOnPrescription;
 

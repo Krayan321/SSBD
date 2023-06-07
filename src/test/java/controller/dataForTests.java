@@ -2,6 +2,7 @@ package controller;
 
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.addAsAdmin.AddAdminAccountDto;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.addAsAdmin.AddChemistAccountDto;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.category.CategoryDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccount.EditAccountDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.auth.LoginDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccessLevel.EditAdminDataDTO;
@@ -9,7 +10,10 @@ import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccessLevel.EditChemistDataDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccessLevel.EditPatientDataDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccount.grant.GrantAdminDataDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccount.grant.GrantChemistDataDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.medication.AddMedicationDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.register.RegisterPatientDTO;
+
+import java.math.BigDecimal;
 
 public class dataForTests {
 
@@ -151,4 +155,14 @@ public class dataForTests {
           .build();
 
   public static EditAccountDTO editEmailDto = new EditAccountDTO("new@email.local");
+
+  public static CategoryDTO categoryDto =
+        CategoryDTO.builder().name("Antydepresanty").isOnPrescription(false).build();
+
+  public static AddMedicationDTO addMedicationDto =
+        AddMedicationDTO.builder().name("Prozac")
+                .stock(100)
+                .price(new BigDecimal("10.0"))
+                .categoryName(categoryDto.getName())
+                .build();
 }

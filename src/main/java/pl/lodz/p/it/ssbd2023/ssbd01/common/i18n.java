@@ -19,6 +19,8 @@ public class i18n {
   public static final String EXCEPTION_ETAG_INVALID = "exception.etag.not-valid";
   public static final String EXCEPTION_OPTIMISTIC_LOCK = "exception.optimistic-lock";
   public static final String EXCEPTION_ENTITY_NOT_FOUND = "exception.entity-not-found";
+  public static final String EXCEPTION_MEDICATION_ALREADY_EXISTS =
+      "exception.medication.already-exists";
 
   public static final String EXCEPTION_ACCOUNT_CONSTRAINT_VIOLATION =
       "exception.account.constraint-violation";
@@ -67,6 +69,9 @@ public class i18n {
   public static final String MAIL_PASSWORD_RESET_BODY = "mail.password.reset.body";
   public static final String MAIL_CHANGE_EMAIL_BODY = "mail.email.change.body";
   public static final String MAIL_CHANGE_EMAIL_SUBJECT = "mail.email.change.subject";
+
+  public static final String EXCEPTION_ORDER_ONLY_PATIENT_CAN_LIST_SELF_ORDERS =
+      "exception.order.only.patient.can.list.self.orders";
 
   public static String getMessage(String message, Locale locale, Object... parameters) {
     ResourceBundle bundle = ResourceBundle.getBundle("i18n.messages", locale);
