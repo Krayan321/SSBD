@@ -19,10 +19,10 @@ import lombok.Setter;
 @Table(
         name = "patient_order",
         indexes = {
-                @Index(name = "order_index", columnList = "id", unique = true),
+                @Index(name = "order_index", columnList = "id"),
                 @Index(name = "prescription_index", columnList = "prescription_id", unique = true),
-                @Index(name = "patient_data_index", columnList = "patient_data_id", unique = true),
-                @Index(name = "chemist_data_index", columnList = "chemist_data_id", unique = true),
+                @Index(name = "patient_data_index", columnList = "patient_data_id"),
+                @Index(name = "chemist_data_index", columnList = "chemist_data_id"),
         })
 @NamedQuery(
         name = "Order.findByPatientDataId",

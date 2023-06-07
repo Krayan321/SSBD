@@ -15,8 +15,8 @@ import lombok.Setter;
 @Table(
     name = "order_medication",
     indexes = {
-      @Index(name = "order_index", columnList = "order_id", unique = true),
-      @Index(name = "medication_index_om", columnList = "medication_id", unique = true)
+      @Index(name = "order_index", columnList = "order_id"),
+      @Index(name = "medication_index_om", columnList = "medication_id")
     })
 @NamedQuery(name = "orderMedication.findAll", query = "SELECT o FROM OrderMedication o")
 public class OrderMedication extends AbstractEntity implements Serializable {
