@@ -68,9 +68,9 @@ public class OrderController extends AbstractController {
 
     //moa 12
     @GET
-    @Path("/waiting")
+    @Path("/approve")
     @DenyAll
-    public List<OrderDTO> getWaitingOrders() {
+    public List<OrderDTO> getOrdersToApprove() {
         throw new UnsupportedOperationException();
     }
 
@@ -122,6 +122,17 @@ public class OrderController extends AbstractController {
         throw new UnsupportedOperationException();
     }
 
+    // mok 9
+    @GET
+    @RolesAllowed("getWaitingOrders")
+    @Path("/waiting")
+    public Response getWaitingOrders() {
+        List<OrderDTO> orderDTOs = repeatTransaction(orderManager, () -> orderManager.getWaitingOrders(accountManager.getCurrentUserWithAccessLevels()).stream()
+                .map(OrderConverter::mapOrderToOrderDTO)
+                .collect(Collectors.toList()));
+        return Response.ok(orderDTOs).build();
+    }
+
     //moa 16
     @PUT
     @Path("/update-queue")
@@ -129,6 +140,8 @@ public class OrderController extends AbstractController {
     public void updateQueue() {
         throw new UnsupportedOperationException();
     }
+
+
 
     //moa 15
     @GET
