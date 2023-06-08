@@ -75,6 +75,9 @@ public class i18n {
   public static final String EXCEPTION_ORDER_ONLY_CHEMIST_CAN_LIST_WAITING_ORDERS =
           "exception.order.only.chemist.can.list.waiting.orders";
 
+  public static final String EXCEPTION_ORDER_ONLY_PATIENT_CAN_ORDER =
+          "exception.order.only.patient.can.order";
+
   public static String getMessage(String message, Locale locale, Object... parameters) {
     ResourceBundle bundle = ResourceBundle.getBundle("i18n.messages", locale);
     String fmtString = bundle.getString(message);

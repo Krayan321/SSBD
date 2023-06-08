@@ -149,6 +149,9 @@
     <security-role>
         <role-name>getWaitingOrders</role-name>
     </security-role>
+    <security-role>
+        <role-name>createOrder</role-name>
+    </security-role>
 
 
 </web-app>
