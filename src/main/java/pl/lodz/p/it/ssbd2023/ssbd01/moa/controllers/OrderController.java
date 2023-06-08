@@ -5,16 +5,17 @@ import jakarta.annotation.security.PermitAll;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.PUT;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import pl.lodz.p.it.ssbd2023.ssbd01.common.AbstractController;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.medication.MedicationDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.order.OrderDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.entities.Medication;
 import pl.lodz.p.it.ssbd2023.ssbd01.moa.facades.OrderFacade;
 import pl.lodz.p.it.ssbd2023.ssbd01.moa.managers.OrderManagerLocal;
 import pl.lodz.p.it.ssbd2023.ssbd01.mok.managers.AccountManagerLocal;
+import pl.lodz.p.it.ssbd2023.ssbd01.util.converters.MedicationConverter;
 import pl.lodz.p.it.ssbd2023.ssbd01.util.converters.OrderConverter;
 
 import java.util.List;
@@ -85,9 +86,13 @@ public class OrderController extends AbstractController {
     //moa 4
     @GET
     @Path("/{id}")
-    @DenyAll
-    public OrderDTO getOrderDetails(@PathParam("id") Long id) {
-        throw new UnsupportedOperationException();
+    @RolesAllowed("getOrderDetails")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<MedicationDTO> getOrderDetails(@PathParam("id") Long id) {
+        List<Medication> medications = repeatTransaction(
+                orderManager, () -> orderManager.getOrderDetails(id));
+
+        return medications.stream().map(MedicationConverter::mapMedicationToMedicationDTO).toList();
     }
 
     //moa 5

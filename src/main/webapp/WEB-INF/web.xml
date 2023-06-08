@@ -146,6 +146,8 @@
     <security-role>
         <role-name>getAllOrdersForSelf</role-name>
     </security-role>
-
+    <security-role>
+        <role-name>getOrderDetails</role-name>
+    </security-role>
 
 </web-app>
