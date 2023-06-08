@@ -1,6 +1,7 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.moa.facades;
 
 import jakarta.annotation.security.DenyAll;
+import jakarta.annotation.security.PermitAll;
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -27,7 +28,7 @@ public class OrderFacade extends AbstractFacade<Order> {
   }
 
   @Override
-  @DenyAll
+  @PermitAll
   public List<Order> findAll() {
     return super.findAll();
   }

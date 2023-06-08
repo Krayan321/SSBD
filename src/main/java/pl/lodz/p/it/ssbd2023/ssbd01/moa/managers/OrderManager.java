@@ -16,6 +16,7 @@ import pl.lodz.p.it.ssbd2023.ssbd01.interceptors.GenericManagerExceptionsInterce
 import pl.lodz.p.it.ssbd2023.ssbd01.interceptors.TrackerInterceptor;
 import pl.lodz.p.it.ssbd2023.ssbd01.moa.facades.OrderFacade;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Stateful
@@ -65,10 +66,29 @@ public class OrderManager extends AbstractManager implements OrderManagerLocal, 
     }
 
     @Override
-    @DenyAll
-    public List<Order> getWaitingOrders() {
-        throw new UnsupportedOperationException();
+    @RolesAllowed("getWaitingOrders")
+    public List<Order> getWaitingOrders(Account account) {
+        account
+                .getAccessLevels()
+                .forEach(
+                        accessLevel -> {
+                            if (!accessLevel.getRole().getRoleName().equals("CHEMIST")) {
+                                throw OrderException.onlyChemistCanListWaitingOrders();
+                            }
+                        });
+
+        List<Order> allOrders = orderFacade.findAll();
+        List<Order> filteredOrders = new ArrayList<>();
+
+        for (Order order : allOrders) {
+            if (order.getInQueue()) {
+                filteredOrders.add(order);
+            }
+        }
+
+        return filteredOrders;
     }
+
 
     @Override
     @DenyAll

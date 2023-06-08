@@ -20,4 +20,8 @@ public class OrderException extends ApplicationException {
     return new OrderException(FORBIDDEN, EXCEPTION_ORDER_ONLY_PATIENT_CAN_LIST_SELF_ORDERS);
   }
 
+  public static OrderException onlyChemistCanListWaitingOrders() {
+    return new OrderException(FORBIDDEN, EXCEPTION_ORDER_ONLY_CHEMIST_CAN_LIST_WAITING_ORDERS);
+  }
+
 }

@@ -18,7 +18,7 @@ public interface OrderManagerLocal extends CommonManagerLocalInterface {
 
     List<Order> getAllOrdersForSelf(Account account);
 
-    List<Order> getWaitingOrders();
+    List<Order> getWaitingOrders(Account account);
 
     void aproveOrder(Long id);
 
