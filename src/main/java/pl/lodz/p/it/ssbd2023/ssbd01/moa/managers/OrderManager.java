@@ -17,6 +17,8 @@ import pl.lodz.p.it.ssbd2023.ssbd01.interceptors.TrackerInterceptor;
 import pl.lodz.p.it.ssbd2023.ssbd01.moa.facades.OrderFacade;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @Stateful
 @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
@@ -98,5 +100,25 @@ public class OrderManager extends AbstractManager implements OrderManagerLocal, 
     @DenyAll
     public void updateQueue() {
         throw new UnsupportedOperationException();
+    }
+
+    @Override
+    @RolesAllowed("changeNumberOfMedicationsInOrder")
+    public void changeNumberOfMedicationsInOrder(Long orderId, Long medicationId, Integer quantity) {
+        Optional<Order> optOrder = orderFacade.find(orderId);
+
+        if (optOrder.isEmpty()) {
+            throw OrderException.createEntityNotFoundException();
+        }
+        optOrder.get()
+                .getOrderMedications()
+                .forEach(
+                        orderMedication -> {
+                            if (Objects.equals(orderMedication.getMedication().getId(), medicationId)) {
+                                orderMedication.setQuantity(quantity);
+                            }
+                        }
+                );
+        orderFacade.edit(optOrder.get());
     }
 }
