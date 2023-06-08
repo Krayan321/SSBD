@@ -102,24 +102,4 @@ public class OrderManager extends AbstractManager implements OrderManagerLocal, 
     public void updateQueue() {
         throw new UnsupportedOperationException();
     }
-
-    @Override
-    @RolesAllowed("changeNumberOfMedicationsInOrder")
-    public void changeNumberOfMedicationsInOrder(Long orderId, Long medicationId, Integer quantity) {
-        Optional<Order> order = orderFacade.find(orderId);
-
-        if (order.isEmpty()) {
-            throw OrderException.createEntityNotFoundException();
-        }
-        order.get()
-                .getOrderMedications()
-                .forEach(
-                        orderMedication -> {
-                            if (Objects.equals(orderMedication.getMedication().getId(), medicationId)) {
-                                orderMedication.setQuantity(quantity);
-                            }
-                        }
-                );
-
-    }
 }

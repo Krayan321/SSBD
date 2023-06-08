@@ -1,20 +1,16 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.moa.controllers;
 
 import jakarta.annotation.security.DenyAll;
-import jakarta.annotation.security.PermitAll;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
-import jakarta.validation.Valid;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.core.Response;
 import pl.lodz.p.it.ssbd2023.ssbd01.common.AbstractController;
-import pl.lodz.p.it.ssbd2023.ssbd01.dto.order.ChangeMedNumberDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.order.OrderDTO;
-import pl.lodz.p.it.ssbd2023.ssbd01.moa.facades.OrderFacade;
 import pl.lodz.p.it.ssbd2023.ssbd01.moa.managers.OrderManagerLocal;
 import pl.lodz.p.it.ssbd2023.ssbd01.mok.managers.AccountManagerLocal;
 import pl.lodz.p.it.ssbd2023.ssbd01.util.converters.OrderConverter;
@@ -95,10 +91,9 @@ public class OrderController extends AbstractController {
     //moa 5
     @PUT
     @Path("/{id}/change")
-    @RolesAllowed("changeNumberOfMedicationsInOrder")
-    public Response changeNumberOfMedicationsInOrder(@PathParam("id") Long id, @Valid ChangeMedNumberDTO changeMedNumberDTO) {
-        repeatTransactionVoid(orderManager, () -> orderManager.changeNumberOfMedicationsInOrder(id, changeMedNumberDTO.getMedicationId(), changeMedNumberDTO.getQuantity()));
-        return Response.ok().build();
+    @DenyAll
+    public void changeNumberOfMedicationsInOrder(@PathParam("id") Long id) {
+        throw new UnsupportedOperationException();
     }
 
     //moa 6
