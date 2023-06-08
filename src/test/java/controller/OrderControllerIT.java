@@ -7,15 +7,15 @@ import io.restassured.http.ContentType;
 import jakarta.ws.rs.core.Response;
 import org.junit.jupiter.api.*;
 
-import static controller.dataForTests.adminLoginDto;
-import static controller.dataForTests.categoryDto;
+import static controller.dataForTests.*;
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.equalTo;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class OrderControllerIT extends BaseTest {
 
     static String adminJwt;
-
+    static String patientJwt;
 
 
     @BeforeAll
@@ -44,6 +44,23 @@ public class OrderControllerIT extends BaseTest {
                         .setAccept(ContentType.JSON)
                         .log(LogDetail.ALL)
                         .build();
+
+        String jsonPatientJwt =
+                given()
+                        .contentType("application/json")
+                        .body(patient2LoginDto)
+                        .log()
+                        .all()
+                        .post(getApiRoot() + "/auth/login")
+                        .then()
+                        .log()
+                        .all()
+                        .statusCode(Response.Status.OK.getStatusCode())
+                        .extract()
+                        .response()
+                        .asString();
+
+        patientJwt = jsonPatientJwt.substring(jsonPatientJwt.indexOf(":") + 2, jsonPatientJwt.length() - 2);
     }
 
 
@@ -55,5 +72,28 @@ public class OrderControllerIT extends BaseTest {
                 .get(getApiRoot() + "/order/self")
                 .then()
                 .statusCode(Response.Status.FORBIDDEN.getStatusCode());
+    }
+
+    @Test
+    @Order(2)
+    void should_successfully_read_own_orders_as_patient() {
+        given()
+                .header("Authorization", "Bearer " + patientJwt)
+                .get(getApiRoot() + "/order/self")
+                .then()
+                .log().all()
+                .body("[0].inQueue", equalTo(true))
+                .body("[0].orderMedication[0].medication.name", equalTo("Prozac"))
+                .body("[0].orderMedication[0].medication.price", equalTo(10.00f))
+                .body("[0].orderMedication[0].quantity", equalTo(2))
+                .body("[0].orderMedication[1].medication.name", equalTo("Zoloft"))
+                .body("[0].orderMedication[1].medication.price", equalTo(20.00f))
+                .body("[0].orderMedication[1].quantity", equalTo(4))
+                .body("[0].prescription.prescriptionNumber", equalTo("123456789"))
+                .body("[1].inQueue", equalTo(true))
+                .body("[1].orderMedication[0].medication.name", equalTo("Marsjanki"))
+                .body("[1].orderMedication[0].medication.price", equalTo(25.00f))
+                .body("[1].orderMedication[0].quantity", equalTo(20))
+                .statusCode(Response.Status.OK.getStatusCode());
     }
 }
