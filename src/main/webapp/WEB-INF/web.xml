@@ -143,6 +143,9 @@
     <security-role>
         <role-name>editSelfAccessLevelAdmin</role-name>
     </security-role>
+    <security-role>
+        <role-name>addMedicationToOrder</role-name>
+    </security-role>
 
 
 </web-app>

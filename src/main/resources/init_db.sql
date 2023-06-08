@@ -56,15 +56,26 @@ GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.token_id_seq TO ssbd01mok;
 
 GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.category_id_seq TO ssbd01moa;
 
+GRANT SELECT, UPDATE ON TABLE public.order_medication_id_seq TO ssbd01moa;
+
 insert into account (active, confirmed, created_by, creation_date, email, language, last_negative_login, last_positive_login, logical_address, login,incorrect_login_attempts, modification_date, modified_by, password, version) values (true, true, null, now(), 'admin@o2.pl', 'en', null, null, null, 'admin123', 0, null, null,  'b03ddf3ca2e714a6548e7495e2a03f5e824eaac9837cd7f159c67b90fb4b7342', 0);
 insert into account (active, confirmed, created_by, creation_date, email, language, last_negative_login, last_positive_login, logical_address, login,incorrect_login_attempts, modification_date, modified_by, password, version) values (true, true, null, now(), 'chemist@o2.pl', 'en', null, null, null, 'chemist123', 0, null, null,  '52d7a0431ddd469b9e0929a09ef67fefe99e3511893edb0c2fa0b09892df1e52', 0);
 
 insert into access_level (account_id, active, created_by, creation_date, modification_date, modified_by, version, access_level_role) values (1, true, null, now(), null, null, 0, 'ADMIN');
 insert into access_level (account_id, active, created_by, creation_date, modification_date, modified_by, version, access_level_role) values (2, true, null, now(), null, null, 0, 'CHEMIST');
 insert into access_level (account_id, active, created_by, creation_date, modification_date, modified_by, version, access_level_role) values (1, true, null, now(), null, null, 0, 'CHEMIST');
+--insert into access_level (account_id, active, created_by, creation_date, modification_date, modified_by, version, access_level_role) values (2, true, null, now(), null, null, 0, 'PATIENT');
 
 insert into admin_data (id, work_phone_number) values (1, '123456789');
 insert into chemist_data (id, license_number) values (2, '456456');
 insert into chemist_data (id, license_number) values (1, '123123');
+insert into patient_data (nip, first_name, last_name, pesel, phone_number, id) values (7777777777, 'testowy', 'pacjent', '77777777777', '777777777', 2);
 
+insert into prescription (creation_date, modification_date, version, prescription_number, created_by, modified_by, patient_data_id) values (now(), null, 0, 0, null, null, 2);
+
+insert into category (creation_date, modification_date, version, isonprescription, name, created_by, modified_by, id) VALUES (now(), null, 1, false, 'leki', null, null, 1);
+
+insert into medication (creation_date, modification_date, version, medication_name, price, stock, created_by, modified_by, category_id) VALUES (now(), null, 0, 'testlek', 10, 10, null, null, 1);
+
+insert into patient_order (creation_date, modification_date, version, in_queue, order_date, created_by, modified_by, chemist_data_id, patient_data_id, prescription_id) VALUES (now(), null, 1, true, now(), null, null, null, 2, 1)
 

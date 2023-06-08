@@ -1,7 +1,9 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.dto.order;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.AbstractEntityDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.medication.MedicationDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Medication;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Order;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.OrderMedication;
@@ -12,33 +14,21 @@ import pl.lodz.p.it.ssbd2023.ssbd01.entities.OrderMedication;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class OrderMedicationDTO extends AbstractEntityDTO {
+public class CreateOrderMedicationDTO extends AbstractEntityDTO {
 
     @Builder(builderMethodName = "orderMedicationBuilder")
-    public OrderMedicationDTO(
+    public CreateOrderMedicationDTO(
             Long id,
             Long version,
-            Order order,
-            Medication medication,
+            Long medicationDTOId,
             Integer quantity) {
         super(id, version);
-        this.order = order;
-        this.medication = medication;
+        this.medicationDTOId = medicationDTOId;
         this.quantity = quantity;
     }
-
-    public OrderMedication dtoToEntity() {
-        OrderMedication orderMedication = new OrderMedication();
-        orderMedication.setMedication(this.medication);
-        orderMedication.setOrder(this.order);
-        orderMedication.setQuantity(this.quantity);
-        return orderMedication;
-    }
-
-    Order order;
-
-    Medication medication;
-
+    @NotNull
+    Long medicationDTOId;
+    @NotNull
     Integer quantity;
 
 }

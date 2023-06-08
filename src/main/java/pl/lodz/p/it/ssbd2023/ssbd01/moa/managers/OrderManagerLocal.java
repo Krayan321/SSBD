@@ -24,7 +24,7 @@ public interface OrderManagerLocal extends CommonManagerLocalInterface {
 
     void cancelOrder(Long id);
 
-    void addMedicationToOrder(Long id, OrderMedication orderMedication, Long version);
+    void addMedicationToOrder(Long id, OrderMedication orderMedication, Long version, Long medicationId);
 
     Order getOrderDetails(Long id);
 

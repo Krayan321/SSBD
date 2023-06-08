@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
+
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -39,4 +41,11 @@ public class OrderMedication extends AbstractEntity implements Serializable {
   @Column(nullable = false)
   @Min(value = 1, message = "Quantity must be greater than 0")
   private Integer quantity;
+
+  @Builder
+  OrderMedication(Order order, Medication medication, Integer quantity) {
+    this.setOrder(order);
+    this.setMedication(medication);
+    this.setQuantity(quantity);
+  }
 }

@@ -1,6 +1,9 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.moa.controllers;
 
 import jakarta.annotation.security.DenyAll;
+import jakarta.annotation.security.PermitAll;
+import jakarta.annotation.security.RolesAllowed;
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
@@ -9,20 +12,23 @@ import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.core.Response;
+import lombok.extern.java.Log;
 import pl.lodz.p.it.ssbd2023.ssbd01.common.AbstractController;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.order.OrderDTO;
-import pl.lodz.p.it.ssbd2023.ssbd01.dto.order.OrderMedicationDTO;
-import pl.lodz.p.it.ssbd2023.ssbd01.moa.facades.OrderFacade;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.order.CreateOrderMedicationDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.moa.managers.OrderManager;
+import pl.lodz.p.it.ssbd2023.ssbd01.moa.managers.OrderManagerLocal;
+import pl.lodz.p.it.ssbd2023.ssbd01.util.converters.OrderMedicationConverter;
 
 import java.util.List;
 
 @Path("order")
 @RequestScoped
 @DenyAll
+@Log
 public class OrderController extends AbstractController {
 
-    @Inject private OrderManager orderManager;
+    @Inject private OrderManagerLocal orderManager;
 
     //moa 18
     @GET
@@ -67,10 +73,10 @@ public class OrderController extends AbstractController {
     // moa3
     @PUT
     @Path("/{id}/add")
-    @DenyAll
-    public Response addMedicationToOrder(@PathParam("id") Long id, @Valid OrderMedicationDTO orderMedicationDTO) {
-        repeatTransactionVoid(orderManager, () -> orderManager.addMedicationToOrder(id, orderMedicationDTO.dtoToEntity(), orderMedicationDTO.getVersion()));
-        return Response.status(Response.Status.OK).build();
+    @RolesAllowed("addMedicationToOrder")
+    public Response addMedicationToOrder(@PathParam("id") Long id, @Valid CreateOrderMedicationDTO createOrderMedicationDTO) {
+        repeatTransactionVoid(orderManager, () -> orderManager.addMedicationToOrder(id, OrderMedicationConverter.mapCreateOrderMedicationDTOToOrderMedication(createOrderMedicationDTO), createOrderMedicationDTO.getVersion(), createOrderMedicationDTO.getMedicationDTOId()));
+        return Response.status(Response.Status.CREATED).build();
     }
 
     //moa 4

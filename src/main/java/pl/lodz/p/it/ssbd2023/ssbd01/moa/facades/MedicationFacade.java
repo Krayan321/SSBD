@@ -1,6 +1,7 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.moa.facades;
 
 import jakarta.annotation.security.DenyAll;
+import jakarta.annotation.security.PermitAll;
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -44,6 +45,6 @@ public class MedicationFacade extends AbstractFacade<Medication> {
   public void editAndRefresh(Medication medication) { super.editAndRefresh(medication);}
 
   @Override
-  @DenyAll
+  @PermitAll
   public Optional<Medication> find(Object id) { return super.find(id);}
 }

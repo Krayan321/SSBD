@@ -10,6 +10,7 @@ import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccessLevel.EditChemistDataDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccessLevel.EditPatientDataDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccount.grant.GrantAdminDataDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccount.grant.GrantChemistDataDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.order.CreateOrderMedicationDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.register.RegisterPatientDTO;
 
 public class dataForTests {
@@ -155,4 +156,12 @@ public class dataForTests {
 
   public static CategoryDTO categoryDto =
         CategoryDTO.builder().name("Antydepresanty").isOnPrescription(false).build();
+
+  public static CreateOrderMedicationDTO createOrderMedicationDTO =
+          CreateOrderMedicationDTO.orderMedicationBuilder()
+                  .id(1L)
+                  .version(1L)
+                  .quantity(1)
+                  .medicationDTOId(1L)
+                  .build();
 }
