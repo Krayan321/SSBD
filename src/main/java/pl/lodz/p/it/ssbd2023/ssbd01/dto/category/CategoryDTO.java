@@ -11,7 +11,7 @@ import pl.lodz.p.it.ssbd2023.ssbd01.dto.AbstractEntityDTO;
 
 @Data
 @NoArgsConstructor
-public class CategoryDTO  {
+public class CategoryDTO extends AbstractEntityDTO {
 
     @NotNull
     @Size(max = 50, min = 2)
@@ -21,7 +21,8 @@ public class CategoryDTO  {
     private Boolean isOnPrescription;
 
     @Builder
-    public CategoryDTO(String name, Boolean isOnPrescription) {
+    public CategoryDTO(Long id, Long version, String name, Boolean isOnPrescription) {
+        super(id, version);
         this.name = name;
         this.isOnPrescription = isOnPrescription;
     }

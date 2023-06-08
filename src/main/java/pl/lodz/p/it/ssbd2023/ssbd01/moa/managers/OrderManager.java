@@ -8,8 +8,14 @@ import jakarta.ejb.TransactionAttribute;
 import jakarta.ejb.TransactionAttributeType;
 import jakarta.inject.Inject;
 import jakarta.interceptor.Interceptors;
+import jakarta.annotation.security.RolesAllowed;
+import jakarta.ejb.*;
+import jakarta.inject.Inject;
+import jakarta.interceptor.Interceptors;
+import lombok.extern.java.Log;
 import pl.lodz.p.it.ssbd2023.ssbd01.common.AbstractManager;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Account;
+import pl.lodz.p.it.ssbd2023.ssbd01.entities.Medication;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Medication;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Order;
 import pl.lodz.p.it.ssbd2023.ssbd01.exceptions.OrderException;
@@ -18,20 +24,29 @@ import pl.lodz.p.it.ssbd2023.ssbd01.interceptors.TrackerInterceptor;
 import pl.lodz.p.it.ssbd2023.ssbd01.moa.facades.OrderFacade;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.OrderMedication;
 import pl.lodz.p.it.ssbd2023.ssbd01.moa.facades.MedicationFacade;
+import pl.lodz.p.it.ssbd2023.ssbd01.entities.OrderMedication;
+import pl.lodz.p.it.ssbd2023.ssbd01.exceptions.ApplicationException;
+import pl.lodz.p.it.ssbd2023.ssbd01.interceptors.GenericManagerExceptionsInterceptor;
+import pl.lodz.p.it.ssbd2023.ssbd01.interceptors.TrackerInterceptor;
+import pl.lodz.p.it.ssbd2023.ssbd01.moa.facades.MedicationFacade;
+import pl.lodz.p.it.ssbd2023.ssbd01.moa.facades.OrderFacade;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Objects;
+import java.util.Optional;
 
-@Stateful
 @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 @Interceptors({GenericManagerExceptionsInterceptor.class, TrackerInterceptor.class})
+@Log
+@Stateful
+@DenyAll
 public class OrderManager extends AbstractManager implements OrderManagerLocal, SessionSynchronization {
 
-    @Inject
-    OrderFacade orderFacade;
-    @Inject
-    MedicationFacade medicationFacade;
+    @Inject private OrderFacade orderFacade;
+    @Inject private MedicationFacade medicationFacade;
+
     @Override
     @RolesAllowed("createOrder")
     public Order createOrder(Account account, Long id) {
@@ -162,9 +177,23 @@ public class OrderManager extends AbstractManager implements OrderManagerLocal, 
     }
 
     @Override
-    @DenyAll
-    public void addMedicationToOrder(Long id) {
-        throw new UnsupportedOperationException();
+    @RolesAllowed("addMedicationToOrder")
+    public void addMedicationToOrder(Long id, OrderMedication orderMedication, Long version, Long medicationId) {
+        Optional<Order> optOrder = orderFacade.find(id);
+        Optional<Medication> optMedication = medicationFacade.find(medicationId);
+        if (optOrder.isEmpty()) {
+            throw ApplicationException.createEntityNotFoundException();
+        }
+        if (optMedication.isEmpty()) {
+            throw ApplicationException.createEntityNotFoundException();
+        }
+        if (!(optOrder.get().getVersion().equals(version))) {
+            throw ApplicationException.createOptimisticLockException();
+        }
+        orderMedication.setMedication(optMedication.get());
+        orderMedication.setOrder(optOrder.get());
+        optOrder.get().getOrderMedications().add(orderMedication);
+        orderFacade.edit(optOrder.get());
     }
 
     @Override

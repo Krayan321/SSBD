@@ -4,17 +4,21 @@ import jakarta.annotation.security.DenyAll;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
+import jakarta.validation.Valid;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.core.Response;
+import lombok.extern.java.Log;
 import pl.lodz.p.it.ssbd2023.ssbd01.common.AbstractController;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.order.OrderDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Order;
 import pl.lodz.p.it.ssbd2023.ssbd01.moa.managers.OrderManagerLocal;
 import pl.lodz.p.it.ssbd2023.ssbd01.mok.managers.AccountManagerLocal;
 import pl.lodz.p.it.ssbd2023.ssbd01.util.converters.OrderConverter;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.order.CreateOrderMedicationDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.util.converters.OrderMedicationConverter;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,6 +26,8 @@ import java.util.stream.Stream;
 
 @Path("order")
 @RequestScoped
+@DenyAll
+@Log
 public class OrderController extends AbstractController {
 
     @Inject
@@ -76,9 +82,10 @@ public class OrderController extends AbstractController {
     // moa3
     @PUT
     @Path("/{id}/add")
-    @DenyAll
-    public void addMedicationToOrder(@PathParam("id") Long id) {
-        throw new UnsupportedOperationException();
+    @RolesAllowed("addMedicationToOrder")
+    public Response addMedicationToOrder(@PathParam("id") Long id, @Valid CreateOrderMedicationDTO createOrderMedicationDTO) {
+        repeatTransactionVoid(orderManager, () -> orderManager.addMedicationToOrder(id, OrderMedicationConverter.mapCreateOrderMedicationDTOToOrderMedication(createOrderMedicationDTO), createOrderMedicationDTO.getVersion(), createOrderMedicationDTO.getMedicationDTOId()));
+        return Response.status(Response.Status.CREATED).build();
     }
 
     //moa 4

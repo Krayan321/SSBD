@@ -12,6 +12,7 @@ import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccount.EditAccountDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccount.grant.GrantAdminDataDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccount.grant.GrantChemistDataDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.medication.AddMedicationDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.order.CreateOrderMedicationDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.register.RegisterPatientDTO;
 
 public class dataForTests {
@@ -169,4 +170,13 @@ public class dataForTests {
           .price(new BigDecimal("10.0"))
           .categoryName(categoryDto.getName())
           .build();
+        CategoryDTO.builder().name("Antydepresanty").isOnPrescription(false).build();
+
+  public static CreateOrderMedicationDTO createOrderMedicationDTO =
+          CreateOrderMedicationDTO.orderMedicationBuilder()
+                  .id(1L)
+                  .version(1L)
+                  .quantity(1)
+                  .medicationDTOId(1L)
+                  .build();
 }

@@ -152,6 +152,9 @@
     <security-role>
         <role-name>createOrder</role-name>
     </security-role>
+    <security-role>
+        <role-name>addMedicationToOrder</role-name>
+    </security-role>
 
 
 </web-app>
