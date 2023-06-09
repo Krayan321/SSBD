@@ -52,7 +52,7 @@ public class Shipment extends AbstractEntity implements Serializable {
 
   @OneToMany(
       mappedBy = "shipment",
-      cascade = {CascadeType.PERSIST, CascadeType.REMOVE},
+      cascade = {CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.REFRESH},
       orphanRemoval = true)
   private List<ShipmentMedication> shipmentMedications = new ArrayList<>();
 }

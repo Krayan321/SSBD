@@ -9,6 +9,8 @@ import jakarta.persistence.TypedQuery;
 import java.util.List;
 import java.util.Optional;
 
+import jakarta.persistence.criteria.CriteriaQuery;
+import org.hibernate.Session;
 import pl.lodz.p.it.ssbd2023.ssbd01.common.AbstractFacade;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Shipment;
 
@@ -33,17 +35,14 @@ public class ShipmentFacade extends AbstractFacade<Shipment> {
   }
 
   @RolesAllowed("readAllShipments")
-  public List<Shipment> findAll() {
-    return super.findAll();
+  public List<Shipment> findAllAndRefresh() {
+    return getEntityManager()
+            .createQuery("select s from Shipment s left join fetch s.shipmentMedications")
+            .getResultList();
   }
 
-  @RolesAllowed({"readShipment", "updateShipment"})
-  public Optional<Shipment> find(Long id) {
-    return super.find(id);
-  }
-
-  @RolesAllowed("updateShipment")
-  public void edit(Shipment shipment) {
-    super.edit(shipment);
+  @RolesAllowed("readShipment")
+  public Optional<Shipment> findAndRefresh(Long id) {
+    return super.findAndRefresh(id);
   }
 }

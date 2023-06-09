@@ -103,13 +103,13 @@ public class ShipmentControllerIT extends BaseTest {
         @Test
         @Order(3)
         public void createShipment_invalidDate() {
-            createShipmentDTO.setShipmentDate("totally normal date, trust me");
-            given()
-                    .header("authorization", "Bearer " + chemistJwt)
+            createShipmentDTO.setShipmentDate("not a date");
+            given().header("authorization", "Bearer " + chemistJwt)
                     .body(createShipmentDTO)
                     .post(getApiRoot() + "/shipment")
                     .then().log().all()
-                    .statusCode(Response.Status.BAD_REQUEST.getStatusCode());
+                    .statusCode(Response.Status.BAD_REQUEST.getStatusCode())
+                    .body("message", equalTo(EXCEPTION_INCORRECT_DATE_FORMAT));
             createShipmentDTO.setShipmentDate(LocalDateTime.now().toString());
         }
 
@@ -117,14 +117,45 @@ public class ShipmentControllerIT extends BaseTest {
         @Order(4)
         public void createShipment_noMedications() {
             createShipmentDTO.setShipmentMedications(new ArrayList<>());
-            given()
-                    .header("authorization", "Bearer " + chemistJwt)
+            given().header("authorization", "Bearer " + chemistJwt)
                     .body(createShipmentDTO)
                     .post(getApiRoot() + "/shipment")
                     .then().log().all()
-                    .statusCode(Response.Status.BAD_REQUEST.getStatusCode())
-                    .body("message", equalTo(EXCEPTION_INCORRECT_DATE_FORMAT));
+                    .statusCode(Response.Status.BAD_REQUEST.getStatusCode());
             createShipmentDTO.setShipmentMedications(medications);
+        }
+    }
+
+    @Nested
+    @Order(2)
+    @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+    class ReadShipment {
+        @Test
+        @Order(1)
+        public void getShipment_correct() {
+            given().header("authorization", "Bearer " + chemistJwt)
+                    .get(getApiRoot() + "/shipment/1")
+                    .then().log().all()
+                    .statusCode(Response.Status.OK.getStatusCode());
+        }
+
+        @Test
+        @Order(2)
+        public void getShipment_notFound() {
+            given().header("authorization", "Bearer " + chemistJwt)
+                    .get(getApiRoot() + "/shipment/999")
+                    .then().log().all()
+                    .statusCode(Response.Status.NOT_FOUND.getStatusCode())
+                    .body("message", equalTo(EXCEPTION_ENTITY_NOT_FOUND));
+        }
+
+        @Test
+        @Order(3)
+        public void getAllShipments_correct() {
+            given().header("authorization", "Bearer " + chemistJwt)
+                    .get(getApiRoot() + "/shipment")
+                    .then().log().all()
+                    .statusCode(Response.Status.OK.getStatusCode());
         }
     }
 }

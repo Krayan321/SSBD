@@ -50,13 +50,13 @@ public class ShipmentManager extends AbstractManager implements ShipmentManagerL
     @Override
     @RolesAllowed("readAllShipments")
     public List<Shipment> getAllShipments() {
-        return shipmentFacade.findAll();
+        return shipmentFacade.findAllAndRefresh();
     }
 
     @Override
     @RolesAllowed("readShipment")
     public Shipment getShipment(Long id) {
-        Optional<Shipment> shipmentOpt = shipmentFacade.find(id);
+        Optional<Shipment> shipmentOpt = shipmentFacade.findAndRefresh(id);
         if (shipmentOpt.isEmpty()) {
             throw ApplicationException.createEntityNotFoundException();
         }
