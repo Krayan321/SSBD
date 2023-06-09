@@ -158,5 +158,8 @@
     <security-role>
         <role-name>changeNumberOfMedicationsInOrder</role-name>
     </security-role>
+    <security-role>
+        <role-name>getOrderDetails</role-name>
+    </security-role>
 
 </web-app>

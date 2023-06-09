@@ -140,6 +140,12 @@
     <security-role-mapping>
         <role-name>getAllOrdersForSelf</role-name>
         <group-name>PATIENT</group-name>
+        <group-name>ADMIN</group-name>
+    </security-role-mapping>
+    <security-role-mapping>
+        <role-name>getOrderDetails</role-name>
+        <group-name>PATIENT</group-name>
+        <group-name>ADMIN</group-name>
     </security-role-mapping>
 
     <security-role-mapping>

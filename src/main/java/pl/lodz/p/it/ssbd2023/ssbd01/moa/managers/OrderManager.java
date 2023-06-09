@@ -1,6 +1,7 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.moa.managers;
 
 import jakarta.annotation.security.DenyAll;
+import jakarta.annotation.security.PermitAll;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.ejb.SessionSynchronization;
 import jakarta.ejb.Stateful;
@@ -8,34 +9,21 @@ import jakarta.ejb.TransactionAttribute;
 import jakarta.ejb.TransactionAttributeType;
 import jakarta.inject.Inject;
 import jakarta.interceptor.Interceptors;
-import jakarta.annotation.security.RolesAllowed;
-import jakarta.ejb.*;
-import jakarta.inject.Inject;
-import jakarta.interceptor.Interceptors;
 import lombok.extern.java.Log;
 import pl.lodz.p.it.ssbd2023.ssbd01.common.AbstractManager;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Account;
-import pl.lodz.p.it.ssbd2023.ssbd01.entities.Medication;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Medication;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Order;
 import pl.lodz.p.it.ssbd2023.ssbd01.exceptions.OrderException;
 import pl.lodz.p.it.ssbd2023.ssbd01.interceptors.GenericManagerExceptionsInterceptor;
 import pl.lodz.p.it.ssbd2023.ssbd01.interceptors.TrackerInterceptor;
-import pl.lodz.p.it.ssbd2023.ssbd01.moa.facades.OrderFacade;
-import pl.lodz.p.it.ssbd2023.ssbd01.entities.OrderMedication;
 import pl.lodz.p.it.ssbd2023.ssbd01.moa.facades.MedicationFacade;
+import pl.lodz.p.it.ssbd2023.ssbd01.moa.facades.OrderFacade;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.OrderMedication;
 import pl.lodz.p.it.ssbd2023.ssbd01.exceptions.ApplicationException;
-import pl.lodz.p.it.ssbd2023.ssbd01.interceptors.GenericManagerExceptionsInterceptor;
-import pl.lodz.p.it.ssbd2023.ssbd01.interceptors.TrackerInterceptor;
-import pl.lodz.p.it.ssbd2023.ssbd01.moa.facades.MedicationFacade;
-import pl.lodz.p.it.ssbd2023.ssbd01.moa.facades.OrderFacade;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Objects;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -199,9 +187,23 @@ public class OrderManager extends AbstractManager implements OrderManagerLocal, 
     }
 
     @Override
-    @DenyAll
-    public Order getOrderDetails(Long id) {
-        throw new UnsupportedOperationException();
+    @PermitAll
+    public List<Medication> getOrderDetails(Long orderId) {
+        Optional<Order> order = orderFacade.find(orderId);
+        List<Medication> res = new ArrayList<>();
+
+        if(order.isEmpty()) {
+            throw OrderException.createEntityNotFoundException();
+        }
+
+        order.get()
+                .getOrderMedications()
+                .forEach(
+                        orderMedication -> {
+                            res.add(orderMedication.getMedication());
+                        }
+                );
+        return res;
     }
 
     @Override
