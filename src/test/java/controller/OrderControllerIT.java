@@ -16,78 +16,38 @@ import static org.hamcrest.Matchers.equalTo;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class OrderControllerIT extends BaseTest {
 
-    static String adminJwt;
     static String patientJwt;
-
-    private static String etag;
-    private static EditAccountDTO editAccountDTO;
+    static String chemistJwt;
+    static String adminJwt;
 
 
     @BeforeAll
     static void setUp() throws InterruptedException {
         System.out.println(getApiRoot());
-        String jsonJwt =
-                given()
-                        .contentType("application/json")
-                        .body(adminLoginDto)
-                        .log()
-                        .all()
-                        .post(getApiRoot() + "/auth/login")
-                        .then()
-                        .log()
-                        .all()
-                        .statusCode(Response.Status.OK.getStatusCode())
-                        .extract()
-                        .response()
-                        .asString();
-        adminJwt = jsonJwt.substring(jsonJwt.indexOf(":") + 2, jsonJwt.length() - 2);
-
-        given()
+        patientJwt = given()
                 .contentType("application/json")
-                .body(registerPatientDto)
-                .post(getApiRoot() + "/account/register")
-                .then()
-                .log()
-                .all()
-                .statusCode(Response.Status.CREATED.getStatusCode());
-
-        var response = given()
-                .header("authorization", "Bearer " + adminJwt)
-                .get(getApiRoot() + "/account/3")
-                .then()
-                .log()
-                .all()
+                .body(patientLoginDto)
+                .log().all()
+                .post(getApiRoot() + "/auth/login")
+                .then().log().all()
                 .statusCode(Response.Status.OK.getStatusCode())
-                .extract()
-                .response();
-
-        etag = response.getHeader("ETag").replace("\"", "");
-        Long version = response.getBody().jsonPath().getLong("version");
-        editAccountDTO = EditAccountDTO.builder()
-                .version(version)
-                .login(patientLoginDto.getLogin())
-                .email("patient1@mail.pl")
-                .build();
-
-        given()
+                .extract().response().jsonPath().getString("jwtToken");
+        chemistJwt = given()
                 .contentType("application/json")
-                .header("authorization", "Bearer " + adminJwt).header("If-Match", etag)
-                .body(editAccountDTO)
-                .put(getApiRoot() + "/account/3")
-                .then()
-                .log()
-                .all()
+                .body(chemistLoginDto)
+                .log().all()
+                .post(getApiRoot() + "/auth/login")
+                .then().log().all()
                 .statusCode(Response.Status.OK.getStatusCode())
-                .body("email", equalTo("patient1@mail.pl"),"confirmed", equalTo(true));
-
-        RestAssured.requestSpecification =
-                new RequestSpecBuilder()
-                        .setContentType(ContentType.JSON)
-                        .setAccept(ContentType.JSON)
-                        .log(LogDetail.ALL)
-                        .build();
-
-        patientJwt = jsonJwt.substring(jsonJwt.indexOf(":") + 2, jsonJwt.length() - 2);
+                .extract().response().jsonPath().getString("jwtToken");
+        adminJwt = given()
+                .contentType("application/json")
+                .body(adminLoginDto)
+                .log().all()
+                .post(getApiRoot() + "/auth/login")
+                .then().log().all()
+                .statusCode(Response.Status.OK.getStatusCode())
+                .extract().response().jsonPath().getString("jwtToken");
 
         RestAssured.requestSpecification =
                 new RequestSpecBuilder()
@@ -140,6 +100,21 @@ public class OrderControllerIT extends BaseTest {
                     .put(getApiRoot() + "/order/5000/add")
                     .then()
                     .statusCode(Response.Status.NOT_FOUND.getStatusCode());
+        }
+    }
+
+    @Nested
+    @Order(2)
+    @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+    class GetOrdersToApprove {
+        @Test
+        @Order(1)
+        public void createOrderMedication_correct() {
+            given().header("Authorization", "Bearer " + chemistJwt)
+                    .log().all()
+                    .get(getApiRoot() + "/order/to-approve")
+                    .then()
+                    .statusCode(Response.Status.OK.getStatusCode());
         }
     }
 

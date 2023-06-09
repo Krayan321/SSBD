@@ -18,16 +18,16 @@ import pl.lodz.p.it.ssbd2023.ssbd01.dto.register.RegisterPatientDTO;
 public class dataForTests {
 
   public static LoginDTO adminLoginDto = new LoginDTO("admin123", "P@ssw0rd");
-  public static LoginDTO patientLoginDto = new LoginDTO("test11", "testP@tient123");
-  public static LoginDTO patient2LoginDto = new LoginDTO("patient123", "P@ssw0rd");
+  public static LoginDTO patientRegisteredLoginDto = new LoginDTO("test11", "testP@tient123");
+  public static LoginDTO patientLoginDto = new LoginDTO("patient123", "P@ssw0rd");
 
   public static LoginDTO chemistLoginDto = new LoginDTO("chemist123", "P4$$w0Rd");
 
   // register
   public static RegisterPatientDTO registerPatientDto =
       RegisterPatientDTO.builder()
-          .login(patientLoginDto.getLogin())
-          .password(patientLoginDto.getPassword())
+          .login(patientRegisteredLoginDto.getLogin())
+          .password(patientRegisteredLoginDto.getPassword())
           .email("patient-email@local.db")
           .name("Test")
           .lastName("Patient")
@@ -38,8 +38,8 @@ public class dataForTests {
 
   public static RegisterPatientDTO registerPatientDtoDuplicateLogin =
       RegisterPatientDTO.builder()
-          .login(patientLoginDto.getLogin())
-          .password(patientLoginDto.getPassword())
+          .login(patientRegisteredLoginDto.getLogin())
+          .password(patientRegisteredLoginDto.getPassword())
           .email("other-patient-email@local.db")
           .name("Test")
           .lastName("Patient")
@@ -51,7 +51,7 @@ public class dataForTests {
   public static RegisterPatientDTO registerPatientDtoDuplicateEmail =
       RegisterPatientDTO.builder()
           .login("other-login")
-          .password(patientLoginDto.getPassword())
+          .password(patientRegisteredLoginDto.getPassword())
           .email("patient-email@local.db")
           .name("Test")
           .lastName("Patient")
@@ -63,7 +63,7 @@ public class dataForTests {
   public static RegisterPatientDTO registerPatientDtoDuplicatePesel =
       RegisterPatientDTO.builder()
           .login("pesel-login")
-          .password(patientLoginDto.getPassword())
+          .password(patientRegisteredLoginDto.getPassword())
           .email("pesel-patient-email@local.db")
           .name("Test")
           .lastName("Patient")
@@ -75,7 +75,7 @@ public class dataForTests {
   public static RegisterPatientDTO registerPatientDtoDuplicateNip =
       RegisterPatientDTO.builder()
           .login("nip-login")
-          .password(patientLoginDto.getPassword())
+          .password(patientRegisteredLoginDto.getPassword())
           .email("nip-patient-email@local.db")
           .name("Test")
           .lastName("Patient")
@@ -87,7 +87,7 @@ public class dataForTests {
   public static RegisterPatientDTO registerPatientDtoDuplicatePhoneNumber =
       RegisterPatientDTO.builder()
           .login("phone-login")
-          .password(patientLoginDto.getPassword())
+          .password(patientRegisteredLoginDto.getPassword())
           .email("phone-patient-email@local.db")
           .name("Test")
           .lastName("Patient")
@@ -98,14 +98,14 @@ public class dataForTests {
   // grant
   public static GrantChemistDataDTO grantChemistDataDTO =
       GrantChemistDataDTO.builder()
-          .login(patientLoginDto.getLogin())
+          .login(patientRegisteredLoginDto.getLogin())
           .licenseNumber("127836")
           .version(0L)
           .build();
 
   public static GrantAdminDataDTO grantAdminDataDTO =
       GrantAdminDataDTO.builder()
-          .login(patientLoginDto.getLogin())
+          .login(patientRegisteredLoginDto.getLogin())
           .workPhoneNumber("123431431")
           .version(0L)
           .build();

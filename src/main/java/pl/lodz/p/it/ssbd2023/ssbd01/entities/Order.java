@@ -62,6 +62,9 @@ public class Order extends AbstractEntity implements Serializable {
   @JoinColumn(name = "chemist_data_id", referencedColumnName = "id", updatable = false)
   private ChemistData chemistData;
 
+  @Column(name = "prescription_approved")
+  private Boolean prescriptionApproved;
+
   @Builder
   public Order(
           Boolean inQueue,
