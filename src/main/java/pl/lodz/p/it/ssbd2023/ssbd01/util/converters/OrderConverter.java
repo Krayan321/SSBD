@@ -13,11 +13,13 @@ public class OrderConverter {
             order.getOrderMedications().stream()
                 .map(OrderMedicationConverter::mapOrderMedicationToOrderMedicationDTO)
                 .toList())
+        .prescriptionApproved(order.getPrescriptionApproved())
+        .patientData(AccessLevelConverter
+                .mapPatientDataToPatientDataDto(order.getPatientData()))
         .prescription(
             order.getPrescription() == null
                 ? null
                 : PrescriptionConverter.mapPrescriptionToPrescriptionDTO(order.getPrescription()))
-        .prescriptionApproved(order.getPrescriptionApproved())
         .orderDate(order.getOrderDate())
         .inQueue(order.getInQueue())
         .build();

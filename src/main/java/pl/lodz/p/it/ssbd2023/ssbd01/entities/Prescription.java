@@ -27,8 +27,7 @@ import lombok.Setter;
     indexes = {
       @Index(
           name = "patient_data_index_perscription",
-          columnList = "patient_data_id",
-          unique = true)
+          columnList = "patient_data_id")
     },
     uniqueConstraints = {
       @UniqueConstraint(columnNames = {"patient_data_id", "prescription_number"}),

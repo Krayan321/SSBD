@@ -29,6 +29,8 @@ public class OrderDTO {
 
     private PrescriptionDTO prescription;
 
+    private PatientDataDTO patientData;
+
     private Boolean prescriptionApproved;
 
     @NotNull

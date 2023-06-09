@@ -85,9 +85,11 @@ insert into medication (id, medication_name, price, category_id, created_by, cre
 insert into medication (id, creation_date, modification_date, version, medication_name, price, stock, created_by, modified_by, category_id) VALUES (4, now(), null, 0, 'testlek', 10, 10, null, null, 1);
 
 insert into prescription (id, creation_date, modification_date, version, prescription_number, created_by, modified_by, patient_data_id) values (1, now(), null, 0, '123456789', null, null, 3);
+insert into prescription (id, creation_date, modification_date, version, prescription_number, created_by, modified_by, patient_data_id) values (2, now(), null, 0, '123456837', null, null, 3);
 
 insert into patient_order (id, prescription_approved, patient_data_id, order_date, in_queue, created_by, creation_date, modification_date, modified_by, version, chemist_data_id, prescription_id) values (1, null, 3, now(), true, null, now(), null, null, 0, null, 1);
 insert into patient_order (id, prescription_approved, patient_data_id, order_date, in_queue, created_by, creation_date, modification_date, modified_by, version, chemist_data_id) values (2, null, 3, now(), true, null, now(), null, null, 0, null);
+insert into patient_order (id, prescription_approved, patient_data_id, order_date, in_queue, created_by, creation_date, modification_date, modified_by, version, chemist_data_id, prescription_id) values (3, null, 3, now(), false, null, now(), null, null, 0, null, 2);
 
 insert into order_medication (id, order_id, medication_id, quantity, created_by, creation_date, modification_date, modified_by, version) values (1, 1, 1, 2, null, now(), null, null, 0);
 insert into order_medication (id, order_id, medication_id, quantity, created_by, creation_date, modification_date, modified_by, version) values (2, 1, 2, 4, null, now(), null, null, 0);
