@@ -16,6 +16,7 @@ import AddPatient from "../pages/AddPatient";
 import AddChemist from "../pages/AddChemist";
 import AddAdministrator from "../pages/AddAdministrator";
 import ShowSelfOrders from "../pages/ShowSelfOrders";
+import ShowWaitingOrders from "../pages/ShowWaitingOrders";
 
 export const publicRoutes = [
     {
@@ -101,4 +102,9 @@ export const AdminRoutes = [
     },
 ];
 
-export const ChemistRoutes = [];
+export const ChemistRoutes = [
+    {
+        path:Pathnames.chemist.waitingOrders,
+        Component: ShowWaitingOrders,
+    },
+];

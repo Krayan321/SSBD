@@ -26,5 +26,7 @@ export const Pathnames = {
     patient: {
         selfOrders: '/orders/self',
     },
-    chemist: {}
+    chemist: {
+        waitingOrders: '/orders/waiting',
+    },
 }

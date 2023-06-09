@@ -91,6 +91,18 @@ function AuthSidebar() {
                         {
                             userRole === ROLES.CHEMIST &&
                             <>
+                                <MenuItem
+                                    onClick={() => {
+                                        navigate(Pathnames.chemist.waitingOrders);
+                                    }}
+                                >
+                                    <IconButton
+                                        color="inherit"
+                                    >
+                                        <ShoppingBasketIcon/>
+                                    </IconButton>
+                                    {t("waitingOrders")}
+                                </MenuItem>
                             </>
                         }
                         {

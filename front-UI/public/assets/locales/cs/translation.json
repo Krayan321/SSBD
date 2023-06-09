@@ -173,5 +173,7 @@
   "medication_quantity": "Množství léku",
   "medication_price": "Cena léku",
   "order_total_price": "Celková cena objednávky",
-  "prescription_number": "Číslo předpisu"
+  "prescription_number": "Číslo předpisu",
+  "delete_order": "Smazat objednávku",
+  "waitingOrders": "Nevyřízené objednávky"
 }
