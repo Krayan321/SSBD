@@ -10,13 +10,16 @@ import jakarta.inject.Inject;
 import jakarta.interceptor.Interceptors;
 import pl.lodz.p.it.ssbd2023.ssbd01.common.AbstractManager;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Account;
+import pl.lodz.p.it.ssbd2023.ssbd01.entities.Medication;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Order;
+import pl.lodz.p.it.ssbd2023.ssbd01.entities.OrderMedication;
 import pl.lodz.p.it.ssbd2023.ssbd01.exceptions.OrderException;
 import pl.lodz.p.it.ssbd2023.ssbd01.interceptors.GenericManagerExceptionsInterceptor;
 import pl.lodz.p.it.ssbd2023.ssbd01.interceptors.TrackerInterceptor;
 import pl.lodz.p.it.ssbd2023.ssbd01.moa.facades.OrderFacade;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @Stateful
 @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
@@ -42,6 +45,53 @@ public class OrderManager extends AbstractManager implements OrderManagerLocal, 
     @DenyAll
     public Order updateOrder(Order order) {
         throw new UnsupportedOperationException();
+    }
+
+    public void updateOrderQueue() {
+        List<Order> ordersInQueue = orderFacade.findAllOrdersInQueueSortByOrderDate();
+
+        AtomicBoolean canAllMedicationsBeProceed = new AtomicBoolean(true);
+        AtomicBoolean sendForPatientAproval = new AtomicBoolean(false);
+        ordersInQueue.forEach(
+                order -> {
+                    for (OrderMedication orderMedication : order.getOrderMedications()) {
+                        Medication medication = orderMedication.getMedication();
+
+                        if (medication.getCurrentPrice().compareTo(medication.getPreviousPrice()) > 0) {
+                            sendForPatientAproval.set(true);
+                        }
+
+                        if (medication.getStock() < orderMedication.getQuantity()) {
+                            canAllMedicationsBeProceed.set(false);
+                            break;
+                        }
+                    }
+
+                    if (canAllMedicationsBeProceed.get()) {
+
+                        if (sendForPatientAproval.get()) {
+                            //todo send for patient aproval
+                        }
+
+                        if (order.getPrescription() != null) {
+                            //todo send for chemist aproval
+                        }
+
+                        if (!sendForPatientAproval.get() && order.getPrescription() == null) {
+                            for (OrderMedication orderMedication : order.getOrderMedications()) {
+                                Medication medication = orderMedication.getMedication();
+                                medication.setStock(medication.getStock() - orderMedication.getQuantity());
+                            }
+                            order.setInQueue(false);
+                        }
+
+                    }
+
+                }
+
+        );
+
+
     }
 
     @Override
