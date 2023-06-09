@@ -28,6 +28,10 @@ import lombok.Setter;
         name = "Order.findByPatientDataId",
         query =
                 "SELECT o FROM Order o JOIN FETCH o.orderMedications WHERE o.patientData.id = :patientDataId")
+@NamedQuery(
+        name = "Order.findAllOrdersInQueueSortByOrderDate",
+        query =
+                "SELECT o FROM Order o WHERE o.inQueue = true ORDER BY o.orderDate ASC")
 public class Order extends AbstractEntity implements Serializable {
 
     @Id

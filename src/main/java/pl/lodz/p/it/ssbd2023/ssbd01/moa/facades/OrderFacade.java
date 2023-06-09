@@ -44,6 +44,11 @@ public class OrderFacade extends AbstractFacade<Order> {
     return query.getResultList();
   }
 
+  public List<Order> findAllOrdersInQueueSortByOrderDate() {
+    TypedQuery<Order> query = em.createNamedQuery("Order.findAllOrdersInQueueSortByOrderDate", Order.class);
+    return query.getResultList();
+  }
+
   @Override
   @DenyAll
   public void edit(Order order) {
