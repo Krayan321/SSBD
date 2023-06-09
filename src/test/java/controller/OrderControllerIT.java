@@ -70,7 +70,7 @@ public class OrderControllerIT extends BaseTest {
                     .all()
                     .body(createOrderMedicationDTO)
                     .put(getApiRoot() + "/order/1/add")
-                    .then()
+                    .then().log().all()
                     .statusCode(Response.Status.CREATED.getStatusCode());
         }
 
@@ -113,7 +113,7 @@ public class OrderControllerIT extends BaseTest {
             given().header("Authorization", "Bearer " + chemistJwt)
                     .log().all()
                     .get(getApiRoot() + "/order/to-approve")
-                    .then()
+                    .then().log().all()
                     .statusCode(Response.Status.OK.getStatusCode());
         }
     }

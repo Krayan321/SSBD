@@ -174,9 +174,9 @@ public class dataForTests {
 
   public static CreateOrderMedicationDTO createOrderMedicationDTO =
           CreateOrderMedicationDTO.orderMedicationBuilder()
-                  .id(1L)
-                  .version(1L)
+                  .id(2L)
+                  .version(0L)
                   .quantity(1)
-                  .medicationDTOId(1L)
+                  .medicationDTOId(3L)
                   .build();
 }
