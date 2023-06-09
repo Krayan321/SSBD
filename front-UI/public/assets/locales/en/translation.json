@@ -178,5 +178,7 @@
   "medication_quantity": "Medication quantity",
   "medication_price": "Medication price",
   "order_total_price": "Order total price",
-  "prescription_number": "Prescription number"
+  "prescription_number": "Prescription number",
+  "delete_order": "Delete Order",
+  "waitingOrders": "Waiting Orders"
 }

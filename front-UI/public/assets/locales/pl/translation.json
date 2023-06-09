@@ -179,6 +179,8 @@
   "medication_quantity": "Ilość leku",
   "medication_price": "Cena leku",
   "order_total_price": "Cena całkowita zamówienia",
-  "prescription_number": "Numer recepty"
+  "prescription_number": "Numer recepty",
+  "delete_order": "Usuń zamówienie",
+  "waitingOrders": "Zamówienia oczekujące"
 
 }
