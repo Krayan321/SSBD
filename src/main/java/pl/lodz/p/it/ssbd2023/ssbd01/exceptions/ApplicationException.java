@@ -84,4 +84,8 @@ public class ApplicationException extends WebApplicationException {
   public static Exception createMedicationAlreadyExistsException() {
     return new ApplicationException(CONFLICT, EXCEPTION_MEDICATION_ALREADY_EXISTS);
   }
+
+  public static ApplicationException createIncorrectDateFormatException() {
+    return new ApplicationException(BAD_REQUEST, EXCEPTION_INCORRECT_DATE_FORMAT);
+  }
 }

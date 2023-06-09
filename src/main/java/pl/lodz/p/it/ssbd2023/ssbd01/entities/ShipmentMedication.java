@@ -19,8 +19,8 @@ import javax.print.attribute.standard.Media;
 @Table(
     name = "shipment_medication",
     indexes = {
-      @Index(name = "shipment_index", columnList = "shipment_id", unique = true),
-      @Index(name = "medication_index", columnList = "medication_id", unique = true)
+      @Index(name = "shipment_m_index", columnList = "shipment_id"),
+      @Index(name = "medication_index", columnList = "medication_id")
     })
 @NamedQuery(name = "shipmentMedication.findAll", query = "SELECT o FROM ShipmentMedication o")
 public class ShipmentMedication extends AbstractEntity implements Serializable {
@@ -42,10 +42,9 @@ public class ShipmentMedication extends AbstractEntity implements Serializable {
   @JoinColumn(name = "shipment_id", updatable = false, nullable = false)
   private Shipment shipment;
 
-  @ManyToOne(
-      optional = false,
-      cascade = {CascadeType.PERSIST})
-  @JoinColumn(name = "medication_id", updatable = false, nullable = false)
+  @ManyToOne(optional = false, cascade = {CascadeType.REFRESH})
+  @JoinColumn(name = "medication_id", referencedColumnName = "id",
+          updatable = false, nullable = false)
   private Medication medication;
 
   @Column(nullable = false)

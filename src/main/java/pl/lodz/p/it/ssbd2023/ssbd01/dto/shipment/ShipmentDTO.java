@@ -3,6 +3,7 @@ package pl.lodz.p.it.ssbd2023.ssbd01.dto.shipment;
 import lombok.*;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.AbstractEntityDTO;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -12,12 +13,12 @@ import java.util.List;
 @AllArgsConstructor
 public class ShipmentDTO extends AbstractEntityDTO {
 
-    private Date shipmentDate;
+    private String shipmentDate;
 
     private List<ShipmentMedicationDTO> shipmentMedications;
 
     @Builder
-    public ShipmentDTO(Long id, Long version, Date shipmentDate,
+    public ShipmentDTO(Long id, Long version, String shipmentDate,
                        List<ShipmentMedicationDTO> shipmentMedications) {
         super(id, version);
         this.shipmentDate = shipmentDate;

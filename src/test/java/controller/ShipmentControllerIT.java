@@ -8,14 +8,16 @@ import jakarta.ws.rs.core.Response;
 import org.junit.jupiter.api.*;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.shipment.CreateShipmentDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.shipment.CreateShipmentMedicationDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.shipment.MedicationCreateShipmentDTO;
 
-import java.sql.Date;
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 import static controller.dataForTests.chemistLoginDto;
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static pl.lodz.p.it.ssbd2023.ssbd01.common.i18n.*;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestClassOrder(ClassOrderer.OrderAnnotation.class)
@@ -46,37 +48,83 @@ public class ShipmentControllerIT extends BaseTest {
     @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
     class CreateShipment {
 
-        static List<CreateShipmentMedicationDTO> createShipmentMedicationDTOS = new ArrayList<>();
+        static List<CreateShipmentMedicationDTO> medications =
+                new ArrayList<>();
+        static List<CreateShipmentMedicationDTO> medicationsNotExists =
+                new ArrayList<>();
         static CreateShipmentDTO createShipmentDTO;
 
         @BeforeAll
         static void setUp() {
-            createShipmentMedicationDTOS.add(CreateShipmentMedicationDTO.builder()
+            medications.add(CreateShipmentMedicationDTO.builder()
                     .quantity(2)
-                    .medication(null)
+                    .medication(new MedicationCreateShipmentDTO(1L))
                     .build());
 
-            createShipmentMedicationDTOS.add(CreateShipmentMedicationDTO.builder()
+            medications.add(CreateShipmentMedicationDTO.builder()
                     .quantity(5)
-                    .medication(null)
+                    .medication(new MedicationCreateShipmentDTO(2L))
+                    .build());
+
+            medicationsNotExists.add(CreateShipmentMedicationDTO.builder()
+                    .quantity(5)
+                    .medication(new MedicationCreateShipmentDTO(999L))
                     .build());
 
             createShipmentDTO = CreateShipmentDTO.builder()
-                    .shipmentDate(Date.from(Instant.now()))
-                    .shipmentMedications(createShipmentMedicationDTOS)
+                    .shipmentDate(LocalDateTime.now().toString())
+                    .shipmentMedications(medications)
                     .build();
         }
 
         @Test
         @Order(1)
         public void createShipment_correct() {
+            given().header("authorization", "Bearer " + chemistJwt)
+                    .body(createShipmentDTO)
+                    .post(getApiRoot() + "/shipment")
+                    .then().log().all()
+                    .statusCode(Response.Status.CREATED.getStatusCode());
+        }
+
+        @Test
+        @Order(2)
+        public void createShipment_medicationNotExist() {
+            createShipmentDTO.setShipmentMedications(medicationsNotExists);
+            given().header("authorization", "Bearer " + chemistJwt)
+                    .body(createShipmentDTO)
+                    .post(getApiRoot() + "/shipment")
+                    .then().log().all()
+                    .statusCode(Response.Status.NOT_FOUND.getStatusCode())
+                    .body("message", equalTo(EXCEPTION_ENTITY_NOT_FOUND));
+            createShipmentDTO.setShipmentMedications(medications);
+        }
+
+        @Test
+        @Order(3)
+        public void createShipment_invalidDate() {
+            createShipmentDTO.setShipmentDate("totally normal date, trust me");
             given()
                     .header("authorization", "Bearer " + chemistJwt)
                     .body(createShipmentDTO)
                     .post(getApiRoot() + "/shipment")
                     .then().log().all()
-                    .statusCode(Response.Status.CREATED.getStatusCode());
-            // todo
+                    .statusCode(Response.Status.BAD_REQUEST.getStatusCode());
+            createShipmentDTO.setShipmentDate(LocalDateTime.now().toString());
+        }
+
+        @Test
+        @Order(4)
+        public void createShipment_noMedications() {
+            createShipmentDTO.setShipmentMedications(new ArrayList<>());
+            given()
+                    .header("authorization", "Bearer " + chemistJwt)
+                    .body(createShipmentDTO)
+                    .post(getApiRoot() + "/shipment")
+                    .then().log().all()
+                    .statusCode(Response.Status.BAD_REQUEST.getStatusCode())
+                    .body("message", equalTo(EXCEPTION_INCORRECT_DATE_FORMAT));
+            createShipmentDTO.setShipmentMedications(medications);
         }
     }
 }
