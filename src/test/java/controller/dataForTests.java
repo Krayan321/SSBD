@@ -170,7 +170,7 @@ public class dataForTests {
           .price(new BigDecimal("10.0"))
           .categoryName(categoryDto.getName())
           .build();
-        CategoryDTO.builder().name("Antydepresanty").isOnPrescription(false).build();
+//        CategoryDTO.CategoryDTOBuilder().name("Antydepresanty").isOnPrescription(false).build();
 
   public static CreateOrderMedicationDTO createOrderMedicationDTO =
           CreateOrderMedicationDTO.orderMedicationBuilder()

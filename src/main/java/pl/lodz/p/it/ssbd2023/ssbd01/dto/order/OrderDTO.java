@@ -13,27 +13,22 @@ import pl.lodz.p.it.ssbd2023.ssbd01.entities.Prescription;
 import java.util.Date;
 import java.util.List;
 
+@ToString
 @Getter
 @Setter
+@AllArgsConstructor
 @NoArgsConstructor
-@ToString
-public class OrderDTO extends AbstractEntityDTO {
+@Builder
+public class OrderDTO {
 
     @NotNull
-    private boolean inQueue;
+    private Boolean inQueue;
 
     @NotNull
     private Date orderDate;
 
-    @Builder
-    public OrderDTO(
-            Long id,
-            Long version,
-            boolean inQueue,
-            Date orderDate
-    ) {
-        super(id, version);
-        this.inQueue = inQueue;
-        this.orderDate = orderDate;
-    }
+    private PrescriptionDTO prescription;
+
+    @NotNull
+    private List<OrderMedicationDTO> orderMedication;
 }

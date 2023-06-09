@@ -6,6 +6,8 @@ import io.restassured.filter.log.LogDetail;
 import io.restassured.http.ContentType;
 import jakarta.ws.rs.core.Response;
 import org.junit.jupiter.api.*;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccount.EditAccountDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.order.CreateOrderMedicationDTO;
 
 import static controller.dataForTests.*;
 import static io.restassured.RestAssured.given;
@@ -16,6 +18,9 @@ public class OrderControllerIT extends BaseTest {
 
     static String adminJwt;
     static String patientJwt;
+
+    private static String etag;
+    private static EditAccountDTO editAccountDTO;
 
 
     @BeforeAll
