@@ -1,13 +1,11 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.entities;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -19,10 +17,10 @@ import lombok.Setter;
 @Table(
         name = "patient_order",
         indexes = {
-                @Index(name = "order_index", columnList = "id", unique = true),
+                @Index(name = "order_index", columnList = "id"),
                 @Index(name = "prescription_index", columnList = "prescription_id", unique = true),
-                @Index(name = "patient_data_index", columnList = "patient_data_id", unique = true),
-                @Index(name = "chemist_data_index", columnList = "chemist_data_id", unique = true),
+                @Index(name = "patient_data_index", columnList = "patient_data_id"),
+                @Index(name = "chemist_data_index", columnList = "chemist_data_id"),
         })
 @NamedQuery(
         name = "Order.findByPatientDataId",
@@ -60,7 +58,18 @@ public class Order extends AbstractEntity implements Serializable {
             updatable = false)
     private PatientData patientData;
 
-    @ManyToOne
-    @JoinColumn(name = "chemist_data_id", referencedColumnName = "id", updatable = false)
-    private ChemistData chemistData;
+  @ManyToOne
+  @JoinColumn(name = "chemist_data_id", referencedColumnName = "id", updatable = false)
+  private ChemistData chemistData;
+
+  @Builder
+  public Order(
+          Boolean inQueue,
+          Date orderDate,
+          PatientData patientData,
+          ChemistData chemistData) {
+    this.orderDate = orderDate;
+    this.patientData = patientData;
+    this.chemistData = chemistData;
+  }
 }

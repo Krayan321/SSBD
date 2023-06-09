@@ -2,17 +2,24 @@ package pl.lodz.p.it.ssbd2023.ssbd01.dto.prescrription;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
-import pl.lodz.p.it.ssbd2023.ssbd01.dto.PatientDataDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.AbstractEntityDTO;
 
-@ToString
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
-@Builder
-public class PrescriptionDTO {
+@ToString
+public class PrescriptionDTO extends AbstractEntityDTO {
 
     @NotNull
     private String prescriptionNumber;
 
+    @Builder
+    public PrescriptionDTO(
+            Long id,
+            Long version,
+            String prescriptionNumber
+    ) {
+        super(id, version);
+        this.prescriptionNumber = prescriptionNumber;
+    }
 }

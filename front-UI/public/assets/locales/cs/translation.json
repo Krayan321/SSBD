@@ -163,5 +163,15 @@
   "logout": "Odhlásit se",
   "edit_admin_data": "Upravit podrobnosti správce",
   "edit_chemist_data": "Upravit údaje o lékárníkovi",
-  "edit_patient_data": "Upravit údaje o pacientovi"
+  "edit_patient_data": "Upravit údaje o pacientovi",
+  "orders": "Objednávky",
+  "yes": "Ano",
+  "no": "Ne",
+  "is_order_in_queue": "Je objednávka ve frontě?",
+  "order_date": "Datum objednávky",
+  "medication_name": "Název léku",
+  "medication_quantity": "Množství léku",
+  "medication_price": "Cena léku",
+  "order_total_price": "Celková cena objednávky",
+  "prescription_number": "Číslo předpisu"
 }

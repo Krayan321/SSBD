@@ -1,29 +1,36 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.dto.medication;
 
-import jakarta.validation.constraints.Digits;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.AbstractEntityDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.category.CategoryDTO;
 
 import java.math.BigDecimal;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
-@Builder
-@AllArgsConstructor
-public class MedicationDTO {
+@ToString
+public class MedicationDTO extends AbstractEntityDTO {
 
-  @NotNull
-  @Size(max = 50, min = 2)
-  private String name;
+    @NotNull
+    private String name;
 
-  @Digits(integer = 10, fraction = 2)
-  @Min(value = 0, message = "Price must be greater than or equal 0")
-  @NotNull private BigDecimal price;
+    @NotNull
+    private Integer stock;
 
-  @NotNull private CategoryDTO category;
+    @NotNull
+    private BigDecimal price;
+
+    @NotNull
+    private CategoryDTO categoryDTO;
+
+    @Builder(builderMethodName = "medicationDTOBuilder")
+    public MedicationDTO(Long id, Long version, String name, Integer stock, BigDecimal price, CategoryDTO categoryDTO) {
+        super(id, version);
+        this.name = name;
+        this.stock = stock;
+        this.price = price;
+        this.categoryDTO = categoryDTO;
+    }
 }

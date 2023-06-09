@@ -63,42 +63,45 @@ export default function AuthNavbar() {
                         >
                             {t("internet_pharmacy")}
                         </Typography>
-                        <IconButton color="inherit" onClick={(e) => {
-                            setAnchorElRole(e.currentTarget);
-                        }}>
-                            <LoopIcon/>
-                            <Menu
-                                id="simple-menu"
-                                anchorEl={anchorElRole}
-                                open={Boolean(anchorElRole)}
-                                onClose={(e) => {
-                                    e.stopPropagation();
-                                    setAnchorElRole(null);
-                                }}
-                                MenuListProps={{
-                                    "aria-labelledby": "basic-button",
-                                }}>
-                                {roles.map((role, index) => (
-                                    <MenuItem
-                                        disabled={role === userRole}
-                                        key={role}
-                                        onClick={(event) => {
-                                            dispatch(
-                                                changeLevel({
-                                                    sub: user.sub,
-                                                    roles: user.roles,
-                                                    index: index,
-                                                    exp: user.exp,
-                                                })
-                                            );
-                                            handleClose(event);
-                                            navigate(Pathnames.auth.landing);
-                                        }}>
-                                        {role}
-                                    </MenuItem>
-                                ))}
-                            </Menu>
-                        </IconButton>
+                        {
+                            roles.length > 1 &&
+                            <IconButton color="inherit" onClick={(e) => {
+                                setAnchorElRole(e.currentTarget);
+                            }}>
+                                <LoopIcon/>
+                                <Menu
+                                    id="simple-menu"
+                                    anchorEl={anchorElRole}
+                                    open={Boolean(anchorElRole)}
+                                    onClose={(e) => {
+                                        e.stopPropagation();
+                                        setAnchorElRole(null);
+                                    }}
+                                    MenuListProps={{
+                                        "aria-labelledby": "basic-button",
+                                    }}>
+                                    {roles.map((role, index) => (
+                                        <MenuItem
+                                            disabled={role === userRole}
+                                            key={role}
+                                            onClick={(event) => {
+                                                dispatch(
+                                                    changeLevel({
+                                                        sub: user.sub,
+                                                        roles: user.roles,
+                                                        index: index,
+                                                        exp: user.exp,
+                                                    })
+                                                );
+                                                handleClose(event);
+                                                navigate(Pathnames.auth.landing);
+                                            }}>
+                                            {role}
+                                        </MenuItem>
+                                    ))}
+                                </Menu>
+                            </IconButton>
+                        }
                         <IconButton
                             color="inherit"
                             onClick={() => {

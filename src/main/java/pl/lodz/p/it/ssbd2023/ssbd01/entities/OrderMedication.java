@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
+
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -15,8 +17,8 @@ import lombok.Setter;
 @Table(
     name = "order_medication",
     indexes = {
-      @Index(name = "order_index", columnList = "order_id", unique = true),
-      @Index(name = "medication_index_om", columnList = "medication_id", unique = true)
+      @Index(name = "order_index", columnList = "order_id"),
+      @Index(name = "medication_index_om", columnList = "medication_id")
     })
 @NamedQuery(name = "orderMedication.findAll", query = "SELECT o FROM OrderMedication o")
 public class OrderMedication extends AbstractEntity implements Serializable {
@@ -39,4 +41,11 @@ public class OrderMedication extends AbstractEntity implements Serializable {
   @Column(nullable = false)
   @Min(value = 1, message = "Quantity must be greater than 0")
   private Integer quantity;
+
+  @Builder
+  OrderMedication(Order order, Medication medication, Integer quantity) {
+    this.setOrder(order);
+    this.setMedication(medication);
+    this.setQuantity(quantity);
+  }
 }

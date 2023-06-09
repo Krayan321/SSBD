@@ -1,16 +1,13 @@
 import React, {useState} from 'react';
-import {Grid, Paper, TextField, Button, CircularProgress} from '@mui/material';
+import {Box, Button, CircularProgress, Paper, Stack, TextField} from '@mui/material';
 import {useTranslation} from "react-i18next";
 import {signUpAccount} from "../api/mok/accountApi";
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
-import * as Yup from "yup";
 import {yupResolver} from "@hookform/resolvers/yup";
 import {useForm} from "react-hook-form";
-import Typography from '@mui/material/Typography';
-import {Container, Stack} from '@mui/material';
 import 'react-toastify/dist/ReactToastify.css';
-import {ToastContainer, toast} from 'react-toastify';
+import {toast, ToastContainer} from 'react-toastify';
 import {signUpSchema} from "../utils/Validations";
 
 
@@ -60,13 +57,12 @@ function SignUp() {
     })
 
     return (
-        // <Grid container spacing={2}>
-        <div className="wrapper" >
+        <div className="wrapper" style={{marginBottom: "3rem"}}>
             <Paper elevation={20} className="paper">
                 <h2>
                     {t("sign_up")} </h2>
-                <form>
-                    <Stack spacing={2} direction="row" sx={{marginBottom: 4}}>
+                <Stack spacing={4}>
+                    <Stack spacing={2} direction="row">
                         <TextField
                             {...register("name")}
                             type="text"
@@ -189,12 +185,14 @@ function SignUp() {
                         sx={{mb: 4}}
                         {...register("nip")}
                     />
-                    {
-                        loading ? <CircularProgress style={{marginRight: "auto", marginLeft: "auto"}}/> :
-                            <Button fullWidth
-                                    onClick={onSubmit} type='submit' variant='contained'>{t("sign_up")}</Button>
-                    }
-                </form>
+                    <Box sx={{mb: 2}} display="flex" justifyContent="center" alignItems="center">
+                        {loading ? <CircularProgress/> : (
+                            <Button fullWidth onClick={handleSubmit(onSubmit)} type='submit' variant='contained'>
+                                {t("sign_in")}
+                            </Button>
+                        )}
+                    </Box>
+                </Stack>
             </Paper>
             <ToastContainer/>
         </div>

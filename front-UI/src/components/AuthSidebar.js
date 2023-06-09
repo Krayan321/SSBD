@@ -17,6 +17,7 @@ import {useTranslation} from "react-i18next";
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import {Box} from "@mui/system";
 import Typography from "@mui/material/Typography";
+import ShoppingBasketIcon from '@mui/icons-material/ShoppingBasket';
 
 
 function AuthSidebar() {
@@ -95,6 +96,18 @@ function AuthSidebar() {
                         {
                             userRole === ROLES.PATIENT &&
                             <>
+                                <MenuItem
+                                    onClick={() => {
+                                        navigate(Pathnames.patient.selfOrders);
+                                    }}
+                                >
+                                    <IconButton
+                                        color="inherit"
+                                    >
+                                        <ShoppingBasketIcon/>
+                                    </IconButton>
+                                    {t("orders")}
+                                </MenuItem>
                             </>
                         }
                         {

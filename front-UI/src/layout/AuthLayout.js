@@ -22,6 +22,16 @@ const guestTheme = createTheme({
     typography: {
         fontFamily: ["Lato", "sans-serif"].join(","),
     },
+    components: {
+        MuiTableCell: {
+            styleOverrides: {
+                root: {
+                    textAlign: 'center',
+                },
+            },
+        },
+    },
+
 });
 
 const adminTheme = createTheme({
@@ -33,6 +43,15 @@ const adminTheme = createTheme({
     typography: {
         fontFamily: ["Lato", "sans-serif"].join(","),
     },
+    components: {
+        MuiTableCell: {
+            styleOverrides: {
+                root: {
+                    textAlign: 'center',
+                },
+            },
+        },
+    },
 });
 
 const chemistTheme = createTheme({
@@ -42,6 +61,15 @@ const chemistTheme = createTheme({
     typography: {
         fontFamily: ["Lato", "sans-serif"].join(","),
     },
+    components: {
+        MuiTableCell: {
+            styleOverrides: {
+                root: {
+                    textAlign: 'center',
+                },
+            },
+        },
+    },
 });
 
 const patientTheme = createTheme({
@@ -50,6 +78,15 @@ const patientTheme = createTheme({
     },
     typography: {
         fontFamily: ["Lato", "sans-serif"].join(","),
+    },
+    components: {
+        MuiTableCell: {
+            styleOverrides: {
+                root: {
+                    textAlign: 'center',
+                },
+            },
+        },
     },
 });
 

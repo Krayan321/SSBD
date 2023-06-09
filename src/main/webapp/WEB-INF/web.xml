@@ -146,6 +146,21 @@
     <security-role>
         <role-name>getAllOrdersForSelf</role-name>
     </security-role>
+    <security-role>
+        <role-name>getWaitingOrders</role-name>
+    </security-role>
+    <security-role>
+        <role-name>createOrder</role-name>
+    </security-role>
+    <security-role>
+        <role-name>addMedicationToOrder</role-name>
+    </security-role>
+    <security-role>
+        <role-name>changeNumberOfMedicationsInOrder</role-name>
+    </security-role>
+    <security-role>
+        <role-name>getOrderDetails</role-name>
+    </security-role>
 
     <security-role>
         <role-name>readAllShipments</role-name>

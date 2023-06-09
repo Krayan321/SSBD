@@ -169,5 +169,16 @@
   "logout": "Wyloguj",
   "edit_admin_data": "Edytuj dane admina",
   "edit_chemist_data": "Edytuj dane aptekarza",
-  "edit_patient_data": "Edytuj dane pacjenta"
+  "edit_patient_data": "Edytuj dane pacjenta",
+  "orders": "Zamówienia",
+  "yes": "Tak",
+  "no": "Nie",
+  "is_order_in_queue": "Czy zamówienie jest w kolejce?",
+  "order_date": "Data zamówienia",
+  "medication_name": "Nazwa leku",
+  "medication_quantity": "Ilość leku",
+  "medication_price": "Cena leku",
+  "order_total_price": "Cena całkowita zamówienia",
+  "prescription_number": "Numer recepty"
+
 }

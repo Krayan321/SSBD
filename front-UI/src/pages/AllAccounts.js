@@ -19,7 +19,7 @@ import {
     DialogActions,
     DialogContent,
     DialogContentText,
-    IconButton, useTheme,
+    IconButton, useTheme, Skeleton,
 } from "@mui/material";
 import {useNavigate} from "react-router-dom";
 import LockIcon from "@mui/icons-material/Lock";
@@ -32,16 +32,20 @@ export default function AllAccounts() {
     const [accounts, setAccounts] = useState([]);
     const navigate = useNavigate();
     const theme = useTheme();
+    const [loading, setLoading] = useState(false);
     const [dialogStates, setDialogStates] = useState({});
     const [refreshing, setRefreshing] = useState(false);
 
     const {t} = useTranslation();
 
     const findAccounts = useCallback(async () => {
+        setLoading(true)
         setRefreshing(true);
         getAccounts().then((response) => {
+            setLoading(false)
             setAccounts(response.data);
         }).catch((error) => {
+            setLoading(false)
             toast.error(t(error.response.data.message), {position: "top-center"});
         });
         setRefreshing(false);
@@ -102,6 +106,43 @@ export default function AllAccounts() {
             [accountId]: true,
         }));
     };
+
+    if (loading) {
+        return (
+            <TableContainer component={Paper}>
+                <Table>
+                    <TableHead sx={{backgroundColor: theme.palette.primary.main}}>
+                        <TableRow>
+                            <TableCell sx={{color: "white"}}>Login</TableCell>
+                            <TableCell sx={{color: "white"}} align="right">Email</TableCell>
+                            <TableCell sx={{color: "white"}} align="right">{t("confirmed")}</TableCell>
+                            <TableCell sx={{color: "white"}} align="right">{t("active")}</TableCell>
+                            <TableCell sx={{color: "white"}} align="right">{t("details")}</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        <TableRow>
+                            <TableCell>
+                                <Skeleton/>
+                            </TableCell>
+                            <TableCell>
+                                <Skeleton/>
+                            </TableCell>
+                            <TableCell>
+                                <Skeleton/>
+                            </TableCell>
+                            <TableCell>
+                                <Skeleton/>
+                            </TableCell>
+                            <TableCell>
+                                <Skeleton/>
+                            </TableCell>
+                        </TableRow>
+                    </TableBody>
+                </Table>
+            </TableContainer>
+        );
+    }
 
     return (
         <div style={{

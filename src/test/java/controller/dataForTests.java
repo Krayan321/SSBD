@@ -1,24 +1,26 @@
 package controller;
 
+import java.math.BigDecimal;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.addAsAdmin.AddAdminAccountDto;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.addAsAdmin.AddChemistAccountDto;
-import pl.lodz.p.it.ssbd2023.ssbd01.dto.category.CategoryDTO;
-import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccount.EditAccountDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.auth.LoginDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.category.CategoryDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccessLevel.EditAdminDataDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccessLevel.EditChemistDataDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccessLevel.EditPatientDataDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccount.EditAccountDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccount.grant.GrantAdminDataDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccount.grant.GrantChemistDataDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.medication.AddMedicationDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.order.CreateOrderMedicationDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.register.RegisterPatientDTO;
-
-import java.math.BigDecimal;
 
 public class dataForTests {
 
   public static LoginDTO adminLoginDto = new LoginDTO("admin123", "P@ssw0rd");
   public static LoginDTO patientLoginDto = new LoginDTO("test11", "testP@tient123");
+  public static LoginDTO patient2LoginDto = new LoginDTO("patient123", "P@ssw0rd");
+
   public static LoginDTO chemistLoginDto = new LoginDTO("chemist123", "P4$$w0Rd");
 
   // register
@@ -59,48 +61,50 @@ public class dataForTests {
           .build();
 
   public static RegisterPatientDTO registerPatientDtoDuplicatePesel =
-        RegisterPatientDTO.builder()
-            .login("pesel-login")
-            .password(patientLoginDto.getPassword())
-            .email("pesel-patient-email@local.db")
-            .name("Test")
-            .lastName("Patient")
-                .phoneNumber("123123321")
-                .pesel("12345678901")
-                .nip("4443332213")
-                .build();
+      RegisterPatientDTO.builder()
+          .login("pesel-login")
+          .password(patientLoginDto.getPassword())
+          .email("pesel-patient-email@local.db")
+          .name("Test")
+          .lastName("Patient")
+          .phoneNumber("123123321")
+          .pesel("12345678901")
+          .nip("4443332213")
+          .build();
 
   public static RegisterPatientDTO registerPatientDtoDuplicateNip =
-        RegisterPatientDTO.builder()
-            .login("nip-login")
-            .password(patientLoginDto.getPassword())
-            .email("nip-patient-email@local.db")
-            .name("Test")
-            .lastName("Patient")
-                .phoneNumber("123123321")
-                .pesel("12345678999")
-                .nip("4443332211")
-                .build();
+      RegisterPatientDTO.builder()
+          .login("nip-login")
+          .password(patientLoginDto.getPassword())
+          .email("nip-patient-email@local.db")
+          .name("Test")
+          .lastName("Patient")
+          .phoneNumber("123123321")
+          .pesel("12345678999")
+          .nip("4443332211")
+          .build();
 
-    public static RegisterPatientDTO registerPatientDtoDuplicatePhoneNumber =
-        RegisterPatientDTO.builder()
-            .login("phone-login")
-            .password(patientLoginDto.getPassword())
-            .email("phone-patient-email@local.db")
-            .name("Test")
-            .lastName("Patient")
-                .phoneNumber("123123123")
-                .pesel("12345678910")
-                .nip("1443332211")
-                .build();
+  public static RegisterPatientDTO registerPatientDtoDuplicatePhoneNumber =
+      RegisterPatientDTO.builder()
+          .login("phone-login")
+          .password(patientLoginDto.getPassword())
+          .email("phone-patient-email@local.db")
+          .name("Test")
+          .lastName("Patient")
+          .phoneNumber("123123123")
+          .pesel("12345678910")
+          .nip("1443332211")
+          .build();
   // grant
-  public static GrantChemistDataDTO grantChemistDataDTO = GrantChemistDataDTO.builder()
+  public static GrantChemistDataDTO grantChemistDataDTO =
+      GrantChemistDataDTO.builder()
           .login(patientLoginDto.getLogin())
           .licenseNumber("127836")
           .version(0L)
           .build();
 
-  public static GrantAdminDataDTO grantAdminDataDTO = GrantAdminDataDTO.builder()
+  public static GrantAdminDataDTO grantAdminDataDTO =
+      GrantAdminDataDTO.builder()
           .login(patientLoginDto.getLogin())
           .workPhoneNumber("123431431")
           .version(0L)
@@ -157,12 +161,22 @@ public class dataForTests {
   public static EditAccountDTO editEmailDto = new EditAccountDTO("new@email.local");
 
   public static CategoryDTO categoryDto =
-        CategoryDTO.builder().name("Antydepresanty").isOnPrescription(false).build();
+      CategoryDTO.builder().name("Antydepresanty").isOnPrescription(false).build();
 
   public static AddMedicationDTO addMedicationDto =
-        AddMedicationDTO.builder().name("Prozac")
-                .stock(100)
-                .price(new BigDecimal("10.0"))
-                .categoryName(categoryDto.getName())
-                .build();
+      AddMedicationDTO.builder()
+          .name("Prozac")
+          .stock(100)
+          .price(new BigDecimal("10.0"))
+          .categoryName(categoryDto.getName())
+          .build();
+        CategoryDTO.builder().name("Antydepresanty").isOnPrescription(false).build();
+
+  public static CreateOrderMedicationDTO createOrderMedicationDTO =
+          CreateOrderMedicationDTO.orderMedicationBuilder()
+                  .id(1L)
+                  .version(1L)
+                  .quantity(1)
+                  .medicationDTOId(1L)
+                  .build();
 }
