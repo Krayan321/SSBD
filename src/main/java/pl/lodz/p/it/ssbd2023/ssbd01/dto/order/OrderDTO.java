@@ -29,6 +29,8 @@ public class OrderDTO {
 
     private PrescriptionDTO prescription;
 
+    private Boolean prescriptionApproved;
+
     @NotNull
     private List<OrderMedicationDTO> orderMedication;
 }

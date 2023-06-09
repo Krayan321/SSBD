@@ -17,6 +17,7 @@ public class OrderConverter {
             order.getPrescription() == null
                 ? null
                 : PrescriptionConverter.mapPrescriptionToPrescriptionDTO(order.getPrescription()))
+        .prescriptionApproved(order.getPrescriptionApproved())
         .orderDate(order.getOrderDate())
         .inQueue(order.getInQueue())
         .build();
