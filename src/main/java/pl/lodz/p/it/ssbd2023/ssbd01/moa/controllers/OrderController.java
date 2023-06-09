@@ -12,6 +12,7 @@ import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.core.Response;
 import lombok.extern.java.Log;
 import pl.lodz.p.it.ssbd2023.ssbd01.common.AbstractController;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.order.ChangeMedNumberDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.order.OrderDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Order;
 import pl.lodz.p.it.ssbd2023.ssbd01.moa.managers.OrderManagerLocal;
@@ -99,9 +100,10 @@ public class OrderController extends AbstractController {
     //moa 5
     @PUT
     @Path("/{id}/change")
-    @DenyAll
-    public void changeNumberOfMedicationsInOrder(@PathParam("id") Long id) {
-        throw new UnsupportedOperationException();
+    @RolesAllowed("changeNumberOfMedicationsInOrder")
+    public Response changeNumberOfMedicationsInOrder(@PathParam("id") Long id, @Valid ChangeMedNumberDTO changeMedNumberDTO) {
+        repeatTransactionVoid(orderManager, () -> orderManager.changeNumberOfMedicationsInOrder(id, changeMedNumberDTO.getMedicationId(), changeMedNumberDTO.getQuantity()));
+        return Response.ok().build();
     }
 
     //moa 6

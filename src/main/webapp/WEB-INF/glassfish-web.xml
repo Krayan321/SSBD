@@ -131,6 +131,7 @@
         <group-name>CHEMIST</group-name>
         <group-name>ADMIN</group-name>
     </security-role-mapping>
+
     <security-role-mapping>
         <role-name>createOrder</role-name>
         <group-name>PATIENT</group-name>
@@ -149,6 +150,12 @@
     <security-role-mapping>
         <role-name>addMedicationToOrder</role-name>
         <group-name>PATIENT</group-name>
+    </security-role-mapping>
+
+    <security-role-mapping>
+        <role-name>changeNumberOfMedicationsInOrder</role-name>
+        <group-name>PATIENT</group-name>
+        <group-name>ADMIN</group-name>
     </security-role-mapping>
 
 </glassfish-web-app>
