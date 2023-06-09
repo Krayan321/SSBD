@@ -23,7 +23,7 @@ public class MedicationDTO {
 
   @Digits(integer = 10, fraction = 2)
   @Min(value = 0, message = "Price must be greater than or equal 0")
-  @NotNull private BigDecimal price;
+  @NotNull private BigDecimal currentPrice;
 
   @NotNull private CategoryDTO category;
 }

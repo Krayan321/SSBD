@@ -11,7 +11,7 @@ public class MedicationConverter {
     return MedicationDTO.builder()
         .category(CategoryConverter.mapCategoryToCategoryDTO(medication.getCategory()))
         .name(medication.getName())
-        .price(medication.getPrice())
+        .currentPrice(medication.getCurrentPrice())
         .build();
   }
 }

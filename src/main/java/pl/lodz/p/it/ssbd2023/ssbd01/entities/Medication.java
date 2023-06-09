@@ -3,7 +3,7 @@ package pl.lodz.p.it.ssbd2023.ssbd01.entities;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotNull;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import lombok.Builder;
@@ -38,8 +38,13 @@ public class Medication extends AbstractEntity implements Serializable {
 
   @Column(nullable = false)
   @Digits(integer = 10, fraction = 2)
-  @Min(value = 0, message = "Price must be greater than or equal 0")
-  private BigDecimal price;
+  @Min(value = 0, message = "Current price must be greater than or equal 0")
+  private BigDecimal currentPrice;
+
+  @Column(nullable = false)
+  @Digits(integer = 10, fraction = 2)
+  @Min(value = 0, message = "Previous price must be greater than or equal 0")
+  private BigDecimal previousPrice;
 
   @ManyToOne(
       optional = false,
@@ -48,10 +53,10 @@ public class Medication extends AbstractEntity implements Serializable {
   private Category category;
 
   @Builder
-  public Medication(String name, Integer stock, BigDecimal price, Category category) {
+  public Medication(String name, Integer stock, BigDecimal currentPrice, Category category) {
     this.name = name;
     this.stock = stock;
-    this.price = price;
+    this.currentPrice = currentPrice;
     this.category = category;
   }
 }
