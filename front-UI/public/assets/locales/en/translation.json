@@ -180,5 +180,7 @@
   "order_total_price": "Order total price",
   "prescription_number": "Prescription number",
   "delete_order": "Delete Order",
-  "waitingOrders": "Waiting Orders"
+  "waitingOrders": "Waiting Orders",
+  "ordersToApprove": "Orders to approve",
+  "Orders-to-approve": "Orders to approve"
 }

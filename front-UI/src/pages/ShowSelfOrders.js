@@ -7,7 +7,7 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import {Skeleton, useTheme,} from "@mui/material";
-import {getSelfOrders} from "../api/moa/moaApi";
+import {getSelfOrders} from "../api/moa/orderApi";
 import moment from "moment";
 import {useTranslation} from "react-i18next";
 
