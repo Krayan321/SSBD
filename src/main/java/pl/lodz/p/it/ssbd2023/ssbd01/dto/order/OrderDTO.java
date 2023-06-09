@@ -21,6 +21,8 @@ import java.util.List;
 @Builder
 public class OrderDTO {
 
+    private long id;
+
     @NotNull
     private Boolean inQueue;
 

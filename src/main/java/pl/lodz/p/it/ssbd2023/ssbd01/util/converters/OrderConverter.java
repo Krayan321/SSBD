@@ -22,6 +22,7 @@ public class OrderConverter {
                 : PrescriptionConverter.mapPrescriptionToPrescriptionDTO(order.getPrescription()))
         .orderDate(order.getOrderDate())
         .inQueue(order.getInQueue())
+        .id(order.getId())
         .build();
   }
 }

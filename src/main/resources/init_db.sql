@@ -94,3 +94,5 @@ insert into patient_order (id, prescription_approved, patient_data_id, order_dat
 insert into order_medication (id, order_id, medication_id, quantity, created_by, creation_date, modification_date, modified_by, version) values (1, 1, 1, 2, null, now(), null, null, 0);
 insert into order_medication (id, order_id, medication_id, quantity, created_by, creation_date, modification_date, modified_by, version) values (2, 1, 2, 4, null, now(), null, null, 0);
 insert into order_medication (id, order_id, medication_id, quantity, created_by, creation_date, modification_date, modified_by, version) values (3, 2, 3, 20, null, now(), null, null, 0);
+insert into order_medication (id, order_id, medication_id, quantity, created_by, creation_date, modification_date, modified_by, version) values (4, 3, 3, 20, null, now(), null, null, 0);
+insert into order_medication (id, order_id, medication_id, quantity, created_by, creation_date, modification_date, modified_by, version) values (5, 3, 2, 4, null, now(), null, null, 0);
