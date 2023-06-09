@@ -7,6 +7,8 @@ import jakarta.interceptor.InvocationContext;
 import lombok.extern.java.Log;
 import pl.lodz.p.it.ssbd2023.ssbd01.exceptions.ApplicationException;
 
+import java.util.NoSuchElementException;
+
 @Log
 public class GenericManagerExceptionsInterceptor {
 
@@ -18,7 +20,9 @@ public class GenericManagerExceptionsInterceptor {
       throw e;
     } catch (EJBAccessException | AccessLocalException e) {
       throw ApplicationException.createAccessDeniedException();
-    } catch (Exception e) {
+    } catch(NoSuchElementException e) {
+      throw ApplicationException.createEntityNotFoundException();
+    } catch(Exception e) {
       log.warning(e.getMessage());
       throw ApplicationException.createGeneralException(e);
     }

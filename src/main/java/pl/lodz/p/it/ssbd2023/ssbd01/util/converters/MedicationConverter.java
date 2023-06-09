@@ -8,10 +8,19 @@ public class MedicationConverter {
   private MedicationConverter() {}
 
   public static MedicationDTO mapMedicationToMedicationDTO(Medication medication) {
-    return MedicationDTO.builder()
-        .category(CategoryConverter.mapCategoryToCategoryDTO(medication.getCategory()))
-        .name(medication.getName())
-        .price(medication.getPrice())
-        .build();
+    return MedicationDTO.medicationDTOBuilder()
+            .id(medication.getId())
+            .version(medication.getVersion())
+            .name(medication.getName())
+            .stock(medication.getStock())
+            .price(medication.getPrice())
+            .categoryDTO(
+                    CategoryConverter.mapCategoryToCategoryDTO(medication.getCategory()))
+            .build();
   }
+
+  public static Medication mapMedicationDtoToMedication(MedicationDTO medicationDTO) {
+        return null;
+    }
+
 }

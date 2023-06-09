@@ -164,4 +164,23 @@
         <group-name>ADMIN</group-name>
     </security-role-mapping>
 
+    <security-role-mapping>
+        <role-name>readAllShipments</role-name>
+        <group-name>CHEMIST</group-name>
+    </security-role-mapping>
+
+    <security-role-mapping>
+        <role-name>readShipment</role-name>
+        <group-name>CHEMIST</group-name>
+    </security-role-mapping>
+
+    <security-role-mapping>
+        <role-name>createShipment</role-name>
+        <group-name>CHEMIST</group-name>
+    </security-role-mapping>
+
+    <security-role-mapping>
+        <role-name>updateShipment</role-name>
+        <group-name>CHEMIST</group-name>
+    </security-role-mapping>
 </glassfish-web-app>

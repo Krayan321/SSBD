@@ -7,11 +7,9 @@ import java.util.List;
 
 public interface ShipmentManagerLocal extends CommonManagerLocalInterface {
 
-    Shipment createShipment(Shipment shipment);
+    void createShipment(Shipment shipment);
 
     Shipment getShipment(Long id);
-
-    Shipment editShipment(Shipment shipment);
 
     List<Shipment> getAllShipments();
 }

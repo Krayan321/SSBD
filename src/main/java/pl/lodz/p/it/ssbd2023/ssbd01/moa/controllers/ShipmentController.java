@@ -1,14 +1,19 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.moa.controllers;
 
 import jakarta.annotation.security.DenyAll;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
+import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import pl.lodz.p.it.ssbd2023.ssbd01.common.AbstractController;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.shipment.CreateShipmentDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.shipment.ShipmentDTO;
-import pl.lodz.p.it.ssbd2023.ssbd01.moa.facades.ShipmentFacade;
+import pl.lodz.p.it.ssbd2023.ssbd01.entities.Shipment;
 import pl.lodz.p.it.ssbd2023.ssbd01.moa.managers.ShipmentManagerLocal;
+import pl.lodz.p.it.ssbd2023.ssbd01.util.converters.ShipmentConverter;
 
 import java.util.List;
 
@@ -17,33 +22,37 @@ import java.util.List;
 @DenyAll
 public class ShipmentController extends AbstractController {
 
-    @Inject private ShipmentManagerLocal shipmentManagerLocal;
+    @Inject private ShipmentManagerLocal shipmentManager;
 
     @GET
     @Path("/")
-    @DenyAll
+    @RolesAllowed("readAllShipments")
+    @Produces(MediaType.APPLICATION_JSON)
     public List<ShipmentDTO> readAllShipments() {
-        throw new UnsupportedOperationException();
+        List<Shipment> shipments = repeatTransaction(shipmentManager,
+                () -> shipmentManager.getAllShipments());
+        return ShipmentConverter.mapShipmentsToShipmentsDto(shipments);
     }
 
     @GET
     @Path("/{id}")
-    @DenyAll
-    public Response readShipment(@PathParam("id") Long id) {
-        throw new UnsupportedOperationException();
+    @RolesAllowed("readShipment")
+    @Produces(MediaType.APPLICATION_JSON)
+    public ShipmentDTO readShipment(@PathParam("id") Long id) {
+        Shipment shipment = repeatTransaction(shipmentManager,
+                () -> shipmentManager.getShipment(id));
+        return ShipmentConverter.mapShipmentToShipmentDto(shipment);
     }
 
     @POST
-    @Path("/create-shipment")
-    @DenyAll
-    public Response createShipment(ShipmentDTO shipmentDTO) {
-        throw new UnsupportedOperationException();
-    }
-
-    @PUT
-    @Path("/update-shipment")
-    @DenyAll
-    public ShipmentDTO updateShipment(ShipmentDTO shipmentDTO) {
-        throw new UnsupportedOperationException();
+    @Path("/")
+    @RolesAllowed("createShipment")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response createShipment(@Valid CreateShipmentDTO shipmentDTO) {
+        Shipment shipment = ShipmentConverter
+                .mapCreateShipmentDtoToShipment(shipmentDTO);
+        repeatTransactionVoid(shipmentManager,
+                () -> shipmentManager.createShipment(shipment));
+        return Response.status(Response.Status.CREATED).build();
     }
 }
