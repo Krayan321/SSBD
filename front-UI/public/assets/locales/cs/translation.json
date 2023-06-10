@@ -181,5 +181,14 @@
   "patient_name": "Jméno pacienta",
   "medications": "Léky",
   "approve": "Schválit",
-  "reject": "Zamítnout"
+  "reject": "Zamítnout",
+  "shipment": "Zásilka",
+  "Shipment": "Zásilka",
+  "select_medication": "Vyberte lék",
+  "create_medication": "Vytvořit nový lék",
+  "show_more": "Zobrazit více",
+  "shipment_date": "Datum zásilky",
+  "quantity_min": "Množství nemůže být menší než 0",
+  "quantity_integer": "Musí být celé číslo",
+  "shipment_created": "Zásilka úspěšně vytvořena"
 }

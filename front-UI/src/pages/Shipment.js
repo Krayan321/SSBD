@@ -29,7 +29,7 @@ export function Shipment() {
                 quantity: Yup.string()
                     .min(1, t("quantity_min"))
             })
-        ).min(1, "at least one shipment"),
+        ).min(1),
     });
 
     const {
@@ -72,16 +72,15 @@ export function Shipment() {
                 quantity: Math.floor(om.quantity),
                 medication: {id: om.id}});
         })
-        console.log(body);
-        createShipment(body).then(
-            () => {
-                setLoading(false)
-                toast.success(t("shipment_created"), {position: "top-center"})
-                navigate(Pathnames.auth.landing);
-            }
-        ).catch(error => {
+        createShipment(body).then(() => {
             setLoading(false)
-            toast.error(t(error.response.data.message), {position: "top-center"})
+            toast.success(t("shipment_created"),
+                {position: "top-center"})
+            navigate(Pathnames.auth.landing);
+        }).catch(error => {
+            setLoading(false)
+            toast.error(t(error.response.data.message),
+                {position: "top-center"})
         })
     }
 
