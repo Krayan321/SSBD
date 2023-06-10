@@ -190,5 +190,6 @@
   "shipment": "Shipment",
   "Shipment": "Shipment",
   "select_medication": "Select medication",
-  "create_medication": "Create new medication"
+  "create_medication": "Create new medication",
+  "show_more": "Show more"
 }

@@ -6,7 +6,8 @@ function Overlay({ open, children }) {
             position: "fixed",
             padding: '20px 20px',
             margin: "0px auto",
-            width: "80%",}} >
+            width: "80%",
+            zIndex: 2}} >
             <Paper elevation={10} style={{padding: '20px 20px', margin: "0px auto", width: "80%",}}>
                 {children}
             </Paper>

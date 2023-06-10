@@ -33,13 +33,11 @@ export function Shipment() {
     const {
         register,
         control,
-        reset,
         handleSubmit,
-        watch,
         formState: {errors},
     } = useForm({resolver: yupResolver(addShipmentSchema)});
 
-    const paperStyle = {padding: '20px 20px', margin: "0px auto", width: "50%"}
+    const paperStyle = {padding: '20px 20px', margin: "0px auto", width: "80%"}
     const {t} = useTranslation();
     const [loading, setLoading] = useState(false);
     const [selectMedication, setSelectMedication] = useState(false);
@@ -65,8 +63,8 @@ export function Shipment() {
 
 
 
-    const onSubmit = function() {
-
+    const onSubmit = function(data) {
+        console.log(data);
     }
 
     return (
@@ -76,10 +74,9 @@ export function Shipment() {
             alignContent: 'center',
             marginTop: '2rem'
         }}>
-
             <Paper elevation={10} style={paperStyle}>
                 <h2 style={{fontFamily: 'Lato'}}>{t("shipment")}</h2>
-                <form>
+                <form onSubmit={handleSubmit(onSubmit)}>
                     <Grid container spacing={1} sx={{mb: 2}}>
                         <Grid item xs={6}>
                             <Button fullWidth variant="outlined" color="success"
@@ -98,8 +95,7 @@ export function Shipment() {
                             <Grid item xs={6}>
                                 <TextField type="text" variant='standard'
                                            color='secondary' label={t("name")}
-                                           fullWidth required
-                                           InputProps={{readOnly: true,}}
+                                           fullWidth InputProps={{readOnly: true}}
                                            size="small"
                                            {...register(`orderMedications.${i}.name`)}/>
                             </Grid>
@@ -114,29 +110,31 @@ export function Shipment() {
                             </Grid>
                             <Grid item xs={1}>
                                 <Button fullWidth fullHeitht size="large"
-                                        onClick={() => remove(i)}
+                                        onClick={() => {
+                                            const found = medications.find(med => med.name === om.name);
+                                            found.chosen = false;
+                                            remove(i)
+                                        }}
                                         variant='outlined' color="error"><Close/></Button>
                             </Grid>
                         </Grid>
                     ))}
 
-                    <Button fullWidth
-                            onClick={() => append({name: 'name', id: '1', quantity: ''})}
-                            variant='contained'>add</Button>
+
                     {
                         loading ? <CircularProgress style={{marginRight: "auto", marginLeft: "auto"}}/> :
-                            <Button fullWidth
-                                    onClick={onSubmit} type='submit' variant='contained'>{t("submit")}</Button>
+                            <Button fullWidth type='submit' variant='contained'>{t("submit")}</Button>
                     }
                 </form>
             </Paper>
-            <SelectMedicationOverlay open={selectMedication}
+            <ToastContainer/>
+            <SelectMedicationOverlay open={selectMedication} medications={medications}
                                      onClose={() => setSelectMedication(false)}
                                      append={append}/>
             <AddMedicationOverlay open={createMedication}
                                   onClose={() => setCreateMedication(false)}
                                   append={append}/>
-            <ToastContainer/>
+
         </div>
 
 
