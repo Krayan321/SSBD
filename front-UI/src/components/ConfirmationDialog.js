@@ -8,7 +8,9 @@ const ConfirmationDialog = ({open, title, actions, onClose}) => {
             <DialogTitle>{title}</DialogTitle>
             <DialogActions>
                 {actions.map((action) => (
-                    <Button color={action.color} onClick={action.handler}>{action.label}</Button>
+                    <Button color={action.color}
+                            key={"confirm-" + action.label}
+                            onClick={action.handler}>{action.label}</Button>
                 ))}
             </DialogActions>
         </Dialog>

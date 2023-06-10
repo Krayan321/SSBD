@@ -43,14 +43,13 @@ export function Shipment() {
     const [selectMedication, setSelectMedication] = useState(false);
     const [createMedication, setCreateMedication] = useState(false);
     const [medications, setMedications] = useState(false);
-    const { fields, append, remove } = useFieldArray({ name: 'orderMedications', control });
+    const {fields, append, remove} = useFieldArray({ name: 'orderMedications', control });
 
     const findAllMedications = useCallback(async () => {
         setLoading(true);
         getAllMedications().then((response) => {
             setLoading(false)
             setMedications(response.data);
-            console.log(response.data);
         }).catch((error) => {
             setLoading(false)
             toast.error(t(error.response.data.message), {position: "top-center"});
@@ -91,7 +90,7 @@ export function Shipment() {
                     </Grid>
 
                     {fields.map((om, i) => (
-                        <Grid container spacing={1} sx={{mb: 2}}>
+                        <Grid container spacing={1} sx={{mb: 2}} key={"om-" + i}>
                             <Grid item xs={6}>
                                 <TextField type="text" variant='standard'
                                            color='secondary' label={t("name")}
@@ -109,7 +108,7 @@ export function Shipment() {
                                            {...register(`orderMedications.${i}.quantity`)}/>
                             </Grid>
                             <Grid item xs={1}>
-                                <Button fullWidth fullHeitht size="large"
+                                <Button fullWidth size="large"
                                         onClick={() => {
                                             const found = medications.find(med => med.name === om.name);
                                             found.chosen = false;
@@ -129,15 +128,11 @@ export function Shipment() {
             </Paper>
             <ToastContainer/>
             <SelectMedicationOverlay open={selectMedication} medications={medications}
-                                     onClose={() => setSelectMedication(false)}
-                                     append={append}/>
+                                     append={append}
+                                     onClose={() => setSelectMedication(false)}/>
             <AddMedicationOverlay open={createMedication}
                                   onClose={() => setCreateMedication(false)}
                                   append={append}/>
-
         </div>
-
-
-
     )
 }

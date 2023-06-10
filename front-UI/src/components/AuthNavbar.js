@@ -164,6 +164,7 @@ export default function AuthNavbar() {
                                 crumb.charAt(0).toUpperCase() + crumb.slice(1);
                             return (
                                 <Link
+                                    key={"crumb" + current}
                                     underline="hover"
                                     color="inherit"
                                     href={current}

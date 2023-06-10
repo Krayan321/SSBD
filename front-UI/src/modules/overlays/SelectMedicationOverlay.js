@@ -2,49 +2,33 @@ import Overlay from "../../components/Overlay";
 import {Button, Grid, TextField} from "@mui/material";
 import {Close} from "@mui/icons-material";
 import {useTranslation} from "react-i18next";
-import React, {useEffect, useState} from "react";
-import {useFieldArray, useForm} from "react-hook-form";
-import * as Yup from "yup";
-import {yupResolver} from "@hookform/resolvers/yup";
+import React, {useCallback, useEffect, useState} from "react";
 
 function SelectMedicationOverlay({ open, onClose, medications, append }) {
 
-    const searchSchema = Yup.object().shape({
-        name: Yup.string()
-    });
-
-    const {
-        register,
-        control,
-        handleSubmit,
-        formState: {errors},
-    } = useForm({resolver: yupResolver(searchSchema)});
-
     const {t} = useTranslation();
 
-    let filteredMedications = [];
-    let prevFilter = medications;
-    const [maxShown, setMaxShown] = useState(2)
+    const [filteredMedications, setFilteredMedications] = useState([]);
+    const [maxItems, setMaxItems] = useState(2)
+    const [phrase, setPhrase] = useState('')
 
-    useEffect(() => {
-        filter('');
-        console.log(medications);
-    })
-
-    const filter = function(phrase) {
+    const filter = useCallback(() => {
         if(Array.isArray(medications)) {
             if(phrase == '') {
-                filteredMedications = medications;
+                setFilteredMedications(medications.filter(medication =>
+                    !medication.chosen).slice(0, maxItems));
             } else {
-                filteredMedications = medications.filter(medication =>
-                    medication.name.startsWith(phrase) && !medication.chosen)
+                setFilteredMedications(medications.filter(medication =>
+                    medication.name.toLowerCase().startsWith(phrase.toLowerCase())
+                    && !medication.chosen).slice(0, maxItems))
             }
         }
-    }
+    }, [phrase, medications, open, maxItems]);
 
-    const onChange = function(event) {
-        filter(event.target.value);
-    }
+
+    useEffect(() => {
+        filter()
+    }, [phrase, medications, open, maxItems])
 
     const select = function(medication) {
         const found = medications.find(med => med.name === medication.name);
@@ -68,17 +52,17 @@ function SelectMedicationOverlay({ open, onClose, medications, append }) {
                 <Grid item xs={12}>
                     <TextField type="text" variant='outlined'
                                color='secondary' label={t("medication_name")}
-                               fullWidth onChange={e => onChange(e)}/>
+                               fullWidth onChange={e => setPhrase(e.target.value)}/>
                 </Grid>
-                {filteredMedications.map((med) => (
-                    <Grid item xs={12}>
+                {filteredMedications.map((med, i) => (
+                    <Grid item xs={12} key={"fm" + i}>
                         <Button fullWidth variant='outlined'
                                 onClick={() => select(med)}>{med.name}</Button>
                     </Grid>
                 ))}
                 <Grid item xs={12}>
-                    <Button fullWidth variant='outlined'
-                            onClick={() => setMaxShown(maxShown + 2)}>
+                    <Button fullWidth color="info" variant='outlined'
+                            onClick={() => setMaxItems(maxItems + 2)}>
                         {t("show_more")}</Button>
                 </Grid>
             </Grid>
