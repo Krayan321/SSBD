@@ -186,5 +186,9 @@
   "patient_name": "Patient name",
   "medications": "Medications",
   "approve": "Approve",
-  "reject": "Reject"
+  "reject": "Reject",
+  "shipment": "Shipment",
+  "Shipment": "Shipment",
+  "select_medication": "Select medication",
+  "create_medication": "Create new medication"
 }

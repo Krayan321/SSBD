@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import MenuItem from "@mui/material/MenuItem";
 import {ROLES} from "../constants/Constants";
 import {Divider, Icon, useTheme} from "@mui/material";
+import LocalShipping from '@mui/icons-material/LocalShipping';
 import {useDispatch, useSelector} from "react-redux";
 import {Sidebar, Menu} from "react-pro-sidebar";
 import PeopleIcon from '@mui/icons-material/People';
@@ -91,6 +92,18 @@ function AuthSidebar() {
                         {
                             userRole === ROLES.CHEMIST &&
                             <>
+                                <MenuItem
+                                    onClick={() => {
+                                        navigate(Pathnames.chemist.shipment);
+                                    }}
+                                >
+                                    <IconButton
+                                        color="inherit"
+                                    >
+                                        <LocalShipping/>
+                                    </IconButton>
+                                    {t("shipment")}
+                                </MenuItem>
                                 <MenuItem
                                     onClick={() => {
                                         navigate(Pathnames.chemist.waitingOrders);

@@ -6,10 +6,13 @@ import {useNavigate} from "react-router-dom";
 import {addChemist} from "../api/mok/accountApi";
 import {toast, ToastContainer} from "react-toastify";
 import {Pathnames} from "../router/Pathnames";
-import {Button, CircularProgress, Paper, TextField} from "@mui/material";
-import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import {Button, CircularProgress, Grid, Paper, TextField} from "@mui/material";
+import List from "@mui/icons-material/List";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import * as Yup from "yup";
+import {Add} from "@mui/icons-material";
+import SelectMedicationOverlay from "../modules/overlays/SelectMedicationOverlay";
+import AddMedicationOverlay from "../modules/overlays/AddMedicationOverlay";
 
 const addChemistSchema = Yup.object().shape({
     login: Yup.string()
@@ -45,132 +48,39 @@ export function Shipment() {
         resolver: yupResolver(addChemistSchema),
     });
 
-    const paperStyle = {padding: '20px 20px', margin: "0px auto", width: 400}
-    const headerStyle = {margin: 0}
-    const [passwordShown, setPasswordShown] = useState(false);
-    const [confirmPasswordShown, setConfirmPasswordShown] = useState(false);
+    const paperStyle = {padding: '20px 20px', margin: "0px auto", width: "80%"}
     const {t} = useTranslation();
-    const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
+    const [selectMedication, setSelectMedication] = useState(false);
+    const [createMedication, setCreateMedication] = useState(false);
 
-    const onSubmit = handleSubmit(({login, email, password, licenseNumber}) => {
+    const onSubmit = function() {
 
-        setLoading(true)
-
-        addChemist(login, email, password, licenseNumber).then(
-            () => {
-                setLoading(false)
-                toast.success(t("account_created_check_email"), {
-                    position: "top-center",
-                })
-                navigate(Pathnames.auth.landing);
-            }
-        ).catch(error => {
-            setLoading(false)
-
-            if (error.response.status === 400) {
-                toast.error(t("invalid_account_data"), {
-                    position: "top-center",
-                })
-            } else if (error.response.status === 409) {
-                toast.error(t(error.response.data.message), {
-                    position: "top-center",
-                })
-            } else {
-                toast.error(t("server_error"), {
-                    position: "top-center",
-                })
-            }
-        })
-    })
+    }
 
     return (
-        // <Grid container spacing={2}>
         <div style={{
             display: 'flex',
             justifyContent: 'center',
             alignContent: 'center',
-            marginTop: '3rem'
+            marginTop: '2rem'
         }}>
-            <Paper elevation={20} style={paperStyle}>
-                <h2 style={{fontFamily: 'Lato'}}>
-                    {t("add_chemist")} </h2>
+
+            <Paper elevation={10} style={paperStyle}>
+                <h2 style={{fontFamily: 'Lato'}}>{t("shipment")}</h2>
                 <form>
-                    <TextField
-                        type="text"
-                        variant='outlined'
-                        color='secondary'
-                        label={t("login")}
-                        fullWidth
-                        required
-                        sx={{mb: 4}}
-                        error={errors.login}
-                        helperText={t(errors.login?.message)}
-                        {...register("login")}
-                    />
-                    <TextField
-                        type="email"
-                        variant='outlined'
-                        color='secondary'
-                        label={t("email")}
-                        fullWidth
-                        required
-                        sx={{mb: 4}}
-                        error={errors.email}
-                        helperText={t(errors.email?.message)}
-                        {...register("email")}
-                    />
-                    <TextField
-                        type={passwordShown ? "text" : "password"}
-                        variant='outlined'
-                        color='secondary'
-                        label={t("password")}
-                        required
-                        fullWidth
-                        error={errors.password}
-                        helperText={t(errors.password?.message)}
-                        sx={{mb: 4}}
-                        {...register("password")}
-                        InputProps={
-                            {
-                                endAdornment: <Button onClick={() => setPasswordShown(!passwordShown)}>{passwordShown ?
-                                    <VisibilityOffIcon fontSize="small" sx={{color: 'black'}}/> :
-                                    <VisibilityIcon fontSize="small" sx={{color: 'black'}}/>}</Button>
-                            }
-                        }
-                    />
-                    <TextField
-                        type={confirmPasswordShown ? "text" : "password"}
-                        variant='outlined'
-                        color='secondary'
-                        label={t("confirm_password")}
-                        required
-                        fullWidth
-                        error={errors.confirmPassword}
-                        helperText={t(errors.confirmPassword?.message)}
-                        sx={{mb: 4}}
-                        {...register("confirmPassword")}
-                        InputProps={
-                            {
-                                endAdornment: <Button
-                                    onClick={() => setConfirmPasswordShown(!confirmPasswordShown)}>{confirmPasswordShown ?
-                                    <VisibilityOffIcon fontSize="small" sx={{color: 'black'}}/> :
-                                    <VisibilityIcon fontSize="small" sx={{color: 'black'}}/>}</Button>
-                            }
-                        }
-                    />
-                    <TextField
-                        type="text"
-                        variant='outlined'
-                        color='secondary'
-                        label={t("license_number")}
-                        fullWidth
-                        required
-                        error={errors.licenseNumber}
-                        helperText={t(errors.licenseNumber?.message)}
-                        sx={{ mb: 4 }}
-                        {...register("licenseNumber")}
-                    />
+                    <Grid container spacing={1}>
+                        <Grid item xs={6}>
+                            <Button fullWidth variant="outlined" color="success"
+                                    onClick={() => setSelectMedication(true)}>
+                                <List/>{t("select_medication")}</Button>
+                        </Grid>
+                        <Grid item xs={6}>
+                            <Button fullWidth variant="outlined" color="secondary"
+                                    onClick={() => setCreateMedication(true)}>
+                                <Add/>{t("create_medication")}</Button>
+                        </Grid>
+                    </Grid>
 
                     {
                         loading ? <CircularProgress style={{marginRight: "auto", marginLeft: "auto"}}/> :
@@ -178,7 +88,10 @@ export function Shipment() {
                                     onClick={onSubmit} type='submit' variant='contained'>{t("submit")}</Button>
                     }
                 </form>
+
             </Paper>
+            <SelectMedicationOverlay open={selectMedication} onClose={() => setSelectMedication(false)}/>
+            <AddMedicationOverlay open={createMedication} onClose={() => setCreateMedication(false)}/>
             <ToastContainer/>
         </div>
     )
