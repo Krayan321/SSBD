@@ -19,6 +19,7 @@ import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import {Box} from "@mui/system";
 import Typography from "@mui/material/Typography";
 import ShoppingBasketIcon from '@mui/icons-material/ShoppingBasket';
+import AlarmIcon from '@mui/icons-material/Alarm';
 
 
 function AuthSidebar() {
@@ -112,7 +113,7 @@ function AuthSidebar() {
                                     <IconButton
                                         color="inherit"
                                     >
-                                        <ShoppingBasketIcon/>
+                                        <AlarmIcon/>
                                     </IconButton>
                                     {t("waitingOrders")}
                                 </MenuItem>

@@ -132,26 +132,8 @@ public class OrderManager extends AbstractManager implements OrderManagerLocal, 
 
     @Override
     @RolesAllowed("getWaitingOrders")
-    public List<Order> getWaitingOrders(Account account) {
-        account
-                .getAccessLevels()
-                .forEach(
-                        accessLevel -> {
-                            if (!accessLevel.getRole().getRoleName().equals("CHEMIST")) {
-                                throw OrderException.onlyChemistCanListWaitingOrders();
-                            }
-                        });
-
-        List<Order> allOrders = orderFacade.findAll();
-        List<Order> filteredOrders = new ArrayList<>();
-
-        for (Order order : allOrders) {
-            if (order.getInQueue()) {
-                filteredOrders.add(order);
-            }
-        }
-
-        return filteredOrders;
+    public List<Order> getWaitingOrders() {
+        return orderFacade.findWaitingOrders();
     }
 
     @Override

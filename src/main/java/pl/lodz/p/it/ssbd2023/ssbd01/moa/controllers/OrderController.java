@@ -152,11 +152,11 @@ public class OrderController extends AbstractController {
     @GET
     @RolesAllowed("getWaitingOrders")
     @Path("/waiting")
-    public Response getWaitingOrders() {
-        List<OrderDTO> orderDTOs = repeatTransaction(orderManager, () -> orderManager.getWaitingOrders(accountManager.getCurrentUserWithAccessLevels()).stream()
-                .map(OrderConverter::mapOrderToOrderDTO)
-                .collect(Collectors.toList()));
-        return Response.ok(orderDTOs).build();
+    public List<OrderDTO> getWaitingOrders() {
+        List<Order> orders = repeatTransaction(orderManager, () -> orderManager.getWaitingOrders());
+                return orders.stream()
+                        .map(OrderConverter::mapOrderToOrderDTO)
+                        .collect(Collectors.toList());
     }
 
     //moa 16

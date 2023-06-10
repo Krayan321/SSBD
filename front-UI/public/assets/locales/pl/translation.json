@@ -196,5 +196,6 @@
   "shipment_date": "Data wysyłki",
   "quantity_min": "Ilość nie może być mniejsza niż 0",
   "quantity_integer": "Musi być liczbą całkowitą",
-  "shipment_created": "Wysyłka utworzona pomyślnie"
+  "shipment_created": "Wysyłka utworzona pomyślnie",
+  "none": "Brak"
 }

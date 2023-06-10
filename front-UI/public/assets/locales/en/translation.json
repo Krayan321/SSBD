@@ -195,5 +195,6 @@
   "shipment_date": "Shipment date",
   "quantity_min": "Quantity cannot be less than 0",
   "quantity_integer": "Must be an integer",
-  "shipment_created": "Shipment created successfully"
+  "shipment_created": "Shipment created successfully",
+  "none": "None"
 }
