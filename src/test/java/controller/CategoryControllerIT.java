@@ -7,43 +7,31 @@ import io.restassured.http.ContentType;
 import jakarta.ws.rs.core.Response;
 import org.junit.jupiter.api.*;
 
-import static controller.dataForTests.adminLoginDto;
-import static controller.dataForTests.categoryDto;
+import static controller.dataForTests.*;
 import static io.restassured.RestAssured.given;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class CategoryControllerIT extends BaseTest {
 
-    static String adminJwt;
-
-
+    static String chemistJwt;
 
     @BeforeAll
     static void setUp() throws InterruptedException {
         System.out.println(getApiRoot());
-        String jsonJwt =
-                given()
-                        .contentType("application/json")
-                        .body(adminLoginDto)
-                        .log()
-                        .all()
-                        .post(getApiRoot() + "/auth/login")
-                        .then()
-                        .log()
-                        .all()
-                        .statusCode(Response.Status.OK.getStatusCode())
-                        .extract()
-                        .response()
-                        .asString();
+        chemistJwt = given()
+                .contentType("application/json")
+                .body(chemistLoginDto)
+                .log().all()
+                .post(getApiRoot() + "/auth/login")
+                .then().log().all()
+                .statusCode(Response.Status.OK.getStatusCode())
+                .extract().jsonPath().getString("jwtToken");
 
-        adminJwt = jsonJwt.substring(jsonJwt.indexOf(":") + 2, jsonJwt.length() - 2);
-
-        RestAssured.requestSpecification =
-                new RequestSpecBuilder()
-                        .setContentType(ContentType.JSON)
-                        .setAccept(ContentType.JSON)
-                        .log(LogDetail.ALL)
-                        .build();
+        RestAssured.requestSpecification = new RequestSpecBuilder()
+                .setContentType(ContentType.JSON)
+                .setAccept(ContentType.JSON)
+                .log(LogDetail.ALL)
+                .build();
     }
 
 
@@ -52,7 +40,7 @@ public class CategoryControllerIT extends BaseTest {
     @Order(1)
     public void addCategory() {
         given()
-                .header("Authorization", "Bearer " + adminJwt)
+                .header("Authorization", "Bearer " + chemistJwt)
                 .body(categoryDto)
                 .post(getApiRoot() + "/category/add-category")
                 .then()

@@ -2,6 +2,7 @@ package pl.lodz.p.it.ssbd2023.ssbd01.moa.facades;
 
 import jakarta.annotation.security.DenyAll;
 import jakarta.annotation.security.PermitAll;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.ejb.Stateless;
 import jakarta.ejb.TransactionAttribute;
 import jakarta.ejb.TransactionAttributeType;
@@ -32,14 +33,14 @@ public class MedicationFacade extends AbstractFacade<Medication> {
     super(Medication.class);
   }
 
-  @DenyAll
+  @RolesAllowed("getAllMedications")
   public List<Medication> findAll() {
     TypedQuery<Medication> tq = em.createNamedQuery("medication.findAll", Medication.class);
     return tq.getResultList();
   }
 
   @Override
-  @PermitAll
+  @RolesAllowed("createMedication")
   public void create(Medication medication) {
     super.create(medication);
   }

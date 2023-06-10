@@ -170,6 +170,17 @@
     </security-role-mapping>
 
     <security-role-mapping>
+        <role-name>createMedication</role-name>
+        <group-name>CHEMIST</group-name>
+    </security-role-mapping>
+
+    <security-role-mapping>
+        <role-name>getAllMedications</role-name>
+        <group-name>CHEMIST</group-name>
+        <group-name>PATIENT</group-name>
+    </security-role-mapping>
+
+    <security-role-mapping>
         <role-name>readAllShipments</role-name>
         <group-name>CHEMIST</group-name>
     </security-role-mapping>

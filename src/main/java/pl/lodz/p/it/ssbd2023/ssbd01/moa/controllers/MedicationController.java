@@ -2,6 +2,7 @@ package pl.lodz.p.it.ssbd2023.ssbd01.moa.controllers;
 
 import jakarta.annotation.security.DenyAll;
 import jakarta.annotation.security.PermitAll;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
@@ -11,10 +12,12 @@ import jakarta.ws.rs.core.Response;
 import lombok.extern.java.Log;
 import pl.lodz.p.it.ssbd2023.ssbd01.common.AbstractController;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.medication.AddMedicationDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.medication.MedicationDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Category;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Medication;
 import pl.lodz.p.it.ssbd2023.ssbd01.moa.managers.CategoryManagerLocal;
 import pl.lodz.p.it.ssbd2023.ssbd01.moa.managers.MedicationManagerLocal;
+import pl.lodz.p.it.ssbd2023.ssbd01.util.converters.MedicationConverter;
 
 import java.util.List;
 
@@ -33,10 +36,12 @@ public class MedicationController extends AbstractController {
     //moa 1
     @GET
     @Path("/")
-    @DenyAll
+    @RolesAllowed("getAllMedications")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<AddMedicationDTO> getAllMedications() {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public List<MedicationDTO> getAllMedications() {
+        List<Medication> medications =
+                repeatTransaction(medicationManager, () -> medicationManager.getAllMedications());
+        return medications.stream().map(MedicationConverter::mapMedicationToMedicationDTO).toList();
     }
 
     //moa 2???

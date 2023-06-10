@@ -2,6 +2,7 @@ package pl.lodz.p.it.ssbd2023.ssbd01.moa.managers;
 
 import jakarta.annotation.security.DenyAll;
 import jakarta.annotation.security.PermitAll;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.ejb.SessionSynchronization;
 import jakarta.ejb.Stateful;
 import jakarta.ejb.TransactionAttribute;
@@ -36,7 +37,7 @@ public class MedicationManager extends AbstractManager implements MedicationMana
     }
 
     @Override
-    @PermitAll
+    @RolesAllowed("createMedication")
     public Medication createMedication(Medication medication) {
         Long categoryId = medication.getCategory().getId();
         Category managedCategory = categoryFacade.find(categoryId).orElseThrow(ApplicationException::createEntityNotFoundException);
@@ -46,9 +47,9 @@ public class MedicationManager extends AbstractManager implements MedicationMana
     }
 
     @Override
-    @DenyAll
+    @RolesAllowed("getAllMedications")
     public List<Medication> getAllMedications() {
-        throw new UnsupportedOperationException();
+        return medicationFacade.findAll();
     }
 
     @Override
