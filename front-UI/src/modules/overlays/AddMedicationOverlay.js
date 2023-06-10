@@ -3,7 +3,7 @@ import {Button} from "@mui/material";
 import {Close} from "@mui/icons-material";
 import {useTranslation} from "react-i18next";
 
-function AddMedicationOverlay({ open, onClose }) {
+function AddMedicationOverlay({ open, onClose, append }) {
 
     const {t} = useTranslation();
 
