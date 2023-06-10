@@ -29,5 +29,6 @@ export const Pathnames = {
     chemist: {
         shipment: '/shipment',
         waitingOrders: '/orders/waiting',
+        ordersToApprove: '/orders-to-approve',
     },
 }

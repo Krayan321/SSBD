@@ -175,5 +175,11 @@
   "order_total_price": "Celková cena objednávky",
   "prescription_number": "Číslo předpisu",
   "delete_order": "Smazat objednávku",
-  "waitingOrders": "Nevyřízené objednávky"
+  "waitingOrders": "Nevyřízené objednávky",
+  "ordersToApprove": "Objednávky k schválení",
+  "Orders-to-approve": "Objednávky k schválení",
+  "patient_name": "Jméno pacienta",
+  "medications": "Léky",
+  "approve": "Schválit",
+  "reject": "Zamítnout"
 }

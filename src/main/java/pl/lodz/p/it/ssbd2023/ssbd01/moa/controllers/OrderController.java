@@ -71,18 +71,22 @@ public class OrderController extends AbstractController {
 
     //moa 13
     @PUT
-    @Path("/{id}/aprove")
+    @Path("/{id}/approve")
     @DenyAll
-    public void aproveOrder(@PathParam("id") Long id) {
+    public void approveOrder(@PathParam("id") Long id) {
         throw new UnsupportedOperationException();
     }
 
     //moa 12
     @GET
-    @Path("/approve")
-    @DenyAll
+    @Path("/to-approve")
+    @RolesAllowed("getOrdersToApprove")
     public List<OrderDTO> getOrdersToApprove() {
-        throw new UnsupportedOperationException();
+        List<Order> orders = repeatTransaction(orderManager,
+                () -> orderManager.getOrdersToApprove());
+        return orders.stream()
+                .map(OrderConverter::mapOrderToOrderDTO)
+                .collect(Collectors.toList());
     }
 
     // moa3

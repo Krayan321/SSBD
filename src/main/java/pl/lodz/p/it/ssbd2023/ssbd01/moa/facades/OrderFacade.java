@@ -44,6 +44,16 @@ public class OrderFacade extends AbstractFacade<Order> {
     return query.getResultList();
   }
 
+  @RolesAllowed("getOrdersToApprove")
+  public List<Order> findNotYetApproved() {
+    return getEntityManager()
+            .createQuery("select o from Order o "
+                    + "left join fetch o.orderMedications "
+                    + "where o.prescription is not null "
+                    + "and o.inQueue = false")
+            .getResultList();
+  }
+
   @Override
   @PermitAll
   public void edit(Order order) {

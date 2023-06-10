@@ -18,6 +18,7 @@ import AddAdministrator from "../pages/AddAdministrator";
 import ShowSelfOrders from "../pages/ShowSelfOrders";
 import ShowWaitingOrders from "../pages/ShowWaitingOrders";
 import {Shipment} from "../pages/Shipment";
+import OrdersToApprove from "../pages/OrdersToApprove";
 
 export const publicRoutes = [
     {
@@ -112,4 +113,8 @@ export const ChemistRoutes = [
         path:Pathnames.chemist.waitingOrders,
         Component: ShowWaitingOrders,
     },
+    {
+        path:Pathnames.chemist.ordersToApprove,
+        Component: OrdersToApprove,
+    }
 ];
