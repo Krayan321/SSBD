@@ -865,7 +865,7 @@ public class AccountControllerIT extends BaseTest {
               .get(getApiRoot() + "/account/4")
               .then()
               .statusCode(Response.Status.OK.getStatusCode())
-              .body("login", equalTo(patientLoginDto.getLogin()));
+              .body("login", equalTo(patientRegisteredLoginDto.getLogin()));
     }
 
     @Test
@@ -1340,7 +1340,7 @@ public class AccountControllerIT extends BaseTest {
     @Order(3)
     public void login_registeredButNotConfirmed() {
       given()
-            .body(patientLoginDto)
+            .body(patientRegisteredLoginDto)
             .post(getApiRoot() + "/auth/login")
             .then()
             .log()
@@ -1426,7 +1426,7 @@ public class AccountControllerIT extends BaseTest {
       Long version = response.getBody().jsonPath().getLong("version");
       editAccountDTO = EditAccountDTO.builder()
               .version(version)
-              .login(patientLoginDto.getLogin())
+              .login(patientRegisteredLoginDto.getLogin())
               .email("patient1@mail.pl")
               .build();
     }
@@ -1882,7 +1882,7 @@ public class AccountControllerIT extends BaseTest {
     public void init() {
       patientJwt = given()
               .contentType("application/json")
-              .body(patientLoginDto)
+              .body(patientRegisteredLoginDto)
               .log().all()
               .post(getApiRoot() + "/auth/login")
               .then().log().all()
@@ -1936,7 +1936,7 @@ public class AccountControllerIT extends BaseTest {
     private String patientJwt;
 
     private EditSelfPatientDataDTO patientDataDTO = EditSelfPatientDataDTO.builder()
-            .login(patientLoginDto.getLogin())
+            .login(patientRegisteredLoginDto.getLogin())
             .firstName(patientDataDTOChangedName.getFirstName())
             .lastName(patientDataDTOChangedName.getLastName())
             .nip(patientDataDTOChangedName.getNip())
@@ -1949,7 +1949,7 @@ public class AccountControllerIT extends BaseTest {
     public void init() {
       patientJwt = given()
               .contentType("application/json")
-              .body(patientLoginDto)
+              .body(patientRegisteredLoginDto)
               .log().all()
               .post(getApiRoot() + "/auth/login")
               .then().log().all()

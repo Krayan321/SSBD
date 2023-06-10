@@ -22,7 +22,9 @@ public interface OrderManagerLocal extends CommonManagerLocalInterface {
 
     List<Order> getWaitingOrders(Account account);
 
-    void aproveOrder(Long id);
+    List<Order> getOrdersToApprove();
+
+    void approveOrder(Long id);
 
     void cancelOrder(Long id);
 

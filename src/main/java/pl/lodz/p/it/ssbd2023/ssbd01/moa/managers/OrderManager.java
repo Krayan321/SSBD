@@ -155,8 +155,14 @@ public class OrderManager extends AbstractManager implements OrderManagerLocal, 
     }
 
     @Override
+    @RolesAllowed("getOrdersToApprove")
+    public List<Order> getOrdersToApprove() {
+        return orderFacade.findNotYetApproved();
+    }
+
+    @Override
     @DenyAll
-    public void aproveOrder(Long id) {
+    public void approveOrder(Long id) {
         throw new UnsupportedOperationException();
     }
 
