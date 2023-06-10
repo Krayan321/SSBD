@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useCallback,useEffect, useState} from "react";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -6,12 +6,15 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import {Skeleton, useTheme,} from "@mui/material";
+import {Box,Skeleton, useTheme,} from "@mui/material";
 import {getWaitingOrders} from "../api/moa/orderApi";
 import moment from "moment";
 import {useTranslation} from "react-i18next";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from '@mui/icons-material/Delete';
+import RefreshIcon from "@mui/icons-material/Refresh";
+import {toast, ToastContainer} from "react-toastify";
+
 
 export default function ShowWaitingOrders() {
 
@@ -19,20 +22,22 @@ export default function ShowWaitingOrders() {
     const [loading, setLoading] = useState(false);
     const {t} = useTranslation();
     const theme = useTheme();
-    useEffect(() => {
+
+    const findOrders = useCallback(async () => {
         setLoading(true)
-
         getWaitingOrders().then((response) => {
-
+            setLoading(false)
             setWaitingOrders(response.data);
-            console.log(response.data)
-            setLoading(false)
+            console.log(response.data);
         }).catch((error) => {
-            console.log(error);
             setLoading(false)
+            toast.error(t(error.response.data.message), {position: "top-center"});
         });
+    }, []);
 
-    }, [])
+    useEffect(() => {
+        findOrders();
+    }, [findOrders]);
 
 
     const formatOrderDate = (dateString) => {
@@ -47,13 +52,10 @@ export default function ShowWaitingOrders() {
                 <Table>
                     <TableHead sx={{backgroundColor: theme.palette.primary.main}}>
                         <TableRow>
-                            <TableCell sx={{color: "white"}}>{t("is_order_in_queue")}</TableCell>
+                            <TableCell sx={{color: "white"}}>{t("patient_name")}</TableCell>
                             <TableCell sx={{color: "white"}}>{t("order_date")}</TableCell>
-                            <TableCell sx={{color: "white"}}>{t("medication_name")}</TableCell>
-                            <TableCell sx={{color: "white"}}>{t("medication_price")}</TableCell>
-                            <TableCell sx={{color: "white"}}>{t("medication_quantity")}</TableCell>
-                            <TableCell sx={{color: "white"}}>{t("order_total_price")}</TableCell>
-                            <TableCell sx={{color: "white"}}>{t("prescription_number")}</TableCell>
+                            <TableCell sx={{color: "white"}} align="right">{t("medications")}</TableCell>
+                            <TableCell sx={{color: "white"}} align="right">{t("prescription_number")}</TableCell>
                             <TableCell sx={{color: "white"}}>{t("delete_order")}</TableCell>
                         </TableRow>
                     </TableHead>
@@ -95,77 +97,54 @@ export default function ShowWaitingOrders() {
             alignContent: "center",
             flexDirection: "column"
         }}>
+            <Box sx={{marginBottom: "10px", textAlign: "center"}}>
+                <IconButton
+                    variant="contained"
+                    onClick={findOrders}
+                    disabled={loading}
+                >
+                    <RefreshIcon/>
+                </IconButton>
+            </Box>
             <TableContainer sx={{maxWidth: "800px", margin: "auto"}} component={Paper}>
                 <Table>
                     <TableHead sx={{backgroundColor: theme.palette.primary.main}}>
                         <TableRow>
-                            <TableCell sx={{color: "white"}}>{t("is_order_in_queue")}</TableCell>
+                            <TableCell sx={{color: "white"}}>{t("patient_name")}</TableCell>
                             <TableCell sx={{color: "white"}}>{t("order_date")}</TableCell>
-                            <TableCell sx={{color: "white"}}>{t("medication_name")}</TableCell>
-                            <TableCell sx={{color: "white"}}>{t("medication_price")}</TableCell>
-                            <TableCell sx={{color: "white"}}>{t("medication_quantity")}</TableCell>
-                            <TableCell sx={{color: "white"}}>{t("order_total_price")}</TableCell>
-                            <TableCell sx={{color: "white"}}>{t("prescription_number")}</TableCell>
+                            <TableCell sx={{color: "white"}} align="right">{t("medications")}</TableCell>
+                            <TableCell sx={{color: "white"}} align="right">{t("prescription_number")}</TableCell>
                             <TableCell sx={{color: "white"}}>{t("delete_order")}</TableCell>
-
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {waitingOrders.map((item, index) => {
-                            const totalPrice = item.orderMedication.reduce((sum, medication) => {
-                                return sum + (medication.medication.price * medication.quantity);
-                            }, 0);
 
-                            return (
-                                <React.Fragment key={index}>
-                                    {item.orderMedication.map((medication, medicationIndex) => (
-                                        <TableRow key={`${index}-${medicationIndex}`}>
-                                            {medicationIndex === 0 && (
-                                                <>
-                                                    <TableCell
-                                                        rowSpan={item.orderMedication.length}>{item.inQueue.toString() === "true" ? t("yes") : t("no")}</TableCell>
-                                                    <TableCell
-                                                        rowSpan={item.orderMedication.length}>{formatOrderDate(item.orderDate)}</TableCell>
-                                                    <TableCell>{medication.medication.name}</TableCell>
-                                                    <TableCell>{medication.medication.price}</TableCell>
-                                                    <TableCell>{medication.quantity}</TableCell>
-                                                    {medicationIndex === 0 && (
-                                                        <TableCell
-                                                            rowSpan={item.orderMedication.length}>{totalPrice}</TableCell>
-                                                    )}
-                                                    {item.prescription && medicationIndex === 0 ? (
-                                                        <TableCell
-                                                            rowSpan={item.orderMedication.length}>{item.prescription.prescriptionNumber}</TableCell>
-                                                    ) : (
-                                                        <TableCell rowSpan={item.orderMedication.length}>-</TableCell>
-                                                    )}
-                                                </>
-                                            )}
-                                            {medicationIndex > 0 && (
-                                                <>
-                                                    <TableCell>{medication.medication.name}</TableCell>
-                                                    <TableCell>{medication.medication.price}</TableCell>
-                                                    <TableCell>{medication.quantity}</TableCell>
-                                                </>
-                                            )}
-                                            <TableCell>
-                                                <IconButton
-                                                    color="error"
-                                                    aria-label={t("delete_order")}
-                                                >
-                                                    <DeleteIcon />
-                                                </IconButton>
-                                            </TableCell>
-                                        </TableRow>
+                        {waitingOrders.map((row) => (
+                            <TableRow key={row.id} sx={{"&:last-child td, &:last-child th": {border: 0}}}>
+                                <TableCell component="th" scope="row">
+                                    {row.patientData.firstName} {row.patientData.lastName}
+                                </TableCell>
+                                <TableCell>{formatOrderDate(row.orderDate)}</TableCell>
+                                <TableCell>
+                                    {row.orderMedication.map((om) => (
+                                        <Box sx={{ m: 1 }}>
+                                            {om.medication.name}
+                                        </Box>
                                     ))}
-                                </React.Fragment>
-                            );
-                        })}
+                                </TableCell>
+                                <TableCell align="right">{row.prescription ? row.prescription.prescriptionNumber : t("none")}</TableCell>
+                                <TableCell>
+                                    <IconButton color="error" aria-label={t("delete_order")}>
+                                        <DeleteIcon />
+                                    </IconButton>
+                                </TableCell>
+                            </TableRow>
+                        ))}
                     </TableBody>
                 </Table>
+                <ToastContainer/>
             </TableContainer>
         </div>
-    )
-        ;
+    );
 }
 

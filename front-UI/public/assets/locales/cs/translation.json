@@ -181,5 +181,6 @@
   "patient_name": "Jméno pacienta",
   "medications": "Léky",
   "approve": "Schválit",
-  "reject": "Zamítnout"
+  "reject": "Zamítnout",
+  "none": "Nedostatek"
 }

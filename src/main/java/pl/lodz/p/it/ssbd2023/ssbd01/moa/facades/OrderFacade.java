@@ -43,6 +43,14 @@ public class OrderFacade extends AbstractFacade<Order> {
     query.setParameter("patientDataId", id);
     return query.getResultList();
   }
+  @RolesAllowed("getWaitingOrders")
+  public List<Order> findWaitingOrders() {
+    return getEntityManager()
+            .createQuery("select o from Order o "
+                    + "left join fetch o.orderMedications "
+                    + "where o.inQueue = true")
+            .getResultList();
+  }
 
   @RolesAllowed("getOrdersToApprove")
   public List<Order> findNotYetApproved() {

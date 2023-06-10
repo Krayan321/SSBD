@@ -186,5 +186,6 @@
   "patient_name": "Patient name",
   "medications": "Medications",
   "approve": "Approve",
-  "reject": "Reject"
+  "reject": "Reject",
+  "none": "None"
 }
