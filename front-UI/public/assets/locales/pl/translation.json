@@ -187,5 +187,6 @@
   "patient_name": "Imię pacjenta",
   "medications": "Leki",
   "approve": "Zatwierdź",
-  "reject": "Odrzuć"
+  "reject": "Odrzuć",
+  "none": "Brak"
 }
