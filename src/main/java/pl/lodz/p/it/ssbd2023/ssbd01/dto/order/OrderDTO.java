@@ -21,6 +21,8 @@ import java.util.List;
 @Builder
 public class OrderDTO {
 
+    private long id;
+
     @NotNull
     private Boolean inQueue;
 
@@ -28,6 +30,8 @@ public class OrderDTO {
     private Date orderDate;
 
     private PrescriptionDTO prescription;
+
+    private PatientDataDTO patientData;
 
     private Boolean prescriptionApproved;
 

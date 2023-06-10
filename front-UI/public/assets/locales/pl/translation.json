@@ -181,6 +181,11 @@
   "order_total_price": "Cena całkowita zamówienia",
   "prescription_number": "Numer recepty",
   "delete_order": "Usuń zamówienie",
-  "waitingOrders": "Zamówienia oczekujące"
-
+  "waitingOrders": "Zamówienia oczekujące",
+  "ordersToApprove": "Zamówienia do zatwierdzenia",
+  "Orders-to-approve": "Zamówienia do zatwierdzenia",
+  "patient_name": "Imię pacjenta",
+  "medications": "Leki",
+  "approve": "Zatwierdź",
+  "reject": "Odrzuć"
 }

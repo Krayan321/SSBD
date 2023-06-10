@@ -6,7 +6,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {Sidebar, Menu} from "react-pro-sidebar";
 import PeopleIcon from '@mui/icons-material/People';
 import {
-    Logout,
+    Logout, Quiz,
 } from "@mui/icons-material";
 import IconButton from "@mui/material/IconButton";
 import {Pathnames} from "../router/Pathnames";
@@ -102,6 +102,18 @@ function AuthSidebar() {
                                         <ShoppingBasketIcon/>
                                     </IconButton>
                                     {t("waitingOrders")}
+                                </MenuItem>
+                                <MenuItem
+                                    onClick={() => {
+                                        navigate(Pathnames.chemist.ordersToApprove);
+                                    }}
+                                >
+                                    <IconButton
+                                        color="inherit"
+                                    >
+                                        <Quiz/>
+                                    </IconButton>
+                                    {t("ordersToApprove")}
                                 </MenuItem>
                             </>
                         }

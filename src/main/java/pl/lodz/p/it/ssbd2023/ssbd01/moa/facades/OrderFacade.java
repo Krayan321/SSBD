@@ -49,7 +49,8 @@ public class OrderFacade extends AbstractFacade<Order> {
     return getEntityManager()
             .createQuery("select o from Order o "
                     + "left join fetch o.orderMedications "
-                    + "where o.prescriptionApproved = null")
+                    + "where o.prescription is not null "
+                    + "and o.inQueue = false")
             .getResultList();
   }
 
