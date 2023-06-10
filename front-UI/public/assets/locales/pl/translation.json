@@ -188,5 +188,14 @@
   "medications": "Leki",
   "approve": "Zatwierdź",
   "reject": "Odrzuć",
+  "shipment": "Wysyłka",
+  "Shipment": "Wysyłka",
+  "select_medication": "Wybierz lek",
+  "create_medication": "Utwórz nowy lek",
+  "show_more": "Pokaż więcej",
+  "shipment_date": "Data wysyłki",
+  "quantity_min": "Ilość nie może być mniejsza niż 0",
+  "quantity_integer": "Musi być liczbą całkowitą",
+  "shipment_created": "Wysyłka utworzona pomyślnie",
   "none": "Brak"
 }
