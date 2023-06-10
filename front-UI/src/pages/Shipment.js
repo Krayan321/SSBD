@@ -18,7 +18,7 @@ import {createShipment} from "../api/moa/shipmentApi";
 import {DatePicker} from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 
-export function Shipment() {
+export default function Shipment() {
     const {t} = useTranslation();
 
     const addShipmentSchema = Yup.object().shape({
