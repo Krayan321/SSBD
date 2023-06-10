@@ -154,9 +154,14 @@
         <role-name>changeNumberOfMedicationsInOrder</role-name>
     </security-role>
     <security-role>
+        <role-name>createMedication</role-name>
+    </security-role>
+    <security-role>
+        <role-name>getAllMedications</role-name>
+    </security-role>
+    <security-role>
         <role-name>getOrderDetails</role-name>
     </security-role>
-
     <security-role>
         <role-name>readAllShipments</role-name>
     </security-role>
@@ -169,5 +174,6 @@
     <security-role>
         <role-name>updateShipment</role-name>
     </security-role>
+
 
 </web-app>
