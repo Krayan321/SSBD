@@ -37,7 +37,6 @@ function SelectMedicationOverlay({ open, onClose, medications, append }) {
         onClose();
     }
 
-
     return (
         <Overlay open={open}>
             <Grid container spacing={1} sx={{mb: 2}}>

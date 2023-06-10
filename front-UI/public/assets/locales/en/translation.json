@@ -191,5 +191,9 @@
   "Shipment": "Shipment",
   "select_medication": "Select medication",
   "create_medication": "Create new medication",
-  "show_more": "Show more"
+  "show_more": "Show more",
+  "shipment_date": "Shipment date",
+  "quantity_min": "Quantity cannot be less than 0",
+  "quantity_integer": "Must be an integer",
+  "shipment_created": "Shipment created successfully"
 }

@@ -22,6 +22,8 @@ import ConfirmAccount from "./pages/ConfirmAccount";
 import { RoutesComponent } from "./router/RoutesComponent";
 import store from "./redux/Store";
 import { Provider } from "react-redux";
+import {LocalizationProvider} from "@mui/x-date-pickers";
+import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
 
 i18n
   .use(initReactI18next) // passes i18n down to react-i18next
@@ -60,9 +62,11 @@ function App() {
   return (
     <Suspense fallback={loading}>
       <Provider store={store}>
-        <Router>
-          <RoutesComponent />
-        </Router>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <Router>
+            <RoutesComponent />
+          </Router>
+        </LocalizationProvider>
       </Provider>
     </Suspense>
   );

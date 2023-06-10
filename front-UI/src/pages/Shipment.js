@@ -14,20 +14,22 @@ import {Add, Close} from "@mui/icons-material";
 import SelectMedicationOverlay from "../modules/overlays/SelectMedicationOverlay";
 import AddMedicationOverlay from "../modules/overlays/AddMedicationOverlay";
 import {getAllMedications} from "../api/moa/medicationApi";
+import {createShipment} from "../api/moa/shipmentApi";
+import {DatePicker} from "@mui/x-date-pickers";
+import dayjs from "dayjs";
 
 export function Shipment() {
+    const {t} = useTranslation();
 
     const addShipmentSchema = Yup.object().shape({
         orderMedications: Yup.array().of(
             Yup.object().shape({
                 id: Yup.string(),
-                name: Yup.string()
-                    .required('Name is required'),
-                quantity: Yup.number()
-                    .min(1, "Quantity cannot be less than 0")
-                    .integer("Must be an integer")
+                name: Yup.string(),
+                quantity: Yup.string()
+                    .min(1, t("quantity_min"))
             })
-        )
+        ).min(1, "at least one shipment"),
     });
 
     const {
@@ -38,12 +40,13 @@ export function Shipment() {
     } = useForm({resolver: yupResolver(addShipmentSchema)});
 
     const paperStyle = {padding: '20px 20px', margin: "0px auto", width: "80%"}
-    const {t} = useTranslation();
     const [loading, setLoading] = useState(false);
     const [selectMedication, setSelectMedication] = useState(false);
     const [createMedication, setCreateMedication] = useState(false);
+    const [shipmentDate, setShipmentDate] = useState(dayjs());
     const [medications, setMedications] = useState(false);
     const {fields, append, remove} = useFieldArray({ name: 'orderMedications', control });
+    const navigate = useNavigate();
 
     const findAllMedications = useCallback(async () => {
         setLoading(true);
@@ -60,10 +63,26 @@ export function Shipment() {
         findAllMedications()
     }, [findAllMedications]);
 
-
-
     const onSubmit = function(data) {
-        console.log(data);
+        const body = {
+            shipmentDate: shipmentDate.format('YYYY-MM-DDTHH:mm:ss.SSS'),
+            shipmentMedications: []}
+        data.orderMedications.forEach((om) => {
+            body.shipmentMedications.push({
+                quantity: Math.floor(om.quantity),
+                medication: {id: om.id}});
+        })
+        console.log(body);
+        createShipment(body).then(
+            () => {
+                setLoading(false)
+                toast.success(t("shipment_created"), {position: "top-center"})
+                navigate(Pathnames.auth.landing);
+            }
+        ).catch(error => {
+            setLoading(false)
+            toast.error(t(error.response.data.message), {position: "top-center"})
+        })
     }
 
     return (
@@ -88,7 +107,15 @@ export function Shipment() {
                                 <Add/>{t("create_medication")}</Button>
                         </Grid>
                     </Grid>
-
+                    <Grid item xs={12} sx={{mb: 2}}>
+                        <DatePicker
+                            label={t("shipment_date")}
+                            value={shipmentDate}
+                            onChange={(v) => setShipmentDate(v)}
+                            format="DD/MM/YYYY"
+                            slotProps={{ textField: { fullWidth: true } }}
+                        />
+                    </Grid>
                     {fields.map((om, i) => (
                         <Grid container spacing={1} sx={{mb: 2}} key={"om-" + i}>
                             <Grid item xs={6}>
@@ -122,7 +149,7 @@ export function Shipment() {
 
                     {
                         loading ? <CircularProgress style={{marginRight: "auto", marginLeft: "auto"}}/> :
-                            <Button fullWidth type='submit' variant='contained'>{t("submit")}</Button>
+                            <Button fullWidth type='submit' variant='contained' sx={{mt: 2}}>{t("submit")}</Button>
                     }
                 </form>
             </Paper>
