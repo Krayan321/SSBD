@@ -199,4 +199,10 @@
         <role-name>updateShipment</role-name>
         <group-name>CHEMIST</group-name>
     </security-role-mapping>
+
+    <security-role-mapping>
+        <role-name>deleteWaitingOrdersById</role-name>
+        <group-name>CHEMIST</group-name>
+    </security-role-mapping>
+
 </glassfish-web-app>
