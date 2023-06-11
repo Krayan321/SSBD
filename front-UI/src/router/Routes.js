@@ -20,6 +20,7 @@ import ShowWaitingOrders from "../pages/ShowWaitingOrders";
 import Shipment from "../pages/Shipment";
 import OrdersToApprove from "../pages/OrdersToApprove";
 import AllMedications from "../pages/AllMedications";
+import ShowBucket from "../pages/ShowBucket";
 
 export const publicRoutes = [
   {
@@ -64,6 +65,10 @@ export const PatientRoutes = [
     path: Pathnames.patient.selfOrders,
     Component: ShowSelfOrders,
   },
+  {
+    path: Pathnames.patient.showBucket,
+    Component: ShowBucket,
+  }
 ];
 
 export const AdminRoutes = [

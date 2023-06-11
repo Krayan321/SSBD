@@ -129,6 +129,16 @@ function AuthSidebar() {
                       </IconButton>
                       {t("orders")}
                     </MenuItem>
+                    <MenuItem
+                        onClick={() => {
+                          navigate(Pathnames.patient.showBucket);
+                        }}
+                    >
+                      <IconButton color="inherit">
+                        <ShoppingBasketIcon />
+                      </IconButton>
+                      {t("bucket")}
+                    </MenuItem>
                   </>
               )}
               {(userRole === ROLES.PATIENT || userRole === ROLES.CHEMIST) && (

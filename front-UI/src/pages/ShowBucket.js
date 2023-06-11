@@ -35,7 +35,6 @@ export default function ShowBucket() {
             setBucket(array);
         } else {
             setBucket([]);
-            //{name:"testlek", price:5, categoryName:5, quantity:5}
         }
     }, [localStorage])
 
