@@ -25,6 +25,7 @@ export const Pathnames = {
     },
     patient: {
         selfOrders: '/orders/self',
+        showBucket: '/bucket'
     },
     chemist: {
         shipment: '/shipment',
