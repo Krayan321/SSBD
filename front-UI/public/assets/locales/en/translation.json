@@ -196,5 +196,6 @@
   "quantity_min": "Quantity cannot be less than 0",
   "quantity_integer": "Must be an integer",
   "shipment_created": "Shipment created successfully",
-  "none": "None"
+  "none": "None",
+  "confirm_delete_order": "Are you sure you want to delete this order?"
 }
