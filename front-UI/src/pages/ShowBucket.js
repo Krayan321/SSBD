@@ -22,15 +22,29 @@ import {useTranslation} from "react-i18next";
 
 
 export default function ShowBucket() {
-
-    if (localStorage.getItem("bucket") === null) {
-        localStorage.setItem("bucket", [])
-    }
-
+    const [bucket, setBucket] = useState([]);
     const theme = useTheme();
-    const [bucket, setBucket] = useState(localStorage.getItem("bucket"));
     const [loading, setLoading] = useState(false);
     const {t} = useTranslation();
+
+    useEffect(() => {
+        if (localStorage.getItem("bucket") !== null) {
+            const str = localStorage.getItem("bucket")
+            if(!str) return;
+            const array = JSON.parse(str);
+            setBucket(array);
+        } else {
+            setBucket([]);
+            //{name:"testlek", price:5, categoryName:5, quantity:5}
+        }
+    }, [localStorage])
+
+    useEffect(() => {
+        if(bucket){
+            localStorage.setItem("bucket", bucket.toString())
+        }
+    }, [bucket])
+
 
     if (loading) {
         return (
@@ -95,7 +109,7 @@ export default function ShowBucket() {
                                     {row.name}
                                 </TableCell>
                                 <TableCell align="right">{row.price}</TableCell>
-                                <TableCell align="right">{row.category.name}</TableCell>
+                                <TableCell align="right">{row.categoryName}</TableCell>
                                 <TableCell align="right">{row.quantity}</TableCell>
                             </TableRow>
                         ))}
