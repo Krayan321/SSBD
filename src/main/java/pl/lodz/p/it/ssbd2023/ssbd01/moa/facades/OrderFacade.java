@@ -64,11 +64,19 @@ public class OrderFacade extends AbstractFacade<Order> {
 
   @RolesAllowed("deleteWaitingOrdersById")
   public void deleteWaitingOrdersById(Long id) {
-      String sqlQuery = "DELETE FROM Order o "
+    String sqlQuery = "DELETE FROM OrderMedication om "
+            + "WHERE om.order.id = :orderId";
+
+    getEntityManager()
+            .createQuery(sqlQuery)
+            .setParameter("orderId", id)
+            .executeUpdate();
+
+      String orderQuery = "DELETE FROM Order o "
               + "WHERE o.id = :orderId AND o.inQueue = true";
 
       getEntityManager()
-              .createQuery(sqlQuery)
+              .createQuery(orderQuery)
               .setParameter("orderId", id)
               .executeUpdate();
   }

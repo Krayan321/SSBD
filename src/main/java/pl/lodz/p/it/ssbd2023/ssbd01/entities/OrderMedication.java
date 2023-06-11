@@ -34,12 +34,10 @@ public class OrderMedication extends AbstractEntity implements Serializable {
 
   @ManyToOne(optional = false)
   @JoinColumn(name = "order_id", updatable = false, nullable = false)
-  @OnDelete(action = OnDeleteAction.CASCADE)
   private Order order;
 
   @ManyToOne(optional = false)
   @JoinColumn(name = "medication_id", updatable = false, nullable = false)
-  @OnDelete(action = OnDeleteAction.CASCADE)
   private Medication medication;
 
   @Column(nullable = false)
