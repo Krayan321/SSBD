@@ -1,4 +1,4 @@
-import {Pathnames} from "./Pathnames";
+import { Pathnames } from "./Pathnames";
 import Home from "../pages/Home";
 import Login from "../pages/Login";
 import SignUp from "../pages/SignUp";
@@ -19,107 +19,110 @@ import ShowSelfOrders from "../pages/ShowSelfOrders";
 import ShowWaitingOrders from "../pages/ShowWaitingOrders";
 import Shipment from "../pages/Shipment";
 import OrdersToApprove from "../pages/OrdersToApprove";
-import ShowBucket from "../pages/ShowBucket";
+import AllMedications from "../pages/AllMedications";
 
 export const publicRoutes = [
-    {
-        path: Pathnames.public.home,
-        Component: Home,
-    },
-    {
-        path: Pathnames.public.login,
-        Component: Login,
-    },
-    {
-        path: Pathnames.public.signup,
-        Component: SignUp,
-    },
-    {
-        path: Pathnames.public.resetPassword,
-        Component: ResetPassword,
-    },
-    {
-        path: Pathnames.public.setResetPassword,
-        Component: SetResetPassword,
-    },
-    {
-        path: Pathnames.public.confirmAccount,
-        Component: ConfirmAccount,
-    },
+  {
+    path: Pathnames.public.home,
+    Component: Home,
+  },
+  {
+    path: Pathnames.public.login,
+    Component: Login,
+  },
+  {
+    path: Pathnames.public.signup,
+    Component: SignUp,
+  },
+  {
+    path: Pathnames.public.resetPassword,
+    Component: ResetPassword,
+  },
+  {
+    path: Pathnames.public.setResetPassword,
+    Component: SetResetPassword,
+  },
+  {
+    path: Pathnames.public.confirmAccount,
+    Component: ConfirmAccount,
+  },
 ];
 
 export const AuthRoutes = [
-    {
-        path: Pathnames.auth.self,
-        Component: AccountDetails,
-    },
-    {
-        path: Pathnames.auth.landing,
-        Component: Landing,
-    },
+  {
+    path: Pathnames.auth.self,
+    Component: AccountDetails,
+  },
+  {
+    path: Pathnames.auth.landing,
+    Component: Landing,
+  },
 ];
 
 export const PatientRoutes = [
-    {
-        path: Pathnames.patient.selfOrders,
-        Component: ShowSelfOrders,
-    },
-    {
-        path: Pathnames.patient.showBucket,
-        Component: ShowBucket
-    }
+  {
+    path: Pathnames.patient.selfOrders,
+    Component: ShowSelfOrders,
+  },
 ];
 
 export const AdminRoutes = [
-    {
-        path: Pathnames.admin.account,
-        Component: SingleAccount,
-    },
-    {
-        path: Pathnames.admin.editSingleAccount,
-        Component: EditSingleAccount,
-    },
-    {
-        path: Pathnames.admin.editChemist,
-        Component: EditChemist,
-    },
-    {
-        path: Pathnames.admin.details,
-        Component: SingleAccount,
-    },
-    {
-        path: Pathnames.admin.accounts,
-        Component: AllAccounts,
-    },
-    {
-        path: Pathnames.admin.createAccount,
-        Component: RoleSelectionForm,
-    },
-    {
-        path: Pathnames.admin.addPatient,
-        Component: AddPatient,
-    },
-    {
-        path: Pathnames.admin.addChemist,
-        Component: AddChemist,
-    },
-    {
-        path: Pathnames.admin.addAdministrator,
-        Component: AddAdministrator,
-    },
+  {
+    path: Pathnames.admin.account,
+    Component: SingleAccount,
+  },
+  {
+    path: Pathnames.admin.editSingleAccount,
+    Component: EditSingleAccount,
+  },
+  {
+    path: Pathnames.admin.editChemist,
+    Component: EditChemist,
+  },
+  {
+    path: Pathnames.admin.details,
+    Component: SingleAccount,
+  },
+  {
+    path: Pathnames.admin.accounts,
+    Component: AllAccounts,
+  },
+  {
+    path: Pathnames.admin.createAccount,
+    Component: RoleSelectionForm,
+  },
+  {
+    path: Pathnames.admin.addPatient,
+    Component: AddPatient,
+  },
+  {
+    path: Pathnames.admin.addChemist,
+    Component: AddChemist,
+  },
+  {
+    path: Pathnames.admin.addAdministrator,
+    Component: AddAdministrator,
+  },
 ];
 
 export const ChemistRoutes = [
-    {
-        path:Pathnames.chemist.shipment,
-        Component: Shipment,
-    },
-    {
-        path:Pathnames.chemist.waitingOrders,
-        Component: ShowWaitingOrders,
-    },
-    {
-        path:Pathnames.chemist.ordersToApprove,
-        Component: OrdersToApprove,
-    }
+  {
+    path: Pathnames.chemist.shipment,
+    Component: Shipment,
+  },
+  {
+    path: Pathnames.chemist.waitingOrders,
+    Component: ShowWaitingOrders,
+  },
+  {
+    path: Pathnames.chemist.ordersToApprove,
+    Component: OrdersToApprove,
+  },
+];
+
+export const PatientChemistRoutes = [
+  {
+    path: Pathnames.patientChemist.medications,
+    Component: AllMedications,
+  },
 ];

@@ -197,5 +197,10 @@
   "quantity_min": "Ilość nie może być mniejsza niż 0",
   "quantity_integer": "Musi być liczbą całkowitą",
   "shipment_created": "Wysyłka utworzona pomyślnie",
-  "none": "Brak"
+  "none": "Brak",
+  "list_of_medications": "Lista leków",
+  "price": "Cena",
+  "stock": "Ilość",
+  "category_name": "Nazwa kategorii",
+  "on_prescription": "Na receptę?"
 }
