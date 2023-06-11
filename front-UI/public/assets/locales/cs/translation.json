@@ -191,5 +191,10 @@
   "quantity_min": "Množství nemůže být menší než 0",
   "quantity_integer": "Musí být celé číslo",
   "shipment_created": "Zásilka úspěšně vytvořena",
-  "none": "Nedostatek"
+  "none": "Nedostatek",
+  "list_of_medications": "Seznam léků",
+  "price": "Cena",
+  "stock": "Sklad",
+  "category_name": "Název kategorie",
+  "on_prescription": "Na předpis?"
 }
