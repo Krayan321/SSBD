@@ -159,6 +159,14 @@ public class OrderController extends AbstractController {
                         .collect(Collectors.toList());
     }
 
+    // mok 10
+    @DELETE
+    @Path("/{id}/waiting")
+    public Response deleteWaitingOrderById(@PathParam("id") Long id) {
+        repeatTransactionVoid(orderManager, () -> orderManager.deleteWaitingOrderById(id));
+        return Response.ok().build();
+    }
+
     //moa 16
     @PUT
     @Path("/update-queue")

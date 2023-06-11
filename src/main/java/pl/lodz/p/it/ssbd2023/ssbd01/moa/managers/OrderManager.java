@@ -143,6 +143,17 @@ public class OrderManager extends AbstractManager implements OrderManagerLocal, 
     }
 
     @Override
+    @RolesAllowed("deleteWaitingOrdersById")
+    public void deleteWaitingOrderById(Long id) {
+    Optional<Order> order = orderFacade.find(id);
+        if(!order.get().getInQueue()){
+            throw OrderException.orderNotInQueue();
+        }
+        orderFacade.deleteWaitingOrdersById(id);
+
+    }
+
+    @Override
     @DenyAll
     public void approveOrder(Long id) {
         throw new UnsupportedOperationException();
