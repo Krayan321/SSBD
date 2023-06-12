@@ -33,4 +33,12 @@ public class OrderException extends ApplicationException {
       return new OrderException(FORBIDDEN, EXCEPTION_ORDER_ONLY_PATIENT_CAN_ORDER);
   }
 
+  public static OrderException noPermissionToDeleteOrder() {
+    return new OrderException(FORBIDDEN, EXCEPTION_NO_PERMISSION_TO_DELETE_ORDER);
+  }
+
+  public static OrderException onlyPatientCanDelete() {
+    return new OrderException(FORBIDDEN, EXCEPTION_ORDER_ONLY_PATIENT_CAN_DELETE);
+  }
+
 }

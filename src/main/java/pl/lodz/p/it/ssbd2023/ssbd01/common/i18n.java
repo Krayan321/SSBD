@@ -84,6 +84,12 @@ public class i18n {
   public static final String EXCEPTION_ORDER_NOT_IN_QUEUE =
           "exception.order_not_in_queue";
 
+  public static final String EXCEPTION_NO_PERMISSION_TO_DELETE_ORDER =
+          "exception.no.permission.to.delete.order";
+
+  public static final String EXCEPTION_ORDER_ONLY_PATIENT_CAN_DELETE =
+          "exception.order.only.patient.can.delete";
+
   public static String getMessage(String message, Locale locale, Object... parameters) {
     ResourceBundle bundle = ResourceBundle.getBundle("i18n.messages", locale);
     String fmtString = bundle.getString(message);
