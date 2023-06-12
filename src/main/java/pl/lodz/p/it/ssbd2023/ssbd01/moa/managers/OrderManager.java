@@ -222,9 +222,7 @@ public class OrderManager extends AbstractManager
   @RolesAllowed("approveOrder")
   public void approveOrder(Long id) {
     Order order = orderFacade.find(id).orElseThrow();
-    if(order.getOrderState().equals(OrderState.APPROVED)) {
-      return;
-    } else if(!order.getOrderState().equals(OrderState.WAITING_FOR_CHEMIST_APPROVAL)) {
+    if(!order.getOrderState().equals(OrderState.WAITING_FOR_CHEMIST_APPROVAL)) {
       throw OrderException.createModificationOrderOfIllegalState();
     }
     order.setOrderState(OrderState.APPROVED);

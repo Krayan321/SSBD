@@ -28,6 +28,7 @@ public class BaseTest {
       new PostgreSQLContainer<>(DockerImageName.parse("postgres:15"))
           .withNetwork(NETWORK)
           .withDatabaseName("ssbd01")
+          .waitingFor(Wait.defaultWaitStrategy())
           .withExposedPorts(5432)
           .withInitScript("init_accounts.sql")
           .withUsername("ssbd01admin")

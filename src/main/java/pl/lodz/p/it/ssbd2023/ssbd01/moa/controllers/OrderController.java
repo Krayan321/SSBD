@@ -98,7 +98,8 @@ public class OrderController extends AbstractController {
     @RolesAllowed("createOrder")
     public Response submitOrder(@PathParam("id") Long id, @Valid String patientDataId) {
         Order order = repeatTransaction(orderManager, () -> orderManager
-                .createOrder(accountManager.getCurrentUserWithAccessLevels(), id, patientDataId));
+//                .createOrder(accountManager.getCurrentUserWithAccessLevels(), id, patientDataId)); // todo
+                .createOrder(accountManager.getCurrentUserWithAccessLevels(), id));
 
         OrderDTO orderDTO = OrderConverter.mapOrderToOrderDTO(order);
 

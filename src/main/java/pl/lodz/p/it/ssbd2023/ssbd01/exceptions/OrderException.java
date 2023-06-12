@@ -33,7 +33,7 @@ public class OrderException extends ApplicationException {
   }
 
   public static OrderException createModificationOrderOfIllegalState() {
-    return new OrderException(FORBIDDEN, EXCEPTION_ORDER_ILLEGAL_STATE_MODIFICATION);
+    return new OrderException(BAD_REQUEST, EXCEPTION_ORDER_ILLEGAL_STATE_MODIFICATION);
   }
 
 }
