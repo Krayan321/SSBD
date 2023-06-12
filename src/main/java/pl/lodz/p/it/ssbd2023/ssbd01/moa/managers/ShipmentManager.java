@@ -10,6 +10,7 @@ import jakarta.inject.Inject;
 import jakarta.interceptor.Interceptors;
 import lombok.extern.java.Log;
 import pl.lodz.p.it.ssbd2023.ssbd01.common.AbstractManager;
+import pl.lodz.p.it.ssbd2023.ssbd01.config.EntityIdentitySignerVerifier;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.*;
 import pl.lodz.p.it.ssbd2023.ssbd01.exceptions.ApplicationException;
 import pl.lodz.p.it.ssbd2023.ssbd01.interceptors.GenericManagerExceptionsInterceptor;
@@ -40,7 +41,7 @@ public class ShipmentManager extends AbstractManager implements ShipmentManagerL
   @RolesAllowed("createShipment")
   public void createShipment(Shipment shipment, EtagVerification etagVerification) {
     shipment.getShipmentMedications().forEach(sm -> {
-      EtagVersion etagVersion = etagVerification.getEtagVersionList().get(sm.getMedication().getId());
+
       sm.setShipment(shipment);
       Medication medication = medicationFacade.find(sm.getMedication().getId()).orElseThrow();
       sm.setMedication();

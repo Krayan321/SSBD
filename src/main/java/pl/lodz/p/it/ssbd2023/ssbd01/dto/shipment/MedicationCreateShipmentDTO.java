@@ -16,7 +16,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Builder
 @AllArgsConstructor
-public class MedicationCreateShipmentDTO {
+public class MedicationCreateShipmentDTO implements SignableEntity {
     @NotNull
     private Long id;
 
@@ -28,4 +28,9 @@ public class MedicationCreateShipmentDTO {
 
     @NotNull
     private BigDecimal price;
+
+    @Override
+    public String getSignablePayload() {
+        return String.format("%d.%d", id, version);
+    }
 }

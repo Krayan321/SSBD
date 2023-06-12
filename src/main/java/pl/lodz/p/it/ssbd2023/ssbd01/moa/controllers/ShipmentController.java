@@ -16,7 +16,9 @@ import pl.lodz.p.it.ssbd2023.ssbd01.config.EntityIdentitySignerVerifier;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.shipment.CreateShipmentDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.shipment.ShipmentDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.EtagVerification;
+import pl.lodz.p.it.ssbd2023.ssbd01.entities.EtagVersion;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Shipment;
+import pl.lodz.p.it.ssbd2023.ssbd01.exceptions.ApplicationException;
 import pl.lodz.p.it.ssbd2023.ssbd01.moa.managers.ShipmentManagerLocal;
 import pl.lodz.p.it.ssbd2023.ssbd01.util.converters.ShipmentConverter;
 
@@ -29,6 +31,9 @@ import java.util.Map;
 public class ShipmentController extends AbstractController {
 
   @Inject private ShipmentManagerLocal shipmentManager;
+
+  @Inject
+  private EntityIdentitySignerVerifier entityIdentitySignerVerifier;
 
   @GET
   @Path("/")
@@ -55,9 +60,18 @@ public class ShipmentController extends AbstractController {
   @RolesAllowed("createShipment")
   @Consumes(MediaType.APPLICATION_JSON)
   public Response createShipment(@Valid CreateShipmentDTO shipmentDTO) {
-    Shipment shipment = ShipmentConverter
-            .mapCreateShipmentDtoToShipment(shipmentDTO);
-    EtagVerification etagVerification = ShipmentConverter.mapCreateShipmentDtoToEtagVerification(shipmentDTO);
+    EtagVerification etagVerification = ShipmentConverter
+            .mapCreateShipmentDtoToEtagVerification(shipmentDTO);
+
+    shipmentDTO.getShipmentMedications().forEach(sm -> {
+      EtagVersion etagVersion = etagVerification.getEtagVersionList().get(sm.getMedication().getId());
+      if(!entityIdentitySignerVerifier.validateEntitySignature(etagVersion.getEtag()) ||
+         !entityIdentitySignerVerifier.verifyEntityIntegrity(sm.getMedication(), etagVersion.getEtag())) {
+        throw ApplicationException.createEtagNotValidException();
+      }
+    });
+    Shipment shipment = ShipmentConverter.mapCreateShipmentDtoToShipment(shipmentDTO);
+
     repeatTransactionVoid(shipmentManager,
             () -> shipmentManager.createShipment(shipment, etagVerification));
     return Response.status(Response.Status.CREATED).build();
