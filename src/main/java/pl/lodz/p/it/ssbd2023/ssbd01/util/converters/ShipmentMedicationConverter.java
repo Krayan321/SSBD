@@ -53,8 +53,8 @@ public class ShipmentMedicationConverter {
     public static Medication mapMedicationCreateShipmentDtoToMedication(
             MedicationCreateShipmentDTO medicationCreateShipmentDTO) {
         return Medication.createShipmentBuilder()
-                .id(medicationCreateShipmentDTO.getId())
-                .price(medicationCreateShipmentDTO.getPrice())
+                .name(medicationCreateShipmentDTO.getName())
+                .currentPrice(medicationCreateShipmentDTO.getPrice())
                 .build();
     }
 }

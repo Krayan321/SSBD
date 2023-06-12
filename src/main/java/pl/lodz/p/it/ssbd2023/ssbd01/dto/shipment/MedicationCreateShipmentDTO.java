@@ -1,7 +1,5 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.dto.shipment;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,7 +16,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class MedicationCreateShipmentDTO implements SignableEntity {
     @NotNull
-    private Long id;
+    private String name;
 
     @NotNull
     private Long version;
@@ -31,6 +29,6 @@ public class MedicationCreateShipmentDTO implements SignableEntity {
 
     @Override
     public String getSignablePayload() {
-        return String.format("%d.%d", id, version);
+        return String.format("%s.%d", name, version);
     }
 }

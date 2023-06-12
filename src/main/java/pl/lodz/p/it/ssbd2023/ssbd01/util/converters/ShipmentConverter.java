@@ -64,7 +64,7 @@ public class ShipmentConverter {
         EtagVerification etagVerification = new EtagVerification(new HashMap<>());
         shipment.getShipmentMedications().forEach(sm -> {
             MedicationCreateShipmentDTO m = sm.getMedication();
-            etagVerification.getEtagVersionList().put(m.getId(), EtagVersion.builder()
+            etagVerification.getEtagVersionList().put(m.getName(), EtagVersion.builder()
                     .version(m.getVersion())
                     .etag(m.getEtag())
                     .build());

@@ -10,6 +10,7 @@ import pl.lodz.p.it.ssbd2023.ssbd01.dto.shipment.CreateShipmentDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.shipment.CreateShipmentMedicationDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.shipment.MedicationCreateShipmentDTO;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -56,29 +57,51 @@ public class ShipmentControllerIT extends BaseTest {
 
         @BeforeAll
         static void setUp() {
-            var response = given()
-                    .header("authorization", "Bearer " + adminJwt)
-                    .get(getApiRoot() + "/account/details")
-                    .then()
-                    .log()
-                    .all()
+            var responseMed1 = given()
+                    .header("authorization", "Bearer " + chemistJwt)
+                    .get(getApiRoot() + "/medication/1")
+                    .then().log().all()
                     .statusCode(Response.Status.OK.getStatusCode())
-                    .extract()
-                    .response();
+                    .extract().response();
+            String etag1 = responseMed1.getHeader("ETag").replace("\"", "");
+            Long version1 = responseMed1.getBody().jsonPath().getLong("version");
+            String price1 = responseMed1.getBody().jsonPath().getString("currentPrice");
+            String name1 = responseMed1.getBody().jsonPath().getString("name");
 
             medications.add(CreateShipmentMedicationDTO.builder()
                     .quantity(2)
-                    .medication(new MedicationCreateShipmentDTO(1L))
+                    .medication(MedicationCreateShipmentDTO.builder()
+                            .name(name1)
+                            .version(version1)
+                            .etag(etag1)
+                            .price(BigDecimal.valueOf(Double.parseDouble(price1)))
+                            .build())
                     .build());
+
+            var responseMed2 = given()
+                    .header("authorization", "Bearer " + chemistJwt)
+                    .get(getApiRoot() + "/medication/2")
+                    .then().log().all()
+                    .statusCode(Response.Status.OK.getStatusCode())
+                    .extract().response();
+            String etag2 = responseMed2.getHeader("ETag").replace("\"", "");
+            Long version2 = responseMed2.getBody().jsonPath().getLong("version");
+            String price2 = responseMed2.getBody().jsonPath().getString("currentPrice");
+            String name2 = responseMed2.getBody().jsonPath().getString("name");
 
             medications.add(CreateShipmentMedicationDTO.builder()
                     .quantity(5)
-                    .medication(new MedicationCreateShipmentDTO(2L))
+                    .medication(MedicationCreateShipmentDTO.builder()
+                            .name(name2)
+                            .version(version2)
+                            .etag(etag2)
+                            .price(BigDecimal.valueOf(Double.parseDouble(price2)))
+                            .build())
                     .build());
 
             medicationsNotExists.add(CreateShipmentMedicationDTO.builder()
                     .quantity(5)
-                    .medication(new MedicationCreateShipmentDTO(999L))
+//                    .medication(new MedicationCreateShipmentDTO(999L))
                     .build());
 
             createShipmentDTO = CreateShipmentDTO.builder()

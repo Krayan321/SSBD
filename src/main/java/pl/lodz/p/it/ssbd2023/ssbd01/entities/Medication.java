@@ -61,8 +61,8 @@ public class Medication extends AbstractEntity implements Serializable {
   }
 
   @Builder(builderMethodName = "createShipmentBuilder")
-  public Medication(Long id, BigDecimal price) {
-    this.id = id;
-    this.price = price;
+  public Medication(String name, BigDecimal currentPrice) {
+    this.name = name;
+    this.currentPrice = currentPrice;
   }
 }

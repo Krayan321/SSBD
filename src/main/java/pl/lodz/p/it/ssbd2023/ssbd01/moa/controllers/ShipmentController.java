@@ -64,7 +64,7 @@ public class ShipmentController extends AbstractController {
             .mapCreateShipmentDtoToEtagVerification(shipmentDTO);
 
     shipmentDTO.getShipmentMedications().forEach(sm -> {
-      EtagVersion etagVersion = etagVerification.getEtagVersionList().get(sm.getMedication().getId());
+      EtagVersion etagVersion = etagVerification.getEtagVersionList().get(sm.getMedication().getName());
       if(!entityIdentitySignerVerifier.validateEntitySignature(etagVersion.getEtag()) ||
          !entityIdentitySignerVerifier.verifyEntityIntegrity(sm.getMedication(), etagVersion.getEtag())) {
         throw ApplicationException.createEtagNotValidException();

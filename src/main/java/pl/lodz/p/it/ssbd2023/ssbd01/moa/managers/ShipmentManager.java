@@ -41,14 +41,16 @@ public class ShipmentManager extends AbstractManager implements ShipmentManagerL
   @RolesAllowed("createShipment")
   public void createShipment(Shipment shipment, EtagVerification etagVerification) {
     shipment.getShipmentMedications().forEach(sm -> {
-      sm.setShipment(shipment);
-      EtagVersion etagVersion = etagVerification.getEtagVersionList().get(sm.getMedication().getId());
-      Medication medication = medicationFacade.find(sm.getMedication().getId()).orElseThrow();
+      EtagVersion etagVersion = etagVerification.getEtagVersionList().get(sm.getMedication().getName());
+      Medication medication = medicationFacade.findByName(sm.getMedication().getName());
       if(!etagVersion.getVersion().equals(medication.getVersion())) {
         throw ApplicationException.createOptimisticLockException();
       }
-      medication.setPrice(sm.getMedication().getPrice());
+      BigDecimal newPrice = sm.getMedication().getCurrentPrice();
+
+      sm.setShipment(shipment);
       sm.setMedication(medication);
+      sm.getMedication().setCurrentPrice(newPrice);
     });
     shipmentFacade.create(shipment);
   }

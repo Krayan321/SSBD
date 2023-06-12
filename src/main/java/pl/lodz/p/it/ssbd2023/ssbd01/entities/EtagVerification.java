@@ -12,5 +12,5 @@ import java.util.Map;
 @AllArgsConstructor
 @NoArgsConstructor
 public class EtagVerification {
-  private Map<Long, EtagVersion> etagVersionList;
+  private Map<String, EtagVersion> etagVersionList;
 }
