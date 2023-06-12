@@ -1,9 +1,11 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -31,6 +33,11 @@ public class OrderMedication extends AbstractEntity implements Serializable {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Setter(lombok.AccessLevel.NONE)
   private Long id;
+
+  @Column(name = "purchase_price")
+  @Digits(integer = 10, fraction = 2)
+  @Min(value = 0, message = "Purchase price must be greater than or equal 0")
+  private BigDecimal purchasePrice;
 
   @ManyToOne(optional = false)
   @JoinColumn(name = "order_id", updatable = false, nullable = false)

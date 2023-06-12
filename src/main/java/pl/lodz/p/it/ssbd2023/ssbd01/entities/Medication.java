@@ -1,6 +1,7 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.Min;
 
@@ -38,13 +39,8 @@ public class Medication extends AbstractEntity implements Serializable {
 
   @Column(nullable = false, name = "current_price")
   @Digits(integer = 10, fraction = 2)
-  @Min(value = 0, message = "Price must be greater than or equal 0")
+  @DecimalMin(value = "0.01", message = "Price must be greater than or equal 0")
   private BigDecimal currentPrice;
-
-  @Column(nullable = false, name = "previous_price")
-  @Digits(integer = 10, fraction = 2)
-  @Min(value = 0, message = "Previous price must be greater than or equal 0")
-  private BigDecimal previousPrice;
 
   @ManyToOne(
       optional = false,
@@ -60,7 +56,9 @@ public class Medication extends AbstractEntity implements Serializable {
     this.category = category;
   }
 
-  public Medication(long id) {
-    this.id = id;
+  @Builder(builderMethodName = "createShipmentBuilder")
+  public Medication(String name, BigDecimal currentPrice) {
+    this.name = name;
+    this.currentPrice = currentPrice;
   }
 }

@@ -23,4 +23,11 @@ public class ShipmentMedicationFacade extends AbstractFacade<ShipmentMedication>
     super(ShipmentMedication.class);
   }
 
+  public ShipmentMedication findLatestByMedication(Long medicationId) {
+    TypedQuery<ShipmentMedication> query = em.createNamedQuery("shipmentMedication.findLatestShipmentMedicationForGivenMedication", ShipmentMedication.class);
+    query.setParameter(1, medicationId);
+    return query.getSingleResult();
+
+  }
+
 }
