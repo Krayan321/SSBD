@@ -41,6 +41,7 @@ export default function OrdersToApprove() {
     const handleOrderApprove = async (id) => {
         approveOrder(id).then((response) => {
             toast.success(t("approved_successfully"), {position: "top-center"});
+            findOrders();
         }).catch((error) => {
             toast.error(t(error.response.data.message), {position: "top-center"});
         })
