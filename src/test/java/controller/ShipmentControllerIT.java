@@ -49,14 +49,12 @@ public class ShipmentControllerIT extends BaseTest {
     @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
     class CreateShipment {
 
-        static List<CreateShipmentMedicationDTO> medications =
-                new ArrayList<>();
-        static List<CreateShipmentMedicationDTO> medicationsNotExists =
-                new ArrayList<>();
         static CreateShipmentDTO createShipmentDTO;
 
         @BeforeAll
-        static void setUp() {
+        static void setNewVersions() {
+            List<CreateShipmentMedicationDTO> medications = new ArrayList<>();
+
             var responseMed1 = given()
                     .header("authorization", "Bearer " + chemistJwt)
                     .get(getApiRoot() + "/medication/1")
@@ -99,11 +97,6 @@ public class ShipmentControllerIT extends BaseTest {
                             .build())
                     .build());
 
-            medicationsNotExists.add(CreateShipmentMedicationDTO.builder()
-                    .quantity(5)
-//                    .medication(new MedicationCreateShipmentDTO(999L))
-                    .build());
-
             createShipmentDTO = CreateShipmentDTO.builder()
                     .shipmentDate(LocalDateTime.now().toString())
                     .shipmentMedications(medications)
@@ -112,7 +105,7 @@ public class ShipmentControllerIT extends BaseTest {
 
         @Test
         @Order(1)
-        public void createShipment_correct() {
+        public void createShipment_correct_priceNotChanged() {
             given().header("authorization", "Bearer " + chemistJwt)
                     .body(createShipmentDTO)
                     .post(getApiRoot() + "/shipment")
@@ -122,20 +115,33 @@ public class ShipmentControllerIT extends BaseTest {
 
         @Test
         @Order(2)
-        public void createShipment_medicationNotExist() {
-            createShipmentDTO.setShipmentMedications(medicationsNotExists);
+        public void createShipment_correct_priceChanged() {
+            // version should not have been incremented
+            MedicationCreateShipmentDTO m = createShipmentDTO.getShipmentMedications().get(0).getMedication();
+            m.setPrice(m.getPrice().add(BigDecimal.valueOf(3)));
             given().header("authorization", "Bearer " + chemistJwt)
                     .body(createShipmentDTO)
                     .post(getApiRoot() + "/shipment")
                     .then().log().all()
-                    .statusCode(Response.Status.NOT_FOUND.getStatusCode())
-                    .body("message", equalTo(EXCEPTION_ENTITY_NOT_FOUND));
-            createShipmentDTO.setShipmentMedications(medications);
+                    .statusCode(Response.Status.CREATED.getStatusCode());
         }
 
         @Test
         @Order(3)
+        public void createShipment_optimisticLock() {
+            // version should change
+            given().header("authorization", "Bearer " + chemistJwt)
+                    .body(createShipmentDTO)
+                    .post(getApiRoot() + "/shipment")
+                    .then().log().all()
+                    .statusCode(Response.Status.CONFLICT.getStatusCode())
+                    .body("message", equalTo(EXCEPTION_OPTIMISTIC_LOCK));
+        }
+
+        @Test
+        @Order(4)
         public void createShipment_invalidDate() {
+            setNewVersions();
             createShipmentDTO.setShipmentDate("not a date");
             given().header("authorization", "Bearer " + chemistJwt)
                     .body(createShipmentDTO)
@@ -143,11 +149,10 @@ public class ShipmentControllerIT extends BaseTest {
                     .then().log().all()
                     .statusCode(Response.Status.BAD_REQUEST.getStatusCode())
                     .body("message", equalTo(EXCEPTION_INCORRECT_DATE_FORMAT));
-            createShipmentDTO.setShipmentDate(LocalDateTime.now().toString());
         }
 
         @Test
-        @Order(4)
+        @Order(5)
         public void createShipment_noMedications() {
             createShipmentDTO.setShipmentMedications(new ArrayList<>());
             given().header("authorization", "Bearer " + chemistJwt)
@@ -155,7 +160,31 @@ public class ShipmentControllerIT extends BaseTest {
                     .post(getApiRoot() + "/shipment")
                     .then().log().all()
                     .statusCode(Response.Status.BAD_REQUEST.getStatusCode());
-            createShipmentDTO.setShipmentMedications(medications);
+        }
+
+        @Test
+        @Order(5)
+        public void createShipment_quantityEqualZero() {
+            setNewVersions();
+            createShipmentDTO.getShipmentMedications().get(0).setQuantity(0);
+            given().header("authorization", "Bearer " + chemistJwt)
+                    .body(createShipmentDTO)
+                    .post(getApiRoot() + "/shipment")
+                    .then().log().all()
+                    .statusCode(Response.Status.BAD_REQUEST.getStatusCode());
+        }
+
+        @Test
+        @Order(5)
+        public void createShipment_priceEqualZero() {
+            setNewVersions();
+            MedicationCreateShipmentDTO m = createShipmentDTO.getShipmentMedications().get(0).getMedication();
+            m.setPrice(BigDecimal.valueOf(0));
+            given().header("authorization", "Bearer " + chemistJwt)
+                    .body(createShipmentDTO)
+                    .post(getApiRoot() + "/shipment")
+                    .then().log().all()
+                    .statusCode(Response.Status.BAD_REQUEST.getStatusCode());
         }
     }
 

@@ -1,5 +1,8 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.dto.shipment;
 
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.Digits;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,6 +28,8 @@ public class MedicationCreateShipmentDTO implements SignableEntity {
     private String etag;
 
     @NotNull
+    @Digits(integer = 10, fraction = 2)
+    @DecimalMin(value = "0.01")
     private BigDecimal price;
 
     @Override

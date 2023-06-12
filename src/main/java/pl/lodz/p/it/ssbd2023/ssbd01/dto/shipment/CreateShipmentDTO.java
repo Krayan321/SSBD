@@ -1,6 +1,7 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.dto.shipment;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,5 +21,5 @@ public class CreateShipmentDTO {
     private String shipmentDate;
 
     @NotEmpty
-    private List<CreateShipmentMedicationDTO> shipmentMedications;
+    private List<@Valid CreateShipmentMedicationDTO> shipmentMedications;
 }
