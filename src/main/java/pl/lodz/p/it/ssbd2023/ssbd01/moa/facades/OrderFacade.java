@@ -47,11 +47,12 @@ public class OrderFacade extends AbstractFacade<Order> {
     @RolesAllowed("getWaitingOrders")
     public List<Order> findWaitingOrders() {
         return getEntityManager()
-                .createQuery("select o from Order o "
+                .createQuery("select distinct o from Order o "
                         + "left join fetch o.orderMedications "
                         + "where o.orderState = pl.lodz.p.it.ssbd2023.ssbd01.entities.OrderState.IN_QUEUE")
                 .getResultList();
     }
+
 
     public List<Order> findAllOrdersInQueueSortByOrderDate() {
         TypedQuery<Order> query = em.createNamedQuery("Order.findAllOrdersStateInQueueSortByOrderDate", Order.class);
@@ -89,7 +90,19 @@ public class OrderFacade extends AbstractFacade<Order> {
 
   @RolesAllowed("withdraw")
   public void withdrawOrder(Long id, Long userId){
-    String sqlQuery = "DELETE FROM OrderMedication om "
+      String updateStateQuery = "UPDATE Order o " +
+              "SET o.orderState = pl.lodz.p.it.ssbd2023.ssbd01.entities.OrderState.REJECTED_BY_PATIENT " +
+              "WHERE o.id = :orderId " +
+              "AND o.orderState = pl.lodz.p.it.ssbd2023.ssbd01.entities.OrderState.TO_BE_APPROVED_BY_PATIENT " +
+              "AND o.patientData.id = :userId";
+
+      getEntityManager()
+              .createQuery(updateStateQuery)
+              .setParameter("orderId", id)
+              .setParameter("userId", userId)
+              .executeUpdate();
+
+      String sqlQuery = "DELETE FROM OrderMedication om "
             + "WHERE om.order.id = :orderId";
 
     getEntityManager()
@@ -97,12 +110,13 @@ public class OrderFacade extends AbstractFacade<Order> {
             .setParameter("orderId", id)
             .executeUpdate();
 
-    String orderQuery = "DELETE FROM Order o "
-            + "WHERE o.id = :orderId "
-            + "AND o.inQueue = true AND o.patientApproved = false "
-            + "AND o.patientData.id = :userId";
+      String orderQuery = "DELETE FROM Order o "
+              + "WHERE o.id = :orderId "
+              + "AND o.orderState = pl.lodz.p.it.ssbd2023.ssbd01.entities.OrderState.REJECTED_BY_PATIENT " +
+              "AND o.patientData.id = :userId";
 
-    getEntityManager()
+
+      getEntityManager()
             .createQuery(orderQuery)
             .setParameter("orderId", id)
             .setParameter("userId", userId)
