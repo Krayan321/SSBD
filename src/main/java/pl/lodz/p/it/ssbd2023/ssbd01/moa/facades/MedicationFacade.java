@@ -66,7 +66,11 @@ public class MedicationFacade extends AbstractFacade<Medication> {
   @PermitAll
   public Medication findByName(String name) {
     TypedQuery<Medication> tq = em.createNamedQuery("medication.findByName", Medication.class);
-    tq.setParameter("name", name);
-    return tq.getSingleResult();
+    tq.setParameter(1, name);
+    List<Medication> medications = tq.getResultList();
+    if (!medications.isEmpty()) {
+      return medications.get(0);
+    }
+    return null;
   }
 }

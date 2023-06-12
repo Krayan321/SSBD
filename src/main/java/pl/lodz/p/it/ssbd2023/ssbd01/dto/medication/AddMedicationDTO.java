@@ -13,7 +13,7 @@ import java.math.BigDecimal;
 
 @Data
 @NoArgsConstructor
-public class AddMedicationDTO extends AbstractEntityDTO {
+public class AddMedicationDTO {
 
     @NotNull
     @Size(max = 50, min = 2)
@@ -29,8 +29,7 @@ public class AddMedicationDTO extends AbstractEntityDTO {
     private String categoryName;
 
     @Builder
-    public AddMedicationDTO(Long id, Long version, String name, Integer stock, BigDecimal price, String categoryName) {
-        super(id, version);
+    public AddMedicationDTO(String name, Integer stock, BigDecimal price, String categoryName) {
         this.name = name;
         this.stock = stock;
         this.price = price;

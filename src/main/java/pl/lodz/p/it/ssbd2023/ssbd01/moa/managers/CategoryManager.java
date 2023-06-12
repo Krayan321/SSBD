@@ -63,6 +63,7 @@ public class CategoryManager extends AbstractManager implements CategoryManagerL
     }
 
     @Override
+    @PermitAll
     public Category findByName(String name) {
         return categoryFacade.findByName(name);
     }

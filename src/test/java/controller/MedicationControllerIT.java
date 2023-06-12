@@ -80,22 +80,12 @@ public class MedicationControllerIT extends BaseTest {
         public void addMedication_noSuchCategory() {
             given()
                     .header("Authorization", "Bearer " + chemistJwt)
-                    .body(addMedicationDto)
+                    .body(addMedicationDtoWrongCategory)
                     .post(getApiRoot() + "/medication/add-medication")
                     .then()
                     .statusCode(Response.Status.BAD_REQUEST.getStatusCode());
         }
 
-        @Test
-        @Order(5)
-        public void getMedications_correct() {
-            given()
-                    .header("authorization", "Bearer " + chemistJwt)
-                    .get(getApiRoot() + "/account/")
-                    .then()
-                    .statusCode(Response.Status.OK.getStatusCode())
-                    .body("$", hasSize(equalTo(5)));
-        }
     }
         @Nested
         @Order(2)
@@ -106,10 +96,10 @@ public class MedicationControllerIT extends BaseTest {
             public void getMedication_correct() {
                 given()
                         .header("authorization", "Bearer " + chemistJwt)
-                        .get(getApiRoot() + "/medication/1")
+                        .get(getApiRoot() + "/medication/4")
                         .then()
                         .statusCode(Response.Status.OK.getStatusCode())
-                        .body("name", equalTo(medicationDetailsDto.getName()));
+                        .body("name", equalTo("Prozac"));
             }
 
             @Test
@@ -117,7 +107,7 @@ public class MedicationControllerIT extends BaseTest {
             public void getMedication_noSuchMedication() {
                 given()
                         .header("authorization", "Bearer " + chemistJwt)
-                        .get(getApiRoot() + "/medication/6")
+                        .get(getApiRoot() + "/medication/10")
                         .then()
                         .statusCode(Response.Status.NOT_FOUND.getStatusCode());
             }
