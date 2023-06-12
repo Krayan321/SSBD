@@ -96,7 +96,7 @@ export default function ShowSelfOrders() {
                 <Table>
                     <TableHead sx={{backgroundColor: theme.palette.primary.main}}>
                         <TableRow>
-                            <TableCell sx={{color: "white"}}>{t("is_order_in_queue")}</TableCell>
+                            <TableCell sx={{color: "white"}}>{t("order_state")}</TableCell>
                             <TableCell sx={{color: "white"}}>{t("order_date")}</TableCell>
                             <TableCell sx={{color: "white"}}>{t("medication_name")}</TableCell>
                             <TableCell sx={{color: "white"}}>{t("medication_price")}</TableCell>
@@ -108,7 +108,7 @@ export default function ShowSelfOrders() {
                     <TableBody>
                         {selfOrders.map((item, index) => {
                             const totalPrice = item.orderMedication.reduce((sum, medication) => {
-                                return sum + (medication.medication.price * medication.quantity);
+                                return sum + (medication.medication.currentPrice * medication.quantity);
                             }, 0);
 
                             return (
@@ -118,11 +118,11 @@ export default function ShowSelfOrders() {
                                             {medicationIndex === 0 && (
                                                 <>
                                                     <TableCell
-                                                        rowSpan={item.orderMedication.length}>{item.inQueue.toString() === "true" ? t("yes") : t("no")}</TableCell>
+                                                        rowSpan={item.orderMedication.length}>{t(item.orderState)}</TableCell>
                                                     <TableCell
                                                         rowSpan={item.orderMedication.length}>{formatOrderDate(item.orderDate)}</TableCell>
                                                     <TableCell>{medication.medication.name}</TableCell>
-                                                    <TableCell>{medication.medication.price}</TableCell>
+                                                    <TableCell>{medication.medication.currentPrice}</TableCell>
                                                     <TableCell>{medication.quantity}</TableCell>
                                                     {medicationIndex === 0 && (
                                                         <TableCell
@@ -139,7 +139,7 @@ export default function ShowSelfOrders() {
                                             {medicationIndex > 0 && (
                                                 <>
                                                     <TableCell>{medication.medication.name}</TableCell>
-                                                    <TableCell>{medication.medication.price}</TableCell>
+                                                    <TableCell>{medication.medication.currentPrice}</TableCell>
                                                     <TableCell>{medication.quantity}</TableCell>
                                                 </>
                                             )}
