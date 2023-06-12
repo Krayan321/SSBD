@@ -207,5 +207,13 @@
   "show_bucket_input": "Nowa wartość",
   "show_bucket_button": "Zmień ilość",
   "show_bucket_sidebar": "Koszyk",
-  "confirm_delete_order": "Na pewno chcesz usunąć to zamówienie?"
+  "confirm_delete_order": "Na pewno chcesz usunąć to zamówienie?",
+  "order_state": "Stan zamówienia",
+  "IN_QUEUE": "W kolejce",
+  "CREATED": "Utworzone",
+  "WAITING_FOR_CHEMIST_APPROVAL": "Oczekuje na zatwierdzenie przez aptekarza",
+  "APPROVED": "Zatwierdzone",
+  "TO_BE_APPROVED_BY_PATIENT": "Do zatwierdzenia przez pacjenta",
+  "REJECTED_BY_CHEMIST": "Odrzucone przez aptekarza",
+  "REJECTED_BY_PATIENT": "Odrzucone przez pacjenta"
 }

@@ -59,9 +59,17 @@ export default function AllMedications() {
   };
 
   const handleAddToBucket = async (name, price, categoryName) => {
-    const toAdd = {name: name, price: price, categoryName: categoryName, quantity: 1}
-    bucket.push(toAdd);
-    localStorage.setItem("bucket", JSON.stringify(bucket))
+    const toAdd = {name: name, currentPrice: price, categoryName: categoryName, quantity: 1}
+    let flag = false;
+    for (let o of bucket) {
+      if (o.name === name) {
+        flag = true;
+      }
+    }
+    if(!flag) {
+      bucket.push(toAdd);
+      localStorage.setItem("bucket", JSON.stringify(bucket))
+    }
   };
 
   const handleRefresh = () => {
@@ -171,7 +179,7 @@ export default function AllMedications() {
                 <TableCell component="th" scope="row">
                   {row.name}
                 </TableCell>
-                <TableCell align="right">{row.price}</TableCell>
+                <TableCell align="right">{row.currentPrice}</TableCell>
                 <TableCell align="right">{String(row.stock)}</TableCell>
                 <TableCell align="right">
                   {String(row.categoryDTO.name)}
@@ -185,7 +193,7 @@ export default function AllMedications() {
                   </Button>
                 </TableCell>
                 <TableCell align="right">
-                  <Button onClick={() => handleAddToBucket(row.name, row.price, row.categoryDTO.name)}>
+                  <Button onClick={() => handleAddToBucket(row.name, row.currentPrice, row.categoryDTO.name)}>
                     {t("dodaj")}
                   </Button>
                 </TableCell>

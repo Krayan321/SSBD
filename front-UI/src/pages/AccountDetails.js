@@ -13,9 +13,6 @@ function AccountDetails() {
   const [account, setAccount] = useState({});
   const [accessLevels, setAccessLevels] = useState([]);
   const [etag, setEtag] = useState("");
-  const [patientData, setPatientData] = useState({});
-  const [chemistData, setChemistdata] = useState({});
-  const [adminData, setAdminData] = useState({});
   const { t } = useTranslation();
   const navigate = useNavigate();
   const user = useSelector((state) => state.user);

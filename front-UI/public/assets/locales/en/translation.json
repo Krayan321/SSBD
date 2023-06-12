@@ -207,5 +207,13 @@
   "show_bucket_button": "Change quantity",
   "show_bucket_sidebar": "Shopping cart",
   "confirm_delete_order": "Are you sure you want to delete this order?",
-  "price_min": "Price must be greater that 0.01"
+  "price_min": "Price must be greater that 0.01",
+  "order_state": "Order state",
+  "IN_QUEUE": "In queue",
+  "CREATED": "Created",
+  "WAITING_FOR_CHEMIST_APPROVAL": "Waiting for chemist approval",
+  "APPROVED": "Approved",
+  "TO_BE_APPROVED_BY_PATIENT": "To be approved by patient",
+  "REJECTED_BY_CHEMIST": "Rejected by chemist",
+  "REJECTED_BY_PATIENT": "Rejected by patient"
 }
