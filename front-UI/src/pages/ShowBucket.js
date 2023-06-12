@@ -18,10 +18,12 @@ import {
     Skeleton, TextField, useTheme
 } from "@mui/material";
 import {ToastContainer} from "react-toastify";
+import PointOfSaleIcon from '@mui/icons-material/PointOfSale';
 import {useTranslation} from "react-i18next";
 import {number} from "yup";
 import {useNavigate} from "react-router-dom";
 import {Pathnames} from "../router/Pathnames";
+import RefreshIcon from "@mui/icons-material/Refresh";
 
 
 export default function ShowBucket() {
@@ -39,24 +41,26 @@ export default function ShowBucket() {
             const array = JSON.parse(str);
             setBucket(array);
         } else {
-            console.log("dupa duap")
-            setBucket([{name:"testlek", price:5, categoryName:"przeciwbolowe", quantity:5}, {name:"testlek1", price:5, categoryName:"przeciwbolowe", quantity:5}, {name:"testlek2", price:5, categoryName:"przeciwbolowe", quantity:5}]);
+            setBucket([]);
         }
     }, [localStorage])
 
     const handleChange = async (medicationName, quantity) => {
         let temp_to_change = bucket.find(({name}) => name === medicationName);
-        console.log(temp_to_change)
 
         temp_to_change.quantity = quantity;
 
-        console.log(bucket)
         localStorage.setItem("bucket", JSON.stringify(bucket))
         window.location.reload();
     };
 
+    const handleBuy = () => {
+
+    };
+
     if (loading) {
         return (
+
             <TableContainer component={Paper}>
                 <Table>
                     <TableHead sx={{backgroundColor: theme.palette.primary.main}}>
@@ -98,6 +102,14 @@ export default function ShowBucket() {
             alignContent: "center",
             flexDirection: "column"
         }}>
+            <Box sx={{ marginBottom: "10px", textAlign: "center" }}>
+                <IconButton
+                    variant="contained"
+                    onClick={() => handleBuy()}
+                >
+                    <PointOfSaleIcon />
+                </IconButton>
+            </Box>
             <TableContainer sx={{maxWidth: "800px", margin: "auto"}} component={Paper}>
                 <Table aria-label="simple table">
                     <TableHead sx={{backgroundColor: theme.palette.primary.main}}>
