@@ -73,9 +73,10 @@ public class OrderController extends AbstractController {
     //moa 13
     @PUT
     @Path("/{id}/approve")
-    @DenyAll
-    public void approveOrder(@PathParam("id") Long id) {
-        throw new UnsupportedOperationException();
+    @RolesAllowed("approveOrder")
+    public Response approveOrder(@PathParam("id") Long id) {
+        repeatTransactionVoid(orderManager, () -> orderManager.approveOrder(id));
+        return Response.ok().build();
     }
 
     //moa 12

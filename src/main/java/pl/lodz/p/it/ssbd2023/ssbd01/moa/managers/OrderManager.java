@@ -219,9 +219,16 @@ public class OrderManager extends AbstractManager
   }
 
   @Override
-  @DenyAll
+  @RolesAllowed("approveOrder")
   public void approveOrder(Long id) {
-    throw new UnsupportedOperationException();
+    Order order = orderFacade.find(id).orElseThrow();
+    if(order.getOrderState().equals(OrderState.APPROVED)) {
+      return;
+    } else if(!order.getOrderState().equals(OrderState.WAITING_FOR_CHEMIST_APPROVAL)) {
+      throw OrderException.createModificationOrderOfIllegalState();
+    }
+    order.setOrderState(OrderState.APPROVED);
+    orderFacade.edit(order);
   }
 
     @Override
