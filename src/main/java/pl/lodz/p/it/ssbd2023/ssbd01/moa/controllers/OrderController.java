@@ -14,12 +14,14 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import lombok.extern.java.Log;
 import pl.lodz.p.it.ssbd2023.ssbd01.common.AbstractController;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.PatientDataDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.order.ChangeMedNumberDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.medication.MedicationDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.order.OrderDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Account;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Order;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Medication;
+import pl.lodz.p.it.ssbd2023.ssbd01.moa.facades.PatientDataFacade;
 import pl.lodz.p.it.ssbd2023.ssbd01.moa.managers.OrderManagerLocal;
 import pl.lodz.p.it.ssbd2023.ssbd01.mok.managers.AccountManagerLocal;
 import pl.lodz.p.it.ssbd2023.ssbd01.util.converters.MedicationConverter;
@@ -41,7 +43,6 @@ public class OrderController extends AbstractController {
     private OrderManagerLocal orderManager;
     @Inject
     private AccountManagerLocal accountManager;
-
 
     //moa 18
     @GET
@@ -111,30 +112,13 @@ public class OrderController extends AbstractController {
         return medications.stream().map(MedicationConverter::mapMedicationToMedicationDTO).toList();
     }
 
-    //moa 5
-    @PUT
-    @Path("/{id}/change")
-    @RolesAllowed("changeNumberOfMedicationsInOrder")
-    public Response changeNumberOfMedicationsInOrder(@PathParam("id") Long id, @Valid ChangeMedNumberDTO changeMedNumberDTO) {
-        repeatTransactionVoid(orderManager, () -> orderManager.changeNumberOfMedicationsInOrder(id, changeMedNumberDTO.getMedicationId(), changeMedNumberDTO.getQuantity()));
-        return Response.ok().build();
-    }
-
-    //moa 6
-    @PUT
-    @Path("/{id}/remove")
-    @DenyAll
-    public void removeMedicationFromOrder(@PathParam("id") Long id) {
-        throw new UnsupportedOperationException();
-    }
-
     // moa 7
     @PUT
     @Path("/{id}/submit")
     @RolesAllowed("createOrder")
-    public Response submitOrder(@PathParam("id") Long id) {
+    public Response submitOrder(@PathParam("id") Long id, @Valid String patientDataId) {
         Order order = repeatTransaction(orderManager, () -> orderManager
-                .createOrder(accountManager.getCurrentUserWithAccessLevels(), id));
+                .createOrder(accountManager.getCurrentUserWithAccessLevels(), id, patientDataId));
 
         OrderDTO orderDTO = OrderConverter.mapOrderToOrderDTO(order);
 

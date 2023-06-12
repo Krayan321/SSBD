@@ -24,17 +24,36 @@ import {number} from "yup";
 import {useNavigate} from "react-router-dom";
 import {Pathnames} from "../router/Pathnames";
 import RefreshIcon from "@mui/icons-material/Refresh";
+import {getSelfAccountDetails} from "../api/mok/accountApi";
+import {createOrder} from "../api/moa/orderApi";
 
 
 export default function ShowBucket() {
     const [bucket, setBucket] = useState([]);
+    const [accessLevels, setAccessLevels] = useState([]);
     const navigate = useNavigate();
     const [quantity, setQuantity] = useState();
     const theme = useTheme();
     const [loading, setLoading] = useState(false);
     const {t} = useTranslation();
+    const [patientData, setPatientData] = useState();
+    const [id, setId] = useState();
 
     useEffect(() => {
+        const fetchData = async () => {
+                const response = await getSelfAccountDetails();
+                setAccessLevels(response.data.accessLevels);
+                setId(response.data.id);
+                let data;
+                accessLevels.forEach((element) => {
+                    if (element.role === "PATIENT") {
+                        data = element;
+                    }
+                })
+            setPatientData(data.id);
+
+        };
+        fetchData();
         if (localStorage.getItem("bucket") !== null) {
             const str = localStorage.getItem("bucket")
             if(!str) return;
@@ -55,7 +74,7 @@ export default function ShowBucket() {
     };
 
     const handleBuy = () => {
-
+        createOrder(id, patientData);
     };
 
     if (loading) {
@@ -131,7 +150,7 @@ export default function ShowBucket() {
                                 <TableCell component="th" scope="row">
                                     {row.name}
                                 </TableCell>
-                                <TableCell align="right">{row.price + " zł"}</TableCell>
+                                <TableCell align="right">{row.currentPrice + " zł"}</TableCell>
                                 <TableCell align="right">{row.categoryName}</TableCell>
                                 <TableCell align="right">{row.quantity}</TableCell>
                                 <TableCell align="right">
@@ -145,12 +164,23 @@ export default function ShowBucket() {
                                             if (e.target.value > 99) {
                                                 e.target.value = "99";
                                             }
-                                            if (e.target.value <= 0) {
-                                                e.target.value = "0";
+                                            if (e.target.value < 0) {
+                                                e.target.value = "1";
                                             }
                                             if (e.target.value === "01" || e.target.value === "02" || e.target.value === "03" || e.target.value === "04" || e.target.value === "05" || e.target.value === "06" || e.target.value === "07" || e.target.value === "08" || e.target.value === "09") {
-                                                e.target.value = "0";
+                                                e.target.value = "1";
                                             }
+
+                                            if (e.target.value === "0") {
+                                                const index = bucket.indexOf(row);
+                                                if (index > -1) { // only splice array when item is found
+                                                    bucket.splice(index, 1); // 2nd parameter means remove one item only
+                                                    localStorage.setItem("bucket", JSON.stringify(bucket))
+                                                    window.location.reload();
+                                                }
+                                                setBucket(bucket);
+                                            }
+
                                             setQuantity(e.target.value);
                                         }
                                         }

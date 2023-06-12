@@ -9,8 +9,10 @@ import jakarta.ejb.TransactionAttribute;
 import jakarta.ejb.TransactionAttributeType;
 import jakarta.inject.Inject;
 import jakarta.interceptor.Interceptors;
+import lombok.Data;
 import lombok.extern.java.Log;
 import pl.lodz.p.it.ssbd2023.ssbd01.common.AbstractManager;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.SelfAccountWithAccessLevelDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.*;
 import pl.lodz.p.it.ssbd2023.ssbd01.exceptions.ApplicationException;
 import pl.lodz.p.it.ssbd2023.ssbd01.exceptions.OrderException;
@@ -18,12 +20,16 @@ import pl.lodz.p.it.ssbd2023.ssbd01.interceptors.GenericManagerExceptionsInterce
 import pl.lodz.p.it.ssbd2023.ssbd01.interceptors.TrackerInterceptor;
 import pl.lodz.p.it.ssbd2023.ssbd01.moa.facades.MedicationFacade;
 import pl.lodz.p.it.ssbd2023.ssbd01.moa.facades.OrderFacade;
+import pl.lodz.p.it.ssbd2023.ssbd01.moa.facades.PatientDataFacade;
+import pl.lodz.p.it.ssbd2023.ssbd01.mok.facades.AccountFacade;
+import pl.lodz.p.it.ssbd2023.ssbd01.util.converters.AccountConverter;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.time.Instant;
+import java.time.LocalTime;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import static com.fasterxml.jackson.databind.type.LogicalType.DateTime;
 
 @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 @Interceptors({GenericManagerExceptionsInterceptor.class, TrackerInterceptor.class})
@@ -36,11 +42,21 @@ public class OrderManager extends AbstractManager implements OrderManagerLocal, 
     private OrderFacade orderFacade;
     @Inject
     private MedicationFacade medicationFacade;
+    @Inject
+    private AccountFacade accountFacade;
 
     @Override
     @RolesAllowed("createOrder")
     public Order createOrder(Account account, Long id) {
-        Order order = getOrder(id);
+
+        SelfAccountWithAccessLevelDTO accountDTO =
+                AccountConverter.mapAccountToSelfAccountWithAccessLevelsDto(account);
+
+
+        Order order = Order.builder()
+                .orderDate(Date.from(Instant.now()))
+                .patientData()
+                .;
         account
                 .getAccessLevels()
                 .forEach(

@@ -208,7 +208,6 @@
   "show_bucket_quantity": "Quantity",
   "show_bucket_input": "Input",
   "show_bucket_button": "Change quantity",
-  "show_bucket_sidebar": "Shopping cart"
-  "on_prescription": "On prescription?",
+  "show_bucket_sidebar": "Shopping cart",
   "confirm_delete_order": "Are you sure you want to delete this order?"
 }
