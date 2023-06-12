@@ -159,14 +159,6 @@ public class OrderManager extends AbstractManager implements OrderManagerLocal, 
     @Override
     @RolesAllowed("withdraw")
     public void cancelOrder(Long id, Account account) {
-        account
-                .getAccessLevels()
-                .forEach(
-                        accessLevel -> {
-                            if (!accessLevel.getRole().getRoleName().equals("PATIENT")) {
-                                throw OrderException.onlyPatientCanDelete();
-                            }
-                        });
         Optional<Order> order = orderFacade.find(id);
         if(!order.get().getInQueue() || order.get().getPatientApproved()
                 || (account.getId() != order.get().getPatientData().getId())){
