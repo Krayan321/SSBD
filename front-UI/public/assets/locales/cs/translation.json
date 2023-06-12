@@ -157,10 +157,7 @@
   "access_level_added_successfully": "Úroveň přístupu byla úspěšně přidána",
   "session_expired_login_again": "Vaše relace vypršela, přihlaste se prosím znovu",
   "exception.access-denied": "Přístup odepřen",
-  "welcome_back": "Vítejte zpět",
-  "create_account": "Vytvořit účet",
   "accounts": "Účty",
-  "logout": "Odhlásit se",
   "edit_admin_data": "Upravit podrobnosti správce",
   "edit_chemist_data": "Upravit údaje o lékárníkovi",
   "edit_patient_data": "Upravit údaje o pacientovi",
@@ -196,5 +193,7 @@
   "price": "Cena",
   "stock": "Sklad",
   "category_name": "Název kategorie",
-  "on_prescription": "Na předpis?"
+  "on_prescription": "Na předpis?",
+  "confirm_delete_order": "Opravdu chcete smazat tuto objednávku?",
+  "confirm": "Potvrdit"
 }

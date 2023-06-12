@@ -12,3 +12,11 @@ export async function getWaitingOrders() {
 export async function getOrdersToApprove() {
     return await get("order/to-approve");
 }
+
+export async function createOrder() {
+    return await put("order/${id}/submit")
+}
+
+export async function deleteWaitingOrdersById(id) {
+    return await del(`order/${id}/waiting`);
+}

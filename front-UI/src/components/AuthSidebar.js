@@ -39,142 +39,152 @@ function AuthSidebar() {
   };
 
   return (
-    <>
-      <Sidebar
-        className="text-white"
-        backgroundColor={theme.palette.primary.main}
-      >
-        <Menu iconShape="square">
-          <Box mb="25px">
-            <Box textAlign="center">
-              <Typography
-                variant="h5"
-                fontWeight="bold"
-                sx={{ m: "20px 0 0 0" }}
-              >
-                {login}
-              </Typography>
-              <Typography variant="h6">{userRole}</Typography>
+      <>
+        <Sidebar
+            className="text-white"
+            backgroundColor={theme.palette.primary.main}
+        >
+          <Menu iconShape="square">
+            <Box mb="25px">
+              <Box textAlign="center">
+                <Typography
+                    variant="h5"
+                    fontWeight="bold"
+                    sx={{ m: "20px 0 0 0" }}
+                >
+                  {login}
+                </Typography>
+                <Typography variant="h6">{userRole}</Typography>
+              </Box>
             </Box>
-          </Box>
-          <Divider variant="middle" sx={{ bgcolor: "white" }} />
-          <Box ml="25px">
-            {userRole === ROLES.ADMIN && (
-              <>
-                <MenuItem
-                  onClick={() => {
-                    navigate(Pathnames.admin.createAccount);
-                  }}
-                >
-                  <IconButton color="inherit">
-                    <PersonAddIcon />
-                  </IconButton>
-                  {t("create_account")}
-                </MenuItem>
-                <MenuItem
-                  onClick={() => {
-                    navigate(Pathnames.admin.accounts);
-                  }}
-                >
-                  <IconButton color="inherit">
-                    <PeopleIcon />
-                  </IconButton>
-                  {t("accounts")}
-                </MenuItem>
-              </>
-            )}
-            {userRole === ROLES.CHEMIST && (
-              <>
-                <MenuItem
-                  onClick={() => {
-                    navigate(Pathnames.chemist.shipment);
-                  }}
-                >
-                  <IconButton color="inherit">
-                    <LocalShipping />
-                  </IconButton>
-                  {t("shipment")}
-                </MenuItem>
-                <MenuItem
-                  onClick={() => {
-                    navigate(Pathnames.chemist.waitingOrders);
-                  }}
-                >
-                  <IconButton color="inherit">
-                    <AlarmIcon />
-                  </IconButton>
-                  {t("waitingOrders")}
-                </MenuItem>
-                <MenuItem
-                  onClick={() => {
-                    navigate(Pathnames.chemist.ordersToApprove);
-                  }}
-                >
-                  <IconButton color="inherit">
-                    <Quiz />
-                  </IconButton>
-                  {t("ordersToApprove")}
-                </MenuItem>
-              </>
-            )}
-            {userRole === ROLES.PATIENT && (
-              <>
-                <MenuItem
-                  onClick={() => {
-                    navigate(Pathnames.patient.selfOrders);
-                  }}
-                >
-                  <IconButton color="inherit">
-                    <ShoppingBasketIcon />
-                  </IconButton>
-                  {t("orders")}
-                </MenuItem>
-              </>
-            )}
-            {(userRole === ROLES.PATIENT || userRole === ROLES.CHEMIST) && (
-              <>
-                <MenuItem
-                  onClick={() => {
-                    navigate(Pathnames.patientChemist.medications);
-                  }}
-                >
-                  <IconButton color="inherit">
-                    <VaccinesIcon />
-                  </IconButton>
-                  {t("list_of_medications")}
-                </MenuItem>
-              </>
-            )}
-            {(userRole === ROLES.ADMIN ||
-              userRole === ROLES.PATIENT ||
-              userRole === ROLES.CHEMIST) && (
-              <>
-                <MenuItem
-                  onClick={() => {
-                    setDialogOpen(true);
-                  }}
-                >
-                  <IconButton color="inherit">
-                    <Logout />
-                  </IconButton>
+            <Divider variant="middle" sx={{ bgcolor: "white" }} />
+            <Box ml="25px">
+              {userRole === ROLES.ADMIN && (
+                  <>
+                    <MenuItem
+                        onClick={() => {
+                          navigate(Pathnames.admin.createAccount);
+                        }}
+                    >
+                      <IconButton color="inherit">
+                        <PersonAddIcon />
+                      </IconButton>
+                      {t("create_account")}
+                    </MenuItem>
+                    <MenuItem
+                        onClick={() => {
+                          navigate(Pathnames.admin.accounts);
+                        }}
+                    >
+                      <IconButton color="inherit">
+                        <PeopleIcon />
+                      </IconButton>
+                      {t("accounts")}
+                    </MenuItem>
+                  </>
+              )}
+              {userRole === ROLES.CHEMIST && (
+                  <>
+                    <MenuItem
+                        onClick={() => {
+                          navigate(Pathnames.chemist.shipment);
+                        }}
+                    >
+                      <IconButton color="inherit">
+                        <LocalShipping />
+                      </IconButton>
+                      {t("shipment")}
+                    </MenuItem>
+                    <MenuItem
+                        onClick={() => {
+                          navigate(Pathnames.chemist.waitingOrders);
+                        }}
+                    >
+                      <IconButton color="inherit">
+                        <AlarmIcon />
+                      </IconButton>
+                      {t("waitingOrders")}
+                    </MenuItem>
+                    <MenuItem
+                        onClick={() => {
+                          navigate(Pathnames.chemist.ordersToApprove);
+                        }}
+                    >
+                      <IconButton color="inherit">
+                        <Quiz />
+                      </IconButton>
+                      {t("ordersToApprove")}
+                    </MenuItem>
+                  </>
+              )}
+              {userRole === ROLES.PATIENT && (
+                  <>
+                    <MenuItem
+                        onClick={() => {
+                          navigate(Pathnames.patient.selfOrders);
+                        }}
+                    >
+                      <IconButton color="inherit">
+                        <ShoppingBasketIcon />
+                      </IconButton>
+                      {t("orders")}
+                    </MenuItem>
+                    <MenuItem
+                        onClick={() => {
+                          navigate(Pathnames.patient.showBucket);
+                        }}
+                    >
+                      <IconButton color="inherit">
+                        <ShoppingBasketIcon />
+                      </IconButton>
+                      {t("show_bucket_sidebar")}
+                    </MenuItem>
+                  </>
+              )}
+              {(userRole === ROLES.PATIENT || userRole === ROLES.CHEMIST) && (
+                  <>
+                    <MenuItem
+                        onClick={() => {
+                          navigate(Pathnames.patientChemist.medications);
+                        }}
+                    >
+                      <IconButton color="inherit">
+                        <VaccinesIcon />
+                      </IconButton>
+                      {t("list_of_medications")}
+                    </MenuItem>
+                  </>
+              )}
+              {(userRole === ROLES.ADMIN ||
+                  userRole === ROLES.PATIENT ||
+                  userRole === ROLES.CHEMIST) && (
+                  <>
+                    <MenuItem
+                        onClick={() => {
+                          setDialogOpen(true);
+                        }}
+                    >
+                      <IconButton color="inherit">
+                        <Logout />
+                      </IconButton>
 
-                  {t("logout")}
-                </MenuItem>
-              </>
-            )}
-          </Box>
-        </Menu>
-        <ConfirmationDialog
-          open={dialogOpen}
-          title={t("confirm_logout")}
-          actions={[
-            { label: t("logout"), handler: accept, color: "primary" },
-            { label: t("cancel"), handler: reject, color: "secondary" },
-          ]}
-          onClose={() => setDialogOpen(false)}
-        />
-      </Sidebar>
-    </>
+                      {t("logout")}
+                    </MenuItem>
+                  </>
+              )}
+            </Box>
+          </Menu>
+          <ConfirmationDialog
+              open={dialogOpen}
+              title={t("confirm_logout")}
+              actions={[
+                { label: t("logout"), handler: accept, color: "primary" },
+                { label: t("cancel"), handler: reject, color: "secondary" },
+              ]}
+              onClose={() => setDialogOpen(false)}
+          />
+        </Sidebar>
+      </>
   );
 }
 

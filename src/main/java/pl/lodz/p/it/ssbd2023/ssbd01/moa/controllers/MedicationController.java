@@ -11,6 +11,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import lombok.extern.java.Log;
 import pl.lodz.p.it.ssbd2023.ssbd01.common.AbstractController;
+import pl.lodz.p.it.ssbd2023.ssbd01.config.EntityIdentitySignerVerifier;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.medication.AddMedicationDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.medication.MedicationDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Category;
@@ -33,6 +34,10 @@ public class MedicationController extends AbstractController {
     @Inject
     private CategoryManagerLocal categoryManager;
 
+    @Inject
+    private EntityIdentitySignerVerifier entityIdentitySignerVerifier;
+
+
     //moa 1
     @GET
     @Path("/")
@@ -42,15 +47,6 @@ public class MedicationController extends AbstractController {
         List<Medication> medications =
                 repeatTransaction(medicationManager, () -> medicationManager.getAllMedications());
         return medications.stream().map(MedicationConverter::mapMedicationToMedicationDTO).toList();
-    }
-
-    //moa 2???
-    @GET
-    @Path("/{id}")
-    @DenyAll
-    @Produces(MediaType.APPLICATION_JSON)
-    public AddMedicationDTO getMedication(@PathParam("id") Long id) {
-        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     //chyba moa 19 ale może w shimpment
@@ -64,7 +60,7 @@ public class MedicationController extends AbstractController {
                 Medication.builder()
                         .name(addMedicationDTO.getName())
                         .stock(addMedicationDTO.getStock())
-                        .price(addMedicationDTO.getPrice())
+                        .currentPrice(addMedicationDTO.getPrice())
                         .category(category)
                         .build();
 
@@ -82,11 +78,14 @@ public class MedicationController extends AbstractController {
 
     //moa 2???
     @GET
-    @Path("/{id}/details")
-    @DenyAll
+    @Path("/{id}")
+    @RolesAllowed("getMedicationDetails")
     @Produces(MediaType.APPLICATION_JSON)
-    public AddMedicationDTO getMedicationDetails(@PathParam("id") Long id) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public Response getMedicationDetails(@PathParam("id") Long id) {
+        Medication medication = repeatTransaction(medicationManager, () -> medicationManager.getMedicationDetails(id));
+        MedicationDTO medicationDTO = MedicationConverter.mapMedicationToMedicationDTO(medication);
+        String etag = entityIdentitySignerVerifier.calculateEntitySignature(medicationDTO);
+        return Response.ok(medicationDTO).tag(etag).build();
     }
 
 }

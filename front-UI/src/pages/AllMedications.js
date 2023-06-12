@@ -19,12 +19,23 @@ export default function AllMedications() {
   const theme = useTheme();
   const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
+  const [bucket, setBucket] = useState([]);
+
+
 
   const { t } = useTranslation();
 
   const findMedications = useCallback(async () => {
     setLoading(true);
     setRefreshing(true);
+    if (localStorage.getItem("bucket") !== null) {
+      const str = localStorage.getItem("bucket")
+      if(!str) return;
+      const array = JSON.parse(str);
+      setBucket(array);
+    } else {
+      setBucket([]);
+    }
     getAllMedications()
       .then((response) => {
         setLoading(false);
@@ -45,6 +56,12 @@ export default function AllMedications() {
   const handleMedicationDetails = async (medicationId) => {
     const id = medicationId;
     navigate(`/medication/${id}/details`);
+  };
+
+  const handleAddToBucket = async (name, price, categoryName) => {
+    const toAdd = {name: name, price: price, categoryName: categoryName, quantity: 1}
+    bucket.push(toAdd);
+    localStorage.setItem("bucket", JSON.stringify(bucket))
   };
 
   const handleRefresh = () => {
@@ -140,6 +157,9 @@ export default function AllMedications() {
               <TableCell sx={{ color: "white" }} align="right">
                 {t("details")}
               </TableCell>
+              <TableCell sx={{ color: "white" }} align="right">
+
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -162,6 +182,11 @@ export default function AllMedications() {
                 <TableCell align="right">
                   <Button onClick={() => handleMedicationDetails(row.id)}>
                     {t("details")}
+                  </Button>
+                </TableCell>
+                <TableCell align="right">
+                  <Button onClick={() => handleAddToBucket(row.name, row.price, row.categoryDTO.name)}>
+                    {t("dodaj")}
                   </Button>
                 </TableCell>
               </TableRow>
