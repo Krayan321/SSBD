@@ -33,7 +33,8 @@ function SelectMedicationOverlay({ open, onClose, medications, append }) {
     const select = function(medication) {
         const found = medications.find(med => med.name === medication.name);
         found.chosen = true;
-        append({id: medication.id, name: medication.name, quantity: ''});
+        append({id: medication.id, name: medication.name,
+            price: Number(medication.currentPrice).toFixed(2), quantity: ''});
         onClose();
     }
 
