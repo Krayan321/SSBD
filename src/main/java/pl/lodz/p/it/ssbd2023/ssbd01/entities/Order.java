@@ -65,6 +65,9 @@ public class Order extends AbstractEntity implements Serializable {
   @Column(name = "prescription_approved")
   private Boolean prescriptionApproved;
 
+  @Column(name = "patient_approved")
+  private Boolean patientApproved;
+
   @Builder
   public Order(
           Boolean inQueue,

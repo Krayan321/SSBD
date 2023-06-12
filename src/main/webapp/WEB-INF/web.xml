@@ -177,6 +177,9 @@
     <security-role>
         <role-name>deleteWaitingOrdersById</role-name>
     </security-role>
+    <security-role>
+        <role-name>withdraw</role-name>
+    </security-role>
 
 
 </web-app>
