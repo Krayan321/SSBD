@@ -1,7 +1,13 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.util.converters;
 
+import org.apache.commons.lang3.tuple.Pair;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.shipment.CreateShipmentDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.shipment.CreateShipmentMedicationDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.shipment.MedicationCreateShipmentDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.shipment.ShipmentDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.entities.EtagVerification;
+import pl.lodz.p.it.ssbd2023.ssbd01.entities.EtagVersion;
+import pl.lodz.p.it.ssbd2023.ssbd01.entities.Medication;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Shipment;
 import pl.lodz.p.it.ssbd2023.ssbd01.exceptions.ApplicationException;
 
@@ -12,9 +18,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeParseException;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class ShipmentConverter {
@@ -56,5 +60,16 @@ public class ShipmentConverter {
         }
     }
 
+    public static EtagVerification mapCreateShipmentDtoToEtagVerification(CreateShipmentDTO shipment) {
+        EtagVerification etagVerification = new EtagVerification(new HashMap<>());
+        shipment.getShipmentMedications().forEach(sm -> {
+            MedicationCreateShipmentDTO m = sm.getMedication();
+            etagVerification.getEtagVersionList().put(m.getName(), EtagVersion.builder()
+                    .version(m.getVersion())
+                    .etag(m.getEtag())
+                    .build());
+        });
+        return etagVerification;
+    }
 
 }

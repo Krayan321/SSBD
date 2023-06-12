@@ -1,4 +1,4 @@
-import {get} from "../api";
+import {get, put, del} from "../api";
 
 
 export async function getSelfOrders() {
