@@ -84,6 +84,9 @@ public class i18n {
   public static final String EXCEPTION_ORDER_NOT_IN_QUEUE =
           "exception.order_not_in_queue";
 
+  public static final String EXCEPTION_CATEGORY_ALREADY_EXISTS = "exception.category.already-exists";
+
+
   public static String getMessage(String message, Locale locale, Object... parameters) {
     ResourceBundle bundle = ResourceBundle.getBundle("i18n.messages", locale);
     String fmtString = bundle.getString(message);

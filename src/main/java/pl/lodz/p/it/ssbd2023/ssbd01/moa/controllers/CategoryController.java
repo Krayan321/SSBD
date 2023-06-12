@@ -2,6 +2,7 @@ package pl.lodz.p.it.ssbd2023.ssbd01.moa.controllers;
 
 import jakarta.annotation.security.DenyAll;
 import jakarta.annotation.security.PermitAll;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
@@ -47,7 +48,7 @@ public class CategoryController extends AbstractController {
     //moa 21
     @POST
     @Path("/add-category")
-    @PermitAll
+    @RolesAllowed("createCategory")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response addCategory(@NotNull @Valid CategoryDTO categoryDto) {
         Category category = new Category();

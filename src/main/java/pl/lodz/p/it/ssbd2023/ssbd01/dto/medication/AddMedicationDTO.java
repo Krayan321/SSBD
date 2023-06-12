@@ -6,13 +6,14 @@ import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.AbstractEntityDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Category;
 
 import java.math.BigDecimal;
 
 @Data
 @NoArgsConstructor
-public class AddMedicationDTO {
+public class AddMedicationDTO extends AbstractEntityDTO {
 
     @NotNull
     @Size(max = 50, min = 2)
@@ -28,7 +29,8 @@ public class AddMedicationDTO {
     private String categoryName;
 
     @Builder
-    public AddMedicationDTO(String name, Integer stock, BigDecimal price, String categoryName) {
+    public AddMedicationDTO(Long id, Long version, String name, Integer stock, BigDecimal price, String categoryName) {
+        super(id, version);
         this.name = name;
         this.stock = stock;
         this.price = price;

@@ -1,7 +1,9 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.dto.medication;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import pl.lodz.p.it.ssbd2023.ssbd01.common.SignableEntity;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.AbstractEntityDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.category.CategoryDTO;
 
@@ -11,7 +13,7 @@ import java.math.BigDecimal;
 @Setter
 @NoArgsConstructor
 @ToString
-public class MedicationDTO extends AbstractEntityDTO {
+public class MedicationDTO extends AbstractEntityDTO implements SignableEntity {
 
     @NotNull
     private String name;
@@ -32,5 +34,11 @@ public class MedicationDTO extends AbstractEntityDTO {
         this.stock = stock;
         this.price = price;
         this.categoryDTO = categoryDTO;
+    }
+
+    @Override
+    @JsonIgnore
+    public String getSignablePayload() {
+        return String.format("%s.%d", name, getVersion());
     }
 }
