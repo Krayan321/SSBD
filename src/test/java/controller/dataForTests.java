@@ -178,7 +178,7 @@ public class dataForTests {
           .id(1L)
           .name("Prozac")
           .stock(100)
-          .price(new BigDecimal("10.0"))
+          .currentPrice(new BigDecimal("10.0"))
           .categoryDTO(categoryDto)
           .build();
 
