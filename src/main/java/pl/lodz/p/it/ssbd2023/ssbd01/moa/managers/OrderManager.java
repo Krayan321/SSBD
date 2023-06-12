@@ -201,6 +201,11 @@ public class OrderManager extends AbstractManager implements OrderManagerLocal, 
     }
 
     @Override
+    public void cancelOrder(Long id, Account account) {
+
+    }
+
+    @Override
     @DenyAll
     public void approveOrder(Long id) {
         throw new UnsupportedOperationException();
