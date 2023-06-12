@@ -1,14 +1,15 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.entities;
 
 import jakarta.persistence.*;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 @Entity
 @Getter
@@ -26,6 +27,10 @@ import lombok.Setter;
         name = "Order.findByPatientDataId",
         query =
                 "SELECT o FROM Order o JOIN FETCH o.orderMedications WHERE o.patientData.id = :patientDataId")
+@NamedQuery(
+        name = "Order.findAllOrdersStateInQueueSortByOrderDate",
+        query =
+                "SELECT o FROM Order o WHERE o.orderState = pl.lodz.p.it.ssbd2023.ssbd01.entities.OrderState.IN_QUEUE ORDER BY o.orderDate ASC")
 public class Order extends AbstractEntity implements Serializable {
 
     @Id
@@ -33,12 +38,13 @@ public class Order extends AbstractEntity implements Serializable {
     @Setter(lombok.AccessLevel.NONE)
     private Long id;
 
-    @Column(nullable = false, name = "in_queue")
-    private Boolean inQueue;
-
     @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = false, name = "order_date")
     private Date orderDate;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "order_state", nullable = false)
+    private OrderState orderState;
 
     @OneToMany(
             mappedBy = "order",
@@ -58,21 +64,17 @@ public class Order extends AbstractEntity implements Serializable {
             updatable = false)
     private PatientData patientData;
 
-  @ManyToOne
-  @JoinColumn(name = "chemist_data_id", referencedColumnName = "id", updatable = false)
-  private ChemistData chemistData;
+    @ManyToOne
+    @JoinColumn(name = "chemist_data_id", referencedColumnName = "id", updatable = false)
+    private ChemistData chemistData;
 
-  @Column(name = "prescription_approved")
-  private Boolean prescriptionApproved;
-
-  @Builder
-  public Order(
-          Boolean inQueue,
-          Date orderDate,
-          PatientData patientData,
-          ChemistData chemistData) {
-    this.orderDate = orderDate;
-    this.patientData = patientData;
-    this.chemistData = chemistData;
-  }
+    @Builder
+    public Order(
+            Date orderDate,
+            PatientData patientData,
+            ChemistData chemistData) {
+        this.orderDate = orderDate;
+        this.patientData = patientData;
+        this.chemistData = chemistData;
+    }
 }

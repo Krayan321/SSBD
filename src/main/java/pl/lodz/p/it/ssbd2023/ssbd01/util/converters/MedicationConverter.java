@@ -13,7 +13,7 @@ public class MedicationConverter {
             .version(medication.getVersion())
             .name(medication.getName())
             .stock(medication.getStock())
-            .price(medication.getPrice())
+            .currentPrice(medication.getCurrentPrice())
             .categoryDTO(
                     CategoryConverter.mapCategoryToCategoryDTO(medication.getCategory()))
             .build();

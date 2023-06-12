@@ -81,11 +81,15 @@ public class ApplicationException extends WebApplicationException {
     return new ApplicationExceptionOptimisticLock();
   }
 
-  public static Exception createMedicationAlreadyExistsException() {
+  public static ApplicationException createMedicationAlreadyExistsException() {
     return new ApplicationException(CONFLICT, EXCEPTION_MEDICATION_ALREADY_EXISTS);
   }
 
   public static ApplicationException createIncorrectDateFormatException() {
     return new ApplicationException(BAD_REQUEST, EXCEPTION_INCORRECT_DATE_FORMAT);
+  }
+
+  public static ApplicationException createCategoryAlreadyExistsException() {
+    return new ApplicationException(CONFLICT, EXCEPTION_CATEGORY_ALREADY_EXISTS);
   }
 }

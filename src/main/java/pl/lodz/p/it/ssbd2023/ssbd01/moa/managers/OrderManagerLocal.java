@@ -1,10 +1,7 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.moa.managers;
 
 import pl.lodz.p.it.ssbd2023.ssbd01.common.CommonManagerLocalInterface;
-import pl.lodz.p.it.ssbd2023.ssbd01.entities.Account;
-import pl.lodz.p.it.ssbd2023.ssbd01.entities.Medication;
-import pl.lodz.p.it.ssbd2023.ssbd01.entities.Order;
-import pl.lodz.p.it.ssbd2023.ssbd01.entities.OrderMedication;
+import pl.lodz.p.it.ssbd2023.ssbd01.entities.*;
 
 import java.util.List;
 
@@ -14,7 +11,7 @@ public interface OrderManagerLocal extends CommonManagerLocalInterface {
 
     Order getOrder(Long id);
 
-    Order updateOrder(Order order);
+    void updateOrderQueue();
 
     List<Order> getAllOrders();
 
@@ -28,7 +25,7 @@ public interface OrderManagerLocal extends CommonManagerLocalInterface {
 
     void deleteWaitingOrderById(Long id);
 
-    void cancelOrder(Long id);
+    void cancelOrder(Long id, Account account);
 
     void addMedicationToOrder(Long id, OrderMedication orderMedication, Long version, Long medicationId);
 

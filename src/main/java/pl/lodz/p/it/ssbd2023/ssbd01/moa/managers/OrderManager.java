@@ -11,21 +11,19 @@ import jakarta.inject.Inject;
 import jakarta.interceptor.Interceptors;
 import lombok.extern.java.Log;
 import pl.lodz.p.it.ssbd2023.ssbd01.common.AbstractManager;
-import pl.lodz.p.it.ssbd2023.ssbd01.entities.Account;
-import pl.lodz.p.it.ssbd2023.ssbd01.entities.Medication;
-import pl.lodz.p.it.ssbd2023.ssbd01.entities.Order;
+import pl.lodz.p.it.ssbd2023.ssbd01.entities.*;
+import pl.lodz.p.it.ssbd2023.ssbd01.exceptions.ApplicationException;
 import pl.lodz.p.it.ssbd2023.ssbd01.exceptions.OrderException;
 import pl.lodz.p.it.ssbd2023.ssbd01.interceptors.GenericManagerExceptionsInterceptor;
 import pl.lodz.p.it.ssbd2023.ssbd01.interceptors.TrackerInterceptor;
 import pl.lodz.p.it.ssbd2023.ssbd01.moa.facades.MedicationFacade;
 import pl.lodz.p.it.ssbd2023.ssbd01.moa.facades.OrderFacade;
-import pl.lodz.p.it.ssbd2023.ssbd01.entities.OrderMedication;
-import pl.lodz.p.it.ssbd2023.ssbd01.exceptions.ApplicationException;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 @Interceptors({GenericManagerExceptionsInterceptor.class, TrackerInterceptor.class})
@@ -34,8 +32,10 @@ import java.util.Optional;
 @DenyAll
 public class OrderManager extends AbstractManager implements OrderManagerLocal, SessionSynchronization {
 
-    @Inject private OrderFacade orderFacade;
-    @Inject private MedicationFacade medicationFacade;
+    @Inject
+    private OrderFacade orderFacade;
+    @Inject
+    private MedicationFacade medicationFacade;
 
     @Override
     @RolesAllowed("createOrder")
@@ -54,20 +54,73 @@ public class OrderManager extends AbstractManager implements OrderManagerLocal, 
             throw ApplicationException.createOptimisticLockException();
         }*/
 
+        order.setOrderState(OrderState.CREATED);
         // Sprawdzenie, czy w bazie są wszystkie leki potrzebne do realizacji zamówienia
         boolean allMedicationsAvailable = checkAllMedicationsAvailable(order);
-        order.setInQueue(!allMedicationsAvailable);
 
-        if(!order.getInQueue()) {
+        if (!allMedicationsAvailable) {
+            order.setOrderState(OrderState.IN_QUEUE);
+        }
+
+        if (order.getOrderState() != OrderState.IN_QUEUE) {
             decreaseMedicationStock(order);
             if (order.getPrescription() != null) {
-                order.setInQueue(true); // Zamówienie wymaga zatwierdzenia przez aptekarza
+                order.setOrderState(OrderState.WAITING_FOR_CHEMIST_APPROVAL);// Zamówienie wymaga zatwierdzenia przez aptekarza
             }
         }
 
         orderFacade.create(order);
 
         return order;
+    }
+
+    @Override
+    @PermitAll
+    public void updateOrderQueue() {
+        List<Order> ordersInQueue = orderFacade.findAllOrdersInQueueSortByOrderDate();
+
+        AtomicBoolean canAllMedicationsBeProceed = new AtomicBoolean(true);
+        AtomicBoolean sendForPatientAproval = new AtomicBoolean(false);
+        ordersInQueue.forEach(
+                order -> {
+                    for (OrderMedication orderMedication : order.getOrderMedications()) {
+                        Medication medication = orderMedication.getMedication();
+
+                        if (medication.getCurrentPrice().compareTo(medication.getPreviousPrice()) > 0) {
+                            sendForPatientAproval.getAndSet(true);
+                        }
+
+                        if (medication.getStock() < orderMedication.getQuantity()) {
+                            canAllMedicationsBeProceed.getAndSet(false);
+                            break;
+                        }
+                    }
+
+                    if (canAllMedicationsBeProceed.get()) {
+
+                        if (sendForPatientAproval.get()) {
+                            //todo send for patient aproval
+                        }
+
+                        if (order.getPrescription() != null) {
+                            //todo send for chemist aproval
+                        }
+
+                        if (!sendForPatientAproval.get() && order.getPrescription() == null) {
+                            for (OrderMedication orderMedication : order.getOrderMedications()) {
+                                Medication medication = orderMedication.getMedication();
+                                medication.setStock(medication.getStock() - orderMedication.getQuantity());
+                            }
+                            order.setOrderState(OrderState.APPROVED);
+                        }
+
+                    }
+
+                }
+
+        );
+
+
     }
 
     private void decreaseMedicationStock(Order order) {
@@ -106,12 +159,6 @@ public class OrderManager extends AbstractManager implements OrderManagerLocal, 
 
     @Override
     @DenyAll
-    public Order updateOrder(Order order) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    @DenyAll
     public List<Order> getAllOrders() {
         throw new UnsupportedOperationException();
     }
@@ -145,8 +192,8 @@ public class OrderManager extends AbstractManager implements OrderManagerLocal, 
     @Override
     @RolesAllowed("deleteWaitingOrdersById")
     public void deleteWaitingOrderById(Long id) {
-    Optional<Order> order = orderFacade.find(id);
-        if(!order.get().getInQueue()){
+        Optional<Order> order = orderFacade.find(id);
+        if (order.get().getOrderState() != OrderState.IN_QUEUE) {
             throw OrderException.orderNotInQueue();
         }
         orderFacade.deleteWaitingOrdersById(id);
@@ -159,11 +206,17 @@ public class OrderManager extends AbstractManager implements OrderManagerLocal, 
         throw new UnsupportedOperationException();
     }
 
-    @Override
-    @DenyAll
-    public void cancelOrder(Long id) {
-        throw new UnsupportedOperationException();
-    }
+//    @Override todo
+//    @RolesAllowed("withdraw")
+//    public void cancelOrder(Long id, Account account) {
+//        Optional<Order> order = orderFacade.find(id);
+//        if(!order.get().getInQueue() || order.get().getPatientApproved()
+//                || (account.getId() != order.get().getPatientData().getId())){
+//            throw OrderException.noPermissionToDeleteOrder();
+//        }
+//        orderFacade.withdrawOrder(id, account.getId());
+//
+//    }
 
     @Override
     @RolesAllowed("addMedicationToOrder")
@@ -191,7 +244,7 @@ public class OrderManager extends AbstractManager implements OrderManagerLocal, 
         Optional<Order> order = orderFacade.find(orderId);
         List<Medication> res = new ArrayList<>();
 
-        if(order.isEmpty()) {
+        if (order.isEmpty()) {
             throw OrderException.createEntityNotFoundException();
         }
 

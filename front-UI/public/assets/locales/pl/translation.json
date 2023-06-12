@@ -210,4 +210,6 @@
   "show_bucket_input": "Nowa wartość",
   "show_bucket_button": "Zmień ilość",
   "show_bucket_sidebar": "Koszyk"
+  "on_prescription": "Na receptę?",
+  "confirm_delete_order": "Na pewno chcesz usunąć to zamówienie?"
 }
