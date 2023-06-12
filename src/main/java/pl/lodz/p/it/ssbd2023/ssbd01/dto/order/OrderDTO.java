@@ -7,6 +7,7 @@ import pl.lodz.p.it.ssbd2023.ssbd01.dto.ChemistDataDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.PatientDataDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.prescrription.PrescriptionDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.ChemistData;
+import pl.lodz.p.it.ssbd2023.ssbd01.entities.OrderState;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.PatientData;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Prescription;
 
@@ -24,7 +25,7 @@ public class OrderDTO {
     private long id;
 
     @NotNull
-    private Boolean inQueue;
+    private OrderState orderState;
 
     @NotNull
     private Date orderDate;
@@ -32,8 +33,6 @@ public class OrderDTO {
     private PrescriptionDTO prescription;
 
     private PatientDataDTO patientData;
-
-    private Boolean prescriptionApproved;
 
     @NotNull
     private List<OrderMedicationDTO> orderMedication;
