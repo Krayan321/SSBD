@@ -18,6 +18,7 @@ import pl.lodz.p.it.ssbd2023.ssbd01.interceptors.GenericManagerExceptionsInterce
 import pl.lodz.p.it.ssbd2023.ssbd01.interceptors.TrackerInterceptor;
 import pl.lodz.p.it.ssbd2023.ssbd01.moa.facades.MedicationFacade;
 import pl.lodz.p.it.ssbd2023.ssbd01.moa.facades.OrderFacade;
+import pl.lodz.p.it.ssbd2023.ssbd01.moa.facades.ShipmentFacade;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +37,8 @@ public class OrderManager extends AbstractManager implements OrderManagerLocal, 
     private OrderFacade orderFacade;
     @Inject
     private MedicationFacade medicationFacade;
+    @Inject
+    private ShipmentFacade shipmentFacade;
 
     @Override
     @RolesAllowed("createOrder")
@@ -78,6 +81,20 @@ public class OrderManager extends AbstractManager implements OrderManagerLocal, 
     @PermitAll
     public void updateOrderQueue() {
         List<Order> ordersInQueue = orderFacade.findAllOrdersInQueueSortByOrderDate();
+        List<Shipment> shipmentsNotProcessed = shipmentFacade.findAllNotAlreadyProcessed();
+
+        shipmentsNotProcessed.forEach(
+                shipment -> {
+
+                    shipment.getShipmentMedications().forEach(
+                            shipmentMedication -> {
+                                shipmentMedication.getMedication().setStock(shipmentMedication.getMedication().getStock() + shipmentMedication.getQuantity());
+                            }
+                    );
+                    shipment.setWasAlreadyProcessed(true);
+                }
+        );
+
 
         AtomicBoolean canAllMedicationsBeProceed = new AtomicBoolean(true);
         AtomicBoolean sendForPatientAproval = new AtomicBoolean(false);
