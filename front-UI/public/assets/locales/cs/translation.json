@@ -195,5 +195,13 @@
   "category_name": "Název kategorie",
   "on_prescription": "Na předpis?",
   "confirm_delete_order": "Opravdu chcete smazat tuto objednávku?",
-  "confirm": "Potvrdit"
+  "confirm": "Potvrdit",
+  "order_state": "Stav objednávky",
+  "IN_QUEUE": "Ve frontě",
+  "CREATED": "Vytvořeno",
+  "WAITING_FOR_CHEMIST_APPROVAL": "Čeká na schválení lékárníkem",
+  "APPROVED": "Schváleno",
+  "TO_BE_APPROVED_BY_PATIENT": "Čeká na schválení pacientem",
+  "REJECTED_BY_CHEMIST": "Zamítnuto lékárníkem",
+  "REJECTED_BY_PATIENT": "Zamítnuto pacientem"
 }
