@@ -56,6 +56,16 @@ public class ShipmentControllerIT extends BaseTest {
 
         @BeforeAll
         static void setUp() {
+            var response = given()
+                    .header("authorization", "Bearer " + adminJwt)
+                    .get(getApiRoot() + "/account/details")
+                    .then()
+                    .log()
+                    .all()
+                    .statusCode(Response.Status.OK.getStatusCode())
+                    .extract()
+                    .response();
+
             medications.add(CreateShipmentMedicationDTO.builder()
                     .quantity(2)
                     .medication(new MedicationCreateShipmentDTO(1L))
