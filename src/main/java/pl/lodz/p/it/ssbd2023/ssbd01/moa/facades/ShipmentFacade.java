@@ -41,6 +41,10 @@ public class ShipmentFacade extends AbstractFacade<Shipment> {
             .getResultList();
   }
 
+  public List<Shipment> findAllNotAlreadyProcessed() {
+    return getEntityManager().createNamedQuery("Shipment.findAllNotProcessed", Shipment.class).getResultList();
+  }
+
   @RolesAllowed("readShipment")
   public Optional<Shipment> findAndRefresh(Long id) {
     return super.findAndRefresh(id);
