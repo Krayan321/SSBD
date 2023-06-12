@@ -30,6 +30,9 @@ import lombok.AccessLevel;
     indexes = {
       @Index(name = "shipment_index", columnList = "id", unique = true),
     })
+@NamedQuery(
+        name = "Shipment.findAllNotProcessed",
+        query = "SELECT s FROM Shipment s WHERE s.wasAlreadyProcessed = false")
 public class Shipment extends AbstractEntity implements Serializable {
 
   public static final long serialVersionUID = 1L;
@@ -49,6 +52,10 @@ public class Shipment extends AbstractEntity implements Serializable {
   @Column(nullable = false, name = "shipment_date", updatable = false)
   @Temporal(TemporalType.TIMESTAMP)
   private Date shipmentDate;
+
+  @Column(nullable = false, name = "was_already_processed")
+  @NotNull
+  private Boolean wasAlreadyProcessed = false;
 
   @OneToMany(
       mappedBy = "shipment",
