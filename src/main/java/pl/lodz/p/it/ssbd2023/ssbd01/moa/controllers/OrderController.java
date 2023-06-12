@@ -17,6 +17,7 @@ import pl.lodz.p.it.ssbd2023.ssbd01.common.AbstractController;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.order.ChangeMedNumberDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.medication.MedicationDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.order.OrderDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.entities.Account;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Order;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Medication;
 import pl.lodz.p.it.ssbd2023.ssbd01.moa.managers.OrderManagerLocal;
@@ -159,8 +160,19 @@ public class OrderController extends AbstractController {
                         .collect(Collectors.toList());
     }
 
+    //mok 8
+   @DELETE
+   @RolesAllowed("withdraw")
+   @Path("/{id}/withdraw")
+   public Response withdrawOrderById(@PathParam("id") Long id){
+       repeatTransactionVoid(orderManager, () -> orderManager.cancelOrder(id,accountManager.getCurrentUserWithAccessLevels()));
+        return Response.ok().build();
+   }
+
+
     // mok 10
     @DELETE
+    @RolesAllowed("deleteWaitingOrders")
     @Path("/{id}/waiting")
     public Response deleteWaitingOrderById(@PathParam("id") Long id) {
         repeatTransactionVoid(orderManager, () -> orderManager.deleteWaitingOrderById(id));

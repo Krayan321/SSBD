@@ -183,6 +183,9 @@
     <security-role>
         <role-name>getMedicationDetails</role-name>
     </security-role>
+    <security-role>
+        <role-name>withdraw</role-name>
+    </security-role>
 
 
 </web-app>

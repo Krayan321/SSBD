@@ -7,19 +7,22 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import {Box,Skeleton, useTheme,} from "@mui/material";
-import {getWaitingOrders} from "../api/moa/orderApi";
+import {getWaitingOrders, deleteWaitingOrdersById} from "../api/moa/orderApi";
 import moment from "moment";
 import {useTranslation} from "react-i18next";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from '@mui/icons-material/Delete';
 import RefreshIcon from "@mui/icons-material/Refresh";
 import {toast, ToastContainer} from "react-toastify";
+import ConfirmationDialog from "../components/ConfirmationDialog";
 
 
 export default function ShowWaitingOrders() {
 
     const [waitingOrders, setWaitingOrders] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [dialogOpen, setDialogOpen] = useState(false);
+    const [deleteOrderId, setDeleteOrderId] = useState(null);
     const {t} = useTranslation();
     const theme = useTheme();
 
@@ -45,6 +48,28 @@ export default function ShowWaitingOrders() {
         const date = moment(trimmedDate);
         return date.format('DD-MM-YYYY HH:mm:ss');
     };
+
+    const handleDeleteOrder = (deleteOrderId) => {
+        setDeleteOrderId(deleteOrderId);
+        setDialogOpen(true);
+    };
+
+    const acceptDeleteOrder = () => {
+
+        deleteWaitingOrdersById(deleteOrderId)
+            .then(() => {
+                const updatedOrders = waitingOrders.filter((order) => order.id !== deleteOrderId);
+                setWaitingOrders(updatedOrders);
+
+                setDeleteOrderId(null);
+                setDialogOpen(false);
+            })
+    };
+    const rejectDeleteOrder = () => {
+        setDeleteOrderId(null);
+        setDialogOpen(false);
+    };
+
 
     if (loading) {
         return (
@@ -134,9 +159,18 @@ export default function ShowWaitingOrders() {
                                 </TableCell>
                                 <TableCell align="right">{row.prescription ? row.prescription.prescriptionNumber : t("none")}</TableCell>
                                 <TableCell>
-                                    <IconButton color="error" aria-label={t("delete_order")}>
+                                    <IconButton color="error" aria-label={t("delete_order")} onClick={() => handleDeleteOrder(row.id)}>
                                         <DeleteIcon />
                                     </IconButton>
+                                    <ConfirmationDialog
+                                        open={dialogOpen}
+                                        title={t("confirm_delete_order")}
+                                        actions={[
+                                            { label: t("confirm"), handler: acceptDeleteOrder, color: "primary" },
+                                            { label: t("cancel"), handler: rejectDeleteOrder, color: "secondary" },
+                                        ]}
+                                        onClose={() => setDialogOpen(false)}
+                                    />
                                 </TableCell>
                             </TableRow>
                         ))}

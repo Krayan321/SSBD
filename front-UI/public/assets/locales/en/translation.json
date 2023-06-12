@@ -201,5 +201,6 @@
   "price": "Price",
   "stock": "Stock",
   "category_name": "Category name",
-  "on_prescription": "On prescription?"
+  "on_prescription": "On prescription?",
+  "confirm_delete_order": "Are you sure you want to delete this order?"
 }

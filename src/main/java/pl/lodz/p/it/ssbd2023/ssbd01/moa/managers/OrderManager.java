@@ -206,11 +206,17 @@ public class OrderManager extends AbstractManager implements OrderManagerLocal, 
         throw new UnsupportedOperationException();
     }
 
-    @Override
-    @DenyAll
-    public void cancelOrder(Long id) {
-        throw new UnsupportedOperationException();
-    }
+//    @Override todo
+//    @RolesAllowed("withdraw")
+//    public void cancelOrder(Long id, Account account) {
+//        Optional<Order> order = orderFacade.find(id);
+//        if(!order.get().getInQueue() || order.get().getPatientApproved()
+//                || (account.getId() != order.get().getPatientData().getId())){
+//            throw OrderException.noPermissionToDeleteOrder();
+//        }
+//        orderFacade.withdrawOrder(id, account.getId());
+//
+//    }
 
     @Override
     @RolesAllowed("addMedicationToOrder")

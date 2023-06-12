@@ -163,10 +163,7 @@
   "access_level_added_successfully": "Poziom dostępu został dodany",
   "session_expired_login_again": "Twoja sesja wygasła. Zaloguj się ponownie",
   "exception.access-denied": "Brak dostępu",
-  "welcome_back": "Witaj ponownie",
-  "create_account": "Utwórz konto",
   "accounts": "Konta",
-  "logout": "Wyloguj",
   "edit_admin_data": "Edytuj dane admina",
   "edit_chemist_data": "Edytuj dane aptekarza",
   "edit_patient_data": "Edytuj dane pacjenta",
@@ -202,5 +199,6 @@
   "price": "Cena",
   "stock": "Ilość",
   "category_name": "Nazwa kategorii",
-  "on_prescription": "Na receptę?"
+  "on_prescription": "Na receptę?",
+  "confirm_delete_order": "Na pewno chcesz usunąć to zamówienie?"
 }

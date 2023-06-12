@@ -1,4 +1,4 @@
-import {get} from "../api";
+import {get, del} from "../api";
 
 
 export async function getSelfOrders() {
@@ -11,4 +11,8 @@ export async function getWaitingOrders() {
 
 export async function getOrdersToApprove() {
     return await get("order/to-approve");
+}
+
+export async function deleteWaitingOrdersById(id) {
+    return await del(`order/${id}/waiting`);
 }
