@@ -20,17 +20,17 @@ public class MedicationDTO extends AbstractEntityDTO {
     private Integer stock;
 
     @NotNull
-    private BigDecimal price;
+    private BigDecimal currentPrice;
 
     @NotNull
     private CategoryDTO categoryDTO;
 
     @Builder(builderMethodName = "medicationDTOBuilder")
-    public MedicationDTO(Long id, Long version, String name, Integer stock, BigDecimal price, CategoryDTO categoryDTO) {
+    public MedicationDTO(Long id, Long version, String name, Integer stock, BigDecimal currentPrice, CategoryDTO categoryDTO) {
         super(id, version);
         this.name = name;
         this.stock = stock;
-        this.price = price;
+        this.currentPrice = currentPrice;
         this.categoryDTO = categoryDTO;
     }
 }

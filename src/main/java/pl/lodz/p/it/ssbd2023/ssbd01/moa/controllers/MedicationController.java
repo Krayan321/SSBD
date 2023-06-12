@@ -64,7 +64,7 @@ public class MedicationController extends AbstractController {
                 Medication.builder()
                         .name(addMedicationDTO.getName())
                         .stock(addMedicationDTO.getStock())
-                        .price(addMedicationDTO.getPrice())
+                        .currentPrice(addMedicationDTO.getPrice())
                         .category(category)
                         .build();
 
