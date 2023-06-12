@@ -2,6 +2,7 @@ package pl.lodz.p.it.ssbd2023.ssbd01.moa.facades;
 
 import jakarta.annotation.security.DenyAll;
 import jakarta.annotation.security.PermitAll;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.ejb.Stateless;
 import jakarta.ejb.TransactionAttribute;
 import jakarta.ejb.TransactionAttributeType;
@@ -38,7 +39,7 @@ public class CategoryFacade extends AbstractFacade<Category> {
   }
 
   @Override
-  @PermitAll
+  @RolesAllowed("createCategory")
   public void create(Category category) {super.create(category);}
 
   @Override

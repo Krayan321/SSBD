@@ -12,6 +12,7 @@ import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccount.EditAccountDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccount.grant.GrantAdminDataDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccount.grant.GrantChemistDataDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.medication.AddMedicationDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.medication.MedicationDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.order.CreateOrderMedicationDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.register.RegisterPatientDTO;
 
@@ -161,7 +162,7 @@ public class dataForTests {
   public static EditAccountDTO editEmailDto = new EditAccountDTO("new@email.local");
 
   public static CategoryDTO categoryDto =
-      CategoryDTO.builder().name("Antydepresanty").isOnPrescription(false).build();
+      CategoryDTO.builder().name("NajnowszaKategoria").isOnPrescription(false).build();
 
   public static AddMedicationDTO addMedicationDto =
       AddMedicationDTO.builder()
@@ -171,6 +172,15 @@ public class dataForTests {
           .categoryName(categoryDto.getName())
           .build();
 //        CategoryDTO.CategoryDTOBuilder().name("Antydepresanty").isOnPrescription(false).build();
+
+  public static MedicationDTO medicationDetailsDto =
+      MedicationDTO.medicationDTOBuilder()
+          .id(1L)
+          .name("Prozac")
+          .stock(100)
+          .price(new BigDecimal("10.0"))
+          .categoryDTO(categoryDto)
+          .build();
 
   public static CreateOrderMedicationDTO createOrderMedicationDTO =
           CreateOrderMedicationDTO.orderMedicationBuilder()

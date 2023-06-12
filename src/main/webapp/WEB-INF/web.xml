@@ -177,6 +177,12 @@
     <security-role>
         <role-name>deleteWaitingOrdersById</role-name>
     </security-role>
+    <security-role>
+        <role-name>createCategory</role-name>
+    </security-role>
+    <security-role>
+        <role-name>getMedicationDetails</role-name>
+    </security-role>
 
 
 </web-app>

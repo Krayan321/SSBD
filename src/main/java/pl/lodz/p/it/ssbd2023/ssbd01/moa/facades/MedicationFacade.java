@@ -57,6 +57,12 @@ public class MedicationFacade extends AbstractFacade<Medication> {
   @PermitAll
   public Optional<Medication> find(Object id) { return super.find(id);}
 
+  @Override
+  @PermitAll
+  public Optional<Medication> findAndRefresh(Object id) {
+    return super.findAndRefresh(id);
+  }
+
   @PermitAll
   public Medication findByName(String name) {
     TypedQuery<Medication> tq = em.createNamedQuery("medication.findByName", Medication.class);

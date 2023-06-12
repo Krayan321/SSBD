@@ -17,6 +17,7 @@ import pl.lodz.p.it.ssbd2023.ssbd01.moa.facades.CategoryFacade;
 import pl.lodz.p.it.ssbd2023.ssbd01.moa.facades.MedicationFacade;
 
 import java.util.List;
+import java.util.Optional;
 
 @Stateful
 @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
@@ -53,7 +54,7 @@ public class MedicationManager extends AbstractManager implements MedicationMana
     }
 
     @Override
-    @DenyAll
+    @PermitAll
     public Medication getMedication(Long id) {
         throw new UnsupportedOperationException();
     }
@@ -65,8 +66,14 @@ public class MedicationManager extends AbstractManager implements MedicationMana
     }
 
     @Override
-    @DenyAll
+    @RolesAllowed("getMedicationDetails")
     public Medication getMedicationDetails(Long id) {
-        throw new UnsupportedOperationException();
+        Optional<Medication> medication = medicationFacade.findAndRefresh(id);
+        if (medication.isEmpty()) {
+            throw ApplicationException.createEntityNotFoundException();
+        }
+        else {
+            return medication.get();
+        }
     }
 }
