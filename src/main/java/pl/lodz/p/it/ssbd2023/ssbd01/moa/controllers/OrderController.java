@@ -63,7 +63,7 @@ public class OrderController extends AbstractController {
         return Response.ok(orderDTOs).build();
     }
 
-    // moa 14 - chyba tak
+    // moa 14
     @PUT
     @Path("/{id}/cancel")
     @DenyAll
@@ -91,27 +91,6 @@ public class OrderController extends AbstractController {
                 .collect(Collectors.toList());
     }
 
-    // moa3
-    @PUT
-    @Path("/{id}/add")
-    @RolesAllowed("addMedicationToOrder")
-    public Response addMedicationToOrder(@PathParam("id") Long id, @Valid CreateOrderMedicationDTO createOrderMedicationDTO) {
-        repeatTransactionVoid(orderManager, () -> orderManager.addMedicationToOrder(id, OrderMedicationConverter.mapCreateOrderMedicationDTOToOrderMedication(createOrderMedicationDTO), createOrderMedicationDTO.getVersion(), createOrderMedicationDTO.getMedicationDTOId()));
-        return Response.status(Response.Status.CREATED).build();
-    }
-
-    //moa 4
-    @GET
-    @Path("/{id}")
-    @RolesAllowed("getOrderDetails")
-    @Produces(MediaType.APPLICATION_JSON)
-    public List<MedicationDTO> getOrderDetails(@PathParam("id") Long id) {
-        List<Medication> medications = repeatTransaction(
-                orderManager, () -> orderManager.getOrderDetails(id));
-
-        return medications.stream().map(MedicationConverter::mapMedicationToMedicationDTO).toList();
-    }
-
     // moa 7
     @PUT
     @Path("/{id}/submit")
@@ -123,14 +102,6 @@ public class OrderController extends AbstractController {
         OrderDTO orderDTO = OrderConverter.mapOrderToOrderDTO(order);
 
         return Response.ok(orderDTO).build();
-    }
-
-    // moa 8
-    @PUT
-    @Path("/{id}/withdraw")
-    @DenyAll
-    public void withdrawOrder(@PathParam("id") Long id) {
-        throw new UnsupportedOperationException();
     }
 
     // mok 9
