@@ -41,11 +41,6 @@ public class Medication extends AbstractEntity implements Serializable {
   @Min(value = 0, message = "Price must be greater than or equal 0")
   private BigDecimal currentPrice;
 
-  @Column(nullable = false, name = "previous_price")
-  @Digits(integer = 10, fraction = 2)
-  @Min(value = 0, message = "Previous price must be greater than or equal 0")
-  private BigDecimal previousPrice;
-
   @ManyToOne(
       optional = false,
       cascade = {CascadeType.PERSIST, CascadeType.REFRESH})
