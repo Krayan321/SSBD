@@ -7,7 +7,7 @@ public enum OrderState {
   CREATED("CREATED", "Utworzony"),
   IN_QUEUE("IN_QUEUE", "W kolejce"),
   WAITING_FOR_CHEMIST_APPROVAL("WAITING_FOR_CHEMIST_APPROVAL", "Oczekuje na zatwierdzenie przez farmaceutę"),
-  APPROVED("APPROVED", "Zatwierdzony"),
+  FINALISED("FINALISED", "Zfinalizowany"),
 
   TO_BE_APPROVED_BY_PATIENT(" TO_BE_APPROVED_BY_PATIENT", "Do zatwierdzenia przez pacjenta"),
   REJECTED_BY_CHEMIST("REJECTED_BY_CHEMIST", "Odrzucony przez farmaceutę"),

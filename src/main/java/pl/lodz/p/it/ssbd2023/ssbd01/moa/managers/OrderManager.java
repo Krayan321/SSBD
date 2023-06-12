@@ -137,7 +137,7 @@ public class OrderManager extends AbstractManager
                 Medication medication = orderMedication.getMedication();
                 medication.setStock(medication.getStock() - orderMedication.getQuantity());
               }
-              order.setOrderState(OrderState.APPROVED);
+              order.setOrderState(OrderState.FINALISED);
             }
           }
         });
@@ -225,13 +225,19 @@ public class OrderManager extends AbstractManager
     if(!order.getOrderState().equals(OrderState.WAITING_FOR_CHEMIST_APPROVAL)) {
       throw OrderException.createModificationOrderOfIllegalState();
     }
-    order.setOrderState(OrderState.APPROVED);
+    order.setOrderState(OrderState.FINALISED);
     orderFacade.edit(order);
+  }
+
+  @Override
+  @DenyAll
+  public void cancelOrder(Long id) {
+    throw new UnsupportedOperationException();
   }
 
     @Override
     @RolesAllowed("withdraw")
-    public void cancelOrder(Long id, Account account) {
+    public void withdrawOrder(Long id, Account account) {
         Optional<Order> order = orderFacade.find(id);
         if(order.get().getOrderState() != OrderState.TO_BE_APPROVED_BY_PATIENT
                 || (account.getId() != order.get().getPatientData().getId())){
