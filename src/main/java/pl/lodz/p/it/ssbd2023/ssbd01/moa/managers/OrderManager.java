@@ -99,7 +99,7 @@ public class OrderManager extends AbstractManager implements OrderManagerLocal, 
                     if (canAllMedicationsBeProceed.get()) {
 
                         if (sendForPatientAproval.get()) {
-                            //todo send for patient aproval
+                            order.setOrderState(OrderState.TO_BE_APPROVED_BY_PATIENT);
                         }
 
                         if (order.getPrescription() != null) {
@@ -206,17 +206,17 @@ public class OrderManager extends AbstractManager implements OrderManagerLocal, 
         throw new UnsupportedOperationException();
     }
 
-//    @Override todo
-//    @RolesAllowed("withdraw")
-//    public void cancelOrder(Long id, Account account) {
-//        Optional<Order> order = orderFacade.find(id);
-//        if(!order.get().getInQueue() || order.get().getPatientApproved()
-//                || (account.getId() != order.get().getPatientData().getId())){
-//            throw OrderException.noPermissionToDeleteOrder();
-//        }
-//        orderFacade.withdrawOrder(id, account.getId());
-//
-//    }
+    @Override
+    @RolesAllowed("withdraw")
+    public void cancelOrder(Long id, Account account) {
+        Optional<Order> order = orderFacade.find(id);
+        if(order.get().getOrderState() != OrderState.TO_BE_APPROVED_BY_PATIENT
+                || (account.getId() != order.get().getPatientData().getId())){
+            throw OrderException.noPermissionToDeleteOrder();
+        }
+        orderFacade.withdrawOrder(id, account.getId());
+
+   }
 
     @Override
     @RolesAllowed("addMedicationToOrder")
