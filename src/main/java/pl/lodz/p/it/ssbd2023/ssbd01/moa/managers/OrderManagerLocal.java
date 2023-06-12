@@ -14,7 +14,7 @@ public interface OrderManagerLocal extends CommonManagerLocalInterface {
 
     Order getOrder(Long id);
 
-    Order updateOrder(Order order);
+    void updateOrderQueue();
 
     List<Order> getAllOrders();
 

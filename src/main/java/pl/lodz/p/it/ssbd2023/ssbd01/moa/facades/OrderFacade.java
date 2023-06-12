@@ -6,96 +6,102 @@ import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
-import java.util.List;
-import java.util.Optional;
-
 import pl.lodz.p.it.ssbd2023.ssbd01.common.AbstractFacade;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Order;
 
+import java.util.List;
+import java.util.Optional;
+
 @Stateless
 public class OrderFacade extends AbstractFacade<Order> {
-  @PersistenceContext(unitName = "ssbd01moaPU")
-  private EntityManager em;
+    @PersistenceContext(unitName = "ssbd01moaPU")
+    private EntityManager em;
 
-  @Override
-  protected EntityManager getEntityManager() {
-    return em;
-  }
+    @Override
+    protected EntityManager getEntityManager() {
+        return em;
+    }
 
-  public OrderFacade() {
-    super(Order.class);
-  }
+    public OrderFacade() {
+        super(Order.class);
+    }
 
-  @Override
-  @PermitAll
-  public List<Order> findAll() {
-    return super.findAll();
-  }
+    @Override
+    @PermitAll
+    public List<Order> findAll() {
+        return super.findAll();
+    }
 
-  @Override
-  @RolesAllowed("createOrder")
-  public void create(Order order) {
-    super.create(order);
-  }
+    @Override
+    @RolesAllowed("createOrder")
+    public void create(Order order) {
+        super.create(order);
+    }
 
-  public List<Order> findAllByPatientId(Long id) {
-    TypedQuery<Order> query = em.createNamedQuery("Order.findByPatientDataId", Order.class);
-    query.setParameter("patientDataId", id);
-    return query.getResultList();
-  }
-  @RolesAllowed("getWaitingOrders")
-  public List<Order> findWaitingOrders() {
-    return getEntityManager()
-            .createQuery("select o from Order o "
-                    + "left join fetch o.orderMedications "
-                    + "where o.inQueue = true")
-            .getResultList();
-  }
+    public List<Order> findAllByPatientId(Long id) {
+        TypedQuery<Order> query = em.createNamedQuery("Order.findByPatientDataId", Order.class);
+        query.setParameter("patientDataId", id);
+        return query.getResultList();
+    }
 
-  @RolesAllowed("getOrdersToApprove")
-  public List<Order> findNotYetApproved() {
-    return getEntityManager()
-            .createQuery("select o from Order o "
-                    + "left join fetch o.orderMedications "
-                    + "where o.prescription is not null "
-                    + "and o.inQueue = false")
-            .getResultList();
-  }
+    @RolesAllowed("getWaitingOrders")
+    public List<Order> findWaitingOrders() {
+        return getEntityManager()
+                .createQuery("select o from Order o "
+                        + "left join fetch o.orderMedications "
+                        + "where o.orderState = pl.lodz.p.it.ssbd2023.ssbd01.entities.OrderState.IN_QUEUE")
+                .getResultList();
+    }
 
-  @RolesAllowed("deleteWaitingOrdersById")
-  public void deleteWaitingOrdersById(Long id) {
-    String sqlQuery = "DELETE FROM OrderMedication om "
-            + "WHERE om.order.id = :orderId";
+    public List<Order> findAllOrdersInQueueSortByOrderDate() {
+        TypedQuery<Order> query = em.createNamedQuery("Order.findAllOrdersStateInQueueSortByOrderDate", Order.class);
+        return query.getResultList();
+    }
 
-    getEntityManager()
-            .createQuery(sqlQuery)
-            .setParameter("orderId", id)
-            .executeUpdate();
+    @RolesAllowed("getOrdersToApprove")
+    public List<Order> findNotYetApproved() {
+        return getEntityManager()
+                .createQuery("select o from Order o "
+                        + "left join fetch o.orderMedications "
+                        + "where o.prescription is not null "
+                        + "and o.orderState = pl.lodz.p.it.ssbd2023.ssbd01.entities.OrderState.WAITING_FOR_CHEMIST_APPROVAL")
+                .getResultList();
+    }
 
-      String orderQuery = "DELETE FROM Order o "
-              + "WHERE o.id = :orderId AND o.inQueue = true";
+    @RolesAllowed("deleteWaitingOrdersById")
+    public void deleteWaitingOrdersById(Long id) {
+        String sqlQuery = "DELETE FROM OrderMedication om "
+                + "WHERE om.order.id = :orderId";
 
-      getEntityManager()
-              .createQuery(orderQuery)
-              .setParameter("orderId", id)
-              .executeUpdate();
-  }
+        getEntityManager()
+                .createQuery(sqlQuery)
+                .setParameter("orderId", id)
+                .executeUpdate();
+
+        String orderQuery = "DELETE FROM Order o "
+                + "WHERE o.id = :orderId AND o.orderState = pl.lodz.p.it.ssbd2023.ssbd01.entities.OrderState.IN_QUEUE";
+
+        getEntityManager()
+                .createQuery(orderQuery)
+                .setParameter("orderId", id)
+                .executeUpdate();
+    }
 
 
+    @Override
+    @PermitAll
+    public void edit(Order order) {
+        super.edit(order);
+    }
 
+    @Override
+    @PermitAll
+    public void editAndRefresh(Order order) {
+        super.editAndRefresh(order);
+    }
 
-  @Override
-  @PermitAll
-  public void edit(Order order) {
-    super.edit(order);
-  }
-  @Override
-  @PermitAll
-  public void editAndRefresh(Order order) {
-    super.editAndRefresh(order);
-  }
-  @PermitAll
-  public Optional<Order> find(Long id) {
-    return super.find(id);
-  }
+    @PermitAll
+    public Optional<Order> find(Long id) {
+        return super.find(id);
+    }
 }
