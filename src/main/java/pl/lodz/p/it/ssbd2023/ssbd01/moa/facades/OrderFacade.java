@@ -81,6 +81,29 @@ public class OrderFacade extends AbstractFacade<Order> {
               .executeUpdate();
   }
 
+  @RolesAllowed("withdraw")
+  public void withdrawOrder(Long id, Long userId){
+    String sqlQuery = "DELETE FROM OrderMedication om "
+            + "WHERE om.order.id = :orderId";
+
+    getEntityManager()
+            .createQuery(sqlQuery)
+            .setParameter("orderId", id)
+            .executeUpdate();
+
+    String orderQuery = "DELETE FROM Order o "
+            + "WHERE o.id = :orderId "
+            + "AND o.inQueue = true AND o.patientApproved = false "
+            + "AND o.patientData.id = :userId";
+
+    getEntityManager()
+            .createQuery(orderQuery)
+            .setParameter("orderId", id)
+            .setParameter("userId", userId)
+            .executeUpdate();
+  }
+
+
 
 
 

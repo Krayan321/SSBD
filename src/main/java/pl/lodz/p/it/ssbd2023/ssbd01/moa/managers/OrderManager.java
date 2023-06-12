@@ -11,15 +11,12 @@ import jakarta.inject.Inject;
 import jakarta.interceptor.Interceptors;
 import lombok.extern.java.Log;
 import pl.lodz.p.it.ssbd2023.ssbd01.common.AbstractManager;
-import pl.lodz.p.it.ssbd2023.ssbd01.entities.Account;
-import pl.lodz.p.it.ssbd2023.ssbd01.entities.Medication;
-import pl.lodz.p.it.ssbd2023.ssbd01.entities.Order;
+import pl.lodz.p.it.ssbd2023.ssbd01.entities.*;
 import pl.lodz.p.it.ssbd2023.ssbd01.exceptions.OrderException;
 import pl.lodz.p.it.ssbd2023.ssbd01.interceptors.GenericManagerExceptionsInterceptor;
 import pl.lodz.p.it.ssbd2023.ssbd01.interceptors.TrackerInterceptor;
 import pl.lodz.p.it.ssbd2023.ssbd01.moa.facades.MedicationFacade;
 import pl.lodz.p.it.ssbd2023.ssbd01.moa.facades.OrderFacade;
-import pl.lodz.p.it.ssbd2023.ssbd01.entities.OrderMedication;
 import pl.lodz.p.it.ssbd2023.ssbd01.exceptions.ApplicationException;
 
 import java.util.ArrayList;
@@ -160,9 +157,23 @@ public class OrderManager extends AbstractManager implements OrderManagerLocal, 
     }
 
     @Override
-    @DenyAll
-    public void cancelOrder(Long id) {
-        throw new UnsupportedOperationException();
+    @RolesAllowed("withdraw")
+    public void cancelOrder(Long id, Account account) {
+        account
+                .getAccessLevels()
+                .forEach(
+                        accessLevel -> {
+                            if (!accessLevel.getRole().getRoleName().equals("PATIENT")) {
+                                throw OrderException.onlyPatientCanDelete();
+                            }
+                        });
+        Optional<Order> order = orderFacade.find(id);
+        if(!order.get().getInQueue() || order.get().getPatientApproved()
+                || (account.getId() != order.get().getPatientData().getId())){
+            throw OrderException.noPermissionToDeleteOrder();
+        }
+        orderFacade.withdrawOrder(id, account.getId());
+
     }
 
     @Override
