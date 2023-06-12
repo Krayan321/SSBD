@@ -137,7 +137,7 @@ function AuthSidebar() {
                       <IconButton color="inherit">
                         <ShoppingBasketIcon />
                       </IconButton>
-                      {t("bucket")}
+                      {t("show_bucket_sidebar")}
                     </MenuItem>
                   </>
               )}

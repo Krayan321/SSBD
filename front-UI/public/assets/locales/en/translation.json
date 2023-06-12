@@ -201,5 +201,12 @@
   "price": "Price",
   "stock": "Stock",
   "category_name": "Category name",
-  "on_prescription": "On prescription?"
+  "on_prescription": "On prescription?",
+  "show_bucket_name": "Name",
+  "show_bucket_price": "Price",
+  "show_bucket_category": "Category",
+  "show_bucket_quantity": "Quantity",
+  "show_bucket_input": "Input",
+  "show_bucket_button": "Change quantity",
+  "show_bucket_sidebar": "Shopping cart"
 }

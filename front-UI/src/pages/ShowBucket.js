@@ -15,14 +15,19 @@ import {
     DialogContentText,
     DialogTitle,
     IconButton,
-    Skeleton, useTheme
+    Skeleton, TextField, useTheme
 } from "@mui/material";
 import {ToastContainer} from "react-toastify";
 import {useTranslation} from "react-i18next";
+import {number} from "yup";
+import {useNavigate} from "react-router-dom";
+import {Pathnames} from "../router/Pathnames";
 
 
 export default function ShowBucket() {
     const [bucket, setBucket] = useState([]);
+    const navigate = useNavigate();
+    const [quantity, setQuantity] = useState();
     const theme = useTheme();
     const [loading, setLoading] = useState(false);
     const {t} = useTranslation();
@@ -34,16 +39,21 @@ export default function ShowBucket() {
             const array = JSON.parse(str);
             setBucket(array);
         } else {
-            setBucket([]);
+            console.log("dupa duap")
+            setBucket([{name:"testlek", price:5, categoryName:"przeciwbolowe", quantity:5}, {name:"testlek1", price:5, categoryName:"przeciwbolowe", quantity:5}, {name:"testlek2", price:5, categoryName:"przeciwbolowe", quantity:5}]);
         }
     }, [localStorage])
 
-    useEffect(() => {
-        if(bucket){
-            localStorage.setItem("bucket", bucket.toString())
-        }
-    }, [bucket])
+    const handleChange = async (medicationName, quantity) => {
+        let temp_to_change = bucket.find(({name}) => name === medicationName);
+        console.log(temp_to_change)
 
+        temp_to_change.quantity = quantity;
+
+        console.log(bucket)
+        localStorage.setItem("bucket", JSON.stringify(bucket))
+        window.location.reload();
+    };
 
     if (loading) {
         return (
@@ -51,10 +61,10 @@ export default function ShowBucket() {
                 <Table>
                     <TableHead sx={{backgroundColor: theme.palette.primary.main}}>
                         <TableRow>
-                            <TableCell sx={{color: "white"}}>Name</TableCell>
-                            <TableCell sx={{color: "white"}} align="right">Price</TableCell>
-                            <TableCell sx={{color: "white"}} align="right">Category</TableCell>
-                            <TableCell sx={{color: "white"}} align="right">Quantity</TableCell>
+                            <TableCell sx={{color: "white"}}>{t("show_bucket_name")}</TableCell>
+                            <TableCell sx={{color: "white"}} align="right">{t("show_bucket_price")}</TableCell>
+                            <TableCell sx={{color: "white"}} align="right">{t("show_bucket_category")}</TableCell>
+                            <TableCell sx={{color: "white"}} align="right">{t("show_bucket_quantity")}</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -92,10 +102,12 @@ export default function ShowBucket() {
                 <Table aria-label="simple table">
                     <TableHead sx={{backgroundColor: theme.palette.primary.main}}>
                         <TableRow sx={{color: "white"}}>
-                            <TableCell sx={{color: "white"}}>Name</TableCell>
-                            <TableCell sx={{color: "white"}} align="right">Price</TableCell>
-                            <TableCell sx={{color: "white"}} align="right">Category</TableCell>
-                            <TableCell sx={{color: "white"}} align="right">Quantity</TableCell>
+                            <TableCell sx={{color: "white"}}>{t("show_bucket_name")}</TableCell>
+                            <TableCell sx={{color: "white"}} align="right">{t("show_bucket_price")}</TableCell>
+                            <TableCell sx={{color: "white"}} align="right">{t("show_bucket_category")}</TableCell>
+                            <TableCell sx={{color: "white"}} align="right">{t("show_bucket_quantity")}</TableCell>
+                            <TableCell sx={{color: "white"}} align="right">{t("show_bucket_input")}</TableCell>
+                            <TableCell sx={{color: "white"}} align="right"></TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -107,9 +119,37 @@ export default function ShowBucket() {
                                 <TableCell component="th" scope="row">
                                     {row.name}
                                 </TableCell>
-                                <TableCell align="right">{row.price}</TableCell>
+                                <TableCell align="right">{row.price + " zł"}</TableCell>
                                 <TableCell align="right">{row.categoryName}</TableCell>
                                 <TableCell align="right">{row.quantity}</TableCell>
+                                <TableCell align="right">
+                                    <TextField
+                                        type="number"
+                                        variant='outlined'
+                                        color='secondary'
+                                        align="right"
+                                        inputMode="numeric"
+                                        onChange={(e) => {
+                                            if (e.target.value > 99) {
+                                                e.target.value = "99";
+                                            }
+                                            if (e.target.value <= 0) {
+                                                e.target.value = "0";
+                                            }
+                                            if (e.target.value === "01" || e.target.value === "02" || e.target.value === "03" || e.target.value === "04" || e.target.value === "05" || e.target.value === "06" || e.target.value === "07" || e.target.value === "08" || e.target.value === "09") {
+                                                e.target.value = "0";
+                                            }
+                                            setQuantity(e.target.value);
+                                        }
+                                        }
+                                    />
+                                </TableCell>
+                                <TableCell align="right">
+                                    <Button onClick={() => handleChange(row.name, quantity)}>
+                                        {t("show_bucket_button")}
+                                    </Button>
+                                </TableCell>
+
                             </TableRow>
                         ))}
                     </TableBody>

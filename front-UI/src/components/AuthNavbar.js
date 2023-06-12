@@ -111,14 +111,6 @@ export default function AuthNavbar() {
                             <AccountCircle/>
                         </IconButton>
                         <IconButton
-                            color="inherit"
-                            onClick={() => {
-                                navigate(Pathnames.patient.showBucket);
-                            }}
-                        >
-                            <AccountCircle/>
-                        </IconButton>
-                        <IconButton
                             size="large"
                             edge="start"
                             color="inherit"
