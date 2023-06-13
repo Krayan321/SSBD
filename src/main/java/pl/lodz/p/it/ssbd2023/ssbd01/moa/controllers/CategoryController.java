@@ -6,13 +6,18 @@ import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import lombok.extern.java.Log;
 import pl.lodz.p.it.ssbd2023.ssbd01.common.AbstractController;
+import pl.lodz.p.it.ssbd2023.ssbd01.config.ETagFilterBinding;
+import pl.lodz.p.it.ssbd2023.ssbd01.config.EntityIdentitySignerVerifier;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.category.CategoryDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.category.EditCategoryDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccessLevel.EditPatientDataDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Category;
 import pl.lodz.p.it.ssbd2023.ssbd01.moa.managers.CategoryManagerLocal;
 import pl.lodz.p.it.ssbd2023.ssbd01.util.converters.CategoryConverter;
@@ -27,6 +32,9 @@ public class CategoryController extends AbstractController {
 
     @Inject
     private CategoryManagerLocal categoryManager;
+
+    @Inject
+    private EntityIdentitySignerVerifier entityIdentitySignerVerifier;
 
     //moa 22
     @GET
@@ -63,9 +71,17 @@ public class CategoryController extends AbstractController {
 
     //moa 23
     @PUT
-    @DenyAll
     @Path("/{id}/edit-category")
-    public CategoryDTO editCategory(@PathParam("id") Long id) {
-        throw new UnsupportedOperationException();
+    @RolesAllowed("editCategory")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @ETagFilterBinding
+    public CategoryDTO editCategory(@HeaderParam("If-Match") @NotEmpty String etag,
+                                    @PathParam("id") Long id,
+                                    @Valid EditCategoryDTO editCategoryDTO) {
+        entityIdentitySignerVerifier.checkEtagIntegrity(editCategoryDTO, etag);
+        Category category = CategoryConverter.mapEditCategoryDTOToCategory(editCategoryDTO);
+        Category editedCategory = repeatTransaction(categoryManager, () -> categoryManager.editCategory(id, category, editCategoryDTO.getVersion()));
+        return CategoryConverter.mapCategoryToCategoryDTO(editedCategory);
     }
 }

@@ -59,8 +59,13 @@ public class CategoryManager extends AbstractManager implements CategoryManagerL
     }
 
     @Override
-    public Category editCategory(Category category) {
-        throw new UnsupportedOperationException();
+    @RolesAllowed("editCategory")
+    public Category editCategory(Long id, Category category, Long version) {
+        if (!category.getVersion().equals(version)) {
+            throw ApplicationException.createOptimisticLockException();
+        }
+        categoryFacade.edit(category);
+        return category;
     }
 
     @Override
