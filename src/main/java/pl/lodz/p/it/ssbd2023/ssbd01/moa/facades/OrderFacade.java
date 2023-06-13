@@ -89,36 +89,19 @@ public class OrderFacade extends AbstractFacade<Order> {
   @RolesAllowed("withdraw")
   public void withdrawOrder(Long id, Long userId){
       String updateStateQuery = "UPDATE Order o " +
-              "SET o.orderState = pl.lodz.p.it.ssbd2023.ssbd01.entities.OrderState.REJECTED_BY_PATIENT " +
+              "SET o.orderState = :newState " +
               "WHERE o.id = :orderId " +
-              "AND o.orderState = pl.lodz.p.it.ssbd2023.ssbd01.entities.OrderState.TO_BE_APPROVED_BY_PATIENT " +
+              "AND o.orderState = :currentState " +
               "AND o.patientData.id = :userId";
 
       getEntityManager()
               .createQuery(updateStateQuery)
+              .setParameter("newState", OrderState.REJECTED_BY_PATIENT)
+              .setParameter("currentState", OrderState.TO_BE_APPROVED_BY_PATIENT)
               .setParameter("orderId", id)
               .setParameter("userId", userId)
               .executeUpdate();
 
-      String sqlQuery = "DELETE FROM OrderMedication om "
-            + "WHERE om.order.id = :orderId";
-
-    getEntityManager()
-            .createQuery(sqlQuery)
-            .setParameter("orderId", id)
-            .executeUpdate();
-
-      String orderQuery = "DELETE FROM Order o "
-              + "WHERE o.id = :orderId "
-              + "AND o.orderState = pl.lodz.p.it.ssbd2023.ssbd01.entities.OrderState.REJECTED_BY_PATIENT " +
-              "AND o.patientData.id = :userId";
-
-
-      getEntityManager()
-            .createQuery(orderQuery)
-            .setParameter("orderId", id)
-            .setParameter("userId", userId)
-            .executeUpdate();
   }
 
 

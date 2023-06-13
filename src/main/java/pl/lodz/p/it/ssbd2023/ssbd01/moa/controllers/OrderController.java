@@ -107,7 +107,7 @@ public class OrderController extends AbstractController {
     }
 
     //mok 8
-   @DELETE
+   @PUT
    @RolesAllowed("withdraw")
    @Path("/{id}/withdraw")
    public Response withdrawOrderById(@PathParam("id") Long id){
