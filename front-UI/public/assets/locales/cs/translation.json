@@ -225,5 +225,8 @@
   "confirm_add_medication_to_basket": "Opravdu chcete přidat tento lék do košíku?",
   "add": "Přidat",
   "medication_removed_from_bucket": "Lék byl odebrán z košíku",
-  "medication_added_to_basket": "Lék byl přidán do košíku"
+  "medication_added_to_basket": "Lék byl přidán do košíku",
+  "name_length_min": "Jméno musí mít alespoň 3 znaky",
+  "name_length_max": "Jméno může mít maximálně 50 znaků",
+  "category_name_required": "Název kategorie je povinný"
 }
