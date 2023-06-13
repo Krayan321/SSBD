@@ -75,26 +75,45 @@ export const chemistSchema = Yup.object().shape({
 
 export const patientSchema = Yup.object().shape({
   name: Yup.string()
-      .min(2, "first_name_length_min")
-      .max(50, "first_name_length_max")
-      .required("first_name_required"),
+    .min(2, "first_name_length_min")
+    .max(50, "first_name_length_max")
+    .required("first_name_required"),
   lastName: Yup.string()
-      .min(2, "last_name_lenght_min")
-      .max(50, "last_name_length_max")
-      .required("last_name_required"),
+    .min(2, "last_name_lenght_min")
+    .max(50, "last_name_length_max")
+    .required("last_name_required"),
   phoneNumber: Yup.string()
-      .min(9, "phone_number_length")
-      .max(9, "phone_number_length")
-      .matches(/^[0-9]+$/, "phone_number_only_digits")
-      .required("phone_number_required"),
+    .min(9, "phone_number_length")
+    .max(9, "phone_number_length")
+    .matches(/^[0-9]+$/, "phone_number_only_digits")
+    .required("phone_number_required"),
   pesel: Yup.string()
-      .min(11, "pesel_length")
-      .max(11, "pesel_length")
-      .matches(/^[0-9]+$/, "pesel_only_digits")
-      .required("pesel_required"),
+    .min(11, "pesel_length")
+    .max(11, "pesel_length")
+    .matches(/^[0-9]+$/, "pesel_only_digits")
+    .required("pesel_required"),
   nip: Yup.string()
-      .min(10, "nip_length")
-      .matches(/^[0-9]+$/, "nip_only_digits")
-      .max(10, "nip_length")
-      .required("nip_required"),
+    .min(10, "nip_length")
+    .matches(/^[0-9]+$/, "nip_only_digits")
+    .max(10, "nip_length")
+    .required("nip_required"),
+});
+
+export const medicationSchema = Yup.object().shape({
+  name: Yup.string()
+    .min(2, "name_length_min")
+    .max(50, "name_length_max")
+    .required("name_required"),
+  stock: Yup.number()
+    .min(1, "stock_min")
+    .max(1000000, "stock_max")
+    .required("stock_required"),
+  price: Yup.number()
+    .min(0.01, "price_min")
+    .max(1000000, "price_max")
+    .required("price_required"),
+  categoryName: Yup.string()
+    .min(2, "category_name_length_min")
+    .max(50, "category_name_length_max")
+    .required("category_name_required"),
 });
