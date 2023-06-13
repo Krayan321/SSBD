@@ -6,11 +6,13 @@ import io.restassured.filter.log.LogDetail;
 import io.restassured.http.ContentType;
 import jakarta.ws.rs.core.Response;
 import org.junit.jupiter.api.*;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import static controller.dataForTests.*;
 import static io.restassured.RestAssured.given;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@Testcontainers
 public class CategoryControllerIT extends BaseTest {
 
     static String chemistJwt;
