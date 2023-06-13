@@ -19,7 +19,6 @@ services:
     volumes:
       - jacoco:/jacoco:ro
 
-
   payara:
     environment:
       JVM_ARGS: "-javaagent:/jacoco/lib/jacocoagent.jar=excludes=*_javassit_*:javax.xml.soap.*:oasis.*,output=tcpserver,address=*"
