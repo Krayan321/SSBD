@@ -117,7 +117,7 @@ public class OrderController extends AbstractController {
 
 
     // mok 10
-    @DELETE
+    @PUT
     @RolesAllowed("deleteWaitingOrdersById")
     @Path("/{id}/waiting")
     public Response deleteWaitingOrderById(@PathParam("id") Long id) {
