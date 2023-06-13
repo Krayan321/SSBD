@@ -5,6 +5,7 @@ import pl.lodz.p.it.ssbd2023.ssbd01.dto.addAsAdmin.AddAdminAccountDto;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.addAsAdmin.AddChemistAccountDto;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.auth.LoginDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.category.CategoryDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.category.EditCategoryDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccessLevel.EditAdminDataDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccessLevel.EditChemistDataDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccessLevel.EditPatientDataDTO;
@@ -197,4 +198,11 @@ public class dataForTests {
                   .quantity(1)
                   .medicationDTOId(3L)
                   .build();
+
+    public static EditCategoryDTO editCategoryDTO =
+            EditCategoryDTO.builder()
+                    .name("Edytowane")
+                    .isOnPrescription(false)
+                    .version(0L)
+                    .build();
 }

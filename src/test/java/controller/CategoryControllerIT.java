@@ -11,6 +11,7 @@ import static controller.dataForTests.*;
 import static io.restassured.RestAssured.given;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@TestClassOrder(ClassOrderer.OrderAnnotation.class)
 public class CategoryControllerIT extends BaseTest {
 
     static String chemistJwt;
@@ -18,14 +19,22 @@ public class CategoryControllerIT extends BaseTest {
     @BeforeAll
     static void setUp() throws InterruptedException {
         System.out.println(getApiRoot());
-        chemistJwt = given()
-                .contentType("application/json")
-                .body(chemistLoginDto)
-                .log().all()
-                .post(getApiRoot() + "/auth/login")
-                .then().log().all()
-                .statusCode(Response.Status.OK.getStatusCode())
-                .extract().jsonPath().getString("jwtToken");
+        String jsonJwt =
+                given()
+                        .contentType("application/json")
+                        .body(chemistLoginDto)
+                        .log()
+                        .all()
+                        .post(getApiRoot() + "/auth/login")
+                        .then()
+                        .log()
+                        .all()
+                        .statusCode(Response.Status.OK.getStatusCode())
+                        .extract()
+                        .response()
+                        .asString();
+
+        chemistJwt = jsonJwt.substring(jsonJwt.indexOf(":") + 2, jsonJwt.length() - 2);
 
         RestAssured.requestSpecification = new RequestSpecBuilder()
                 .setContentType(ContentType.JSON)
@@ -35,26 +44,93 @@ public class CategoryControllerIT extends BaseTest {
     }
 
 
-
-    @Test
+    @Nested
     @Order(1)
-    public void addCategory_correct() {
-        given()
-                .header("Authorization", "Bearer " + chemistJwt)
-                .body(categoryDto)
-                .post(getApiRoot() + "/category/add-category")
-                .then()
-                .statusCode(Response.Status.CREATED.getStatusCode());
+    @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+    class AddCategory {
+        @Test
+        @Order(1)
+        public void addCategory_correct() {
+            given()
+                    .header("Authorization", "Bearer " + chemistJwt)
+                    .body(categoryDto)
+                    .post(getApiRoot() + "/category/add-category")
+                    .then()
+                    .statusCode(Response.Status.CREATED.getStatusCode());
+        }
+
+        @Test
+        @Order(2)
+        public void addCategory_incorrectSameName() {
+            given()
+                    .header("Authorization", "Bearer " + chemistJwt)
+                    .body(categoryDto)
+                    .post(getApiRoot() + "/category/add-category")
+                    .then()
+                    .statusCode(Response.Status.CONFLICT.getStatusCode());
+        }
     }
 
-    @Test
+    @Nested
     @Order(2)
-    public void addCategory_incorrectSameName() {
-        given()
-                .header("Authorization", "Bearer " + chemistJwt)
-                .body(categoryDto)
-                .post(getApiRoot() + "/category/add-category")
-                .then()
-                .statusCode(Response.Status.CONFLICT.getStatusCode());
+    @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+    class EditCategory {
+        private String etag;
+
+        @BeforeEach
+        public void init() {
+            var response = given()
+                    .header("authorization", "Bearer " + chemistJwt)
+                    .get(getApiRoot() + "/category/1")
+                    .then()
+                    .log()
+                    .all()
+                    .statusCode(Response.Status.OK.getStatusCode())
+                    .extract()
+                    .response();
+            etag = response.getHeader("ETag").replace("\"", "");
+            Long version = response.getBody().jsonPath().getLong("version");
+            editCategoryDTO.setVersion(version);
+        }
+
+        @Test
+        @Order(1)
+        public void addCategory_correct() {
+            given()
+                    .header("Authorization", "Bearer " + chemistJwt)
+                    .body(categoryDto)
+                    .post(getApiRoot() + "/category/add-category")
+                    .then()
+                    .statusCode(Response.Status.CREATED.getStatusCode());
+        }
+        @Test
+        @Order(2)
+        public void editCategory_correct() {
+            given()
+                    .header("authorization", "Bearer " + chemistJwt)
+                    .header("If-Match", etag)
+                    .body(editCategoryDTO)
+                    .put(getApiRoot() + "/category/1/edit-category")
+                    .then()
+                    .log()
+                    .all()
+                    .statusCode(Response.Status.OK.getStatusCode());
+        }
+
+        @Test
+        @Order(3)
+        public void editCategory_badVersion() {
+            editCategoryDTO.setVersion(100L);
+            given()
+                    .header("authorization", "Bearer " + chemistJwt)
+                    .header("If-Match", etag)
+                    .body(editCategoryDTO)
+                    .put(getApiRoot() + "/category/1/edit-category")
+                    .then()
+                    .log()
+                    .all()
+                    .statusCode(Response.Status.BAD_REQUEST.getStatusCode());
+        }
+
     }
 }
