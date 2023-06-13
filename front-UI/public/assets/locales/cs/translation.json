@@ -225,5 +225,8 @@
   "confirm_add_medication_to_basket": "Opravdu chcete přidat tento lék do košíku?",
   "add": "Přidat",
   "medication_removed_from_bucket": "Lék byl odebrán z košíku",
-  "medication_added_to_basket": "Lék byl přidán do košíku"
+  "medication_added_to_basket": "Lék byl přidán do košíku",
+  "update_order_queue": "Aktualizovat frontu objednávek",
+  "queue_has_been_updated": "Fronta byla aktualizována",
+  "confirm_update_queue": "Opravdu chcete aktualizovat frontu objednávek?"
 }

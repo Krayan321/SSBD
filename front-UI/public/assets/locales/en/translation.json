@@ -225,5 +225,8 @@
   "confirm_add_medication_to_basket": "Are you sure you want to add this medication to basket?",
   "add": "Add",
   "medication_removed_from_bucket": "Medication removed from bucket",
-  "medication_added_to_basket": "Medication added to basket"
+  "medication_added_to_basket": "Medication added to basket",
+  "update_order_queue": "Update order queue",
+  "queue_has_been_updated": "Queue has been updated",
+  "confirm_update_queue": "Are you sure you want to update queue?"
 }

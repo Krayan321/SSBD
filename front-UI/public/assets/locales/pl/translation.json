@@ -225,5 +225,8 @@
   "confirm_add_medication_to_basket": "Na pewno chcesz dodać ten lek do koszyka?",
   "add": "Dodaj",
   "medication_removed_from_bucket": "Lek usunięty z koszyka",
-  "medication_added_to_basket": "Lek dodany do koszyka"
+  "medication_added_to_basket": "Lek dodany do koszyka",
+  "update_order_queue": "Zaktualizuj kolejkę zamówień",
+  "queue_has_been_updated": "Kolejka została zaktualizowana",
+  "confirm_update_queue": "Na pewno chcesz zaktualizować kolejkę zamówień?"
 }
