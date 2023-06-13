@@ -21,5 +21,5 @@ export async function createOrder() {
 }
 
 export async function deleteWaitingOrdersById(id) {
-  return await del(`order/${id}/waiting`);
+  return await put(`order/${id}/waiting`);
 }
