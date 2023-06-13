@@ -24,11 +24,6 @@ public class OrderException extends ApplicationException {
     return new OrderException(FORBIDDEN, EXCEPTION_ORDER_NOT_IN_QUEUE);
   }
 
-  public static OrderException onlyChemistCanListWaitingOrders() {
-    return new OrderException(FORBIDDEN, EXCEPTION_ORDER_ONLY_CHEMIST_CAN_LIST_WAITING_ORDERS);
-  }
-
-
   public static OrderException onlyPatientCanOrder() {
       return new OrderException(FORBIDDEN, EXCEPTION_ORDER_ONLY_PATIENT_CAN_ORDER);
   }
@@ -37,8 +32,8 @@ public class OrderException extends ApplicationException {
     return new OrderException(FORBIDDEN, EXCEPTION_NO_PERMISSION_TO_DELETE_ORDER);
   }
 
-  public static OrderException onlyPatientCanDelete() {
-    return new OrderException(FORBIDDEN, EXCEPTION_ORDER_ONLY_PATIENT_CAN_DELETE);
+  public static OrderException createModificationOrderOfIllegalState() {
+    return new OrderException(BAD_REQUEST, EXCEPTION_ORDER_ILLEGAL_STATE_MODIFICATION);
   }
 
 }

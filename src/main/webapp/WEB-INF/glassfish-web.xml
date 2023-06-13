@@ -211,6 +211,11 @@
     </security-role-mapping>
 
     <security-role-mapping>
+        <role-name>approveOrder</role-name>
+        <group-name>CHEMIST</group-name>
+    </security-role-mapping>
+
+    <security-role-mapping>
         <role-name>getMedicationDetails</role-name>
         <group-name>CHEMIST</group-name>
         <group-name>PATIENT</group-name>

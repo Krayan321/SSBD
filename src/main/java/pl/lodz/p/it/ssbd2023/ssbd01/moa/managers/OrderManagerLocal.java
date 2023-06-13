@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface OrderManagerLocal extends CommonManagerLocalInterface {
 
-    Order createOrder(Account account, Long id, String patientDataId);
+    Order createOrder(Account account, Long id);
 
     Order getOrder(Long id);
 
@@ -23,9 +23,11 @@ public interface OrderManagerLocal extends CommonManagerLocalInterface {
 
     void approveOrder(Long id);
 
+    void cancelOrder(Long id);
+
     void deleteWaitingOrderById(Long id);
 
-    void cancelOrder(Long id, Account account);
+    void withdrawOrder(Long id, Account account);
 
     void addMedicationToOrder(Long id, OrderMedication orderMedication, Long version, Long medicationId);
 

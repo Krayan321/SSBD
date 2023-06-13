@@ -5,6 +5,7 @@ import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.filter.log.LogDetail;
 import io.restassured.http.ContentType;
 import jakarta.ws.rs.core.Response;
+import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.*;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccount.EditAccountDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.order.CreateOrderMedicationDTO;
@@ -12,8 +13,10 @@ import pl.lodz.p.it.ssbd2023.ssbd01.dto.order.CreateOrderMedicationDTO;
 import static controller.dataForTests.*;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
+import static pl.lodz.p.it.ssbd2023.ssbd01.common.i18n.*;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@TestClassOrder(ClassOrderer.OrderAnnotation.class)
 public class OrderControllerIT extends BaseTest {
 
     static String patientJwt;
@@ -60,52 +63,6 @@ public class OrderControllerIT extends BaseTest {
     @Nested
     @Order(1)
     @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-    class CreateOrderMedication {
-        @Test
-        @Order(1)
-        public void createOrderMedication_correct() {
-            given()
-                    .header("Authorization", "Bearer " + patientJwt)
-                    .log()
-                    .all()
-                    .body(createOrderMedicationDTO)
-                    .put(getApiRoot() + "/order/1/add")
-                    .then().log().all()
-                    .statusCode(Response.Status.CREATED.getStatusCode());
-        }
-
-        @Test
-        @Order(2)
-        public void createOrderMedication_medication_not_found() {
-            CreateOrderMedicationDTO dto = createOrderMedicationDTO;
-            dto.setMedicationDTOId(5000L);
-            given()
-                    .header("Authorization", "Bearer " + patientJwt)
-                    .log()
-                    .all()
-                    .body(dto)
-                    .put(getApiRoot() + "/order/1/add")
-                    .then()
-                    .statusCode(Response.Status.NOT_FOUND.getStatusCode());
-        }
-
-        @Test
-        @Order(3)
-        public void createOrderMedication_order_not_found() {
-            given()
-                    .header("Authorization", "Bearer " + patientJwt)
-                    .log()
-                    .all()
-                    .body(createOrderMedicationDTO)
-                    .put(getApiRoot() + "/order/5000/add")
-                    .then()
-                    .statusCode(Response.Status.NOT_FOUND.getStatusCode());
-        }
-    }
-
-    @Nested
-    @Order(2)
-    @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
     class GetOrdersToApprove {
         @Test
         @Order(1)
@@ -115,6 +72,43 @@ public class OrderControllerIT extends BaseTest {
                     .get(getApiRoot() + "/order/to-approve")
                     .then().log().all()
                     .statusCode(Response.Status.OK.getStatusCode());
+        }
+    }
+
+    @Nested
+    @Order(2)
+    @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+    class ApproveOrder {
+        @Test
+        @Order(1)
+        public void approveOrder_correct() {
+            given().header("Authorization", "Bearer " + chemistJwt)
+                    .log().all()
+                    .put(getApiRoot() + "/order/4/approve")
+                    .then().log().all()
+                    .statusCode(Response.Status.OK.getStatusCode());
+        }
+
+        @Test
+        @Order(2)
+        public void approveOrder_incorrectStatus() {
+            given().header("Authorization", "Bearer " + chemistJwt)
+                    .log().all()
+                    .put(getApiRoot() + "/order/4/approve")
+                    .then().log().all()
+                    .statusCode(Response.Status.BAD_REQUEST.getStatusCode())
+                    .body("message", CoreMatchers.equalTo(EXCEPTION_ORDER_ILLEGAL_STATE_MODIFICATION));
+        }
+
+        @Test
+        @Order(3)
+        public void approveOrder_notFound() {
+            given().header("Authorization", "Bearer " + chemistJwt)
+                    .log().all()
+                    .put(getApiRoot() + "/order/999/approve")
+                    .then().log().all()
+                    .statusCode(Response.Status.NOT_FOUND.getStatusCode())
+                    .body("message", CoreMatchers.equalTo(EXCEPTION_ENTITY_NOT_FOUND));
         }
     }
 

@@ -83,6 +83,9 @@ public class i18n {
 
   public static final String EXCEPTION_ORDER_NOT_IN_QUEUE =
           "exception.order_not_in_queue";
+  public static final String EXCEPTION_ORDER_ILLEGAL_STATE_MODIFICATION =
+          "exception.order.illegal-state.modification";
+
 
   public static final String EXCEPTION_CATEGORY_ALREADY_EXISTS = "exception.category.already-exists";
 

@@ -10,28 +10,17 @@ import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.*;
-import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import lombok.extern.java.Log;
 import pl.lodz.p.it.ssbd2023.ssbd01.common.AbstractController;
-import pl.lodz.p.it.ssbd2023.ssbd01.dto.PatientDataDTO;
-import pl.lodz.p.it.ssbd2023.ssbd01.dto.order.ChangeMedNumberDTO;
-import pl.lodz.p.it.ssbd2023.ssbd01.dto.medication.MedicationDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.order.OrderDTO;
-import pl.lodz.p.it.ssbd2023.ssbd01.entities.Account;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Order;
-import pl.lodz.p.it.ssbd2023.ssbd01.entities.Medication;
-import pl.lodz.p.it.ssbd2023.ssbd01.moa.facades.PatientDataFacade;
 import pl.lodz.p.it.ssbd2023.ssbd01.moa.managers.OrderManagerLocal;
 import pl.lodz.p.it.ssbd2023.ssbd01.mok.managers.AccountManagerLocal;
-import pl.lodz.p.it.ssbd2023.ssbd01.util.converters.MedicationConverter;
 import pl.lodz.p.it.ssbd2023.ssbd01.util.converters.OrderConverter;
-import pl.lodz.p.it.ssbd2023.ssbd01.dto.order.CreateOrderMedicationDTO;
-import pl.lodz.p.it.ssbd2023.ssbd01.util.converters.OrderMedicationConverter;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Path("order")
 @RequestScoped
@@ -74,9 +63,10 @@ public class OrderController extends AbstractController {
     //moa 13
     @PUT
     @Path("/{id}/approve")
-    @DenyAll
-    public void approveOrder(@PathParam("id") Long id) {
-        throw new UnsupportedOperationException();
+    @RolesAllowed("approveOrder")
+    public Response approveOrder(@PathParam("id") Long id) {
+        repeatTransactionVoid(orderManager, () -> orderManager.approveOrder(id));
+        return Response.ok().build();
     }
 
     //moa 12
@@ -97,7 +87,8 @@ public class OrderController extends AbstractController {
     @RolesAllowed("createOrder")
     public Response submitOrder(@PathParam("id") Long id, @Valid String patientDataId) {
         Order order = repeatTransaction(orderManager, () -> orderManager
-                .createOrder(accountManager.getCurrentUserWithAccessLevels(), id, patientDataId));
+//                .createOrder(accountManager.getCurrentUserWithAccessLevels(), id, patientDataId)); // todo
+                .createOrder(accountManager.getCurrentUserWithAccessLevels(), id));
 
         OrderDTO orderDTO = OrderConverter.mapOrderToOrderDTO(order);
 
@@ -120,7 +111,7 @@ public class OrderController extends AbstractController {
    @RolesAllowed("withdraw")
    @Path("/{id}/withdraw")
    public Response withdrawOrderById(@PathParam("id") Long id){
-       repeatTransactionVoid(orderManager, () -> orderManager.cancelOrder(id,accountManager.getCurrentUserWithAccessLevels()));
+       repeatTransactionVoid(orderManager, () -> orderManager.withdrawOrder(id,accountManager.getCurrentUserWithAccessLevels()));
         return Response.ok().build();
    }
 
