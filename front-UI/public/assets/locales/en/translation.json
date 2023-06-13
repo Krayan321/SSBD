@@ -231,5 +231,8 @@
   "category_name_required": "Category name is required",
   "update_order_queue": "Update order queue",
   "queue_has_been_updated": "Queue has been updated",
-  "confirm_update_queue": "Are you sure you want to update queue?"
+  "confirm_update_queue": "Are you sure you want to update queue?",
+  "confirm_approve_order": "Are you sure you want to approve this order?",
+  "approve_order": "Approve order",
+  "order_approved": "Order got approved"
 }

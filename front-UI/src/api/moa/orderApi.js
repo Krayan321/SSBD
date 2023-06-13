@@ -24,6 +24,10 @@ export async function deleteWaitingOrdersById(id) {
   return await put(`order/${id}/waiting`);
 }
 
+export async function approveOrderById(id) {
+  return await put(`order/${id}/patient-approve`)
+}
+
 export async function updateQueue() {
   return await put("order/update-queue");
 }
