@@ -228,5 +228,8 @@
   "medication_added_to_basket": "Lek dodany do koszyka",
   "name_length_min": "Imię musi mieć co najmniej 2 znaki",
   "name_length_max": "Imię może mieć maksymalnie 50 znaków",
-  "category_name_required": "Nazwa kategorii jest wymagana"
+  "category_name_required": "Nazwa kategorii jest wymagana",
+  "update_order_queue": "Zaktualizuj kolejkę zamówień",
+  "queue_has_been_updated": "Kolejka została zaktualizowana",
+  "confirm_update_queue": "Na pewno chcesz zaktualizować kolejkę zamówień?"
 }

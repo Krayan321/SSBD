@@ -11,8 +11,6 @@ public interface OrderManagerLocal extends CommonManagerLocalInterface {
 
     Order getOrder(Long id);
 
-    void updateOrderQueue();
-
     List<Order> getAllOrders();
 
     List<Order> getAllOrdersForSelf(Account account);

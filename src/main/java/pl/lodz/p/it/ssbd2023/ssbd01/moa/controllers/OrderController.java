@@ -128,9 +128,9 @@ public class OrderController extends AbstractController {
     //moa 16
     @PUT
     @Path("/update-queue")
-    @DenyAll
+    @RolesAllowed("updateQueue")
     public void updateQueue() {
-        throw new UnsupportedOperationException();
+        repeatTransactionVoidWithOptimisticLock(orderManager, () -> orderManager.updateQueue());
     }
 
     //moa 15

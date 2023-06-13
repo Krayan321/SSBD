@@ -64,6 +64,9 @@
         <role-name>getAllAccounts</role-name>
     </security-role>
     <security-role>
+        <role-name>updateQueue</role-name>
+    </security-role>
+    <security-role>
         <role-name>getCurrentUser</role-name>
     </security-role>
     <security-role>
