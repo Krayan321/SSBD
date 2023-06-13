@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import TableContainer from "@mui/material/TableContainer";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
@@ -6,27 +6,16 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
 import TableBody from "@mui/material/TableBody";
-import {
-    Box,
-    Button,
-    Dialog,
-    DialogActions,
-    DialogContent,
-    DialogContentText,
-    DialogTitle,
-    IconButton,
-    Skeleton, TextField, useTheme
-} from "@mui/material";
-import {ToastContainer} from "react-toastify";
+import {Box, Button, IconButton, Skeleton, Stack, TextField, useTheme} from "@mui/material";
+import {toast, ToastContainer} from "react-toastify";
 import PointOfSaleIcon from '@mui/icons-material/PointOfSale';
 import {useTranslation} from "react-i18next";
-import {number} from "yup";
 import {useNavigate} from "react-router-dom";
 import {Pathnames} from "../router/Pathnames";
-import RefreshIcon from "@mui/icons-material/Refresh";
 import {getSelfAccountDetails} from "../api/mok/accountApi";
 import {createOrder} from "../api/moa/orderApi";
-
+import ConfirmationDialog from "../components/ConfirmationDialog";
+import ProductionQuantityLimitsIcon from '@mui/icons-material/ProductionQuantityLimits';
 
 export default function ShowBucket() {
     const [bucket, setBucket] = useState([]);
@@ -38,25 +27,27 @@ export default function ShowBucket() {
     const {t} = useTranslation();
     const [patientData, setPatientData] = useState();
     const [id, setId] = useState();
+    const [dialogOpen, setDialogOpen] = useState(false);
+    const [itemToDelete, setItemToDelete] = useState(null);
 
     useEffect(() => {
         const fetchData = async () => {
-                const response = await getSelfAccountDetails();
-                setAccessLevels(response.data.accessLevels);
-                setId(response.data.id);
-                let data;
-                accessLevels.forEach((element) => {
-                    if (element.role === "PATIENT") {
-                        data = element;
-                    }
-                })
+            const response = await getSelfAccountDetails();
+            setAccessLevels(response.data.accessLevels);
+            setId(response.data.id);
+            let data;
+            accessLevels.forEach((element) => {
+                if (element.role === "PATIENT") {
+                    data = element;
+                }
+            })
             setPatientData(data.id);
 
         };
         fetchData();
         if (localStorage.getItem("bucket") !== null) {
             const str = localStorage.getItem("bucket")
-            if(!str) return;
+            if (!str) return;
             const array = JSON.parse(str);
             setBucket(array);
         } else {
@@ -75,6 +66,24 @@ export default function ShowBucket() {
 
     const handleBuy = () => {
         createOrder(id, patientData);
+    };
+
+    const handleDelete = (medicationName) => {
+        setItemToDelete(medicationName);
+        setDialogOpen(true);
+    };
+
+
+    const handleConfirmation = (accepted) => {
+        if (accepted) {
+            const updatedBucket = bucket.filter(({name}) => name !== itemToDelete);
+            setBucket(updatedBucket);
+            localStorage.setItem("bucket", JSON.stringify(updatedBucket));
+            toast.success(t("medication_removed_from_bucket"), {position: "top-center"});
+        }
+        setItemToDelete(null);
+        setDialogOpen(false);
+
     };
 
     if (loading) {
@@ -114,6 +123,26 @@ export default function ShowBucket() {
         );
     }
 
+    if (bucket.length === 0) {
+        return (
+            <div style={{textAlign: 'center'}}>
+                <Paper elevation={20} className="paper">
+                    <Stack justifyContent="center"
+                           alignItems="center" spacing={2}>
+                        <ProductionQuantityLimitsIcon style={{fontSize: 60}}/>
+                        <h5 style={{fontFamily: 'Lato'}}>
+                            {t("whoa_such_empty")} </h5>
+                        <Button onClick={() => {
+                            navigate(Pathnames.patientChemist.medications,)
+                        }} variant="contained" color="primary">
+                            {t("add_something_to_basket")}
+                        </Button>
+                    </Stack>
+                </Paper>
+            </div>
+        );
+    }
+
     return (
         <div style={{
             display: "flex",
@@ -121,12 +150,12 @@ export default function ShowBucket() {
             alignContent: "center",
             flexDirection: "column"
         }}>
-            <Box sx={{ marginBottom: "10px", textAlign: "center" }}>
+            <Box sx={{marginBottom: "10px", textAlign: "center"}}>
                 <IconButton
                     variant="contained"
                     onClick={() => handleBuy()}
                 >
-                    <PointOfSaleIcon />
+                    <PointOfSaleIcon/>
                 </IconButton>
             </Box>
             <TableContainer sx={{maxWidth: "800px", margin: "auto"}} component={Paper}>
@@ -139,6 +168,7 @@ export default function ShowBucket() {
                             <TableCell sx={{color: "white"}} align="right">{t("show_bucket_quantity")}</TableCell>
                             <TableCell sx={{color: "white"}} align="right">{t("show_bucket_input")}</TableCell>
                             <TableCell sx={{color: "white"}} align="right"></TableCell>
+                            <TableCell sx={{color: "white"}} align="right"></TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -150,7 +180,7 @@ export default function ShowBucket() {
                                 <TableCell component="th" scope="row">
                                     {row.name}
                                 </TableCell>
-                                <TableCell align="right">{row.currentPrice + " zł"}</TableCell>
+                                <TableCell align="right">{row.price + " zł"}</TableCell>
                                 <TableCell align="right">{row.categoryName}</TableCell>
                                 <TableCell align="right">{row.quantity}</TableCell>
                                 <TableCell align="right">
@@ -191,12 +221,25 @@ export default function ShowBucket() {
                                         {t("show_bucket_button")}
                                     </Button>
                                 </TableCell>
-
+                                <TableCell align="right">
+                                    <Button onClick={() => handleDelete(row.name)}>
+                                        {t("delete")}
+                                    </Button>
+                                </TableCell>
                             </TableRow>
                         ))}
                     </TableBody>
                 </Table>
                 <ToastContainer/>
+                <ConfirmationDialog
+                    open={dialogOpen}
+                    title={t("confirm_delete_medication_from_basket")}
+                    actions={[
+                        {label: t("delete"), handler: () => handleConfirmation(true), color: "primary"},
+                        {label: t("cancel"), handler: () => handleConfirmation(false), color: "secondary"},
+                    ]}
+                    onClose={() => setDialogOpen(false)}
+                />
             </TableContainer>
         </div>
     );
