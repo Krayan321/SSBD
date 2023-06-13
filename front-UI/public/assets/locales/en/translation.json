@@ -228,5 +228,6 @@
   "medication_added_to_basket": "Medication added to basket",
   "name_length_min": "Name must have at least 2 characters",
   "name_length_max": "Name can have maximum 50 characters",
-  "category_name_required": "Category name is required"
+  "category_name_required": "Category name is required",
+  "order_rejected": "Order rejected"
 }

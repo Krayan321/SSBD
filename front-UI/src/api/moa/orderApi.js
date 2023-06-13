@@ -23,3 +23,7 @@ export async function createOrder() {
 export async function deleteWaitingOrdersById(id) {
   return await del(`order/${id}/waiting`);
 }
+
+export async function withdrawOrderById(id) {
+  return await put(`order/${id}/withdraw`)
+}
