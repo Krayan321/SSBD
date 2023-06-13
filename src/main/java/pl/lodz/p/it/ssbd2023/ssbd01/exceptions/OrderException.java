@@ -36,4 +36,12 @@ public class OrderException extends ApplicationException {
     return new OrderException(BAD_REQUEST, EXCEPTION_ORDER_ILLEGAL_STATE_MODIFICATION);
   }
 
+  public static OrderException noPermissionToApproveOrder() {
+    return new OrderException(FORBIDDEN, EXCEPTION_NO_PERMISSION_TO_APPROVE_ORDER);
+  }
+  public static OrderException orderNotFound(Long id) {
+    return new OrderException(FORBIDDEN, EXCEPTION_ORDER_NOT_FOUND);
+  }
+
+
 }

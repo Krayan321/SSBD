@@ -125,6 +125,14 @@ public class OrderController extends AbstractController {
         return Response.ok().build();
     }
 
+    @PUT
+    @RolesAllowed("approvedByPatient")
+    @Path("/{id}/patient-approve")
+    public Response approvedByPatient(@PathParam("id") Long id){
+        repeatTransactionVoid(orderManager, () -> orderManager.approvedByPatient(id,accountManager.getCurrentUserWithAccessLevels()));
+        return Response.ok().build();
+    }
+
     //moa 16
     @PUT
     @Path("/update-queue")

@@ -104,6 +104,23 @@ public class OrderFacade extends AbstractFacade<Order> {
 
   }
 
+    @RolesAllowed("approvedByPatient")
+    public void approvedByPatient(Long id, Long userId){
+        String updateStateQuery = "UPDATE Order o " +
+                "SET o.orderState = :newState " +
+                "WHERE o.id = :orderId " +
+                "AND o.orderState = :currentState " +
+                "AND o.patientData.id = :userId";
+
+        getEntityManager()
+                .createQuery(updateStateQuery)
+                .setParameter("newState", OrderState.APPROVED_BY_PATIENT)
+                .setParameter("currentState", OrderState.TO_BE_APPROVED_BY_PATIENT)
+                .setParameter("orderId", id)
+                .setParameter("userId", userId)
+                .executeUpdate();
+    }
+
 
 
     @Override
