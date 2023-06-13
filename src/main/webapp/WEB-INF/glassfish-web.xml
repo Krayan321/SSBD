@@ -191,6 +191,11 @@
     </security-role-mapping>
 
     <security-role-mapping>
+        <role-name>updateQueue</role-name>
+        <group-name>CHEMIST</group-name>
+    </security-role-mapping>
+
+    <security-role-mapping>
         <role-name>createShipment</role-name>
         <group-name>CHEMIST</group-name>
     </security-role-mapping>
