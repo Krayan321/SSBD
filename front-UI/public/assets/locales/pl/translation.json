@@ -231,5 +231,9 @@
   "category_name_required": "Nazwa kategorii jest wymagana",
   "update_order_queue": "Zaktualizuj kolejkę zamówień",
   "queue_has_been_updated": "Kolejka została zaktualizowana",
-  "confirm_update_queue": "Na pewno chcesz zaktualizować kolejkę zamówień?"
+  "confirm_update_queue": "Na pewno chcesz zaktualizować kolejkę zamówień?",
+  "confirm_approve_order": "Czy na pewno chcesz potwierdzić to zamówienie?",
+  "approve_order": "Zatwierdź zamówienie",
+  "order_approved": "Zatwierdzono zamówienie"
+
 }
