@@ -21,6 +21,7 @@ import Shipment from "../pages/Shipment";
 import OrdersToApprove from "../pages/OrdersToApprove";
 import AllMedications from "../pages/AllMedications";
 import ShowBucket from "../pages/ShowBucket";
+import MedicationDetails from "../pages/MedicationDetails";
 
 export const publicRoutes = [
   {
@@ -68,7 +69,7 @@ export const PatientRoutes = [
   {
     path: Pathnames.patient.showBucket,
     Component: ShowBucket,
-  }
+  },
 ];
 
 export const AdminRoutes = [
@@ -129,5 +130,9 @@ export const PatientChemistRoutes = [
   {
     path: Pathnames.patientChemist.medications,
     Component: AllMedications,
+  },
+  {
+    path: Pathnames.patientChemist.medicationDetails,
+    Component: MedicationDetails,
   },
 ];

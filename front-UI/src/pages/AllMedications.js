@@ -21,16 +21,14 @@ export default function AllMedications() {
   const [refreshing, setRefreshing] = useState(false);
   const [bucket, setBucket] = useState([]);
 
-
-
   const { t } = useTranslation();
 
   const findMedications = useCallback(async () => {
     setLoading(true);
     setRefreshing(true);
     if (localStorage.getItem("bucket") !== null) {
-      const str = localStorage.getItem("bucket")
-      if(!str) return;
+      const str = localStorage.getItem("bucket");
+      if (!str) return;
       const array = JSON.parse(str);
       setBucket(array);
     } else {
@@ -55,13 +53,17 @@ export default function AllMedications() {
 
   const handleMedicationDetails = async (medicationId) => {
     const id = medicationId;
-    navigate(`/medication/${id}/details`);
+    navigate(`/medications/${id}`);
   };
-
   const handleAddToBucket = async (name, price, categoryName) => {
-    const toAdd = {name: name, price: price, categoryName: categoryName, quantity: 1}
+    const toAdd = {
+      name: name,
+      price: price,
+      categoryName: categoryName,
+      quantity: 1,
+    };
     bucket.push(toAdd);
-    localStorage.setItem("bucket", JSON.stringify(bucket))
+    localStorage.setItem("bucket", JSON.stringify(bucket));
   };
 
   const handleRefresh = () => {
@@ -148,18 +150,16 @@ export default function AllMedications() {
               <TableCell sx={{ color: "white" }} align="right">
                 {t("stock")}
               </TableCell>
-              <TableCell sx={{ color: "white" }} align="right">
+              {/* <TableCell sx={{ color: "white" }} align="right">
                 {t("category_name")}
-              </TableCell>
+              </TableCell> */}
               <TableCell sx={{ color: "white" }} align="right">
                 {t("on_prescription")}
               </TableCell>
               <TableCell sx={{ color: "white" }} align="right">
                 {t("details")}
               </TableCell>
-              <TableCell sx={{ color: "white" }} align="right">
-
-              </TableCell>
+              <TableCell sx={{ color: "white" }} align="right"></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -171,11 +171,11 @@ export default function AllMedications() {
                 <TableCell component="th" scope="row">
                   {row.name}
                 </TableCell>
-                <TableCell align="right">{row.price}</TableCell>
+                <TableCell align="right">{row.currentPrice}</TableCell>
                 <TableCell align="right">{String(row.stock)}</TableCell>
-                <TableCell align="right">
+                {/* <TableCell align="right">
                   {String(row.categoryDTO.name)}
-                </TableCell>
+                </TableCell> */}
                 <TableCell align="right">
                   {row.categoryDTO.isOnPrescription ? t("yes") : t("no")}
                 </TableCell>
@@ -185,7 +185,15 @@ export default function AllMedications() {
                   </Button>
                 </TableCell>
                 <TableCell align="right">
-                  <Button onClick={() => handleAddToBucket(row.name, row.price, row.categoryDTO.name)}>
+                  <Button
+                    onClick={() =>
+                      handleAddToBucket(
+                        row.name,
+                        row.price,
+                        row.categoryDTO.name
+                      )
+                    }
+                  >
                     {t("dodaj")}
                   </Button>
                 </TableCell>

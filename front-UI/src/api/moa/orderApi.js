@@ -1,22 +1,21 @@
-import {get} from "../api";
-
+import { get, del, put } from "../api";
 
 export async function getSelfOrders() {
-    return await get("order/self");
+  return await get("order/self");
 }
 
 export async function getWaitingOrders() {
-    return await get("order/waiting");
+  return await get("order/waiting");
 }
 
 export async function getOrdersToApprove() {
-    return await get("order/to-approve");
+  return await get("order/to-approve");
 }
 
 export async function createOrder() {
-    return await put("order/${id}/submit")
+  return await put("order/${id}/submit");
 }
 
 export async function deleteWaitingOrdersById(id) {
-    return await del(`order/${id}/waiting`);
+  return await del(`order/${id}/waiting`);
 }
