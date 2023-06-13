@@ -14,7 +14,7 @@ import {
 import {useTranslation} from "react-i18next";
 import {toast, ToastContainer} from "react-toastify";
 import RefreshIcon from "@mui/icons-material/Refresh";
-import {getOrdersToApprove} from "../api/moa/orderApi";
+import {approveOrder, getOrdersToApprove} from "../api/moa/orderApi";
 
 export default function OrdersToApprove() {
     const [orders, setOrders] = useState([]);
@@ -28,7 +28,6 @@ export default function OrdersToApprove() {
         getOrdersToApprove().then((response) => {
             setLoading(false)
             setOrders(response.data);
-            console.log(response.data);
         }).catch((error) => {
             setLoading(false)
             toast.error(t(error.response.data.message), {position: "top-center"});
@@ -40,7 +39,12 @@ export default function OrdersToApprove() {
     }, [findOrders]);
 
     const handleOrderApprove = async (id) => {
-        toast.error("todo" + id, {position: "top-center"});
+        approveOrder(id).then((response) => {
+            toast.success(t("approved_successfully"), {position: "top-center"});
+            findOrders();
+        }).catch((error) => {
+            toast.error(t(error.response.data.message), {position: "top-center"});
+        })
     };
 
     const handleOrderReject = async (id) => {

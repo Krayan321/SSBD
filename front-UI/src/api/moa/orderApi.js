@@ -13,6 +13,10 @@ export async function getOrdersToApprove() {
     return await get("order/to-approve");
 }
 
+export async function approveOrder(id) {
+    return await put(`order/${id}/approve`);
+}
+
 export async function createOrder() {
     return await put("order/${id}/submit")
 }
