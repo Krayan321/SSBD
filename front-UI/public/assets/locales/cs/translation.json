@@ -217,5 +217,13 @@
   "work_phone_number": "Pracovní telefonní číslo",
   "work_phone_number_invalid": "Telefonní číslo musí obsahovat 9 znaků",
   "work_phone_number_required": "Telefonní číslo je povinné",
-  "yes": "Ano"
+  "yes": "Ano",
+  "whoa_such_empty": "Ještě tu nic není",
+  "add_something_to_basket": "Přidejte něco do košíku",
+  "confirm_delete_medication_from_basket": "Opravdu chcete smazat tento lék z košíku?",
+  "delete": "Smazat",
+  "confirm_add_medication_to_basket": "Opravdu chcete přidat tento lék do košíku?",
+  "add": "Přidat",
+  "medication_removed_from_bucket": "Lék byl odebrán z košíku",
+  "medication_added_to_basket": "Lék byl přidán do košíku"
 }
