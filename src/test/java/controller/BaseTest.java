@@ -29,11 +29,10 @@ public abstract class BaseTest {
 //        "http://%s:%s/api", payaraServerContainer.getHost(), payaraServerContainer.getMappedPort(8080));
   }
 
-  private static final Logger LOGGER =
-          LoggerFactory.getLogger("Payara");
-
+//  @Container
 //  static final PostgreSQLContainer postgreSQLContainer;
 //
+//  @Container
 //  static final GenericContainer payaraServerContainer;
 //
 //  static {
@@ -60,10 +59,6 @@ public abstract class BaseTest {
 //                    .withCopyToContainer(warFile, "/opt/payara/deployments/ssbd01-0.0.1.war")
 //                    .waitingFor(Wait.forHttp("/health/ready").forStatusCode(200))
 //                    .withStartupTimeout(java.time.Duration.ofSeconds(360))
-//                    .withCommand("")
-//                    .withCommand("asadmin",
-//                            "create-jvm-options",
-//                            "'-javaagent\\:/opt/JaCoCo/lib/jacocoagent.jar=output=tcpserver,address=*'")
 //                    .withReuse(true);
 //    payaraServerContainer.start();
 //  }

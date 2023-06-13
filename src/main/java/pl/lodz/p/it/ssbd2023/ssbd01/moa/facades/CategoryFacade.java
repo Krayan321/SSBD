@@ -48,10 +48,6 @@ public class CategoryFacade extends AbstractFacade<Category> {
   @PermitAll
   public void edit(Category category) {super.edit(category);}
 
-  @Override
-  @PermitAll
-  public void editAndRefresh(Category category) {super.editAndRefresh(category);}
-
   @PermitAll
   public Optional<Category> find(Long id) {return super.find(id);}
 

@@ -11,6 +11,7 @@ import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccessLevel.EditPatientDataDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccount.EditAccountDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccount.grant.GrantAdminDataDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccount.grant.GrantChemistDataDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccount.grant.GrantPatientDataDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.medication.AddMedicationDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.medication.MedicationDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.order.CreateOrderMedicationDTO;
@@ -110,6 +111,17 @@ public class dataForTests {
           .workPhoneNumber("123431431")
           .version(0L)
           .build();
+
+  public static GrantPatientDataDTO grantPatientDataDTO =
+          GrantPatientDataDTO.builder()
+                  .login(chemistLoginDto.getLogin())
+                  .version(0L)
+                  .pesel("12345698712")
+                  .firstName("Bob")
+                  .lastName("Robertson")
+                  .phoneNumber("982737022")
+                  .nip("9346105462")
+                  .build();
 
   // edit data
   public static EditAdminDataDTO adminDataDTOChangedPhone =

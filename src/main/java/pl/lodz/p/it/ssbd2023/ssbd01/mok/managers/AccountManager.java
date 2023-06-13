@@ -119,7 +119,8 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
     accessLevel.setCreatedBy(getCurrentUserLogin());
     account.getAccessLevels().add(accessLevel);
     account.setModifiedBy(getCurrentUserLogin());
-    accountFacade.editAndRefresh(account);
+    account.setModificationDate(new Date()); // force version increment on account
+    accountFacade.edit(account);
     return account;
   }
 
