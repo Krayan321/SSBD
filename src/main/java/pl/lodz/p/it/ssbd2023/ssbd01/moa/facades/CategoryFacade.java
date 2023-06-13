@@ -8,6 +8,7 @@ import jakarta.ejb.TransactionAttribute;
 import jakarta.ejb.TransactionAttributeType;
 import jakarta.interceptor.Interceptors;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import java.util.List;
@@ -57,8 +58,12 @@ public class CategoryFacade extends AbstractFacade<Category> {
 
   @PermitAll
   public Category findByName(String name) {
-    TypedQuery<Category> tq = em.createNamedQuery("category.findByName", Category.class);
-    tq.setParameter(1, name);
-    return tq.getSingleResult();
+    try {
+      TypedQuery<Category> tq = em.createNamedQuery("category.findByName", Category.class);
+      tq.setParameter(1, name);
+      return tq.getSingleResult();
+    } catch (NoResultException ex) {
+      return null;
+    }
   }
 }

@@ -39,9 +39,10 @@ public class CategoryManager extends AbstractManager implements CategoryManagerL
     @Override
     @RolesAllowed("createCategory")
     public Category createCategory(Category category) {
-//        if (categoryFacade.findByName(category.getName()) != null) {
-//            throw ApplicationException.createCategoryAlreadyExistsException();
-//        }
+        Category existingCategory = categoryFacade.findByName(category.getName());
+        if (existingCategory != null) {
+            throw ApplicationException.createCategoryAlreadyExistsException();
+        }
         categoryFacade.create(category);
         return category;
     }

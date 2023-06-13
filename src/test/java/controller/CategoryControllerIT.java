@@ -38,12 +38,23 @@ public class CategoryControllerIT extends BaseTest {
 
     @Test
     @Order(1)
-    public void addCategory() {
+    public void addCategory_correct() {
         given()
                 .header("Authorization", "Bearer " + chemistJwt)
                 .body(categoryDto)
                 .post(getApiRoot() + "/category/add-category")
                 .then()
                 .statusCode(Response.Status.CREATED.getStatusCode());
+    }
+
+    @Test
+    @Order(2)
+    public void addCategory_incorrectSameName() {
+        given()
+                .header("Authorization", "Bearer " + chemistJwt)
+                .body(categoryDto)
+                .post(getApiRoot() + "/category/add-category")
+                .then()
+                .statusCode(Response.Status.CONFLICT.getStatusCode());
     }
 }

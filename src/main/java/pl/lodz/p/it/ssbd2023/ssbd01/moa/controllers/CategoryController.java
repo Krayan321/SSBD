@@ -53,13 +53,12 @@ public class CategoryController extends AbstractController {
     @Path("/add-category")
     @RolesAllowed("createCategory")
     @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response addCategory(@NotNull @Valid CategoryDTO categoryDto) {
-        Category category = new Category();
-        category.setName(categoryDto.getName());
-        category.setIsOnPrescription(categoryDto.getIsOnPrescription());
-        repeatTransaction(categoryManager, () ->
-            categoryManager.createCategory(category));
-        return Response.status(Response.Status.CREATED).build();
+        Category category = CategoryConverter.mapCategoryDTOToCategory(categoryDto);
+        Category createdCategory = repeatTransaction(categoryManager, () -> categoryManager.createCategory(category));
+        CategoryDTO createdCategoryDto = CategoryConverter.mapCategoryToCategoryDTO(createdCategory);
+        return Response.status(Response.Status.CREATED).entity(createdCategoryDto).build();
     }
 
     //moa 23

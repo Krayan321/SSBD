@@ -14,4 +14,11 @@ public class CategoryConverter {
                 .build();
     }
 
+    public static Category mapCategoryDTOToCategory(CategoryDTO categoryDTO) {
+        return Category.builder()
+                .isOnPrescription(categoryDTO.getIsOnPrescription())
+                .name(categoryDTO.getName())
+                .build();
+    }
+
 }
