@@ -201,8 +201,8 @@ public class dataForTests {
 
     public static EditCategoryDTO editCategoryDTO =
             EditCategoryDTO.builder()
-                    .name("Edytowane")
-                    .isOnPrescription(false)
+                    .name("NajnowszaKategoria")
+                    .isOnPrescription(true)
                     .version(0L)
                     .build();
 }
