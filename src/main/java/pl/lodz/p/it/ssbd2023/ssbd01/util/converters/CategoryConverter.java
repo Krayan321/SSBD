@@ -9,8 +9,6 @@ public class CategoryConverter {
 
     public static CategoryDTO mapCategoryToCategoryDTO(Category category) {
         return CategoryDTO.builder()
-                .id(category.getId())
-                .version(category.getVersion())
                 .isOnPrescription(category.getIsOnPrescription())
                 .name(category.getName())
                 .build();

@@ -67,7 +67,6 @@
   "confirm_add_role": "Are you sure you want to add this account?",
   "confirm_change_email": "Confirm change email",
   "confirm_change_password": "Confirm change password",
-  "confirm_delete_order": "Are you sure you want to delete this order?",
   "confirm_edit_account_data": "Please confirm editing account data",
   "confirm_logout": "Are you sure you want to logout?",
   "confirm_password": "Confirm Password",
@@ -154,7 +153,6 @@
   "no_such_email": "Such email is not assigned to any account",
   "none": "None",
   "oldPassword": "Old Password",
-  "on_prescription": "On prescription?",
   "order_date": "Order date",
   "order_state": "Order state",
   "order_total_price": "Order total price",
@@ -217,5 +215,7 @@
   "work_phone_number": "Work phone number",
   "work_phone_number_invalid": "Phone number must contain 9 numbers",
   "work_phone_number_required": "Phone number is required",
-  "yes": "Yes"
+  "yes": "Yes",
+  "on_prescription": "On prescription?",
+  "confirm_delete_order": "Are you sure you want to delete this order?"
 }

@@ -43,6 +43,9 @@ public class MedicationManager extends AbstractManager implements MedicationMana
         Long categoryId = medication.getCategory().getId();
         Category managedCategory = categoryFacade.find(categoryId).orElseThrow(ApplicationException::createEntityNotFoundException);
         medication.setCategory(managedCategory);
+        if (medicationFacade.findByName(medication.getName()) != null) {
+            throw ApplicationException.createMedicationAlreadyExistsException();
+        }
         medicationFacade.create(medication);
         return medication;
     }
@@ -72,8 +75,6 @@ public class MedicationManager extends AbstractManager implements MedicationMana
         if (medication.isEmpty()) {
             throw ApplicationException.createEntityNotFoundException();
         }
-        else {
-            return medication.get();
-        }
+        return medication.get();
     }
 }

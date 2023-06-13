@@ -166,16 +166,24 @@ public class dataForTests {
 
   public static AddMedicationDTO addMedicationDto =
       AddMedicationDTO.builder()
-          .name("Prozac")
+          .name("Pyszny lek")
           .stock(100)
           .price(new BigDecimal("10.0"))
           .categoryName(categoryDto.getName())
           .build();
 //        CategoryDTO.CategoryDTOBuilder().name("Antydepresanty").isOnPrescription(false).build();
 
+  public static AddMedicationDTO addMedicationDtoWrongCategory =
+      AddMedicationDTO.builder()
+          .name("Pyszny lek")
+              .name("Pyszny lek")
+              .stock(100)
+              .price(new BigDecimal("10.0"))
+              .categoryName("Meh")
+              .build();
+
   public static MedicationDTO medicationDetailsDto =
       MedicationDTO.medicationDTOBuilder()
-          .id(1L)
           .name("Prozac")
           .stock(100)
           .currentPrice(new BigDecimal("10.0"))
