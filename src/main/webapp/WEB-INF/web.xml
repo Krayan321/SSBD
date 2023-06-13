@@ -189,6 +189,8 @@
     <security-role>
         <role-name>approveOrder</role-name>
     </security-role>
-
+    <security-role>
+        <role-name>getAllCategories</role-name>
+    </security-role>
 
 </web-app>

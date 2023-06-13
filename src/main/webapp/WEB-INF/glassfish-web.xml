@@ -224,5 +224,9 @@
         <role-name>withdraw</role-name>
         <group-name>PATIENT</group-name>
     </security-role-mapping>
+    <security-role-mapping>
+        <role-name>getAllCategories</role-name>
+        <group-name>CHEMIST</group-name>
+    </security-role-mapping>
 
 </glassfish-web-app>

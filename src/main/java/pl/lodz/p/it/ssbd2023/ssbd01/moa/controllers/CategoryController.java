@@ -15,6 +15,7 @@ import pl.lodz.p.it.ssbd2023.ssbd01.common.AbstractController;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.category.CategoryDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Category;
 import pl.lodz.p.it.ssbd2023.ssbd01.moa.managers.CategoryManagerLocal;
+import pl.lodz.p.it.ssbd2023.ssbd01.util.converters.CategoryConverter;
 
 import java.util.List;
 
@@ -30,10 +31,12 @@ public class CategoryController extends AbstractController {
     //moa 22
     @GET
     @Path("/")
-    @DenyAll
+    @RolesAllowed("getAllCategories")
     @Produces(MediaType.APPLICATION_JSON)
     public List<CategoryDTO> getAllCategories() {
-        throw new UnsupportedOperationException();
+        List<Category> categories =
+                repeatTransaction(categoryManager, () -> categoryManager.getAllCategories());
+        return categories.stream().map(CategoryConverter::mapCategoryToCategoryDTO).toList();
     }
 
 

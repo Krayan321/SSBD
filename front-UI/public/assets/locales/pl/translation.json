@@ -225,5 +225,8 @@
   "confirm_add_medication_to_basket": "Na pewno chcesz dodać ten lek do koszyka?",
   "add": "Dodaj",
   "medication_removed_from_bucket": "Lek usunięty z koszyka",
-  "medication_added_to_basket": "Lek dodany do koszyka"
+  "medication_added_to_basket": "Lek dodany do koszyka",
+  "name_length_min": "Imię musi mieć co najmniej 2 znaki",
+  "name_length_max": "Imię może mieć maksymalnie 50 znaków",
+  "category_name_required": "Nazwa kategorii jest wymagana"
 }

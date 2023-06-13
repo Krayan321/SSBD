@@ -225,5 +225,8 @@
   "confirm_add_medication_to_basket": "Are you sure you want to add this medication to basket?",
   "add": "Add",
   "medication_removed_from_bucket": "Medication removed from bucket",
-  "medication_added_to_basket": "Medication added to basket"
+  "medication_added_to_basket": "Medication added to basket",
+  "name_length_min": "Name must have at least 2 characters",
+  "name_length_max": "Name can have maximum 50 characters",
+  "category_name_required": "Category name is required"
 }
