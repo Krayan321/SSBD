@@ -32,9 +32,9 @@ public class CategoryManager extends AbstractManager implements CategoryManagerL
     private CategoryFacade categoryFacade;
 
     @Override
+    @RolesAllowed("getAllCategories")
     public List<Category> getAllCategories() {
-        throw new UnsupportedOperationException();
-    }
+        return categoryFacade.findAll();    }
 
     @Override
     @RolesAllowed("createCategory")

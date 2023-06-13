@@ -1,5 +1,14 @@
 import Overlay from "../../components/Overlay";
-import { Button, TextField, Box, CircularProgress, Stack } from "@mui/material";
+import {
+  Button,
+  TextField,
+  Box,
+  CircularProgress,
+  Stack,
+  Select,
+  MenuItem,
+  Autocomplete,
+} from "@mui/material";
 import { Close } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
 import React from "react";
@@ -9,23 +18,41 @@ import { toast } from "react-toastify";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import { medicationSchema } from "../../utils/Validations";
+import { getAllCategories } from "../../api/moa/categoryApi";
+import { useEffect } from "react";
 
 function AddMedicationOverlay({ open, onClose }) {
   const {
     register,
     handleSubmit,
     formState: { errors },
+    setValue,
+    watch,
   } = useForm({
     resolver: yupResolver(medicationSchema),
   });
 
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
+  const [categories, setCategories] = useState([]);
 
-  const onSubmit = handleSubmit(({ name, stock, price, categoryName }) => {
+  useEffect(() => {
+    getAllCategories()
+      .then((response) => {
+        const categoriesData = response.data;
+        setCategories(categoriesData);
+      })
+      .catch((error) => {
+        console.error("Error fetching categories:", error);
+      });
+  }, []);
+
+  const selectedCategory = watch("categoryName");
+
+  const onSubmit = handleSubmit(({ name, stock, price }) => {
     setLoading(true);
 
-    addMedication(name, stock, price, categoryName)
+    addMedication(name, stock, price, selectedCategory)
       .then(() => {
         setLoading(false);
         toast.success(t("medication_created"), {
@@ -95,17 +122,24 @@ function AddMedicationOverlay({ open, onClose }) {
             {...register("price")}
           />
         </Stack>
-        <TextField
-          type="email"
-          variant="outlined"
-          color="secondary"
-          label={t("category_name")}
-          fullWidth
-          required
-          sx={{ mb: 4 }}
-          error={errors.categoryName}
-          helperText={t(errors.categoryName?.message)}
-          {...register("categoryName")}
+        <Autocomplete
+          options={categories}
+          getOptionLabel={(category) => category.name}
+          onChange={(event, value) =>
+            setValue("categoryName", value?.name || "")
+          }
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              label={t("category_name")}
+              variant="outlined"
+              color="secondary"
+              fullWidth
+              required
+              error={errors.categoryName}
+              helperText={t(errors.categoryName?.message)}
+            />
+          )}
         />
         <Box
           sx={{ mb: 2 }}

@@ -15,6 +15,7 @@ import java.util.Optional;
 
 import pl.lodz.p.it.ssbd2023.ssbd01.common.AbstractFacade;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Category;
+import pl.lodz.p.it.ssbd2023.ssbd01.entities.Medication;
 
 @Stateless(name = "CategoryFacade")
 @TransactionAttribute(TransactionAttributeType.REQUIRED)
@@ -35,7 +36,8 @@ public class CategoryFacade extends AbstractFacade<Category> {
   @Override
   @PermitAll
   public List<Category> findAll() {
-    return super.findAll();
+    TypedQuery<Category> tq = em.createNamedQuery("category.findAll", Category.class);
+    return tq.getResultList();
   }
 
   @Override
