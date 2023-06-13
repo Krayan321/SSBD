@@ -2,6 +2,7 @@ package pl.lodz.p.it.ssbd2023.ssbd01.util.converters;
 
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.category.CategoryDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.category.EditCategoryDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.category.GetCategoryDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Category;
 
 public class CategoryConverter {
@@ -26,6 +27,15 @@ public class CategoryConverter {
         return Category.builder()
                 .isOnPrescription(editCategoryDTO.getIsOnPrescription())
                 .name(editCategoryDTO.getName())
+                .build();
+    }
+
+    public static GetCategoryDTO mapCategoryToGetCategoryDTO(Category category) {
+        return GetCategoryDTO.builder()
+                .id(category.getId())
+                .version(category.getVersion())
+                .isOnPrescription(category.getIsOnPrescription())
+                .name(category.getName())
                 .build();
     }
 }

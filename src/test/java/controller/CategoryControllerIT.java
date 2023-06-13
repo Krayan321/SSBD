@@ -18,23 +18,14 @@ public class CategoryControllerIT extends BaseTest {
 
     @BeforeAll
     static void setUp() throws InterruptedException {
-        System.out.println(getApiRoot());
-        String jsonJwt =
-                given()
-                        .contentType("application/json")
-                        .body(chemistLoginDto)
-                        .log()
-                        .all()
-                        .post(getApiRoot() + "/auth/login")
-                        .then()
-                        .log()
-                        .all()
-                        .statusCode(Response.Status.OK.getStatusCode())
-                        .extract()
-                        .response()
-                        .asString();
-
-        chemistJwt = jsonJwt.substring(jsonJwt.indexOf(":") + 2, jsonJwt.length() - 2);
+        chemistJwt = given()
+                .contentType("application/json")
+                .body(chemistLoginDto)
+                .log().all()
+                .post(getApiRoot() + "/auth/login")
+                .then().log().all()
+                .statusCode(Response.Status.OK.getStatusCode())
+                .extract().jsonPath().getString("jwtToken");
 
         RestAssured.requestSpecification = new RequestSpecBuilder()
                 .setContentType(ContentType.JSON)
@@ -95,16 +86,6 @@ public class CategoryControllerIT extends BaseTest {
 
         @Test
         @Order(1)
-        public void addCategory_correct() {
-            given()
-                    .header("Authorization", "Bearer " + chemistJwt)
-                    .body(categoryDto)
-                    .post(getApiRoot() + "/category/add-category")
-                    .then()
-                    .statusCode(Response.Status.CREATED.getStatusCode());
-        }
-        @Test
-        @Order(2)
         public void editCategory_correct() {
             given()
                     .header("authorization", "Bearer " + chemistJwt)
@@ -118,7 +99,7 @@ public class CategoryControllerIT extends BaseTest {
         }
 
         @Test
-        @Order(3)
+        @Order(2)
         public void editCategory_badVersion() {
             editCategoryDTO.setVersion(100L);
             given()

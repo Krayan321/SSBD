@@ -17,6 +17,7 @@ import pl.lodz.p.it.ssbd2023.ssbd01.config.ETagFilterBinding;
 import pl.lodz.p.it.ssbd2023.ssbd01.config.EntityIdentitySignerVerifier;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.category.CategoryDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.category.EditCategoryDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.category.GetCategoryDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccessLevel.EditPatientDataDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Category;
 import pl.lodz.p.it.ssbd2023.ssbd01.moa.managers.CategoryManagerLocal;
@@ -41,19 +42,22 @@ public class CategoryController extends AbstractController {
     @Path("/")
     @RolesAllowed("getAllCategories")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<CategoryDTO> getAllCategories() {
+    public List<GetCategoryDTO> getAllCategories() {
         List<Category> categories =
                 repeatTransaction(categoryManager, () -> categoryManager.getAllCategories());
-        return categories.stream().map(CategoryConverter::mapCategoryToCategoryDTO).toList();
+        return categories.stream().map(CategoryConverter::mapCategoryToGetCategoryDTO).toList();
     }
 
 
     @GET
     @Path("/{id}")
-    @DenyAll
+    @PermitAll
     @Produces(MediaType.APPLICATION_JSON)
-    public CategoryDTO getCategory(@PathParam("id") Long id) {
-        throw new UnsupportedOperationException();
+    public Response getCategory(@PathParam("id") Long id) {
+        Category category = repeatTransaction(categoryManager, () -> categoryManager.getCategory(id));
+        GetCategoryDTO getCategoryDTO = CategoryConverter.mapCategoryToGetCategoryDTO(category);
+        String etag = entityIdentitySignerVerifier.calculateEntitySignature(getCategoryDTO);
+        return Response.ok(getCategoryDTO).tag(etag).build();
     }
 
     //moa 21
