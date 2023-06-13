@@ -27,6 +27,8 @@ public interface OrderManagerLocal extends CommonManagerLocalInterface {
 
     void withdrawOrder(Long id, Account account);
 
+    void approvedByPatient(Long id, Account account);
+
     void addMedicationToOrder(Long id, OrderMedication orderMedication, Long version, Long medicationId);
 
     List<Medication> getOrderDetails(Long orderId);

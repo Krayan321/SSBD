@@ -258,6 +258,27 @@ public class OrderManager extends AbstractManager
     }
 
     @Override
+    @RolesAllowed("approvedByPatient")
+    public void approvedByPatient(Long id, Account account) {
+        Order order = orderFacade.find(id)
+                .orElseThrow(() -> OrderException.orderNotFound(id));
+
+        if (order.getOrderState() != OrderState.TO_BE_APPROVED_BY_PATIENT
+                || (account.getId() != order.getPatientData().getId())) {
+            throw OrderException.noPermissionToApproveOrder();
+        }
+
+        orderFacade.approvedByPatient(id, account.getId());
+        decreaseMedicationStock(order);
+
+        if (order.getPrescription() != null) {
+            order.setOrderState(OrderState.WAITING_FOR_CHEMIST_APPROVAL);
+        } else {
+            order.setOrderState(OrderState.FINALISED);
+        }
+    }
+
+    @Override
     @RolesAllowed("addMedicationToOrder")
     public void addMedicationToOrder(
             Long id, OrderMedication orderMedication, Long version, Long medicationId) {
