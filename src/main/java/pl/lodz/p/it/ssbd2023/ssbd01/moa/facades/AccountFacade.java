@@ -51,6 +51,16 @@ public class AccountFacade extends AbstractFacade<Account> {
     }
 
     @PermitAll
+    public Account findByLoginAndRefresh(String login) {
+        TypedQuery<Account> tq = em.createNamedQuery("account.findByLogin", Account.class);
+        tq.setParameter(1, login);
+        Account foundAccount = tq.getSingleResult();
+        getEntityManager().refresh(foundAccount);
+        getEntityManager().flush();
+        return foundAccount;
+    }
+
+    @PermitAll
     public Optional<Account> find(Long id) {
         return super.find(id);
     }

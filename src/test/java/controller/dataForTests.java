@@ -214,13 +214,11 @@ public class dataForTests {
           .categoryDTO(categoryDto)
           .build();
 
-//  public static CreateOrderMedicationDTO createOrderMedicationDTO =
-//          CreateOrderMedicationDTO.orderMedicationBuilder()
-//                  .id(2L)
-//                  .version(0L)
-//                  .quantity(1)
-//                  .medicationDTOId(3L)
-//                  .build();
+  public static CreateOrderMedicationDTO createOrderMedicationDTO =
+          CreateOrderMedicationDTO.builder()
+                  .quantity(1)
+                  .name("Prozac")
+                  .build();
 
   public static EditCategoryDTO editCategoryDTO =
           EditCategoryDTO.builder()

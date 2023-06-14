@@ -95,11 +95,10 @@ public class i18n {
   public static final String EXCEPTION_NO_PERMISSION_TO_DELETE_ORDER =
           "exception.no.permission.to.delete.order";
 
-  public static final String EXCEPTION_ORDER_ONLY_PATIENT_CAN_DELETE =
-          "exception.order.only.patient.can.delete";
-
   public static final String EXCEPTION_NO_PERMISSION_TO_APPROVE_ORDER =
           "exception.no.permission.to.approve.order";
+  public static final String EXCEPTION_PRESCRIPTION_REQUIRED =
+          "exception.order.prescription-required";
 
   public static final String EXCEPTION_ORDER_NOT_FOUND =
           "exception.order_not_found";

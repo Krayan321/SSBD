@@ -24,10 +24,6 @@ public class OrderException extends ApplicationException {
     return new OrderException(FORBIDDEN, EXCEPTION_ORDER_NOT_IN_QUEUE);
   }
 
-  public static OrderException onlyPatientCanOrder() {
-      return new OrderException(FORBIDDEN, EXCEPTION_ORDER_ONLY_PATIENT_CAN_ORDER);
-  }
-
   public static OrderException noPermissionToDeleteOrder() {
     return new OrderException(FORBIDDEN, EXCEPTION_NO_PERMISSION_TO_DELETE_ORDER);
   }
@@ -38,6 +34,9 @@ public class OrderException extends ApplicationException {
 
   public static OrderException noPermissionToApproveOrder() {
     return new OrderException(FORBIDDEN, EXCEPTION_NO_PERMISSION_TO_APPROVE_ORDER);
+  }
+  public static OrderException createPrescriptionRequired() {
+    return new OrderException(BAD_REQUEST, EXCEPTION_PRESCRIPTION_REQUIRED);
   }
   public static OrderException orderNotFound(Long id) {
     return new OrderException(FORBIDDEN, EXCEPTION_ORDER_NOT_FOUND);

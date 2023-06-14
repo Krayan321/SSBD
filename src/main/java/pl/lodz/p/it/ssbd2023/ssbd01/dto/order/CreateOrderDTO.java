@@ -3,7 +3,6 @@ package pl.lodz.p.it.ssbd2023.ssbd01.dto.order;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
-import java.util.Date;
 import java.util.List;
 
 @ToString
@@ -16,11 +15,10 @@ import java.util.List;
 public class CreateOrderDTO {
 
     @NotNull
-    private Date orderDate;
+    private String orderDate;
 
     @NotNull
-    private List<OrderMedicationDTO> orderMedication;
+    private List<CreateOrderMedicationDTO> orderMedications;
 
-    @NotNull
-    private CreateOrderPrescription prescription;
+    private CreateOrderPrescriptionDTO prescription;
 }
