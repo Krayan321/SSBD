@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface OrderManagerLocal extends CommonManagerLocalInterface {
 
-    Order createOrder(Order order);
+    void createOrder(Order order);
 
     Order getOrder(Long id);
 

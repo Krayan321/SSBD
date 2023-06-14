@@ -27,6 +27,7 @@ import pl.lodz.p.it.ssbd2023.ssbd01.moa.facades.ShipmentFacade;
 import pl.lodz.p.it.ssbd2023.ssbd01.moa.facades.ShipmentMedicationFacade;
 import pl.lodz.p.it.ssbd2023.ssbd01.moa.facades.AccountFacade;
 import pl.lodz.p.it.ssbd2023.ssbd01.mok.managers.AccountManager;
+import pl.lodz.p.it.ssbd2023.ssbd01.util.AccessLevelFinder;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -52,71 +53,70 @@ public class OrderManager extends AbstractManager
     private SecurityContext context;
     @Inject
     private ShipmentMedicationFacade shipmentMedicationFacade;
-    @Inject
-    private AccountManager accountManager;
 
 
     @Override
     @RolesAllowed("createOrder")
-    public Order createOrder(Order order) {
-        Account account = accountManager.getCurrentUserWithAccessLevels();
-        ObjectMapper objectMapper = new ObjectMapper();
-        Order order = new Order();
-        order.setOrderState(OrderState.CREATED);
+    public void createOrder(Order order) {
+        Account account = getCurrentUserWithAccessLevels();
+        order.setPatientData(AccessLevelFinder.findPatientData(account));
 
-        try {
-            // Deserializacja danych z localStorageData
-            List<Map<String, Object>> medicationsData = objectMapper.readValue(localStorageData, new TypeReference<>() {
-            });
+        order.getOrderMedications().forEach(om -> {
+            om.setOrder(order);
+            Medication medication = medicationFacade.findByName(
+                    om.getMedication().getName());
+            om.setMedication(medication);
+            om.setPurchasePrice(medication.getCurrentPrice());
+        });
 
-            // Tworzenie i dodawanie leków do zamówienia
-            List<OrderMedication> orderMedications = new ArrayList<>();
-            for (Map<String, Object> medicationData : medicationsData) {
-                String medicationName = (String) medicationData.get("name");
-
-                // Pobieranie danych o leku z bazy danych na podstawie nazwy
-                Medication medication = medicationFacade.findByName(medicationName);
-
-
-                // Tworzenie połączenia między zamówieniem a lekiem
-                OrderMedication orderMedication = new OrderMedication();
-                orderMedication.setMedication(medication);
-                orderMedication.setPurchasePrice(medication.getCurrentPrice());
-                orderMedication.setOrder(order);
-                orderMedication.setQuantity((Integer) medicationData.get("quantity"));
-
-                orderMedications.add(orderMedication);
-            }
-
-            order.setOrderMedications(orderMedications);
-        } catch (JsonProcessingException e) {
-            throw new IllegalArgumentException("Nieprawidłowe dane z localStorage", e);
-        }
-
-        /*if(!Objects.equals(order.getVersion(), version)){
-        throw ApplicationException.createOptimisticLockException();
-    }*/
-
-
-        // Sprawdzenie, czy w bazie są wszystkie leki potrzebne do realizacji zamówienia
-        boolean allMedicationsAvailable = checkAllMedicationsAvailable(order);
-
-        if (!allMedicationsAvailable) {
+        if (!checkAllMedicationsAvailable(order)) {
             order.setOrderState(OrderState.IN_QUEUE);
-        }
-
-        if (order.getOrderState() != OrderState.IN_QUEUE) {
-            decreaseMedicationStock(order);
-            if (order.getPrescription() != null) {
-                order.setOrderState(
-                        OrderState
-                                .WAITING_FOR_CHEMIST_APPROVAL); // Zamówienie wymaga zatwierdzenia przez aptekarza
+        } else {
+            decreaseMedicationStock(order, null);
+            if(checkIsOnPrescription(order)) {
+                if(order.getPrescription() == null) {
+                    throw OrderException.createPrescriptionRequired();
+                }
+                order.setOrderState(OrderState.WAITING_FOR_CHEMIST_APPROVAL);
+            } else {
+                order.setOrderState(OrderState.FINALISED);
             }
         }
-
         orderFacade.create(order);
+    }
 
-        return order;
+    @RolesAllowed("createOrder")
+    private boolean checkAllMedicationsAvailable(Order order) {
+        for (OrderMedication orderMedication : order.getOrderMedications()) {
+            Medication medication = orderMedication.getMedication();
+            if (medication.getStock() <= orderMedication.getQuantity()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @RolesAllowed("createOrder")
+    private boolean checkIsOnPrescription(Order order) {
+        for (OrderMedication om : order.getOrderMedications()) {
+            if (om.getMedication().getCategory().getIsOnPrescription()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @RolesAllowed("createOrder")
+    private void decreaseMedicationStock(Order order, EtagVerification etagVerification) {
+        for (OrderMedication orderMedication : order.getOrderMedications()) {
+            Medication medication = orderMedication.getMedication();
+            int requestedQuantity = orderMedication.getQuantity();
+
+            int currentStock = medication.getStock();
+            int updatedStock = currentStock - requestedQuantity;
+            medication.setStock(updatedStock);
+            medicationFacade.edit(medication);
+        }
     }
 
     @Override
@@ -174,7 +174,7 @@ public class OrderManager extends AbstractManager
                     }
                 });
     }
-@PermitAll
+    @PermitAll
     private void decreaseMedicationStock(Order order) {
         for (OrderMedication orderMedication : order.getOrderMedications()) {
             Medication medication = orderMedication.getMedication();
@@ -185,22 +185,6 @@ public class OrderManager extends AbstractManager
             medication.setStock(updatedStock);
             medicationFacade.edit(medication);
         }
-    }
-
-    @PermitAll
-    private boolean checkAllMedicationsAvailable(Order order) {
-        // Sprawdzenie, czy wszystkie leki w zamówieniu są dostępne na stanie
-
-        for (OrderMedication orderMedication : order.getOrderMedications()) {
-            Medication medication = orderMedication.getMedication();
-            int requestedQuantity = orderMedication.getQuantity();
-
-            if (medication.getStock() < requestedQuantity) {
-                return false;
-            }
-        }
-
-        return true;
     }
 
     @Override
@@ -239,16 +223,6 @@ public class OrderManager extends AbstractManager
     @RolesAllowed("getOrdersToApprove")
     public List<Order> getOrdersToApprove() {
         return orderFacade.findNotYetApproved();
-    }
-
-    @Override
-    @RolesAllowed("deleteWaitingOrdersById")
-    public void deleteWaitingOrderById(Long id) {
-        Optional<Order> order = orderFacade.find(id);
-        if (order.get().getOrderState() != OrderState.IN_QUEUE) {
-            throw OrderException.orderNotInQueue();
-        }
-        orderFacade.deleteWaitingOrdersById(id);
     }
 
     @Override
@@ -309,6 +283,16 @@ public class OrderManager extends AbstractManager
     }
 
     @Override
+    @RolesAllowed("deleteWaitingOrdersById")
+    public void deleteWaitingOrderById(Long id) {
+        Optional<Order> order = orderFacade.find(id);
+        if (order.get().getOrderState() != OrderState.IN_QUEUE) {
+            throw OrderException.orderNotInQueue();
+        }
+        orderFacade.deleteWaitingOrdersById(id);
+    }
+
+    @Override
     @RolesAllowed("addMedicationToOrder")
     public void addMedicationToOrder(
             Long id, OrderMedication orderMedication, Long version, Long medicationId) {
@@ -349,15 +333,17 @@ public class OrderManager extends AbstractManager
         return res;
     }
 
-    @PermitAll
-    public Account findByLogin(String login) {
-        return accountFacade.findByLogin(login);
-    }
-
     @RolesAllowed("getCurrentUser")
     public Account getCurrentUser() {
         return accountFacade.findByLogin(getCurrentUserLogin());
     }
+
+    @RolesAllowed("getCurrentUserWithAccessLevels")
+    public Account getCurrentUserWithAccessLevels() {
+
+        return accountFacade.findByLoginAndRefresh(getCurrentUserLogin());
+    }
+
 
     @PermitAll
     public String getCurrentUserLogin() {

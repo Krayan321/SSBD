@@ -20,6 +20,5 @@ public class CreateOrderDTO {
     @NotNull
     private List<CreateOrderMedicationDTO> orderMedications;
 
-    @NotNull
     private CreateOrderPrescriptionDTO prescription;
 }

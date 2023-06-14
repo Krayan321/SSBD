@@ -87,12 +87,11 @@ public class OrderController extends AbstractController {
     @POST
     @Path("/submit")
     @RolesAllowed("createOrder")
-    public OrderDTO submitOrder(@Valid CreateOrderDTO createOrderDTO) {
+    public Response submitOrder(@Valid CreateOrderDTO createOrderDTO) {
       Order inputOrder = OrderConverter.mapCreateOrderDTOToOrder(createOrderDTO);
-      Order order = repeatTransaction(orderManager, () -> orderManager
+      repeatTransactionVoid(orderManager, () -> orderManager
               .createOrder(inputOrder));
-
-      return OrderConverter.mapOrderToOrderDTO(order);
+      return Response.status(Response.Status.CREATED).build();
     }
 
 

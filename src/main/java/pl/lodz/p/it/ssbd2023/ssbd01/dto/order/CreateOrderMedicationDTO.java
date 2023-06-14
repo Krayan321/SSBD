@@ -26,9 +26,5 @@ public class CreateOrderMedicationDTO {
     private String name;
     @NotNull
     private Integer quantity;
-    @Column(name = "purchase_price")
-    @Digits(integer = 10, fraction = 2)
-    @Min(value = 0)
-    private BigDecimal purchasePrice;
 }
 
