@@ -23,6 +23,8 @@ public class i18n {
           "exception.incorrect.date-format";
   public static final String EXCEPTION_MEDICATION_ALREADY_EXISTS =
       "exception.medication.already-exists";
+  public static final String EXCEPTION_MEDICATION_CATEGORY_NOT_FOUND =
+      "exception.medication.category.not-found";
 
 
   public static final String EXCEPTION_ACCOUNT_CONSTRAINT_VIOLATION =

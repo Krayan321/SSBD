@@ -26,6 +26,10 @@ import static pl.lodz.p.it.ssbd2023.ssbd01.common.i18n.*;
 @Testcontainers
 public class ShipmentControllerIT extends BaseTest {
 
+    @AfterAll
+    static void end() {
+        afterAll();
+    }
     static String chemistJwt;
 
     @BeforeAll

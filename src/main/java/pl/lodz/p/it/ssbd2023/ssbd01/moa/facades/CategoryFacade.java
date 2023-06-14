@@ -17,10 +17,17 @@ import java.util.Optional;
 import pl.lodz.p.it.ssbd2023.ssbd01.common.AbstractFacade;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Category;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Medication;
+import pl.lodz.p.it.ssbd2023.ssbd01.interceptors.AccountFacadeExceptionsInterceptor;
+import pl.lodz.p.it.ssbd2023.ssbd01.interceptors.GenericFacadeExceptionsInterceptor;
+import pl.lodz.p.it.ssbd2023.ssbd01.interceptors.TrackerInterceptor;
 
 @Stateless(name = "CategoryFacade")
 @TransactionAttribute(TransactionAttributeType.REQUIRED)
 @DenyAll
+@Interceptors({
+        GenericFacadeExceptionsInterceptor.class,
+        TrackerInterceptor.class
+})
 public class CategoryFacade extends AbstractFacade<Category> {
   @PersistenceContext(unitName = "ssbd01moaPU")
   private EntityManager em;

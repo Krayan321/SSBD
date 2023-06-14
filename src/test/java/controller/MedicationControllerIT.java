@@ -13,12 +13,18 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.Matchers.*;
+import static pl.lodz.p.it.ssbd2023.ssbd01.common.i18n.EXCEPTION_MEDICATION_CATEGORY_NOT_FOUND;
+import static pl.lodz.p.it.ssbd2023.ssbd01.common.i18n.EXCEPTION_OPTIMISTIC_LOCK;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestClassOrder(ClassOrderer.OrderAnnotation.class)
 @Testcontainers
 public class MedicationControllerIT extends BaseTest {
 
+    @AfterAll
+    static void end() {
+        afterAll();
+    }
     static String chemistJwt;
 
     @BeforeAll
@@ -75,7 +81,8 @@ public class MedicationControllerIT extends BaseTest {
                     .body(addMedicationDtoWrongCategory)
                     .post(getApiRoot() + "/medication/add-medication")
                     .then()
-                    .statusCode(Response.Status.BAD_REQUEST.getStatusCode());
+                    .statusCode(Response.Status.NOT_FOUND.getStatusCode())
+                    .body("message", equalTo(EXCEPTION_MEDICATION_CATEGORY_NOT_FOUND));
         }
 
     }

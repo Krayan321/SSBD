@@ -30,6 +30,11 @@ import pl.lodz.p.it.ssbd2023.ssbd01.dto.editSelfAccessLevel.EditSelfPatientDataD
 @Testcontainers
 public class AccountControllerIT extends BaseTest {
 
+  @AfterAll
+  static void end() {
+    afterAll();
+  }
+
   static String adminJwt;
 
   @BeforeAll

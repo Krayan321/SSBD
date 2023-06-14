@@ -13,7 +13,7 @@ public interface MedicationManagerLocal extends CommonManagerLocalInterface {
     @PermitAll
     Medication findByName(String name);
 
-    Medication createMedication(Medication medication);
+    Medication createMedication(Medication medication, String categoryName);
 
     List<Medication> getAllMedications();
 

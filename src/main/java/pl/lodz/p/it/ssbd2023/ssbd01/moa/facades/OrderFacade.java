@@ -3,17 +3,24 @@ package pl.lodz.p.it.ssbd2023.ssbd01.moa.facades;
 import jakarta.annotation.security.PermitAll;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.ejb.Stateless;
+import jakarta.interceptor.Interceptors;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import pl.lodz.p.it.ssbd2023.ssbd01.common.AbstractFacade;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Order;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.OrderState;
+import pl.lodz.p.it.ssbd2023.ssbd01.interceptors.GenericFacadeExceptionsInterceptor;
+import pl.lodz.p.it.ssbd2023.ssbd01.interceptors.TrackerInterceptor;
 
 import java.util.List;
 import java.util.Optional;
 
 @Stateless
+@Interceptors({
+        GenericFacadeExceptionsInterceptor.class,
+        TrackerInterceptor.class
+})
 public class OrderFacade extends AbstractFacade<Order> {
     @PersistenceContext(unitName = "ssbd01moaPU")
     private EntityManager em;

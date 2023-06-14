@@ -21,6 +21,10 @@ import static pl.lodz.p.it.ssbd2023.ssbd01.common.i18n.*;
 @Testcontainers
 public class OrderControllerIT extends BaseTest {
 
+    @AfterAll
+    static void end() {
+        afterAll();
+    }
     static String patientJwt;
     static String chemistJwt;
     static String adminJwt;
