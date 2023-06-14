@@ -22,6 +22,8 @@ import OrdersToApprove from "../pages/OrdersToApprove";
 import AllMedications from "../pages/AllMedications";
 import ShowBucket from "../pages/ShowBucket";
 import MedicationDetails from "../pages/MedicationDetails";
+import AllCategories from "../pages/AllCategories";
+import EditCategory from "../pages/EditCategory";
 
 export const publicRoutes = [
   {
@@ -123,6 +125,14 @@ export const ChemistRoutes = [
   {
     path: Pathnames.chemist.ordersToApprove,
     Component: OrdersToApprove,
+  },
+  {
+    path: Pathnames.chemist.categories,
+    Component: AllCategories,
+  },
+  {
+    path: Pathnames.chemist.editCategory,
+    Component: EditCategory,
   },
 ];
 

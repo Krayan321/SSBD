@@ -235,5 +235,9 @@
   "confirm_approve_order": "Are you sure you want to approve this order?",
   "approve_order": "Approve order",
   "order_approved": "Order got approved",
-  "order_rejected": "Order rejected"
+  "order_rejected": "Order rejected",
+  "is_on_prescription": "Is on prescription?",
+  "edit": "Edit",
+  "list_of_categories": "List of categories",
+  "edit_category": "Edit category"
 }
