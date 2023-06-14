@@ -75,14 +75,14 @@ insert into chemist_data (id, license_number) values (2, '456456');
 insert into chemist_data (id, license_number) values (1, '123123');
 insert into patient_data (id, pesel, nip, phone_number, first_name, last_name) values (3, '22344678801', '2234557890', '721545784', 'Jan', 'Kowalski');
 
-insert into category (id, creation_date, modification_date, version, isonprescription, name, created_by, modified_by) VALUES (2, now(), null, 1, false, 'leki', null, null);
-insert into category (id, name, created_by, creation_date, modification_date, modified_by, version, isOnPrescription) values (3, 'antidepressant', null, now(), null, null, 0, true);
-insert into category (id, name, created_by, creation_date, modification_date, modified_by, version, isOnPrescription) values (4, 'vitamins', null, now(), null, null, 0, true);
+insert into category (id, creation_date, modification_date, version, isonprescription, name, created_by, modified_by) VALUES (1, now(), null, 1, false, 'leki', null, null);
+insert into category (id, name, created_by, creation_date, modification_date, modified_by, version, isOnPrescription) values (2, 'antidepressant', null, now(), null, null, 0, true);
+insert into category (id, name, created_by, creation_date, modification_date, modified_by, version, isOnPrescription) values (3, 'vitamins', null, now(), null, null, 0, true);
 
-insert into medication (id, medication_name, current_price, category_id, created_by, creation_date, modification_date, modified_by, version, stock) values (4, 'Prozac', 10, 2, null, now(), null, null, 0, 100);
-insert into medication (id, medication_name, current_price, category_id, created_by, creation_date, modification_date, modified_by, version, stock) values (5, 'Zoloft', 20, 2, null, now(), null, null, 0, 150);
-insert into medication (id, medication_name, current_price, category_id, created_by, creation_date, modification_date, modified_by, version, stock) values (6, 'Marsjanki', 25, 2, null, now(), null, null, 0, 400);
-insert into medication (id, creation_date, modification_date, version, medication_name, current_price, previous_price, stock, created_by, modified_by, category_id) VALUES (5, now(), null, 0, 'testlek', 10, 10, null, null, 2);
+insert into medication (id, medication_name, current_price, category_id, created_by, creation_date, modification_date, modified_by, version, stock) values (1, 'Prozac', 10, 2, null, now(), null, null, 0, 100);
+insert into medication (id, medication_name, current_price, category_id, created_by, creation_date, modification_date, modified_by, version, stock) values (2, 'Zoloft', 20, 2, null, now(), null, null, 0, 150);
+insert into medication (id, medication_name, current_price, category_id, created_by, creation_date, modification_date, modified_by, version, stock) values (3, 'Marsjanki', 25, 2, null, now(), null, null, 0, 400);
+insert into medication (id, creation_date, modification_date, version, medication_name, current_price, previous_price, stock, created_by, modified_by, category_id) VALUES (4, now(), null, 0, 'testlek', 10, 10, null, null, 2);
 
 insert into prescription (id, creation_date, modification_date, version, prescription_number, created_by, modified_by, patient_data_id) values (1, now(), null, 0, '123456789', null, null, 3);
 insert into prescription (id, creation_date, modification_date, version, prescription_number, created_by, modified_by, patient_data_id) values (2, now(), null, 0, '123456788', null, null, 3);
@@ -107,3 +107,4 @@ insert into order_medication (id, order_id, medication_id, quantity, created_by,
 insert into order_medication (id, order_id, medication_id, quantity, created_by, creation_date, modification_date, modified_by, version) values (5, 3, 2, 4, null, now(), null, null, 0);
 insert into order_medication (id, order_id, medication_id, quantity, created_by, creation_date, modification_date, modified_by, version) values (6, 4, 2, 4, null, now(), null, null, 0);
 insert into order_medication (id, order_id, medication_id, quantity, created_by, creation_date, modification_date, modified_by, version) values (7, 5, 2, 4, null, now(), null, null, 0);
+

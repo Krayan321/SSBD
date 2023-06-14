@@ -73,7 +73,7 @@ public class CategoryControllerIT extends BaseTest {
         public void init() {
             var response = given()
                     .header("authorization", "Bearer " + chemistJwt)
-                    .get(getApiRoot() + "/category/1")
+                    .get(getApiRoot() + "/category/4")
                     .then()
                     .log()
                     .all()
@@ -88,11 +88,12 @@ public class CategoryControllerIT extends BaseTest {
         @Test
         @Order(1)
         public void editCategory_correct() {
+
             given()
                     .header("authorization", "Bearer " + chemistJwt)
                     .header("If-Match", etag)
                     .body(editCategoryDTO)
-                    .put(getApiRoot() + "/category/1/edit-category")
+                    .put(getApiRoot() + "/category/4/edit-category")
                     .then()
                     .log()
                     .all()

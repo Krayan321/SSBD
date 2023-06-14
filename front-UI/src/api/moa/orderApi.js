@@ -35,3 +35,7 @@ export async function updateQueue() {
 export async function withdrawOrderById(id) {
   return await put(`order/${id}/withdraw`)
 }
+
+export async function cancelOrder(id) {
+  return await put(`order/${id}/cancel`)
+}

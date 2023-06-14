@@ -21,7 +21,7 @@ public interface OrderManagerLocal extends CommonManagerLocalInterface {
 
     void approveOrder(Long id);
 
-    void cancelOrder(Long id);
+    void cancelOrder(Long id, Account account);
 
     void deleteWaitingOrderById(Long id);
 

@@ -240,9 +240,13 @@ public class OrderManager extends AbstractManager
     }
 
     @Override
-    @DenyAll
-    public void cancelOrder(Long id) {
-        throw new UnsupportedOperationException();
+    @RolesAllowed("cancelOrder")
+    public void cancelOrder(Long id, Account account) {
+        Order order = orderFacade.find(id).orElseThrow();
+        if (!order.getOrderState().equals(OrderState.WAITING_FOR_CHEMIST_APPROVAL)) {
+            throw OrderException.createModificationOrderOfIllegalState();
+        }
+        orderFacade.cancelOrder(id, account.getId());
     }
 
     @Override

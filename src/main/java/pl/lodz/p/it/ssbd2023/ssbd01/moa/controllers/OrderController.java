@@ -55,9 +55,10 @@ public class OrderController extends AbstractController {
     // moa 14
     @PUT
     @Path("/{id}/cancel")
-    @DenyAll
-    public void cancelOrder(@PathParam("id") Long id) {
-        throw new UnsupportedOperationException();
+    @RolesAllowed("cancelOrder")
+    public Response cancelOrder(@PathParam("id") Long id) {
+        repeatTransactionVoid(orderManager, () -> orderManager.cancelOrder(id, accountManager.getCurrentUserWithAccessLevels()));
+        return Response.ok().build();
     }
 
     //moa 13

@@ -121,7 +121,20 @@ public class OrderFacade extends AbstractFacade<Order> {
                 .executeUpdate();
     }
 
-
+    @RolesAllowed("cancelOrder")
+    public void cancelOrder(Long id, Long chemistId) {
+        String updateStateQuery = "UPDATE Order o " +
+                "SET o.orderState = :newState, o.chemistData.id = :chemistId " +
+                "WHERE o.id = :orderId " +
+                "AND o.orderState = :currentState ";
+        getEntityManager()
+                .createQuery(updateStateQuery)
+                .setParameter("newState", OrderState.REJECTED_BY_CHEMIST)
+                .setParameter("currentState", OrderState.WAITING_FOR_CHEMIST_APPROVAL)
+                .setParameter("orderId", id)
+                .setParameter("chemistId", chemistId)
+                .executeUpdate();
+    }
 
     @Override
     @PermitAll
