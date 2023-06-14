@@ -94,7 +94,7 @@ insert into prescription (creation_date, modification_date, version, prescriptio
 
 insert into patient_order (patient_data_id, order_date, order_state, created_by, creation_date, modification_date, modified_by, version, chemist_data_id, prescription_id) values (3, now(), 'IN_QUEUE', null, now(), null, null, 0, null, 1);
 insert into patient_order (patient_data_id, order_date, order_state, created_by, creation_date, modification_date, modified_by, version, chemist_data_id) values (3, now(), 'IN_QUEUE', null, now(), null, null, 0, null);
-insert into patient_order (patient_data_id, order_date, order_state, created_by, creation_date, modification_date, modified_by, version, chemist_data_id, prescription_id) values (3, now(), 'CREATED', null, now(), null, null, 0, null, 2);
+insert into patient_order (patient_data_id, order_date, order_state, created_by, creation_date, modification_date, modified_by, version, chemist_data_id, prescription_id) values (3, now(), 'IN_QUEUE', null, now(), null, null, 0, null, 2);
 insert into patient_order (patient_data_id, order_date, order_state, created_by, creation_date, modification_date, modified_by, version, chemist_data_id, prescription_id) values (3, now(), 'WAITING_FOR_CHEMIST_APPROVAL', null, now(), null, null, 0, null, 3);
 insert into patient_order (patient_data_id, order_date, order_state, created_by, creation_date, modification_date, modified_by, version, chemist_data_id, prescription_id) values (3, now(), 'WAITING_FOR_CHEMIST_APPROVAL', null, now(), null, null, 0, null, 4);
 
