@@ -82,18 +82,18 @@ public class OrderController extends AbstractController {
     }
 
     // moa 7
-    @PUT
-    @Path("/{id}/submit")
+    @POST
+    @Path("/submit")
     @RolesAllowed("createOrder")
-    public Response submitOrder(@PathParam("id") Long id, @Valid String patientDataId) {
+    public Response submitOrder(@Valid String patientDataId, String localStorageData) {
         Order order = repeatTransaction(orderManager, () -> orderManager
-//                .createOrder(accountManager.getCurrentUserWithAccessLevels(), id, patientDataId)); // todo
-                .createOrder(accountManager.getCurrentUserWithAccessLevels(), id));
+                .createOrder(accountManager.getCurrentUserWithAccessLevels(), localStorageData));
 
         OrderDTO orderDTO = OrderConverter.mapOrderToOrderDTO(order);
 
         return Response.ok(orderDTO).build();
     }
+
 
     // mok 9
     @GET

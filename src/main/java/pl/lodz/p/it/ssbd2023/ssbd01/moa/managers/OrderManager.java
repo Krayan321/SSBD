@@ -1,5 +1,8 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.moa.managers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.security.DenyAll;
 import jakarta.annotation.security.PermitAll;
 import jakarta.annotation.security.RolesAllowed;
@@ -21,10 +24,8 @@ import pl.lodz.p.it.ssbd2023.ssbd01.moa.facades.OrderFacade;
 import pl.lodz.p.it.ssbd2023.ssbd01.moa.facades.ShipmentFacade;
 import pl.lodz.p.it.ssbd2023.ssbd01.moa.facades.ShipmentMedicationFacade;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.math.BigDecimal;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
@@ -46,22 +47,45 @@ public class OrderManager extends AbstractManager
 
     @Override
     @RolesAllowed("createOrder")
-    public Order createOrder(Account account, Long id) {
-        Order order = getOrder(id);
-        account
-                .getAccessLevels()
-                .forEach(
-                        accessLevel -> {
-                            if (!accessLevel.getRole().getRoleName().equals("PATIENT")) {
-                                throw OrderException.onlyPatientCanOrder();
-                            }
-                        });
+    public Order createOrder(Account account, String localStorageData) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        Order order = new Order();
+        order.setOrderState(OrderState.CREATED);
 
-    /*if(!Objects.equals(order.getVersion(), version)){
+        try {
+            // Deserializacja danych z localStorageData
+            List<Map<String, Object>> medicationsData = objectMapper.readValue(localStorageData, new TypeReference<>() {
+            });
+
+            // Tworzenie i dodawanie leków do zamówienia
+            List<OrderMedication> orderMedications = new ArrayList<>();
+            for (Map<String, Object> medicationData : medicationsData) {
+                String medicationName = (String) medicationData.get("name");
+
+                // Pobieranie danych o leku z bazy danych na podstawie nazwy
+                Medication medication = medicationFacade.findByName(medicationName);
+
+
+                // Tworzenie połączenia między zamówieniem a lekiem
+                OrderMedication orderMedication = new OrderMedication();
+                orderMedication.setMedication(medication);
+                orderMedication.setPurchasePrice(medication.getCurrentPrice());
+                orderMedication.setOrder(order);
+                orderMedication.setQuantity((Integer) medicationData.get("quantity"));
+
+                orderMedications.add(orderMedication);
+            }
+
+            order.setOrderMedications(orderMedications);
+        } catch (JsonProcessingException e) {
+            throw new IllegalArgumentException("Nieprawidłowe dane z localStorage", e);
+        }
+
+        /*if(!Objects.equals(order.getVersion(), version)){
         throw ApplicationException.createOptimisticLockException();
     }*/
 
-        order.setOrderState(OrderState.CREATED);
+
         // Sprawdzenie, czy w bazie są wszystkie leki potrzebne do realizacji zamówienia
         boolean allMedicationsAvailable = checkAllMedicationsAvailable(order);
 
@@ -82,6 +106,10 @@ public class OrderManager extends AbstractManager
 
         return order;
     }
+
+
+
+
 
     @Override
     @RolesAllowed("updateQueue")
