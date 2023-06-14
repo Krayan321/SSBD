@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -8,21 +8,29 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { Skeleton, useTheme } from "@mui/material";
 import { getSelfOrders, approveOrderById } from "../api/moa/orderApi";
+import {Skeleton, useTheme,} from "@mui/material";
+import {getSelfOrders, withdrawOrderById} from "../api/moa/orderApi";
 import moment from "moment";
 import { useTranslation } from "react-i18next";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import IconButton from "@mui/material/IconButton";
 import { toast, ToastContainer } from "react-toastify";
 import ConfirmationDialog from "../components/ConfirmationDialog";
+import {useTranslation} from "react-i18next";
+import ConfirmationDialog from "../components/ConfirmationDialog";
+import DeleteIcon from '@mui/icons-material/Delete';
+import IconButton from "@mui/material/IconButton";
+import {toast, ToastContainer} from 'react-toastify';
 
 export default function ShowSelfOrders() {
+
     const [selfOrders, setSelfOrders] = useState([]);
     const [loading, setLoading] = useState(false);
     const [dialogOpen, setDialogOpen] = useState(false);
     const [approveOrderId, setApproveOrderId] = useState(null);
     const { t } = useTranslation();
+    const [deleteOrderId, setDeleteOrderId] = useState(null);
     const theme = useTheme();
-
     useEffect(() => {
         setLoading(true);
 
@@ -69,6 +77,31 @@ export default function ShowSelfOrders() {
         setDialogOpen(false);
     };
 
+    const handleDeleteOrder = (deleteOrderId) => {
+        setDeleteOrderId(deleteOrderId);
+        setDialogOpen(true);
+    };
+
+    const acceptDeleteOrder = () => {
+
+        withdrawOrderById(deleteOrderId)
+            .then(() => {
+                const updatedOrders = selfOrders.filter((order) => order.id !== deleteOrderId);
+                setSelfOrders(updatedOrders);
+
+                setDeleteOrderId(null);
+                setDialogOpen(false);
+
+                toast.success(t("order_rejected"), {
+                    position: "top-center",
+                })
+            })
+    };
+    const rejectDeleteOrder = () => {
+        setDeleteOrderId(null);
+        setDialogOpen(false);
+    };
+
     if (loading) {
         return (
             <TableContainer component={Paper}>
@@ -83,6 +116,7 @@ export default function ShowSelfOrders() {
                             <TableCell sx={{ color: "white" }}>{t("order_total_price")}</TableCell>
                             <TableCell sx={{ color: "white" }}>{t("prescription_number")}</TableCell>
                             <TableCell sx={{ color: "white" }}>{t("approve_order")}</TableCell>
+                            <TableCell sx={{color: "white"}}>{t("delete_order")}</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -129,6 +163,7 @@ export default function ShowSelfOrders() {
                             <TableCell sx={{ color: "white" }}>{t("order_total_price")}</TableCell>
                             <TableCell sx={{ color: "white" }}>{t("prescription_number")}</TableCell>
                             <TableCell sx={{ color: "white" }}>{t("approve_order")}</TableCell>
+                            <TableCell sx={{color: "white"}}>{t("delete_order")}</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -176,6 +211,21 @@ export default function ShowSelfOrders() {
                                                     />
                                                 </TableCell>
                                             )}
+                                            {item.orderState === "TO_BE_APPROVED_BY_PATIENT" && (
+                                                <TableCell>
+                                                    <IconButton color="error" aria-label={t("delete_order")} onClick={() => handleDeleteOrder(item.id)}>
+                                                        <DeleteIcon />
+                                                    </IconButton>
+                                                    <ConfirmationDialog
+                                                        open={dialogOpen}
+                                                        title={t("confirm_delete_order")}
+                                                        actions={[
+                                                            { label: t("confirm"), handler: acceptDeleteOrder, color: "primary" },
+                                                            { label: t("cancel"), handler: rejectDeleteOrder, color: "secondary" },
+                                                        ]}
+                                                        onClose={() => setDialogOpen(false)}
+                                                    />
+                                                </TableCell>)}
                                         </TableRow>
                                     )}
                                     {medicationIndex > 0 && (

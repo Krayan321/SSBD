@@ -234,5 +234,6 @@
   "confirm_update_queue": "Are you sure you want to update queue?",
   "confirm_approve_order": "Are you sure you want to approve this order?",
   "approve_order": "Approve order",
-  "order_approved": "Order got approved"
+  "order_approved": "Order got approved",
+  "order_rejected": "Order rejected"
 }

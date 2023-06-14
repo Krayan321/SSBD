@@ -234,5 +234,6 @@
   "confirm_update_queue": "Opravdu chcete aktualizovat frontu objednávek?",
   "confirm_approve_order": "Jste si jisti, že chcete potvrdit tuto objednávku?",
   "approve_order": "Potvrdit objednávku",
-  "order_approved": "Objednávka schválena"
+  "order_approved": "Objednávka schválena",
+  "order_rejected": "Objednávka zamítnuta"
 }

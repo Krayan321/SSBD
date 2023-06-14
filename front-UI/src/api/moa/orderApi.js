@@ -31,3 +31,7 @@ export async function approveOrderById(id) {
 export async function updateQueue() {
   return await put("order/update-queue");
 }
+
+export async function withdrawOrderById(id) {
+  return await put(`order/${id}/withdraw`)
+}
