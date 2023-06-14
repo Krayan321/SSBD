@@ -13,7 +13,7 @@ export async function createCategory(name, isOnPrescription) {
     name: name,
     isOnPrescription: isOnPrescription,
   };
-  return await post("category", body);
+  return await post("category/add-category", body);
 }
 
 export async function editCategory(id, body, etag) {

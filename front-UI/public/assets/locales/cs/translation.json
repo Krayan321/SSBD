@@ -239,5 +239,12 @@
   "is_on_prescription": "Je na předpis",
   "edit": "Upravit",
   "list_of_categories": "Seznam kategorií",
-  "edit_category": "Upravit kategorii"
+  "edit_category": "Upravit kategorii",
+  "category_created": "Kategorie úspěšně vytvořena",
+  "invalid_category_data": "Neplatná data kategorie",
+  "create_category": "Vytvořit kategorii",
+  "add_category": "Přidat kategorii",
+  "medication_created": "Lék úspěšně vytvořen",
+  "invalid_medication_data": "Neplatná data léku",
+  "add_medication": "Přidat lék"
 }

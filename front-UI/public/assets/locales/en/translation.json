@@ -239,5 +239,12 @@
   "is_on_prescription": "Is on prescription?",
   "edit": "Edit",
   "list_of_categories": "List of categories",
-  "edit_category": "Edit category"
+  "edit_category": "Edit category",
+  "category_created": "Category created",
+  "invalid_category_data": "Invalid category data",
+  "create_category": "Create category",
+  "add_category": "Add category",
+  "medication_created": "Medication created",
+  "invalid_medication_data": "Invalid medication data",
+  "add_medication": "Add medication"
 }

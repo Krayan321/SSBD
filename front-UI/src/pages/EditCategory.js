@@ -19,6 +19,7 @@ import {
 } from "@mui/material";
 import { ControlPointDuplicate, TextIncrease } from "@mui/icons-material";
 import { MenuItem, Select } from "@mui/material";
+import { categorySchema } from "../utils/Validations";
 
 const paperStyle = {
   backgroundColor: "rgba(255, 255, 255, 0.75)",
@@ -37,14 +38,6 @@ export default function EditCategory() {
   const [isOnPrescription, setIsOnPrescription] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-
-  const categorySchema = Yup.object().shape({
-    name: Yup.string()
-      .required(t("name_required"))
-      .min(3, t("name_min"))
-      .max(50, t("name_max")),
-    isOnPrescription: Yup.boolean().required(t("isOnPrescription_required")),
-  });
 
   const {
     register,

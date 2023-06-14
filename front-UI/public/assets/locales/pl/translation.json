@@ -239,5 +239,12 @@
   "is_on_prescription": "Na receptę?",
   "edit": "Edytuj",
   "list_of_categories": "Lista kategorii",
-  "edit_category": "Edytuj kategorię"
+  "edit_category": "Edytuj kategorię",
+  "category_created": "Kategoria utworzona",
+  "invalid_category_data": "Nieprawidłowe dane kategorii",
+  "create_category": "Utwórz kategorię",
+  "add_category": "Dodaj kategorię",
+  "medication_created": "Lek utworzony",
+  "invalid_medication_data": "Nieprawidłowe dane leku",
+  "add_medication": "Dodaj lek"
 }
