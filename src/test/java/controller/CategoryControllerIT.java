@@ -93,6 +93,19 @@ public class CategoryControllerIT extends BaseTest {
         @Order(1)
         public void editCategory_correct() {
 
+            var response = given()
+                    .header("authorization", "Bearer " + chemistJwt)
+                    .get(getApiRoot() + "/category/4")
+                    .then()
+                    .log()
+                    .all()
+                    .statusCode(Response.Status.OK.getStatusCode())
+                    .extract()
+                    .response();
+            etag = response.getHeader("ETag").replace("\"", "");
+            Long version = response.getBody().jsonPath().getLong("version");
+            editCategoryDTO.setVersion(version);
+
             given()
                     .header("authorization", "Bearer " + chemistJwt)
                     .header("If-Match", etag)

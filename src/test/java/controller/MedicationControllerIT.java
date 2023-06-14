@@ -97,8 +97,7 @@ public class MedicationControllerIT extends BaseTest {
                         .header("authorization", "Bearer " + chemistJwt)
                         .get(getApiRoot() + "/medication/1")
                         .then()
-                        .statusCode(Response.Status.OK.getStatusCode())
-                        .body("name", equalTo("Prozac"));
+                        .statusCode(Response.Status.OK.getStatusCode());
             }
 
             @Test

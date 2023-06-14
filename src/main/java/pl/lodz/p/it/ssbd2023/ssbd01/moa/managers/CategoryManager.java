@@ -18,6 +18,7 @@ import pl.lodz.p.it.ssbd2023.ssbd01.interceptors.TrackerInterceptor;
 import pl.lodz.p.it.ssbd2023.ssbd01.moa.facades.CategoryFacade;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
@@ -64,7 +65,7 @@ public class CategoryManager extends AbstractManager implements CategoryManagerL
         Optional<Category> categoryOptional = categoryFacade.find(id);
         if (categoryOptional.isPresent()) {
             Category categoryToUpdate = categoryOptional.get();
-            if (categoryToUpdate.getVersion() != version) {
+            if (!Objects.equals(categoryToUpdate.getVersion(), version)) {
                 throw ApplicationException.createOptimisticLockException();
             }
             categoryToUpdate.setName(category.getName());
