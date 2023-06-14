@@ -201,5 +201,7 @@
     <security-role>
         <role-name>editCategory</role-name>
     </security-role>
-
+    <security-role>
+        <role-name>cancelOrder</role-name>
+    </security-role>
 </web-app>

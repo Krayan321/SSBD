@@ -138,4 +138,41 @@ public class OrderControllerIT extends BaseTest {
                 .log().all()
                 .statusCode(Response.Status.OK.getStatusCode());
     }
+
+    @Nested
+    @Order(3)
+    @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+    class CancelOrder {
+        @Test
+        @Order(1)
+        public void cancelOrder_correct() {
+            given().header("Authorization", "Bearer " + chemistJwt)
+                    .log().all()
+                    .put(getApiRoot() + "/order/5/cancel")
+                    .then().log().all()
+                    .statusCode(Response.Status.OK.getStatusCode());
+        }
+
+        @Test
+        @Order(2)
+        public void cancelOrder_incorrectStatus() {
+            given().header("Authorization", "Bearer " + chemistJwt)
+                    .log().all()
+                    .put(getApiRoot() + "/order/4/cancel")
+                    .then().log().all()
+                    .statusCode(Response.Status.BAD_REQUEST.getStatusCode())
+                    .body("message", CoreMatchers.equalTo(EXCEPTION_ORDER_ILLEGAL_STATE_MODIFICATION));
+        }
+
+        @Test
+        @Order(3)
+        public void cancelOrder_notFound() {
+            given().header("Authorization", "Bearer " + chemistJwt)
+                    .log().all()
+                    .put(getApiRoot() + "/order/999/cancel")
+                    .then().log().all()
+                    .statusCode(Response.Status.NOT_FOUND.getStatusCode())
+                    .body("message", CoreMatchers.equalTo(EXCEPTION_ENTITY_NOT_FOUND));
+        }
+    }
 }

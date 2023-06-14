@@ -9,6 +9,8 @@ import jakarta.ejb.TransactionAttribute;
 import jakarta.ejb.TransactionAttributeType;
 import jakarta.inject.Inject;
 import jakarta.interceptor.Interceptors;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.SecurityContext;
 import lombok.extern.java.Log;
 import pl.lodz.p.it.ssbd2023.ssbd01.common.AbstractManager;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.*;
@@ -20,6 +22,7 @@ import pl.lodz.p.it.ssbd2023.ssbd01.moa.facades.MedicationFacade;
 import pl.lodz.p.it.ssbd2023.ssbd01.moa.facades.OrderFacade;
 import pl.lodz.p.it.ssbd2023.ssbd01.moa.facades.ShipmentFacade;
 import pl.lodz.p.it.ssbd2023.ssbd01.moa.facades.ShipmentMedicationFacade;
+import pl.lodz.p.it.ssbd2023.ssbd01.moa.facades.AccountFacade;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +44,10 @@ public class OrderManager extends AbstractManager
     private MedicationFacade medicationFacade;
     @Inject
     private ShipmentFacade shipmentFacade;
+    @Inject
+    private AccountFacade accountFacade;
+    @Context
+    private SecurityContext context;
 
     @Override
     @RolesAllowed("createOrder")
@@ -225,14 +232,20 @@ public class OrderManager extends AbstractManager
     }
 
     @Override
-    @DenyAll
+    @RolesAllowed("cancelOrder")
     public void cancelOrder(Long id) {
-        throw new UnsupportedOperationException();
+        Account account = getCurrentUser();
+        Order order = orderFacade.find(id).orElseThrow();
+        if (!order.getOrderState().equals(OrderState.WAITING_FOR_CHEMIST_APPROVAL)) {
+            throw OrderException.createModificationOrderOfIllegalState();
+        }
+        orderFacade.cancelOrder(id, account.getId());
     }
 
     @Override
     @RolesAllowed("withdraw")
-    public void withdrawOrder(Long id, Account account) {
+    public void withdrawOrder(Long id) {
+        Account account = getCurrentUser();
         Optional<Order> order = orderFacade.find(id);
         if (order.get().getOrderState() != OrderState.TO_BE_APPROVED_BY_PATIENT
                 || (account.getId() != order.get().getPatientData().getId())) {
@@ -244,7 +257,8 @@ public class OrderManager extends AbstractManager
 
     @Override
     @RolesAllowed("approvedByPatient")
-    public void approvedByPatient(Long id, Account account) {
+    public void approvedByPatient(Long id) {
+        Account account = getCurrentUser();
         Order order = orderFacade.find(id)
                 .orElseThrow(() -> OrderException.orderNotFound(id));
 
@@ -322,5 +336,20 @@ public class OrderManager extends AbstractManager
                             }
                         });
         orderFacade.edit(optOrder.get());
+    }
+
+    @PermitAll
+    public Account findByLogin(String login) {
+        return accountFacade.findByLogin(login);
+    }
+
+    @RolesAllowed("getCurrentUser")
+    public Account getCurrentUser() {
+        return accountFacade.findByLogin(getCurrentUserLogin());
+    }
+
+    @PermitAll
+    public String getCurrentUserLogin() {
+        return context.getUserPrincipal().getName();
     }
 }
