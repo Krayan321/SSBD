@@ -13,6 +13,7 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Response;
 import lombok.extern.java.Log;
 import pl.lodz.p.it.ssbd2023.ssbd01.common.AbstractController;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.order.CreateOrderDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.order.OrderDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Order;
 import pl.lodz.p.it.ssbd2023.ssbd01.moa.managers.OrderManagerLocal;
@@ -86,13 +87,12 @@ public class OrderController extends AbstractController {
     @POST
     @Path("/submit")
     @RolesAllowed("createOrder")
-    public Response submitOrder(String localStorageData) {
-        Order order = repeatTransaction(orderManager, () -> orderManager
-                .createOrder(localStorageData));
+    public OrderDTO submitOrder(@Valid CreateOrderDTO createOrderDTO) {
+      Order inputOrder = OrderConverter.mapCreateOrderDTOToOrder(createOrderDTO);
+      Order order = repeatTransaction(orderManager, () -> orderManager
+              .createOrder(inputOrder));
 
-        OrderDTO orderDTO = OrderConverter.mapOrderToOrderDTO(order);
-
-        return Response.ok(orderDTO).build();
+      return OrderConverter.mapOrderToOrderDTO(order);
     }
 
 

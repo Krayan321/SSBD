@@ -257,4 +257,19 @@ public class OrderControllerIT extends BaseTest {
                     .statusCode(Response.Status.OK.getStatusCode());
         }
     }
+
+    @Nested
+    @Order(7)
+    @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+    class CreateOrder {
+        @Test
+        @Order(1)
+        public void updateQueue_correct() {
+            given().header("Authorization", "Bearer " + chemistJwt)
+                    .log().all()
+                    .put(getApiRoot() + "/order/submit")
+                    .then().log().all()
+                    .statusCode(Response.Status.OK.getStatusCode());
+        }
+    }
 }

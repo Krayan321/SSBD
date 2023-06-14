@@ -58,7 +58,7 @@ public class OrderManager extends AbstractManager
 
     @Override
     @RolesAllowed("createOrder")
-    public Order createOrder(String localStorageData) {
+    public Order createOrder(Order order) {
         Account account = accountManager.getCurrentUserWithAccessLevels();
         ObjectMapper objectMapper = new ObjectMapper();
         Order order = new Order();

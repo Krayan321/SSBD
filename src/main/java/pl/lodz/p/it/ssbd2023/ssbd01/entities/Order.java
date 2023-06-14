@@ -77,4 +77,12 @@ public class Order extends AbstractEntity implements Serializable {
         this.patientData = patientData;
         this.chemistData = chemistData;
     }
+
+    @Builder(builderMethodName = "createBuilder")
+    public Order(Date orderDate, Prescription prescription,
+                 List<OrderMedication> orderMedications) {
+        this.orderDate = orderDate;
+        this.prescription = prescription;
+        this.orderMedications = orderMedications;
+    }
 }
