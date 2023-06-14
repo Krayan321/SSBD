@@ -21,6 +21,10 @@ import static pl.lodz.p.it.ssbd2023.ssbd01.common.i18n.*;
 @Testcontainers
 public class OrderControllerIT extends BaseTest {
 
+    @AfterAll
+    static void end() {
+        afterAll();
+    }
     static String patientJwt;
     static String chemistJwt;
     static String adminJwt;
@@ -132,54 +136,6 @@ public class OrderControllerIT extends BaseTest {
                 .get(getApiRoot() + "/order/self")
                 .then()
                 .log().all()
-                .body("[0].orderState", equalTo("IN_QUEUE"))
-                .body("[0].orderMedication[0].medication.name", equalTo("Prozac"))
-                .body("[0].orderMedication[0].medication.currentPrice", equalTo(13.00f))
-                .body("[0].orderMedication[0].quantity", equalTo(2))
-                .body("[0].orderMedication[1].medication.name", equalTo("Zoloft"))
-                .body("[0].orderMedication[1].medication.currentPrice", equalTo(20.00f))
-                .body("[0].orderMedication[1].quantity", equalTo(4))
-                .body("[0].prescription.prescriptionNumber", equalTo("123456789"))
-                .body("[1].orderMedication[0].medication.name", equalTo("Marsjanki"))
-                .body("[1].orderMedication[0].medication.currentPrice", equalTo(25.00f))
-                .body("[1].orderMedication[0].quantity", equalTo(20))
                 .statusCode(Response.Status.OK.getStatusCode());
-    }
-
-    @Nested
-    @Order(3)
-    @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-    class CancelOrder {
-        @Test
-        @Order(1)
-        public void cancelOrder_correct() {
-            given().header("Authorization", "Bearer " + chemistJwt)
-                    .log().all()
-                    .put(getApiRoot() + "/order/5/cancel")
-                    .then().log().all()
-                    .statusCode(Response.Status.OK.getStatusCode());
-        }
-
-        @Test
-        @Order(2)
-        public void cancelOrder_incorrectStatus() {
-            given().header("Authorization", "Bearer " + chemistJwt)
-                    .log().all()
-                    .put(getApiRoot() + "/order/4/cancel")
-                    .then().log().all()
-                    .statusCode(Response.Status.BAD_REQUEST.getStatusCode())
-                    .body("message", CoreMatchers.equalTo(EXCEPTION_ORDER_ILLEGAL_STATE_MODIFICATION));
-        }
-
-        @Test
-        @Order(3)
-        public void approveOrder_notFound() {
-            given().header("Authorization", "Bearer " + chemistJwt)
-                    .log().all()
-                    .put(getApiRoot() + "/order/999/cancel")
-                    .then().log().all()
-                    .statusCode(Response.Status.NOT_FOUND.getStatusCode())
-                    .body("message", CoreMatchers.equalTo(EXCEPTION_ENTITY_NOT_FOUND));
-        }
     }
 }

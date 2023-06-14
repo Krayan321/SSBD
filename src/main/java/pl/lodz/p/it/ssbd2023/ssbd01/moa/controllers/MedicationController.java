@@ -55,16 +55,15 @@ public class MedicationController extends AbstractController {
     @PermitAll
     @Consumes(MediaType.APPLICATION_JSON)
     public Response addMedication(@Valid AddMedicationDTO addMedicationDTO) {
-        Category category = categoryManager.findByName(addMedicationDTO.getCategoryName());
         Medication medication =
                 Medication.builder()
                         .name(addMedicationDTO.getName())
                         .stock(addMedicationDTO.getStock())
                         .currentPrice(addMedicationDTO.getPrice())
-                        .category(category)
                         .build();
 
-        repeatTransaction(medicationManager, () -> medicationManager.createMedication(medication));
+        repeatTransaction(medicationManager, () -> medicationManager.createMedication(medication,
+                addMedicationDTO.getCategoryName()));
         return Response.status(Response.Status.CREATED).build();
     }
 

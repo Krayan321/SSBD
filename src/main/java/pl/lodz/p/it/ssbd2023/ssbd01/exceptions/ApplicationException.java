@@ -85,6 +85,10 @@ public class ApplicationException extends WebApplicationException {
     return new ApplicationException(CONFLICT, EXCEPTION_MEDICATION_ALREADY_EXISTS);
   }
 
+  public static ApplicationException createMedicationCategoryNotFoundException() {
+    return new ApplicationException(NOT_FOUND, EXCEPTION_MEDICATION_CATEGORY_NOT_FOUND);
+  }
+
   public static ApplicationException createIncorrectDateFormatException() {
     return new ApplicationException(BAD_REQUEST, EXCEPTION_INCORRECT_DATE_FORMAT);
   }

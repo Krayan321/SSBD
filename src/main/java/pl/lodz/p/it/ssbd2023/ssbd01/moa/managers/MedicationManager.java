@@ -8,11 +8,14 @@ import jakarta.ejb.Stateful;
 import jakarta.ejb.TransactionAttribute;
 import jakarta.ejb.TransactionAttributeType;
 import jakarta.inject.Inject;
+import jakarta.interceptor.Interceptors;
 import lombok.extern.java.Log;
 import pl.lodz.p.it.ssbd2023.ssbd01.common.AbstractManager;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Category;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Medication;
 import pl.lodz.p.it.ssbd2023.ssbd01.exceptions.ApplicationException;
+import pl.lodz.p.it.ssbd2023.ssbd01.interceptors.GenericManagerExceptionsInterceptor;
+import pl.lodz.p.it.ssbd2023.ssbd01.interceptors.TrackerInterceptor;
 import pl.lodz.p.it.ssbd2023.ssbd01.moa.facades.CategoryFacade;
 import pl.lodz.p.it.ssbd2023.ssbd01.moa.facades.MedicationFacade;
 
@@ -21,6 +24,8 @@ import java.util.Optional;
 
 @Stateful
 @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+@Interceptors({GenericManagerExceptionsInterceptor.class,
+        TrackerInterceptor.class})
 @Log
 @DenyAll
 public class MedicationManager extends AbstractManager implements MedicationManagerLocal, SessionSynchronization {
@@ -39,13 +44,9 @@ public class MedicationManager extends AbstractManager implements MedicationMana
 
     @Override
     @RolesAllowed("createMedication")
-    public Medication createMedication(Medication medication) {
-        Long categoryId = medication.getCategory().getId();
-        Category managedCategory = categoryFacade.find(categoryId).orElseThrow(ApplicationException::createEntityNotFoundException);
+    public Medication createMedication(Medication medication, String categoryName) {
+        Category managedCategory = categoryFacade.findByName(categoryName);
         medication.setCategory(managedCategory);
-        if (medicationFacade.findByName(medication.getName()) != null) {
-            throw ApplicationException.createMedicationAlreadyExistsException();
-        }
         medicationFacade.create(medication);
         return medication;
     }

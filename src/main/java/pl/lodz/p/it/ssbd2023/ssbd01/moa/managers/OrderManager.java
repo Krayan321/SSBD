@@ -41,8 +41,6 @@ public class OrderManager extends AbstractManager
     private MedicationFacade medicationFacade;
     @Inject
     private ShipmentFacade shipmentFacade;
-    @Inject
-    private ShipmentMedicationFacade shipmentMedicationFacade;
 
     @Override
     @RolesAllowed("createOrder")
@@ -110,20 +108,11 @@ public class OrderManager extends AbstractManager
                 order -> {
                     for (OrderMedication orderMedication : order.getOrderMedications()) {
 
-                        ShipmentMedication sh =
-                                shipmentMedicationFacade.findLatestByMedication(
-                                        orderMedication.getMedication().getId());
-
-                        if (sh != null) {
-                            orderMedication.setPurchasePrice(sh.getMedication().getCurrentPrice());
-                        } else {
-                            orderMedication.setPurchasePrice(orderMedication.getMedication().getCurrentPrice());
-                        }
-
                         Medication medication = orderMedication.getMedication();
 
-                        if (medication.getCurrentPrice().compareTo(orderMedication.getPurchasePrice()) > 0) {
+                        if (orderMedication.getPurchasePrice() != null && (medication.getCurrentPrice().compareTo(orderMedication.getPurchasePrice()) > 0)) {
                             sendForPatientAproval.getAndSet(true);
+
                         }
 
                         if (medication.getStock() < orderMedication.getQuantity()) {
@@ -136,10 +125,6 @@ public class OrderManager extends AbstractManager
 
                         if (sendForPatientAproval.get()) {
                             order.setOrderState(OrderState.TO_BE_APPROVED_BY_PATIENT);
-                        }
-
-                        if (order.getPrescription() != null) {
-                            // todo send for chemist aproval
                         }
 
                         if (!sendForPatientAproval.get() && order.getPrescription() == null) {

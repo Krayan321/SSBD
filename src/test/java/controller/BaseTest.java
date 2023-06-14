@@ -20,6 +20,18 @@ public abstract class BaseTest {
 
   static final Network NETWORK = Network.newNetwork();
 
+  static final int TEST_CLASS_COUNT = 5;
+
+  static int testClassesRan = 0;
+
+  static void afterAll() {
+    testClassesRan++;
+    if(testClassesRan == TEST_CLASS_COUNT) {
+      postgreSQLContainer.close();
+      payaraServerContainer.close();
+    }
+  }
+
   static MountableFile warFile =
       MountableFile.forHostPath(Paths.get("target/ssbd01-0.0.1.war").toAbsolutePath());
 
@@ -60,4 +72,6 @@ public abstract class BaseTest {
                     .withReuse(true);
     payaraServerContainer.start();
   }
+
+
 }

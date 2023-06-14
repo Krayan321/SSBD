@@ -200,7 +200,6 @@ public class dataForTests {
 
   public static AddMedicationDTO addMedicationDtoWrongCategory =
       AddMedicationDTO.builder()
-          .name("Pyszny lek")
               .name("Pyszny lek")
               .stock(100)
               .price(new BigDecimal("10.0"))

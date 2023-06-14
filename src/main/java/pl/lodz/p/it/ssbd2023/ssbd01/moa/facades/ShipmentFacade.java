@@ -3,6 +3,7 @@ package pl.lodz.p.it.ssbd2023.ssbd01.moa.facades;
 import jakarta.annotation.security.DenyAll;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.ejb.Stateless;
+import jakarta.interceptor.Interceptors;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
@@ -13,8 +14,14 @@ import jakarta.persistence.criteria.CriteriaQuery;
 import org.hibernate.Session;
 import pl.lodz.p.it.ssbd2023.ssbd01.common.AbstractFacade;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Shipment;
+import pl.lodz.p.it.ssbd2023.ssbd01.interceptors.GenericFacadeExceptionsInterceptor;
+import pl.lodz.p.it.ssbd2023.ssbd01.interceptors.TrackerInterceptor;
 
 @Stateless
+@Interceptors({
+        GenericFacadeExceptionsInterceptor.class,
+        TrackerInterceptor.class
+})
 public class ShipmentFacade extends AbstractFacade<Shipment> {
 
   @PersistenceContext(unitName = "ssbd01moaPU")

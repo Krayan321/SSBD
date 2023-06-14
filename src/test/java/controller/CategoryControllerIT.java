@@ -15,6 +15,10 @@ import static io.restassured.RestAssured.given;
 @Testcontainers
 public class CategoryControllerIT extends BaseTest {
 
+    @AfterAll
+    static void end() {
+        afterAll();
+    }
     static String chemistJwt;
 
     @BeforeAll
