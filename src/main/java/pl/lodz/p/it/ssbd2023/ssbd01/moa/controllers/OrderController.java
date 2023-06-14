@@ -107,7 +107,7 @@ public class OrderController extends AbstractController {
     }
 
     //mok 8
-   @DELETE
+   @PUT
    @RolesAllowed("withdraw")
    @Path("/{id}/withdraw")
    public Response withdrawOrderById(@PathParam("id") Long id){
@@ -117,7 +117,7 @@ public class OrderController extends AbstractController {
 
 
     // mok 10
-    @DELETE
+    @PUT
     @RolesAllowed("deleteWaitingOrdersById")
     @Path("/{id}/waiting")
     public Response deleteWaitingOrderById(@PathParam("id") Long id) {
@@ -125,12 +125,20 @@ public class OrderController extends AbstractController {
         return Response.ok().build();
     }
 
+    @PUT
+    @RolesAllowed("approvedByPatient")
+    @Path("/{id}/patient-approve")
+    public Response approvedByPatient(@PathParam("id") Long id){
+        repeatTransactionVoid(orderManager, () -> orderManager.approvedByPatient(id,accountManager.getCurrentUserWithAccessLevels()));
+        return Response.ok().build();
+    }
+
     //moa 16
     @PUT
     @Path("/update-queue")
-    @DenyAll
+    @RolesAllowed("updateQueue")
     public void updateQueue() {
-        throw new UnsupportedOperationException();
+        repeatTransactionVoidWithOptimisticLock(orderManager, () -> orderManager.updateQueue());
     }
 
     //moa 15

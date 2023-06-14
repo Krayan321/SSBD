@@ -228,5 +228,11 @@
   "medication_added_to_basket": "Lék byl přidán do košíku",
   "name_length_min": "Jméno musí mít alespoň 3 znaky",
   "name_length_max": "Jméno může mít maximálně 50 znaků",
-  "category_name_required": "Název kategorie je povinný"
+  "category_name_required": "Název kategorie je povinný",
+  "update_order_queue": "Aktualizovat frontu objednávek",
+  "queue_has_been_updated": "Fronta byla aktualizována",
+  "confirm_update_queue": "Opravdu chcete aktualizovat frontu objednávek?",
+  "confirm_approve_order": "Jste si jisti, že chcete potvrdit tuto objednávku?",
+  "approve_order": "Potvrdit objednávku",
+  "order_approved": "Objednávka schválena"
 }

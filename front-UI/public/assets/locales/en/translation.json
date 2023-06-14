@@ -228,5 +228,11 @@
   "medication_added_to_basket": "Medication added to basket",
   "name_length_min": "Name must have at least 2 characters",
   "name_length_max": "Name can have maximum 50 characters",
-  "category_name_required": "Category name is required"
+  "category_name_required": "Category name is required",
+  "update_order_queue": "Update order queue",
+  "queue_has_been_updated": "Queue has been updated",
+  "confirm_update_queue": "Are you sure you want to update queue?",
+  "confirm_approve_order": "Are you sure you want to approve this order?",
+  "approve_order": "Approve order",
+  "order_approved": "Order got approved"
 }

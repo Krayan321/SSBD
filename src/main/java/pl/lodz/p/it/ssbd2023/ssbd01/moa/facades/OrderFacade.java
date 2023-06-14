@@ -8,6 +8,7 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import pl.lodz.p.it.ssbd2023.ssbd01.common.AbstractFacade;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Order;
+import pl.lodz.p.it.ssbd2023.ssbd01.entities.OrderState;
 
 import java.util.List;
 import java.util.Optional;
@@ -69,59 +70,56 @@ public class OrderFacade extends AbstractFacade<Order> {
                 .getResultList();
     }
 
+
     @RolesAllowed("deleteWaitingOrdersById")
     public void deleteWaitingOrdersById(Long id) {
-        String sqlQuery = "DELETE FROM OrderMedication om "
-                + "WHERE om.order.id = :orderId";
-
-        getEntityManager()
-                .createQuery(sqlQuery)
-                .setParameter("orderId", id)
-                .executeUpdate();
-
-        String orderQuery = "DELETE FROM Order o "
-                + "WHERE o.id = :orderId AND o.orderState = pl.lodz.p.it.ssbd2023.ssbd01.entities.OrderState.IN_QUEUE";
+        String orderQuery = "UPDATE Order o SET o.orderState = :newState "
+                + "WHERE o.id = :orderId AND o.orderState = :currentState";
 
         getEntityManager()
                 .createQuery(orderQuery)
+                .setParameter("newState", OrderState.REJECTED_BY_CHEMIST)
+                .setParameter("currentState", OrderState.IN_QUEUE)
                 .setParameter("orderId", id)
                 .executeUpdate();
-    }
+
+        }
+
 
   @RolesAllowed("withdraw")
   public void withdrawOrder(Long id, Long userId){
       String updateStateQuery = "UPDATE Order o " +
-              "SET o.orderState = pl.lodz.p.it.ssbd2023.ssbd01.entities.OrderState.REJECTED_BY_PATIENT " +
+              "SET o.orderState = :newState " +
               "WHERE o.id = :orderId " +
-              "AND o.orderState = pl.lodz.p.it.ssbd2023.ssbd01.entities.OrderState.TO_BE_APPROVED_BY_PATIENT " +
+              "AND o.orderState = :currentState " +
               "AND o.patientData.id = :userId";
 
       getEntityManager()
               .createQuery(updateStateQuery)
+              .setParameter("newState", OrderState.REJECTED_BY_PATIENT)
+              .setParameter("currentState", OrderState.TO_BE_APPROVED_BY_PATIENT)
               .setParameter("orderId", id)
               .setParameter("userId", userId)
               .executeUpdate();
 
-      String sqlQuery = "DELETE FROM OrderMedication om "
-            + "WHERE om.order.id = :orderId";
-
-    getEntityManager()
-            .createQuery(sqlQuery)
-            .setParameter("orderId", id)
-            .executeUpdate();
-
-      String orderQuery = "DELETE FROM Order o "
-              + "WHERE o.id = :orderId "
-              + "AND o.orderState = pl.lodz.p.it.ssbd2023.ssbd01.entities.OrderState.REJECTED_BY_PATIENT " +
-              "AND o.patientData.id = :userId";
-
-
-      getEntityManager()
-            .createQuery(orderQuery)
-            .setParameter("orderId", id)
-            .setParameter("userId", userId)
-            .executeUpdate();
   }
+
+    @RolesAllowed("approvedByPatient")
+    public void approvedByPatient(Long id, Long userId){
+        String updateStateQuery = "UPDATE Order o " +
+                "SET o.orderState = :newState " +
+                "WHERE o.id = :orderId " +
+                "AND o.orderState = :currentState " +
+                "AND o.patientData.id = :userId";
+
+        getEntityManager()
+                .createQuery(updateStateQuery)
+                .setParameter("newState", OrderState.APPROVED_BY_PATIENT)
+                .setParameter("currentState", OrderState.TO_BE_APPROVED_BY_PATIENT)
+                .setParameter("orderId", id)
+                .setParameter("userId", userId)
+                .executeUpdate();
+    }
 
 
 

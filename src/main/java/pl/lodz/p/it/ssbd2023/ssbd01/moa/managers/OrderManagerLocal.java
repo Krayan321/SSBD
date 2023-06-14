@@ -11,8 +11,6 @@ public interface OrderManagerLocal extends CommonManagerLocalInterface {
 
     Order getOrder(Long id);
 
-    void updateOrderQueue();
-
     List<Order> getAllOrders();
 
     List<Order> getAllOrdersForSelf(Account account);
@@ -28,6 +26,8 @@ public interface OrderManagerLocal extends CommonManagerLocalInterface {
     void deleteWaitingOrderById(Long id);
 
     void withdrawOrder(Long id, Account account);
+
+    void approvedByPatient(Long id, Account account);
 
     void addMedicationToOrder(Long id, OrderMedication orderMedication, Long version, Long medicationId);
 
