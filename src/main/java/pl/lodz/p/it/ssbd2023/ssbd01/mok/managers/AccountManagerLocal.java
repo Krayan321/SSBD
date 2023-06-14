@@ -58,7 +58,7 @@ public interface AccountManagerLocal extends CommonManagerLocalInterface {
 
   Account updateOwnPassword(String oldPassword, String newPassword, String login, Long version);
 
-  Account updateOwnEmail(String email, String login, Long version);
+  Account updateOwnEmail(String email, Long version);
 
   void changeAccountLanguage(String language);
 

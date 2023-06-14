@@ -3,6 +3,7 @@ package controller;
 import java.math.BigDecimal;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.addAsAdmin.AddAdminAccountDto;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.addAsAdmin.AddChemistAccountDto;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.addAsAdmin.AddPatientAccountDto;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.auth.LoginDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.category.CategoryDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccessLevel.EditAdminDataDTO;
@@ -141,6 +142,17 @@ public class dataForTests {
           .build();
 
   // add account
+  public static AddPatientAccountDto addPatientAccountDto =
+          AddPatientAccountDto.builder()
+                  .login("testPatient")
+                  .password("testCh3m!st")
+                  .email("testPatient@local")
+                  .name("Pat")
+                  .lastName("Postman")
+                  .phoneNumber("123874094")
+                  .pesel("12387650987")
+                  .nip("7254973540")
+                  .build();
   public static AddChemistAccountDto addChemistAccountDto =
       AddChemistAccountDto.builder()
           .login("testChemist")

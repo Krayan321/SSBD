@@ -194,7 +194,7 @@ public class AccountController extends AbstractController {
     entityIdentitySignerVerifier.checkEtagIntegrity(editAccountDTO, etag);
     Account account = repeatTransaction(accountManager,
             () -> accountManager.updateOwnEmail(editAccountDTO.getEmail(),
-                    editAccountDTO.getLogin(), editAccountDTO.getVersion()));
+                    editAccountDTO.getVersion()));
     return AccountConverter.mapAccountToAccountDto(account);
   }
 

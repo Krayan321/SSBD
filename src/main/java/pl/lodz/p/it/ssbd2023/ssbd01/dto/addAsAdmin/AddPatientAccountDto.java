@@ -4,14 +4,35 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.metamodel.internal.StandardEmbeddableInstantiator;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.register.BasicAccountDto;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class AddPatientAccountDto extends BasicAccountDto {
+
+  @Builder
+  public AddPatientAccountDto(
+          String login,
+          String password,
+          String email,
+          String language,
+          String name,
+          String lastName,
+          String phoneNumber,
+          String pesel,
+          String nip) {
+    super(login, password, email, language);
+    this.name = name;
+    this.lastName = lastName;
+    this.phoneNumber = phoneNumber;
+    this.pesel = pesel;
+    this.nip = nip;
+  }
 
   @NotNull
   @Size(max = 50, min = 2)
@@ -31,11 +52,5 @@ public class AddPatientAccountDto extends BasicAccountDto {
 
   @NotNull
   @Pattern(regexp = "^\\d{10}$", message = "Invalid NIP")
-  private String NIP;
-
-  @NotNull
-  private boolean confirmed;
-
-  @NotNull
-  private boolean active;
+  private String nip;
 }
