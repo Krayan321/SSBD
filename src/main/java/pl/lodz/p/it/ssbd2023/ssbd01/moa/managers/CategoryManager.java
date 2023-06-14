@@ -39,9 +39,10 @@ public class CategoryManager extends AbstractManager implements CategoryManagerL
     @Override
     @RolesAllowed("createCategory")
     public Category createCategory(Category category) {
-//        if (categoryFacade.findByName(category.getName()) != null) {
-//            throw ApplicationException.createCategoryAlreadyExistsException();
-//        }
+        Category existingCategory = categoryFacade.findByName(category.getName());
+        if (existingCategory != null) {
+            throw ApplicationException.createCategoryAlreadyExistsException();
+        }
         categoryFacade.create(category);
         return category;
     }
@@ -58,8 +59,21 @@ public class CategoryManager extends AbstractManager implements CategoryManagerL
     }
 
     @Override
-    public Category editCategory(Category category) {
-        throw new UnsupportedOperationException();
+    @RolesAllowed("editCategory")
+    public Category editCategory(Long id, Category category, Long version) {
+        Optional<Category> categoryOptional = categoryFacade.find(id);
+        if (categoryOptional.isPresent()) {
+            Category categoryToUpdate = categoryOptional.get();
+            if (categoryToUpdate.getVersion() != version) {
+                throw ApplicationException.createOptimisticLockException();
+            }
+            categoryToUpdate.setName(category.getName());
+            categoryToUpdate.setIsOnPrescription(category.getIsOnPrescription());
+            categoryFacade.edit(categoryToUpdate);
+            return categoryToUpdate;
+        } else {
+            throw ApplicationException.createEntityNotFoundException();
+        }
     }
 
     @Override

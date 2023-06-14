@@ -6,13 +6,19 @@ import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import lombok.extern.java.Log;
 import pl.lodz.p.it.ssbd2023.ssbd01.common.AbstractController;
+import pl.lodz.p.it.ssbd2023.ssbd01.config.ETagFilterBinding;
+import pl.lodz.p.it.ssbd2023.ssbd01.config.EntityIdentitySignerVerifier;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.category.CategoryDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.category.EditCategoryDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.category.GetCategoryDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccessLevel.EditPatientDataDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Category;
 import pl.lodz.p.it.ssbd2023.ssbd01.moa.managers.CategoryManagerLocal;
 import pl.lodz.p.it.ssbd2023.ssbd01.util.converters.CategoryConverter;
@@ -28,24 +34,30 @@ public class CategoryController extends AbstractController {
     @Inject
     private CategoryManagerLocal categoryManager;
 
+    @Inject
+    private EntityIdentitySignerVerifier entityIdentitySignerVerifier;
+
     //moa 22
     @GET
     @Path("/")
     @RolesAllowed("getAllCategories")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<CategoryDTO> getAllCategories() {
+    public List<GetCategoryDTO> getAllCategories() {
         List<Category> categories =
                 repeatTransaction(categoryManager, () -> categoryManager.getAllCategories());
-        return categories.stream().map(CategoryConverter::mapCategoryToCategoryDTO).toList();
+        return categories.stream().map(CategoryConverter::mapCategoryToGetCategoryDTO).toList();
     }
 
 
     @GET
     @Path("/{id}")
-    @DenyAll
+    @PermitAll
     @Produces(MediaType.APPLICATION_JSON)
-    public CategoryDTO getCategory(@PathParam("id") Long id) {
-        throw new UnsupportedOperationException();
+    public Response getCategory(@PathParam("id") Long id) {
+        Category category = repeatTransaction(categoryManager, () -> categoryManager.getCategory(id));
+        GetCategoryDTO getCategoryDTO = CategoryConverter.mapCategoryToGetCategoryDTO(category);
+        String etag = entityIdentitySignerVerifier.calculateEntitySignature(getCategoryDTO);
+        return Response.ok(getCategoryDTO).tag(etag).build();
     }
 
     //moa 21
@@ -53,20 +65,27 @@ public class CategoryController extends AbstractController {
     @Path("/add-category")
     @RolesAllowed("createCategory")
     @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response addCategory(@NotNull @Valid CategoryDTO categoryDto) {
-        Category category = new Category();
-        category.setName(categoryDto.getName());
-        category.setIsOnPrescription(categoryDto.getIsOnPrescription());
-        repeatTransaction(categoryManager, () ->
-            categoryManager.createCategory(category));
-        return Response.status(Response.Status.CREATED).build();
+        Category category = CategoryConverter.mapCategoryDTOToCategory(categoryDto);
+        Category createdCategory = repeatTransaction(categoryManager, () -> categoryManager.createCategory(category));
+        CategoryDTO createdCategoryDto = CategoryConverter.mapCategoryToCategoryDTO(createdCategory);
+        return Response.status(Response.Status.CREATED).entity(createdCategoryDto).build();
     }
 
     //moa 23
     @PUT
-    @DenyAll
     @Path("/{id}/edit-category")
-    public CategoryDTO editCategory(@PathParam("id") Long id) {
-        throw new UnsupportedOperationException();
+    @RolesAllowed("editCategory")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @ETagFilterBinding
+    public CategoryDTO editCategory(@HeaderParam("If-Match") @NotEmpty String etag,
+                                    @PathParam("id") Long id,
+                                    @Valid EditCategoryDTO editCategoryDTO) {
+        entityIdentitySignerVerifier.checkEtagIntegrity(editCategoryDTO, etag);
+        Category category = CategoryConverter.mapEditCategoryDTOToCategory(editCategoryDTO);
+        Category editedCategory = repeatTransaction(categoryManager, () -> categoryManager.editCategory(id, category, editCategoryDTO.getVersion()));
+        return CategoryConverter.mapCategoryToCategoryDTO(editedCategory);
     }
 }

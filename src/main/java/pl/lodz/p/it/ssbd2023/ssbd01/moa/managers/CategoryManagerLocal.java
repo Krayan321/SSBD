@@ -16,7 +16,7 @@ public interface CategoryManagerLocal extends CommonManagerLocalInterface {
 
     Category getCategory(Long id);
 
-    Category editCategory(Category category);
+    Category editCategory(Long id, Category category, Long version);
 
     Category findByName(String name);
 }

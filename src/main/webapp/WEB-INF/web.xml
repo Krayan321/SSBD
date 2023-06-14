@@ -198,5 +198,8 @@
     <security-role>
         <role-name>approvedByPatient</role-name>
     </security-role>
+    <security-role>
+        <role-name>editCategory</role-name>
+    </security-role>
 
 </web-app>
