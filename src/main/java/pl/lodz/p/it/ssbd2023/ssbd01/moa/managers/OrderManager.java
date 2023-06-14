@@ -50,73 +50,74 @@ public class OrderManager extends AbstractManager
     private AccountFacade accountFacade;
     @Context
     private SecurityContext context;
-    @Inject
-    private ShipmentMedicationFacade shipmentMedicationFacade;
-    @Inject
-    private AccountManager accountManager;
+//    @Inject
+//    private ShipmentMedicationFacade shipmentMedicationFacade;
+//    @Inject
+//    private AccountManager accountManager;
 
 
     @Override
     @RolesAllowed("createOrder")
     public Order createOrder(String localStorageData) {
-        Account account = accountManager.getCurrentUserWithAccessLevels();
-        ObjectMapper objectMapper = new ObjectMapper();
-        Order order = new Order();
-        order.setOrderState(OrderState.CREATED);
-
-        try {
-            // Deserializacja danych z localStorageData
-            List<Map<String, Object>> medicationsData = objectMapper.readValue(localStorageData, new TypeReference<>() {
-            });
-
-            // Tworzenie i dodawanie leków do zamówienia
-            List<OrderMedication> orderMedications = new ArrayList<>();
-            for (Map<String, Object> medicationData : medicationsData) {
-                String medicationName = (String) medicationData.get("name");
-
-                // Pobieranie danych o leku z bazy danych na podstawie nazwy
-                Medication medication = medicationFacade.findByName(medicationName);
-
-
-                // Tworzenie połączenia między zamówieniem a lekiem
-                OrderMedication orderMedication = new OrderMedication();
-                orderMedication.setMedication(medication);
-                orderMedication.setPurchasePrice(medication.getCurrentPrice());
-                orderMedication.setOrder(order);
-                orderMedication.setQuantity((Integer) medicationData.get("quantity"));
-
-                orderMedications.add(orderMedication);
-            }
-
-            order.setOrderMedications(orderMedications);
-        } catch (JsonProcessingException e) {
-            throw new IllegalArgumentException("Nieprawidłowe dane z localStorage", e);
-        }
-
-        /*if(!Objects.equals(order.getVersion(), version)){
-        throw ApplicationException.createOptimisticLockException();
-    }*/
-
-
-        // Sprawdzenie, czy w bazie są wszystkie leki potrzebne do realizacji zamówienia
-        boolean allMedicationsAvailable = checkAllMedicationsAvailable(order);
-
-        if (!allMedicationsAvailable) {
-            order.setOrderState(OrderState.IN_QUEUE);
-        }
-
-        if (order.getOrderState() != OrderState.IN_QUEUE) {
-            decreaseMedicationStock(order);
-            if (order.getPrescription() != null) {
-                order.setOrderState(
-                        OrderState
-                                .WAITING_FOR_CHEMIST_APPROVAL); // Zamówienie wymaga zatwierdzenia przez aptekarza
-            }
-        }
-
-        orderFacade.create(order);
-
-        return order;
+//        Account account = accountManager.getCurrentUserWithAccessLevels();
+//        ObjectMapper objectMapper = new ObjectMapper();
+//        Order order = new Order();
+//        order.setOrderState(OrderState.CREATED);
+//
+//        try {
+//            // Deserializacja danych z localStorageData
+//            List<Map<String, Object>> medicationsData = objectMapper.readValue(localStorageData, new TypeReference<>() {
+//            });
+//
+//            // Tworzenie i dodawanie leków do zamówienia
+//            List<OrderMedication> orderMedications = new ArrayList<>();
+//            for (Map<String, Object> medicationData : medicationsData) {
+//                String medicationName = (String) medicationData.get("name");
+//
+//                // Pobieranie danych o leku z bazy danych na podstawie nazwy
+//                Medication medication = medicationFacade.findByName(medicationName);
+//
+//
+//                // Tworzenie połączenia między zamówieniem a lekiem
+//                OrderMedication orderMedication = new OrderMedication();
+//                orderMedication.setMedication(medication);
+//                orderMedication.setPurchasePrice(medication.getCurrentPrice());
+//                orderMedication.setOrder(order);
+//                orderMedication.setQuantity((Integer) medicationData.get("quantity"));
+//
+//                orderMedications.add(orderMedication);
+//            }
+//
+//            order.setOrderMedications(orderMedications);
+//        } catch (JsonProcessingException e) {
+//            throw new IllegalArgumentException("Nieprawidłowe dane z localStorage", e);
+//        }
+//
+//        /*if(!Objects.equals(order.getVersion(), version)){
+//        throw ApplicationException.createOptimisticLockException();
+//    }*/
+//
+//
+//        // Sprawdzenie, czy w bazie są wszystkie leki potrzebne do realizacji zamówienia
+//        boolean allMedicationsAvailable = checkAllMedicationsAvailable(order);
+//
+//        if (!allMedicationsAvailable) {
+//            order.setOrderState(OrderState.IN_QUEUE);
+//        }
+//
+//        if (order.getOrderState() != OrderState.IN_QUEUE) {
+//            decreaseMedicationStock(order);
+//            if (order.getPrescription() != null) {
+//                order.setOrderState(
+//                        OrderState
+//                                .WAITING_FOR_CHEMIST_APPROVAL); // Zamówienie wymaga zatwierdzenia przez aptekarza
+//            }
+//        }
+//
+//        orderFacade.create(order);
+//
+//        return order;
+        return new Order();
     }
 
     @Override

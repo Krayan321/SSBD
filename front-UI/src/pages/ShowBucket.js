@@ -17,6 +17,7 @@ import {createOrder} from "../api/moa/orderApi";
 import ConfirmationDialog from "../components/ConfirmationDialog";
 import ProductionQuantityLimitsIcon from '@mui/icons-material/ProductionQuantityLimits';
 import axios from 'axios';
+import {getMedication} from "../api/moa/medicationApi";
 
 export default function ShowBucket() {
     const [bucket, setBucket] = useState([]);
@@ -26,8 +27,7 @@ export default function ShowBucket() {
     const theme = useTheme();
     const [loading, setLoading] = useState(false);
     const {t} = useTranslation();
-    const [patientData, setPatientData] = useState();
-    const [id, setId] = useState();
+    const [prescriptionNumber, setPrescriptionNumber] = useState();
     const [dialogOpen, setDialogOpen] = useState(false);
     const [itemToDelete, setItemToDelete] = useState(null);
 
@@ -35,14 +35,12 @@ export default function ShowBucket() {
         const fetchData = async () => {
             const response = await getSelfAccountDetails();
             setAccessLevels(response.data.accessLevels);
-            setId(response.data.id);
             let data;
             accessLevels.forEach((element) => {
                 if (element.role === "PATIENT") {
                     data = element;
                 }
             })
-            setPatientData(data.id);
 
         };
         fetchData();
@@ -67,7 +65,46 @@ export default function ShowBucket() {
     };
 
     const handleBuy = () => {
-        createOrder(id, patientData);
+        if (prescriptionNumber < 100000000 || prescriptionNumber > 999999999) {
+            toast.error(t("bad_prescription_number"))
+            return
+        }
+
+        let order_medication = [];
+
+        const order_date = Date.now();
+        const prescription = {
+            prescriptionNumber: Math.floor(100000000 + Math.random() * 900000000)
+        }
+        const str = localStorage.getItem("bucket")
+        const array = JSON.parse(str);
+
+        array.forEach((element) => {
+            getMedication(element.id).then((response) => {
+                const etag = response.headers['etag'].split('"').join('');
+                const version = response.data.version;
+                order_medication.push({
+                    name: element.name,
+                    quantity: element.quantity,
+                    version: version,
+                    etag: etag,
+                    signablePayload: element.name + "." + version,
+                });
+            }).catch((error) => {
+                setLoading(false)
+                toast.error(t(error.response.data.message),
+                    {position: "top-center"});
+            })
+        })
+
+        const to_send = {
+            orderDate: order_date,
+            orderMedications: order_medication,
+            prescription: prescription
+        }
+
+        console.log(to_send)
+        createOrder(to_send);
     };
 
     const handleDelete = (medicationName) => {
@@ -86,21 +123,6 @@ export default function ShowBucket() {
         setItemToDelete(null);
         setDialogOpen(false);
 
-    };
-
-    const sendDataToBackend = () => {
-        const localStorageData = localStorage.getItem('bucket');
-        const dataToSend = {
-            localStorageData: JSON.parse(localStorageData),
-        };
-
-        axios.post('/api/order/submit', dataToSend)
-            .then(response => {
-                // Obsłuż odpowiedź z backendu
-            })
-            .catch(error => {
-                // Obsłuż błąd
-            });
     };
 
     if (loading) {
@@ -174,6 +196,17 @@ export default function ShowBucket() {
                 >
                     <PointOfSaleIcon/>
                 </IconButton>
+                <TextField
+                    type="number"
+                    variant='outlined'
+                    color='secondary'
+                    align="right"
+                    inputMode="numeric"
+                    onChange={(e) => {
+                        setPrescriptionNumber(e.target.value);
+                    }
+                    }
+                />
             </Box>
             <TableContainer sx={{maxWidth: "800px", margin: "auto"}} component={Paper}>
                 <Table aria-label="simple table">

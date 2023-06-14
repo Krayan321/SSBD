@@ -17,7 +17,7 @@ export async function approveOrder(id) {
 }
 
 export async function createOrder() {
-  return await put("order/${id}/submit");
+  return await put(`order/submit`);
 }
 
 export async function deleteWaitingOrdersById(id) {

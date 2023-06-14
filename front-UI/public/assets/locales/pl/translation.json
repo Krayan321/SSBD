@@ -247,6 +247,6 @@
   "medication_created": "Lek utworzony",
   "invalid_medication_data": "Nieprawidłowe dane leku",
   "add_medication": "Dodaj lek",
-  "order_deleted_successfully": "Usunięto zamówienie"
-
+  "order_deleted_successfully": "Usunięto zamówienie",
+  "bad_prescription_number": "Zły numer recepty"
 }
