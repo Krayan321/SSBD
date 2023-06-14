@@ -57,7 +57,7 @@ public class OrderController extends AbstractController {
     @Path("/{id}/cancel")
     @RolesAllowed("cancelOrder")
     public Response cancelOrder(@PathParam("id") Long id) {
-        repeatTransactionVoid(orderManager, () -> orderManager.cancelOrder(id, accountManager.getCurrentUserWithAccessLevels()));
+        repeatTransactionVoid(orderManager, () -> orderManager.cancelOrder(id));
         return Response.ok().build();
     }
 
@@ -112,7 +112,7 @@ public class OrderController extends AbstractController {
    @RolesAllowed("withdraw")
    @Path("/{id}/withdraw")
    public Response withdrawOrderById(@PathParam("id") Long id){
-       repeatTransactionVoid(orderManager, () -> orderManager.withdrawOrder(id,accountManager.getCurrentUserWithAccessLevels()));
+       repeatTransactionVoid(orderManager, () -> orderManager.withdrawOrder(id));
         return Response.ok().build();
    }
 
@@ -130,7 +130,7 @@ public class OrderController extends AbstractController {
     @RolesAllowed("approvedByPatient")
     @Path("/{id}/patient-approve")
     public Response approvedByPatient(@PathParam("id") Long id){
-        repeatTransactionVoid(orderManager, () -> orderManager.approvedByPatient(id,accountManager.getCurrentUserWithAccessLevels()));
+        repeatTransactionVoid(orderManager, () -> orderManager.approvedByPatient(id));
         return Response.ok().build();
     }
 

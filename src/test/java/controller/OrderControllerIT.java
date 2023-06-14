@@ -166,7 +166,7 @@ public class OrderControllerIT extends BaseTest {
 
         @Test
         @Order(3)
-        public void approveOrder_notFound() {
+        public void cancelOrder_notFound() {
             given().header("Authorization", "Bearer " + chemistJwt)
                     .log().all()
                     .put(getApiRoot() + "/order/999/cancel")

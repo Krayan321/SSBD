@@ -21,13 +21,13 @@ public interface OrderManagerLocal extends CommonManagerLocalInterface {
 
     void approveOrder(Long id);
 
-    void cancelOrder(Long id, Account account);
+    void cancelOrder(Long id);
 
     void deleteWaitingOrderById(Long id);
 
-    void withdrawOrder(Long id, Account account);
+    void withdrawOrder(Long id);
 
-    void approvedByPatient(Long id, Account account);
+    void approvedByPatient(Long id);
 
     void addMedicationToOrder(Long id, OrderMedication orderMedication, Long version, Long medicationId);
 

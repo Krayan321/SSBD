@@ -3,6 +3,8 @@ package pl.lodz.p.it.ssbd2023.ssbd01.moa.facades;
 import jakarta.annotation.security.PermitAll;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.ejb.Stateless;
+import jakarta.ejb.TransactionAttribute;
+import jakarta.ejb.TransactionAttributeType;
 import jakarta.interceptor.Interceptors;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -19,6 +21,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Stateless
+@TransactionAttribute(TransactionAttributeType.MANDATORY)
 @Interceptors({
         GenericFacadeExceptionsInterceptor.class,
         TrackerInterceptor.class
