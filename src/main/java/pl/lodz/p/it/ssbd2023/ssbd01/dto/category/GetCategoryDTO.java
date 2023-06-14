@@ -29,6 +29,6 @@ public class GetCategoryDTO extends AbstractEntityDTO implements SignableEntity 
 
     @Override
     public String getSignablePayload() {
-        return String.format("%s.%d", name, getVersion());
+        return String.format("%s.%d", getId(), getVersion());
     }
 }

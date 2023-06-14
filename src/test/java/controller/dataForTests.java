@@ -199,10 +199,11 @@ public class dataForTests {
                   .medicationDTOId(3L)
                   .build();
 
-    public static EditCategoryDTO editCategoryDTO =
-            EditCategoryDTO.builder()
-                    .name("NajnowszaKategoria")
-                    .isOnPrescription(true)
-                    .version(1L)
-                    .build();
+  public static EditCategoryDTO editCategoryDTO =
+          EditCategoryDTO.builder()
+                  .id(1L)
+                  .name("Edited")
+                  .isOnPrescription(true)
+                  .version(1L)
+                  .build();
 }

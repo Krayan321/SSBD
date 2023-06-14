@@ -8,7 +8,12 @@ import pl.lodz.p.it.ssbd2023.ssbd01.common.SignableEntity;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class EditCategoryDTO implements SignableEntity {
+
+    @NotNull
+    private Long id;
 
     @NotNull
     private Long version;
@@ -22,13 +27,6 @@ public class EditCategoryDTO implements SignableEntity {
 
     @Override
     public String getSignablePayload() {
-        return String.format("%s.%d", name, version);
-    }
-
-    @Builder
-    public EditCategoryDTO(Long version, String name, Boolean isOnPrescription) {
-        this.version = version;
-        this.name = name;
-        this.isOnPrescription = isOnPrescription;
+        return String.format("%d.%d", id, version);
     }
 }
