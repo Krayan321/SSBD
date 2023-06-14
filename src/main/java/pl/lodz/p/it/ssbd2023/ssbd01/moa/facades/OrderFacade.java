@@ -13,6 +13,8 @@ import pl.lodz.p.it.ssbd2023.ssbd01.entities.OrderState;
 import pl.lodz.p.it.ssbd2023.ssbd01.interceptors.GenericFacadeExceptionsInterceptor;
 import pl.lodz.p.it.ssbd2023.ssbd01.interceptors.TrackerInterceptor;
 
+import java.time.Instant;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -131,7 +133,7 @@ public class OrderFacade extends AbstractFacade<Order> {
     @RolesAllowed("cancelOrder")
     public void cancelOrder(Long id, Long chemistId) {
         String updateStateQuery = "UPDATE Order o " +
-                "SET o.orderState = :newState, o.chemistData.id = :chemistId " +
+                "SET o.orderState = :newState, o.chemistData.id = :chemistId, o.modificationDate = :mod " +
                 "WHERE o.id = :orderId " +
                 "AND o.orderState = :currentState ";
         getEntityManager()
@@ -140,6 +142,7 @@ public class OrderFacade extends AbstractFacade<Order> {
                 .setParameter("currentState", OrderState.WAITING_FOR_CHEMIST_APPROVAL)
                 .setParameter("orderId", id)
                 .setParameter("chemistId", chemistId)
+                .setParameter("mod", Date.from(Instant.now()))
                 .executeUpdate();
     }
 

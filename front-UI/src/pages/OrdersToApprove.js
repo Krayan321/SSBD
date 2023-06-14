@@ -49,7 +49,7 @@ export default function OrdersToApprove() {
 
     const handleOrderReject = async (id) => {
         cancelOrder(id).then((response) => {
-            toast.success(t("cancelled_successfully"), {position: "top-center"});
+            toast.success(t("order_rejected"), {position: "top-center"});
             findOrders();
         }).catch((error) => {
             toast.error(t(error.response.data.message), {position: "top-center"});
