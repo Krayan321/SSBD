@@ -31,7 +31,7 @@ export default function ShowWaitingOrders() {
         getWaitingOrders().then((response) => {
             setLoading(false)
             setWaitingOrders(response.data);
-            console.log(response.data);
+
         }).catch((error) => {
             setLoading(false)
             toast.error(t(error.response.data.message), {position: "top-center"});
@@ -63,6 +63,7 @@ export default function ShowWaitingOrders() {
 
                 setDeleteOrderId(null);
                 setDialogOpen(false);
+                toast.success(t("order_deleted_successfully"), { position: "top-center" });
             })
     };
     const rejectDeleteOrder = () => {

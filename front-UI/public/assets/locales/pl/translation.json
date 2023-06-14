@@ -234,6 +234,7 @@
   "confirm_update_queue": "Na pewno chcesz zaktualizować kolejkę zamówień?",
   "confirm_approve_order": "Czy na pewno chcesz potwierdzić to zamówienie?",
   "approve_order": "Zatwierdź zamówienie",
-  "order_approved": "Zatwierdzono zamówienie"
+  "order_approved": "Zatwierdzono zamówienie",
+  "order_deleted_successfully": "Usunięto zamówienie"
 
 }
