@@ -30,6 +30,11 @@ import pl.lodz.p.it.ssbd2023.ssbd01.dto.editSelfAccessLevel.EditSelfPatientDataD
 @Testcontainers
 public class AccountControllerIT extends BaseTest {
 
+  @AfterAll
+  static void end() {
+    afterAll();
+  }
+
   static String adminJwt;
 
   @BeforeAll
@@ -2329,6 +2334,83 @@ public class AccountControllerIT extends BaseTest {
               .all()
               .statusCode(Response.Status.BAD_REQUEST.getStatusCode())
               .body("message", equalTo(EXCEPTION_ETAG_INVALID));
+    }
+  }
+
+  @Nested
+  @Order(999)
+  @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+  class AfterAllAccountTests {
+    @Test
+    @Order(1)
+    public void activateAdmin() {
+      var response = given()
+              .header("authorization", "Bearer " + adminJwt)
+              .get(getApiRoot() + "/account/1")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.OK.getStatusCode())
+              .extract()
+              .response();
+      String etag = response.getHeader("ETag").replace("\"", "");
+
+      given()
+              .header("authorization", "Bearer " + adminJwt)
+              .header("If-Match", etag)
+              .put(getApiRoot() + "/account/1/activate")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.OK.getStatusCode());
+    }
+
+    @Test
+    @Order(2)
+    public void activateChemist() {
+      var response = given()
+              .header("authorization", "Bearer " + adminJwt)
+              .get(getApiRoot() + "/account/2")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.OK.getStatusCode())
+              .extract()
+              .response();
+      String etag = response.getHeader("ETag").replace("\"", "");
+
+      given()
+              .header("authorization", "Bearer " + adminJwt)
+              .header("If-Match", etag)
+              .put(getApiRoot() + "/account/2/activate")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.OK.getStatusCode());
+    }
+
+    @Test
+    @Order(3)
+    public void activatePatient() {
+      var response = given()
+              .header("authorization", "Bearer " + adminJwt)
+              .get(getApiRoot() + "/account/3")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.OK.getStatusCode())
+              .extract()
+              .response();
+      String etag = response.getHeader("ETag").replace("\"", "");
+
+      given()
+              .header("authorization", "Bearer " + adminJwt)
+              .header("If-Match", etag)
+              .put(getApiRoot() + "/account/3/activate")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.OK.getStatusCode());
     }
   }
 }
