@@ -32,23 +32,23 @@ public class OrderConverter {
         .build();
   }
 
-  public static Order mapCreateOrderDTOToOrder(CreateOrderDTO createOrderDTO) {
-    Order order = new Order();
-    order.setOrderDate(createOrderDTO.getOrderDate());
+  //public static Order mapCreateOrderDTOToOrder(CreateOrderDTO createOrderDTO) {
+    //Order order = new Order();
+    //order.setOrderDate(createOrderDTO.getOrderDate());
 
     // Konwersja listy OrderMedicationDTO na listę OrderMedication
-    List<OrderMedication> orderMedications = createOrderDTO.getOrderMedication().stream()
-            .map(CreateOrderMedicationConverter::mapCreateOrderMedicationDTOToOrderMedication)
-            .collect(Collectors.toList());
-    order.setOrderMedications(orderMedications);
+    //List<OrderMedication> orderMedications = createOrderDTO.getOrderMedication().stream()
+           // .map(CreateOrderMedicationConverter::mapCreateOrderMedicationDTOToOrderMedication)
+           // .collect(Collectors.toList());
+    //order.setOrderMedications(orderMedications);
 
     // Konwersja CreateOrderPrescription na Prescription
-    Prescription prescription = CreateOrderPrescriptionConverter.mapCreateOrderPrescriptionDTOToPrescription(createOrderDTO.getPrescription());
-    order.setPrescription(prescription);
+    //Prescription prescription = CreateOrderPrescriptionConverter.mapCreateOrderPrescriptionDTOToPrescription(createOrderDTO.getPrescription());
+    //order.setPrescription(prescription);
 
-    return order;
+    //return order;
   }
 
 
 
-}
+
