@@ -39,8 +39,11 @@ function AuthSidebar() {
     };
 
     const handleConfirmation = () => {
-        updateQueue()
-        toast.success(t("queue_has_been_updated"), {position: "top-center"});
+        updateQueue().then((response) => {
+            toast.success(t("queue_has_been_updated"), {position: "top-center"});
+        }).catch((error) => {
+            toast.error(t(error.response.data.message), {position: "top-center"});
+        })
         setConfirmationOpen(false);
     };
 

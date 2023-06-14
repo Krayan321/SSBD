@@ -23,10 +23,6 @@ import javax.print.attribute.standard.Media;
       @Index(name = "medication_index", columnList = "medication_id")
     })
 @NamedQuery(name = "shipmentMedication.findAll", query = "SELECT o FROM ShipmentMedication o")
-@NamedQuery(
-        name = "shipmentMedication.findLatestShipmentMedicationForGivenMedication",
-        query = "SELECT o FROM ShipmentMedication o WHERE o.medication.id = :medicationId ORDER BY o.shipment.shipmentDate DESC"
-)
 public class ShipmentMedication extends AbstractEntity implements Serializable {
 
   private static final long serialVersionUID = 1L;

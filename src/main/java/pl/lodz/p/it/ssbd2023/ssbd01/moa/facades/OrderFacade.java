@@ -61,7 +61,7 @@ public class OrderFacade extends AbstractFacade<Order> {
                 .getResultList();
     }
 
-
+    @RolesAllowed("updateQueue")
     public List<Order> findAllOrdersInQueueSortByOrderDate() {
         TypedQuery<Order> query = em.createNamedQuery("Order.findAllOrdersStateInQueueSortByOrderDate", Order.class);
         return query.getResultList();
