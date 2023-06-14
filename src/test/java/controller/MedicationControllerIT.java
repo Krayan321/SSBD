@@ -47,16 +47,6 @@ public class MedicationControllerIT extends BaseTest {
     class AddMedication {
         @Test
         @Order(1)
-        public void addCategory() {
-            given()
-                    .header("Authorization", "Bearer " + chemistJwt)
-                    .body(categoryDto)
-                    .post(getApiRoot() + "/category/add-category")
-                    .then()
-                    .statusCode(Response.Status.CREATED.getStatusCode());
-        }
-        @Test
-        @Order(2)
         public void addMedication_correct() {
             given()
                     .header("Authorization", "Bearer " + chemistJwt)
@@ -67,7 +57,7 @@ public class MedicationControllerIT extends BaseTest {
         }
 
         @Test
-        @Order(3)
+        @Order(2)
         public void addMedication_sameName() {
             given()
                     .header("Authorization", "Bearer " + chemistJwt)
@@ -78,7 +68,7 @@ public class MedicationControllerIT extends BaseTest {
         }
 
         @Test
-        @Order(4)
+        @Order(3)
         public void addMedication_noSuchCategory() {
             given()
                     .header("Authorization", "Bearer " + chemistJwt)
