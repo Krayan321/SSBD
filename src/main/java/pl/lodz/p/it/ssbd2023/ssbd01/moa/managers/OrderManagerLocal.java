@@ -34,6 +34,4 @@ public interface OrderManagerLocal extends CommonManagerLocalInterface {
     List<Medication> getOrderDetails(Long orderId);
 
     void updateQueue();
-
-    void changeNumberOfMedicationsInOrder(Long orderId, Long medicationId, Integer quantity);
 }
