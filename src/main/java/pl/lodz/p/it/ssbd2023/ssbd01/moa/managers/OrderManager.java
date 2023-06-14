@@ -57,7 +57,7 @@ public class OrderManager extends AbstractManager
 
     @Override
     @RolesAllowed("createOrder")
-    public void createOrder(Order order) {
+    public void createOrder(Order order, EtagVerification etagVerification) {
         Account account = getCurrentUserWithAccessLevels();
         order.setPatientData(AccessLevelFinder.findPatientData(account));
 
@@ -72,7 +72,7 @@ public class OrderManager extends AbstractManager
         if (!checkAllMedicationsAvailable(order)) {
             order.setOrderState(OrderState.IN_QUEUE);
         } else {
-            decreaseMedicationStock(order, null);
+            decreaseMedicationStock(order, etagVerification);
             if(checkIsOnPrescription(order)) {
                 if(order.getPrescription() == null) {
                     throw OrderException.createPrescriptionRequired();
@@ -108,15 +108,15 @@ public class OrderManager extends AbstractManager
 
     @RolesAllowed("createOrder")
     private void decreaseMedicationStock(Order order, EtagVerification etagVerification) {
-        for (OrderMedication orderMedication : order.getOrderMedications()) {
-            Medication medication = orderMedication.getMedication();
-            int requestedQuantity = orderMedication.getQuantity();
-
-            int currentStock = medication.getStock();
-            int updatedStock = currentStock - requestedQuantity;
-            medication.setStock(updatedStock);
-            medicationFacade.edit(medication);
-        }
+        order.getOrderMedications().forEach(om -> {
+            Medication medication = om.getMedication();
+            EtagVersion etagVersion = etagVerification.getEtagVersionList().get(
+                    om.getMedication().getName());
+            if(!etagVersion.getVersion().equals(medication.getVersion())) {
+                throw ApplicationException.createOptimisticLockException();
+            }
+            medication.setStock(medication.getStock() - om.getQuantity());
+        });
     }
 
     @Override

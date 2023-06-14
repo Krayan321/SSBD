@@ -5,6 +5,7 @@ import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import pl.lodz.p.it.ssbd2023.ssbd01.common.SignableEntity;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.AbstractEntityDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.medication.MedicationDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Medication;
@@ -20,11 +21,20 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class CreateOrderMedicationDTO {
+public class CreateOrderMedicationDTO implements SignableEntity {
 
     @NotNull
     private String name;
     @NotNull
+    private Long version;
+    @NotNull
+    private String etag;
+    @NotNull
     private Integer quantity;
+
+    @Override
+    public String getSignablePayload() {
+        return String.format("%s.%d", name, version);
+    }
 }
 

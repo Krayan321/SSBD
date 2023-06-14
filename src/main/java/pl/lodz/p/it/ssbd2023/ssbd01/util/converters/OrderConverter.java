@@ -3,12 +3,17 @@ package pl.lodz.p.it.ssbd2023.ssbd01.util.converters;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.order.CreateOrderDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.order.CreateOrderPrescriptionDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.order.OrderDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.shipment.CreateShipmentDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.shipment.MedicationCreateShipmentDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.entities.EtagVerification;
+import pl.lodz.p.it.ssbd2023.ssbd01.entities.EtagVersion;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Order;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Prescription;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.Date;
+import java.util.HashMap;
 
 public class OrderConverter {
 
@@ -46,6 +51,17 @@ public class OrderConverter {
   public static Prescription mapCreateOrderPrescriptionToPrescription(
           CreateOrderPrescriptionDTO prescription) {
     return new Prescription(prescription.getPrescriptionNumber());
+  }
+
+  public static EtagVerification mapCreateOrderDtoToEtagVerification(CreateOrderDTO order) {
+    EtagVerification etagVerification = new EtagVerification(new HashMap<>());
+    order.getOrderMedications().forEach(om -> {
+      etagVerification.getEtagVersionList().put(om.getName(), EtagVersion.builder()
+              .version(om.getVersion())
+              .etag(om.getEtag())
+              .build());
+    });
+    return etagVerification;
   }
 }
 
