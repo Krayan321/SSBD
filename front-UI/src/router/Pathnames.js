@@ -31,6 +31,8 @@ export const Pathnames = {
     shipment: "/shipment",
     waitingOrders: "/orders/waiting",
     ordersToApprove: "/orders-to-approve",
+    categories: "/categories",
+    editCategory: "/categories/:id/edit",
   },
   patientChemist: {
     medications: "/medications",
