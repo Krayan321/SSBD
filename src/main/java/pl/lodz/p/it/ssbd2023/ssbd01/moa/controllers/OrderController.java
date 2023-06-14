@@ -85,9 +85,9 @@ public class OrderController extends AbstractController {
     @POST
     @Path("/submit")
     @RolesAllowed("createOrder")
-    public Response submitOrder(@Valid String patientDataId, String localStorageData) {
+    public Response submitOrder(String localStorageData) {
         Order order = repeatTransaction(orderManager, () -> orderManager
-                .createOrder(accountManager.getCurrentUserWithAccessLevels(), localStorageData));
+                .createOrder(localStorageData));
 
         OrderDTO orderDTO = OrderConverter.mapOrderToOrderDTO(order);
 

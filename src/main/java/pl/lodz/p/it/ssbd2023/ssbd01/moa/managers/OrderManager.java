@@ -23,6 +23,7 @@ import pl.lodz.p.it.ssbd2023.ssbd01.moa.facades.MedicationFacade;
 import pl.lodz.p.it.ssbd2023.ssbd01.moa.facades.OrderFacade;
 import pl.lodz.p.it.ssbd2023.ssbd01.moa.facades.ShipmentFacade;
 import pl.lodz.p.it.ssbd2023.ssbd01.moa.facades.ShipmentMedicationFacade;
+import pl.lodz.p.it.ssbd2023.ssbd01.mok.managers.AccountManager;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -44,10 +45,14 @@ public class OrderManager extends AbstractManager
     private ShipmentFacade shipmentFacade;
     @Inject
     private ShipmentMedicationFacade shipmentMedicationFacade;
+    @Inject
+    private AccountManager accountManager;
+
 
     @Override
     @RolesAllowed("createOrder")
-    public Order createOrder(Account account, String localStorageData) {
+    public Order createOrder(String localStorageData) {
+        Account account = accountManager.getCurrentUserWithAccessLevels();
         ObjectMapper objectMapper = new ObjectMapper();
         Order order = new Order();
         order.setOrderState(OrderState.CREATED);
