@@ -235,5 +235,9 @@
   "confirm_approve_order": "Jste si jisti, že chcete potvrdit tuto objednávku?",
   "approve_order": "Potvrdit objednávku",
   "order_approved": "Objednávka schválena",
-  "order_rejected": "Objednávka zamítnuta"
+  "order_rejected": "Objednávka zamítnuta",
+  "is_on_prescription": "Je na předpis",
+  "edit": "Upravit",
+  "list_of_categories": "Seznam kategorií",
+  "edit_category": "Upravit kategorii"
 }

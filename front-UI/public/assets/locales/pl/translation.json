@@ -235,5 +235,9 @@
   "confirm_approve_order": "Czy na pewno chcesz potwierdzić to zamówienie?",
   "approve_order": "Zatwierdź zamówienie",
   "order_approved": "Zatwierdzono zamówienie",
-  "order_rejected": "Zamówienie odrzucone"
+  "order_rejected": "Zamówienie odrzucone",
+  "is_on_prescription": "Na receptę?",
+  "edit": "Edytuj",
+  "list_of_categories": "Lista kategorii",
+  "edit_category": "Edytuj kategorię"
 }
