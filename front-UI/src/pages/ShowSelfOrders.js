@@ -6,20 +6,14 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import { Skeleton, useTheme } from "@mui/material";
-import { getSelfOrders, approveOrderById } from "../api/moa/orderApi";
 import {Skeleton, useTheme,} from "@mui/material";
-import {getSelfOrders, withdrawOrderById} from "../api/moa/orderApi";
+import {approveOrderById, getSelfOrders, withdrawOrderById} from "../api/moa/orderApi";
 import moment from "moment";
-import { useTranslation } from "react-i18next";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import IconButton from "@mui/material/IconButton";
-import { toast, ToastContainer } from "react-toastify";
-import ConfirmationDialog from "../components/ConfirmationDialog";
 import {useTranslation} from "react-i18next";
 import ConfirmationDialog from "../components/ConfirmationDialog";
 import DeleteIcon from '@mui/icons-material/Delete';
-import IconButton from "@mui/material/IconButton";
 import {toast, ToastContainer} from 'react-toastify';
 
 export default function ShowSelfOrders() {
@@ -240,6 +234,7 @@ export default function ShowSelfOrders() {
                         })}
                     </TableBody>
                 </Table>
+                <ToastContainer/>
             </TableContainer>
         </div>
     );
