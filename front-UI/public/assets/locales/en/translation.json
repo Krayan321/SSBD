@@ -246,5 +246,6 @@
   "add_category": "Add category",
   "medication_created": "Medication created",
   "invalid_medication_data": "Invalid medication data",
-  "add_medication": "Add medication"
+  "add_medication": "Add medication",
+  "order_deleted_successfully": "Order deleted successfully"
 }

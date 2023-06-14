@@ -246,5 +246,6 @@
   "add_category": "Přidat kategorii",
   "medication_created": "Lék úspěšně vytvořen",
   "invalid_medication_data": "Neplatná data léku",
-  "add_medication": "Přidat lék"
+  "add_medication": "Přidat lék",
+  "order_deleted_successfully": "Objednávka byla úspěšně smazána"
 }

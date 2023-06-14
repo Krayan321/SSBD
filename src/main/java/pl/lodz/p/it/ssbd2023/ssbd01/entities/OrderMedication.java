@@ -52,9 +52,10 @@ public class OrderMedication extends AbstractEntity implements Serializable {
   private Integer quantity;
 
   @Builder
-  OrderMedication(Order order, Medication medication, Integer quantity) {
+  OrderMedication(Order order, Medication medication, Integer quantity, BigDecimal purchasePrice) {
     this.setOrder(order);
     this.setMedication(medication);
     this.setQuantity(quantity);
+    this.setPurchasePrice(purchasePrice);
   }
 }

@@ -1,5 +1,8 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.dto.order;
 
+import jakarta.persistence.Column;
+import jakarta.validation.constraints.Digits;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.AbstractEntityDTO;
@@ -8,28 +11,24 @@ import pl.lodz.p.it.ssbd2023.ssbd01.entities.Medication;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Order;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.OrderMedication;
 
+import java.math.BigDecimal;
+
 @ToString
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreateOrderMedicationDTO extends AbstractEntityDTO {
+@Builder
+public class CreateOrderMedicationDTO {
 
-    @Builder(builderMethodName = "orderMedicationBuilder")
-    public CreateOrderMedicationDTO(
-            Long id,
-            Long version,
-            Long medicationDTOId,
-            Integer quantity) {
-        super(id, version);
-        this.medicationDTOId = medicationDTOId;
-        this.quantity = quantity;
-    }
     @NotNull
-    Long medicationDTOId;
+    private String name;
     @NotNull
-    Integer quantity;
-
+    private Integer quantity;
+    @Column(name = "purchase_price")
+    @Digits(integer = 10, fraction = 2)
+    @Min(value = 0)
+    private BigDecimal purchasePrice;
 }
 

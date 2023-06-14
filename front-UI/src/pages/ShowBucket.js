@@ -16,6 +16,7 @@ import {getSelfAccountDetails} from "../api/mok/accountApi";
 import {createOrder} from "../api/moa/orderApi";
 import ConfirmationDialog from "../components/ConfirmationDialog";
 import ProductionQuantityLimitsIcon from '@mui/icons-material/ProductionQuantityLimits';
+import axios from 'axios';
 
 export default function ShowBucket() {
     const [bucket, setBucket] = useState([]);
@@ -49,6 +50,7 @@ export default function ShowBucket() {
             const str = localStorage.getItem("bucket")
             if (!str) return;
             const array = JSON.parse(str);
+            console.log(array);
             setBucket(array);
         } else {
             setBucket([]);
@@ -84,6 +86,21 @@ export default function ShowBucket() {
         setItemToDelete(null);
         setDialogOpen(false);
 
+    };
+
+    const sendDataToBackend = () => {
+        const localStorageData = localStorage.getItem('bucket');
+        const dataToSend = {
+            localStorageData: JSON.parse(localStorageData),
+        };
+
+        axios.post('/api/order/submit', dataToSend)
+            .then(response => {
+                // Obsłuż odpowiedź z backendu
+            })
+            .catch(error => {
+                // Obsłuż błąd
+            });
     };
 
     if (loading) {

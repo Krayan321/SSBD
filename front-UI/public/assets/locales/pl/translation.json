@@ -246,5 +246,7 @@
   "add_category": "Dodaj kategorię",
   "medication_created": "Lek utworzony",
   "invalid_medication_data": "Nieprawidłowe dane leku",
-  "add_medication": "Dodaj lek"
+  "add_medication": "Dodaj lek",
+  "order_deleted_successfully": "Usunięto zamówienie"
+
 }
