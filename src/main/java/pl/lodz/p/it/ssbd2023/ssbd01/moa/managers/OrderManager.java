@@ -318,26 +318,6 @@ public class OrderManager extends AbstractManager
         return res;
     }
 
-    @Override
-    @RolesAllowed("changeNumberOfMedicationsInOrder")
-    public void changeNumberOfMedicationsInOrder(Long orderId, Long medicationId, Integer quantity) {
-        Optional<Order> optOrder = orderFacade.find(orderId);
-
-        if (optOrder.isEmpty()) {
-            throw OrderException.createEntityNotFoundException();
-        }
-        optOrder
-                .get()
-                .getOrderMedications()
-                .forEach(
-                        orderMedication -> {
-                            if (Objects.equals(orderMedication.getMedication().getId(), medicationId)) {
-                                orderMedication.setQuantity(quantity);
-                            }
-                        });
-        orderFacade.edit(optOrder.get());
-    }
-
     @PermitAll
     public Account findByLogin(String login) {
         return accountFacade.findByLogin(login);

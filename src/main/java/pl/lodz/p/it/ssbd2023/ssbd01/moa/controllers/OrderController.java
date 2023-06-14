@@ -138,8 +138,9 @@ public class OrderController extends AbstractController {
     @PUT
     @Path("/update-queue")
     @RolesAllowed("updateQueue")
-    public void updateQueue() {
+    public Response updateQueue() {
         repeatTransactionVoidWithOptimisticLock(orderManager, () -> orderManager.updateQueue());
+        return Response.ok().build();
     }
 
     //moa 15

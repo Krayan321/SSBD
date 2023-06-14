@@ -175,4 +175,86 @@ public class OrderControllerIT extends BaseTest {
                     .body("message", CoreMatchers.equalTo(EXCEPTION_ENTITY_NOT_FOUND));
         }
     }
+
+    @Nested
+    @Order(4)
+    @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+    class DeleteWaitingOrderById {
+        @Test
+        @Order(1)
+        public void deleteWaitingOrderById_correct() {
+            given().header("Authorization", "Bearer " + chemistJwt)
+                    .log().all()
+                    .put(getApiRoot() + "/order/1/waiting")
+                    .then().log().all()
+                    .statusCode(Response.Status.OK.getStatusCode());
+        }
+
+        @Test
+        @Order(2)
+        public void deleteWaitingOrderById_not_in_queue() {
+            given().header("Authorization", "Bearer " + chemistJwt)
+                    .log().all()
+                    .put(getApiRoot() + "/order/1/waiting")
+                    .then().log().all()
+                    .statusCode(Response.Status.FORBIDDEN.getStatusCode());
+        }
+    }
+
+    @Nested
+    @Order(5)
+    @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+    class GetOrder {
+//        @Test
+//        @Order(1)
+//        public void getAllOrders_correct() {
+//            given().header("Authorization", "Bearer " + chemistJwt)
+//                    .log().all()
+//                    .get(getApiRoot() + "/order/")
+//                    .then().log().all()
+//                    .statusCode(Response.Status.OK.getStatusCode());
+//        }
+        @Test
+        @Order(2)
+        public void getWaitingOrders_correct() {
+            given().header("Authorization", "Bearer " + chemistJwt)
+                    .log().all()
+                    .get(getApiRoot() + "/order/waiting")
+                    .then().log().all()
+                    .statusCode(Response.Status.OK.getStatusCode());
+        }
+        @Test
+        @Order(3)
+        public void updateQueue_correct() {
+            given().header("Authorization", "Bearer " + chemistJwt)
+                    .log().all()
+                    .put(getApiRoot() + "/order/update-queue")
+                    .then().log().all()
+                    .statusCode(Response.Status.OK.getStatusCode());
+        }
+    }
+
+    @Nested
+    @Order(6)
+    @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+    class WithdrawOrderById {
+        @Test
+        @Order(1)
+        public void withdrawOrderById_bad_state() {
+            given().header("Authorization", "Bearer " + patientJwt)
+                    .log().all()
+                    .put(getApiRoot() + "/order/1/withdraw")
+                    .then().log().all()
+                    .statusCode(Response.Status.FORBIDDEN.getStatusCode());
+        }
+        @Test
+        @Order(2)
+        public void withdrawOrderById_correct() {
+            given().header("Authorization", "Bearer " + patientJwt)
+                    .log().all()
+                    .put(getApiRoot() + "/order/6/withdraw")
+                    .then().log().all()
+                    .statusCode(Response.Status.OK.getStatusCode());
+        }
+    }
 }
