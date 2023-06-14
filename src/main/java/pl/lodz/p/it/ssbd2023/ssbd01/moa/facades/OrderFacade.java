@@ -129,12 +129,6 @@ public class OrderFacade extends AbstractFacade<Order> {
         super.edit(order);
     }
 
-    @Override
-    @PermitAll
-    public void editAndRefresh(Order order) {
-        super.editAndRefresh(order);
-    }
-
     @PermitAll
     public Optional<Order> find(Long id) {
         return super.find(id);

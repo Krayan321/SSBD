@@ -45,12 +45,6 @@ public class TokenFacade extends AbstractFacade<Token> {
     super.edit(token);
   }
 
-  @Override
-  @PermitAll
-  public void editAndRefresh(Token token) {
-    super.editAndRefresh(token);
-  }
-
   @PermitAll
   public List<Token> findByTypeAndBeforeGivenData(TokenType type, Date date) {
     TypedQuery<Token> tq =

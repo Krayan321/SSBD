@@ -15,6 +15,7 @@ import io.restassured.filter.log.LogDetail;
 import io.restassured.http.ContentType;
 import jakarta.ws.rs.core.Response;
 import org.junit.jupiter.api.*;
+import org.testcontainers.junit.jupiter.Testcontainers;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccount.ChangePasswordDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccount.EditAccountDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.auth.LoginDTO;
@@ -26,6 +27,7 @@ import pl.lodz.p.it.ssbd2023.ssbd01.dto.editSelfAccessLevel.EditSelfPatientDataD
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestClassOrder(ClassOrderer.OrderAnnotation.class)
+@Testcontainers
 public class AccountControllerIT extends BaseTest {
 
   static String adminJwt;
@@ -359,7 +361,7 @@ public class AccountControllerIT extends BaseTest {
   }
 
   @Nested
-  @Order(2)
+  @Order(3)
   @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
   class RegisterPatient {
     @Test
@@ -456,7 +458,10 @@ public class AccountControllerIT extends BaseTest {
   @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
   class GrantAccessLevel {
 
-    private String etag;
+    private String etag4;
+    private static String etag2;
+    private static Long version2;
+
 
     @BeforeEach
     public void init() {
@@ -469,10 +474,10 @@ public class AccountControllerIT extends BaseTest {
               .statusCode(Response.Status.OK.getStatusCode())
               .extract()
               .response();
-      etag = response.getHeader("ETag").replace("\"", "");
-      Long version = response.getBody().jsonPath().getLong("version");
-      grantChemistDataDTO.setVersion(version);
-      grantAdminDataDTO.setVersion(version);
+      etag4 = response.getHeader("ETag").replace("\"", "");
+      Long version4 = response.getBody().jsonPath().getLong("version");
+      grantChemistDataDTO.setVersion(version4);
+      grantAdminDataDTO.setVersion(version4);
     }
 
     @Test
@@ -480,7 +485,7 @@ public class AccountControllerIT extends BaseTest {
     public void grantChemist_correct() {
       given()
               .header("authorization", "Bearer " + adminJwt)
-              .header("If-Match", etag)
+              .header("If-Match", etag4)
               .body(grantChemistDataDTO)
               .post(getApiRoot() + "/account/4/chemist")
               .then()
@@ -494,7 +499,7 @@ public class AccountControllerIT extends BaseTest {
     public void grantAdmin_correct() {
       given()
               .header("authorization", "Bearer " + adminJwt)
-              .header("If-Match", etag)
+              .header("If-Match", etag4)
               .body(grantAdminDataDTO)
               .post(getApiRoot() + "/account/4/admin")
               .then()
@@ -503,12 +508,60 @@ public class AccountControllerIT extends BaseTest {
               .statusCode(Response.Status.OK.getStatusCode());
     }
 
+    private void setupPatient() {
+      var response2 = given()
+              .header("authorization", "Bearer " + adminJwt)
+              .get(getApiRoot() + "/account/2")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.OK.getStatusCode())
+              .extract()
+              .response();
+      etag2 = response2.getHeader("ETag").replace("\"", "");
+      version2 = response2.getBody().jsonPath().getLong("version");
+      grantPatientDataDTO.setVersion(version2);
+    }
+
     @Test
     @Order(3)
+    public void grantPatient_correct() {
+      setupPatient();
+      given()
+              .header("authorization", "Bearer " + adminJwt)
+              .header("If-Match", etag2)
+              .body(grantPatientDataDTO)
+              .post(getApiRoot() + "/account/2/patient")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.OK.getStatusCode());
+    }
+
+    @Test
+    @Order(4)
+    public void grantAdmin_optimisticLock() {
+      grantAdminDataDTO.setLogin(chemistLoginDto.getLogin());
+      grantAdminDataDTO.setVersion(version2);
+      given()
+              .header("authorization", "Bearer " + adminJwt)
+              .header("If-Match", etag2)
+              .body(grantAdminDataDTO)
+              .post(getApiRoot() + "/account/2/admin")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.CONFLICT.getStatusCode())
+              .body("message", equalTo(EXCEPTION_OPTIMISTIC_LOCK));
+      grantAdminDataDTO.setLogin("test11");
+    }
+
+    @Test
+    @Order(5)
     public void grantAdmin_secondGrant() {
       given()
               .header("authorization", "Bearer " + adminJwt)
-              .header("If-Match", etag)
+              .header("If-Match", etag4)
               .body(grantAdminDataDTO)
               .post(getApiRoot() + "/account/4/admin")
               .then()
@@ -519,12 +572,12 @@ public class AccountControllerIT extends BaseTest {
     }
 
     @Test
-    @Order(4)
+    @Order(6)
     public void grantAdmin_badVersion() {
       grantAdminDataDTO.setVersion(-1L);
       given()
               .header("authorization", "Bearer " + adminJwt)
-              .header("If-Match", etag)
+              .header("If-Match", etag4)
               .body(grantAdminDataDTO)
               .post(getApiRoot() + "/account/4/admin")
               .then()
@@ -535,7 +588,7 @@ public class AccountControllerIT extends BaseTest {
     }
 
     @Test
-    @Order(5)
+    @Order(7)
     public void grantAdmin_noEtag() {
       given()
               .header("authorization", "Bearer " + adminJwt)
@@ -549,12 +602,12 @@ public class AccountControllerIT extends BaseTest {
     }
 
     @Test
-    @Order(6)
+    @Order(8)
     void grantAdminAccess_etagMismatch() {
       // use same etag to grant admin to other account
       given()
               .header("authorization", "Bearer " + adminJwt)
-              .header("If-Match", etag)
+              .header("If-Match", etag4)
               .body(grantAdminDataDTO)
               .post(getApiRoot() + "/account/3/admin")
               .then()
@@ -1064,6 +1117,27 @@ public class AccountControllerIT extends BaseTest {
               .statusCode(Response.Status.OK.getStatusCode())
               .body("accessLevels.find{it.role=='ADMIN'}.active", equalTo(false));
     }
+
+    @Test
+    @Order(8)
+    public void unblockRoleAdmin_correct() {
+      given()
+              .header("authorization", "Bearer " + adminJwt)
+              .put(getApiRoot() + "/account/4/admin/unblock")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.NO_CONTENT.getStatusCode());
+      given()
+              .header("authorization", "Bearer " + adminJwt)
+              .get(getApiRoot() + "/account/4/details")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.OK.getStatusCode())
+              .body("accessLevels.find{it.role=='ADMIN'}.active", equalTo(true));
+    }
+
     @Test
     @Order(9)
     public void blockRolePatient_unauthorised() {
@@ -1300,6 +1374,19 @@ public class AccountControllerIT extends BaseTest {
               .all()
               .statusCode(Response.Status.BAD_REQUEST.getStatusCode());
     }
+
+    @Test
+    @Order(4)
+    public void addPatient_correct() {
+      given()
+              .header("authorization", "Bearer " + adminJwt)
+              .body(addPatientAccountDto)
+              .post(getApiRoot() + "/account/add-patient")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.CREATED.getStatusCode());
+    }
   }
 
   @Nested
@@ -1483,8 +1570,6 @@ public class AccountControllerIT extends BaseTest {
               .statusCode(Response.Status.NOT_FOUND.getStatusCode())
               .body("message", equalTo(EXCEPTION_ENTITY_NOT_FOUND));
     }
-
-    // todo więcej testów z edit self (podobnie jak w change user password)
   }
 
   @Nested
@@ -1823,7 +1908,7 @@ public class AccountControllerIT extends BaseTest {
       Long version = response.getBody().jsonPath().getLong("version");
       editAccountDTO = EditAccountDTO.builder()
               .version(version)
-              .email("hehehe@o2.pl")
+              .email("hehehe@local")
               .login("admin123")
               .build();
     }
@@ -1842,8 +1927,22 @@ public class AccountControllerIT extends BaseTest {
               .statusCode(Response.Status.OK.getStatusCode())
               .body("email", equalTo(editAccountDTO.getEmail()));
     }
+
     @Test
     @Order(2)
+    public void activateUserAccount_correct() {
+      given()
+              .header("authorization", "Bearer " + adminJwt)
+              .header("If-Match", etag)
+              .put(getApiRoot() + "/account/1/activate")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.OK.getStatusCode());
+    }
+
+    @Test
+    @Order(3)
     public void editSelfAccount_bad_version() {
       editAccountDTO.setVersion(-1L);
       given()
@@ -1858,7 +1957,7 @@ public class AccountControllerIT extends BaseTest {
               .body("message", equalTo(EXCEPTION_ETAG_INVALID));
     }
     @Test
-    @Order(3)
+    @Order(4)
     public void editSelfAccount_unauthorised() {
       given()
               .header("authorization", "Bearer " + "hehe")
@@ -1869,6 +1968,55 @@ public class AccountControllerIT extends BaseTest {
               .log()
               .all()
               .statusCode(Response.Status.UNAUTHORIZED.getStatusCode());
+    }
+
+    @Test
+    @Order(5)
+    public void editSelfAccount_updateUserEmail_conflict() {
+      editAccountDTO.setEmail("self@local");
+      given()
+              .header("authorization", "Bearer " + adminJwt)
+              .header("If-Match", etag)
+              .body(editAccountDTO)
+              .put(getApiRoot() + "/account/")
+              .then().log().all()
+              .statusCode(Response.Status.OK.getStatusCode());
+
+      editAccountDTO.setEmail("admin@local");
+      given()
+              .header("authorization", "Bearer " + adminJwt)
+              .header("If-Match", etag)
+              .body(editAccountDTO)
+              .put(getApiRoot() + "/account/1")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.CONFLICT.getStatusCode())
+              .body("message", equalTo(EXCEPTION_OPTIMISTIC_LOCK));
+    }
+
+    @Test
+    @Order(6)
+    public void updateUserEmail_editSelfAccount_conflict() {
+      given()
+              .header("authorization", "Bearer " + adminJwt)
+              .header("If-Match", etag)
+              .body(editAccountDTO)
+              .put(getApiRoot() + "/account/1")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.OK.getStatusCode());
+
+      editAccountDTO.setEmail("self@local");
+      given()
+              .header("authorization", "Bearer " + adminJwt)
+              .header("If-Match", etag)
+              .body(editAccountDTO)
+              .put(getApiRoot() + "/account/")
+              .then().log().all()
+              .statusCode(Response.Status.CONFLICT.getStatusCode())
+              .body("message", equalTo(EXCEPTION_OPTIMISTIC_LOCK));
     }
   }
 
@@ -2002,6 +2150,46 @@ public class AccountControllerIT extends BaseTest {
               .all()
               .statusCode(Response.Status.BAD_REQUEST.getStatusCode())
               .body("message", equalTo(EXCEPTION_ETAG_INVALID));
+    }
+
+    @Test
+    @Order(3)
+    public void editPatientData_optimisticLock() {
+      patientDataDTOChangedName.setLastName("Balesmeet");
+      patientDataDTO.setLastName("Mitbeals");
+      var response = given()
+              .header("authorization", "Bearer " + adminJwt)
+              .get(getApiRoot() + "/account/4/patient")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.OK.getStatusCode())
+              .extract()
+              .response();
+      String etagAdmin = response.getHeader("ETag").replace("\"", "");
+      Long version = response.getBody().jsonPath().getLong("version");
+      patientDataDTOChangedName.setVersion(version);
+
+      given()
+              .header("authorization", "Bearer " + adminJwt)
+              .header("If-Match", etagAdmin)
+              .body(patientDataDTOChangedName)
+              .put(getApiRoot() + "/account/4/patient")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.OK.getStatusCode());
+
+      given()
+              .header("authorization", "Bearer " + patientJwt)
+              .header("If-Match", etag)
+              .body(patientDataDTO)
+              .put(getApiRoot() + "/account/patient")
+              .then()
+              .log()
+              .all()
+              .statusCode(Response.Status.CONFLICT.getStatusCode())
+              .body("message", equalTo(EXCEPTION_OPTIMISTIC_LOCK));
     }
   }
 

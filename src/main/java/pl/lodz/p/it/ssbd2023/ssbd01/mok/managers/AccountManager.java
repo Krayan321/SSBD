@@ -119,7 +119,8 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
     accessLevel.setCreatedBy(getCurrentUserLogin());
     account.getAccessLevels().add(accessLevel);
     account.setModifiedBy(getCurrentUserLogin());
-    accountFacade.editAndRefresh(account);
+    account.setModificationDate(new Date()); // force version increment on account
+    accountFacade.edit(account);
     return account;
   }
 
@@ -205,6 +206,7 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
     }
     AccessLevelMerger.mergeAccessLevels(found, accessLevel);
     found.setModifiedBy(getCurrentUserLogin());
+    account.setModificationDate(new Date());
     accountFacade.edit(account);
     return account;
   }
@@ -219,6 +221,7 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
     AccessLevel found = AccessLevelFinder.findAccessLevel(account, accessLevel.getRole());
     AccessLevelMerger.mergeAccessLevels(found, accessLevel);
     found.setModifiedBy(getCurrentUserLogin());
+    account.setModificationDate(new Date());
     accountFacade.edit(account);
     return account;
   }
@@ -317,11 +320,8 @@ public class AccountManager extends AbstractManager implements AccountManagerLoc
 
   @Override
   @RolesAllowed("updateOwnEmail")
-  public Account updateOwnEmail(String email, String login, Long version) {
+  public Account updateOwnEmail(String email, Long version) {
     Account account = getCurrentUser();
-    if(!account.getLogin().equals(login)) {
-      throw ApplicationException.createMismatchedPayloadException();
-    }
     if(!account.getVersion().equals(version)) {
       throw ApplicationException.createOptimisticLockException();
     }

@@ -7,6 +7,7 @@ import io.restassured.http.ContentType;
 import jakarta.ws.rs.core.Response;
 import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.*;
+import org.testcontainers.junit.jupiter.Testcontainers;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccount.EditAccountDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.order.CreateOrderMedicationDTO;
 
@@ -17,6 +18,7 @@ import static pl.lodz.p.it.ssbd2023.ssbd01.common.i18n.*;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestClassOrder(ClassOrderer.OrderAnnotation.class)
+@Testcontainers
 public class OrderControllerIT extends BaseTest {
 
     static String patientJwt;

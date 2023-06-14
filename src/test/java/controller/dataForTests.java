@@ -3,6 +3,7 @@ package controller;
 import java.math.BigDecimal;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.addAsAdmin.AddAdminAccountDto;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.addAsAdmin.AddChemistAccountDto;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.addAsAdmin.AddPatientAccountDto;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.auth.LoginDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.category.CategoryDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccessLevel.EditAdminDataDTO;
@@ -11,6 +12,7 @@ import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccessLevel.EditPatientDataDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccount.EditAccountDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccount.grant.GrantAdminDataDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccount.grant.GrantChemistDataDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccount.grant.GrantPatientDataDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.medication.AddMedicationDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.medication.MedicationDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.order.CreateOrderMedicationDTO;
@@ -111,6 +113,17 @@ public class dataForTests {
           .version(0L)
           .build();
 
+  public static GrantPatientDataDTO grantPatientDataDTO =
+          GrantPatientDataDTO.builder()
+                  .login(chemistLoginDto.getLogin())
+                  .version(0L)
+                  .pesel("12345698712")
+                  .firstName("Bob")
+                  .lastName("Robertson")
+                  .phoneNumber("982737022")
+                  .nip("9346105462")
+                  .build();
+
   // edit data
   public static EditAdminDataDTO adminDataDTOChangedPhone =
       EditAdminDataDTO.builder().version(0L).workPhoneNumber("102938129").build();
@@ -129,6 +142,17 @@ public class dataForTests {
           .build();
 
   // add account
+  public static AddPatientAccountDto addPatientAccountDto =
+          AddPatientAccountDto.builder()
+                  .login("testPatient")
+                  .password("testCh3m!st")
+                  .email("testPatient@local")
+                  .name("Pat")
+                  .lastName("Postman")
+                  .phoneNumber("123874094")
+                  .pesel("12387650987")
+                  .nip("7254973540")
+                  .build();
   public static AddChemistAccountDto addChemistAccountDto =
       AddChemistAccountDto.builder()
           .login("testChemist")

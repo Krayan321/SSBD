@@ -105,12 +105,6 @@ public class AccountFacade extends AbstractFacade<Account> {
   }
 
   @Override
-  @RolesAllowed("grantAccessLevel")
-  public void editAndRefresh(Account account) {
-    super.editAndRefresh(account);
-  }
-
-  @Override
   @PermitAll
   public void create(Account account) {
     super.create(account);

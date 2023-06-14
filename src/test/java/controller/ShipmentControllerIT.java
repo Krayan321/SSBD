@@ -6,6 +6,7 @@ import io.restassured.filter.log.LogDetail;
 import io.restassured.http.ContentType;
 import jakarta.ws.rs.core.Response;
 import org.junit.jupiter.api.*;
+import org.testcontainers.junit.jupiter.Testcontainers;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.shipment.CreateShipmentDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.shipment.CreateShipmentMedicationDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.shipment.MedicationCreateShipmentDTO;
@@ -22,6 +23,7 @@ import static pl.lodz.p.it.ssbd2023.ssbd01.common.i18n.*;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestClassOrder(ClassOrderer.OrderAnnotation.class)
+@Testcontainers
 public class ShipmentControllerIT extends BaseTest {
 
     static String chemistJwt;

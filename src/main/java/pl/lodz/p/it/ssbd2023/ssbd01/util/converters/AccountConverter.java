@@ -95,8 +95,8 @@ public class AccountConverter {
             .password(addPatientAccountDto.getPassword())
             .build();
     account.setEmail(addPatientAccountDto.getEmail());
-    account.setActive(addPatientAccountDto.isActive());
-    account.setConfirmed(addPatientAccountDto.isConfirmed());
+    account.setActive(true);
+    account.setConfirmed(true);
     account.setLanguage(
         addPatientAccountDto.getLanguage() == null
             ? Locale.forLanguageTag("pl")
@@ -108,7 +108,7 @@ public class AccountConverter {
             .lastName(addPatientAccountDto.getLastName())
             .pesel(addPatientAccountDto.getPesel())
             .phoneNumber(addPatientAccountDto.getPhoneNumber())
-            .NIP(addPatientAccountDto.getNIP())
+            .NIP(addPatientAccountDto.getNip())
             .build();
 
     account.getAccessLevels().add(patientData);

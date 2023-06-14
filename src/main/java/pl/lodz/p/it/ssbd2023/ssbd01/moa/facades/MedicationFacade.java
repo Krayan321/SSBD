@@ -50,10 +50,6 @@ public class MedicationFacade extends AbstractFacade<Medication> {
   public void edit(Medication medication) { super.edit(medication);}
 
   @Override
-  @DenyAll
-  public void editAndRefresh(Medication medication) { super.editAndRefresh(medication);}
-
-  @Override
   @PermitAll
   public Optional<Medication> find(Object id) { return super.find(id);}
 
