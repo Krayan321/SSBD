@@ -169,7 +169,7 @@ public class ShipmentControllerIT extends BaseTest {
         }
 
         @Test
-        @Order(5)
+        @Order(6)
         public void createShipment_quantityEqualZero() {
             setNewVersions();
             createShipmentDTO.getShipmentMedications().get(0).setQuantity(0);
@@ -181,7 +181,7 @@ public class ShipmentControllerIT extends BaseTest {
         }
 
         @Test
-        @Order(5)
+        @Order(7)
         public void createShipment_priceEqualZero() {
             setNewVersions();
             MedicationCreateShipmentDTO m = createShipmentDTO.getShipmentMedications().get(0).getMedication();
@@ -191,6 +191,19 @@ public class ShipmentControllerIT extends BaseTest {
                     .post(getApiRoot() + "/shipment")
                     .then().log().all()
                     .statusCode(Response.Status.BAD_REQUEST.getStatusCode());
+        }
+
+        @Test
+        @Order(8)
+        public void createShipment_medicationEtagNotValid() {
+            setNewVersions();
+            createShipmentDTO.getShipmentMedications().get(0).getMedication().setVersion(99999L);
+            given().header("authorization", "Bearer " + chemistJwt)
+                    .body(createShipmentDTO)
+                    .post(getApiRoot() + "/shipment")
+                    .then().log().all()
+                    .statusCode(Response.Status.BAD_REQUEST.getStatusCode())
+                    .body("message", equalTo(EXCEPTION_ETAG_INVALID));
         }
     }
 
