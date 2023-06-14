@@ -46,7 +46,7 @@ public class MedicationFacade extends AbstractFacade<Medication> {
   }
 
   @Override
-  @DenyAll
+  @PermitAll
   public void edit(Medication medication) { super.edit(medication);}
 
   @Override

@@ -152,7 +152,7 @@ public class OrderManager extends AbstractManager
                     }
                 });
     }
-
+@PermitAll
     private void decreaseMedicationStock(Order order) {
         for (OrderMedication orderMedication : order.getOrderMedications()) {
             Medication medication = orderMedication.getMedication();
@@ -165,6 +165,7 @@ public class OrderManager extends AbstractManager
         }
     }
 
+    @PermitAll
     private boolean checkAllMedicationsAvailable(Order order) {
         // Sprawdzenie, czy wszystkie leki w zamówieniu są dostępne na stanie
 
