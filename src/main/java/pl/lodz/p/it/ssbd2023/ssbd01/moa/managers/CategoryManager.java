@@ -61,11 +61,19 @@ public class CategoryManager extends AbstractManager implements CategoryManagerL
     @Override
     @RolesAllowed("editCategory")
     public Category editCategory(Long id, Category category, Long version) {
-        if (!category.getVersion().equals(version)) {
-            throw ApplicationException.createOptimisticLockException();
+        Optional<Category> categoryOptional = categoryFacade.find(id);
+        if (categoryOptional.isPresent()) {
+            Category categoryToUpdate = categoryOptional.get();
+            if (categoryToUpdate.getVersion() != version) {
+                throw ApplicationException.createOptimisticLockException();
+            }
+            categoryToUpdate.setName(category.getName());
+            categoryToUpdate.setIsOnPrescription(category.getIsOnPrescription());
+            categoryFacade.edit(categoryToUpdate);
+            return categoryToUpdate;
+        } else {
+            throw ApplicationException.createEntityNotFoundException();
         }
-        categoryFacade.edit(category);
-        return category;
     }
 
     @Override

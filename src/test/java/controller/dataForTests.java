@@ -203,6 +203,6 @@ public class dataForTests {
             EditCategoryDTO.builder()
                     .name("NajnowszaKategoria")
                     .isOnPrescription(true)
-                    .version(0L)
+                    .version(1L)
                     .build();
 }
