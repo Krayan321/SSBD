@@ -117,3 +117,11 @@ export const medicationSchema = Yup.object().shape({
     .max(50, "category_name_length_max")
     .required("category_name_required"),
 });
+
+export const categorySchema = Yup.object().shape({
+  name: Yup.string()
+    .required("name_required")
+    .min(3, "name_min")
+    .max(50, "name_max"),
+  isOnPrescription: Yup.boolean().required("isOnPrescription_required"),
+});
