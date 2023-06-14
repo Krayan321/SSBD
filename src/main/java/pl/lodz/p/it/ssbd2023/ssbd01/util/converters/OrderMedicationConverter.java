@@ -33,7 +33,6 @@ public class OrderMedicationConverter {
                 .medication(Medication.builder()
                         .name(createOrderMedicationDTO.getName())
                         .build())
-                .purchasePrice(createOrderMedicationDTO.getPurchasePrice())
                 .quantity(createOrderMedicationDTO.getQuantity())
                 .build();
     }

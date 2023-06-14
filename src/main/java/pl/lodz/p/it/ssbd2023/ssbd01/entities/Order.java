@@ -62,17 +62,17 @@ public class Order extends AbstractEntity implements Serializable {
             referencedColumnName = "id",
             nullable = false,
             updatable = false)
-    private PatientData patientData;
+    private AccessLevel patientData;
 
     @ManyToOne
     @JoinColumn(name = "chemist_data_id", referencedColumnName = "id", updatable = false)
-    private ChemistData chemistData;
+    private AccessLevel chemistData;
 
     @Builder
     public Order(
             Date orderDate,
-            PatientData patientData,
-            ChemistData chemistData) {
+            AccessLevel patientData,
+            AccessLevel chemistData) {
         this.orderDate = orderDate;
         this.patientData = patientData;
         this.chemistData = chemistData;

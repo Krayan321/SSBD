@@ -5,10 +5,7 @@ import pl.lodz.p.it.ssbd2023.ssbd01.dto.order.CreateOrderPrescriptionDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.order.OrderDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.shipment.CreateShipmentDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.shipment.MedicationCreateShipmentDTO;
-import pl.lodz.p.it.ssbd2023.ssbd01.entities.EtagVerification;
-import pl.lodz.p.it.ssbd2023.ssbd01.entities.EtagVersion;
-import pl.lodz.p.it.ssbd2023.ssbd01.entities.Order;
-import pl.lodz.p.it.ssbd2023.ssbd01.entities.Prescription;
+import pl.lodz.p.it.ssbd2023.ssbd01.entities.*;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -26,7 +23,7 @@ public class OrderConverter {
                 .map(OrderMedicationConverter::mapOrderMedicationToOrderMedicationDTO)
                 .toList())
         .patientData(AccessLevelConverter
-                .mapPatientDataToPatientDataDto(order.getPatientData()))
+                .mapPatientDataToPatientDataDto((PatientData) order.getPatientData()))
         .prescription(
             order.getPrescription() == null
                 ? null
@@ -50,7 +47,9 @@ public class OrderConverter {
 
   public static Prescription mapCreateOrderPrescriptionToPrescription(
           CreateOrderPrescriptionDTO prescription) {
-    return new Prescription(prescription.getPrescriptionNumber());
+    return prescription == null
+            ? null
+            : new Prescription(prescription.getPrescriptionNumber());
   }
 
   public static EtagVerification mapCreateOrderDtoToEtagVerification(CreateOrderDTO order) {

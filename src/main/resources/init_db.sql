@@ -60,6 +60,7 @@ GRANT SELECT,UPDATE ON TABLE public.medication_id_seq TO ssbd01moa;
 GRANT SELECT, UPDATE ON TABLE public.order_medication_id_seq TO ssbd01moa;
 GRANT SELECT, UPDATE ON TABLE public.shipment_id_seq TO ssbd01moa;
 GRANT SELECT, UPDATE ON TABLE public.shipment_medication_id_seq TO ssbd01moa;
+GRANT SELECT, UPDATE ON TABLE public.patient_order_id_seq TO ssbd01moa;
 
 insert into account (active, confirmed, created_by, creation_date, email, language, last_negative_login, last_positive_login, logical_address, login,incorrect_login_attempts, modification_date, modified_by, password, version) values (true, true, null, now(), 'admin@o2.pl', 'en', null, null, null, 'admin123', 0, null, null,  'b03ddf3ca2e714a6548e7495e2a03f5e824eaac9837cd7f159c67b90fb4b7342', 0);
 insert into account (active, confirmed, created_by, creation_date, email, language, last_negative_login, last_positive_login, logical_address, login,incorrect_login_attempts, modification_date, modified_by, password, version) values (true, true, null, now(), 'chemist@o2.pl', 'en', null, null, null, 'chemist123', 0, null, null,  '52d7a0431ddd469b9e0929a09ef67fefe99e3511893edb0c2fa0b09892df1e52', 0);
@@ -86,6 +87,8 @@ insert into medication (medication_name, current_price, category_id, created_by,
 insert into medication (medication_name, current_price, category_id, created_by, creation_date, modification_date, modified_by, version, stock) values ('Prozac', 10, 3, null, now(), null, null, 0, 10);
 insert into medication (medication_name, current_price, category_id, created_by, creation_date, modification_date, modified_by, version, stock) values ('Zoloft', 20, 3, null, now(), null, null, 0, 10);
 insert into medication (medication_name, current_price, category_id, created_by, creation_date, modification_date, modified_by, version, stock) values ('Marsjanki', 25, 4, null, now(), null, null, 0, 10);
+insert into medication (medication_name, current_price, category_id, created_by, creation_date, modification_date, modified_by, version, stock) values ('Amoksycylina', 25, 1, null, now(), null, null, 0, 10);
+insert into medication (medication_name, current_price, category_id, created_by, creation_date, modification_date, modified_by, version, stock) values ('Witamina D3', 25, 4, null, now(), null, null, 0, 10);
 
 insert into prescription (creation_date, modification_date, version, prescription_number, created_by, modified_by, patient_data_id) values (now(), null, 0, '123456789', null, null, 3);
 insert into prescription (creation_date, modification_date, version, prescription_number, created_by, modified_by, patient_data_id) values (now(), null, 0, '123456788', null, null, 3);

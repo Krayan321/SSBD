@@ -21,11 +21,7 @@ import pl.lodz.p.it.ssbd2023.ssbd01.exceptions.ApplicationException;
 import pl.lodz.p.it.ssbd2023.ssbd01.exceptions.OrderException;
 import pl.lodz.p.it.ssbd2023.ssbd01.interceptors.GenericManagerExceptionsInterceptor;
 import pl.lodz.p.it.ssbd2023.ssbd01.interceptors.TrackerInterceptor;
-import pl.lodz.p.it.ssbd2023.ssbd01.moa.facades.MedicationFacade;
-import pl.lodz.p.it.ssbd2023.ssbd01.moa.facades.OrderFacade;
-import pl.lodz.p.it.ssbd2023.ssbd01.moa.facades.ShipmentFacade;
-import pl.lodz.p.it.ssbd2023.ssbd01.moa.facades.ShipmentMedicationFacade;
-import pl.lodz.p.it.ssbd2023.ssbd01.moa.facades.AccountFacade;
+import pl.lodz.p.it.ssbd2023.ssbd01.moa.facades.*;
 import pl.lodz.p.it.ssbd2023.ssbd01.mok.managers.AccountManager;
 import pl.lodz.p.it.ssbd2023.ssbd01.util.AccessLevelFinder;
 
@@ -49,6 +45,8 @@ public class OrderManager extends AbstractManager
     private ShipmentFacade shipmentFacade;
     @Inject
     private AccountFacade accountFacade;
+    @Inject
+    private PatientDataFacade patientDataFacade;
     @Context
     private SecurityContext context;
     @Inject
@@ -59,7 +57,8 @@ public class OrderManager extends AbstractManager
     @RolesAllowed("createOrder")
     public void createOrder(Order order, EtagVerification etagVerification) {
         Account account = getCurrentUserWithAccessLevels();
-        order.setPatientData(AccessLevelFinder.findPatientData(account));
+        log.info(AccessLevelFinder.findAccessLevel(account, Role.PATIENT).toString());
+        order.setPatientData(AccessLevelFinder.findAccessLevel(account, Role.PATIENT));
 
         order.getOrderMedications().forEach(om -> {
             om.setOrder(order);
