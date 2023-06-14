@@ -106,7 +106,7 @@ function AddCategoryOverlay({ open, onClose }) {
               type="submit"
               variant="contained"
             >
-              {t("add_medication")}
+              {t("add_category")}
             </Button>
           )}
         </Box>
