@@ -1,4 +1,3 @@
-
 CREATE VIEW public.glassfish_auth_view AS SELECT account.login, account.password, al.access_level_role FROM (public.access_level al JOIN public.account ON ((al.account_id = account.id))) WHERE ((account.confirmed = true) AND (account.active = true) AND (al.active = true));
 
 REVOKE USAGE ON SCHEMA public FROM PUBLIC;
@@ -92,6 +91,7 @@ insert into prescription (creation_date, modification_date, version, prescriptio
 insert into prescription (creation_date, modification_date, version, prescription_number, created_by, modified_by, patient_data_id) values (now(), null, 0, '123456787', null, null, 3);
 insert into prescription (creation_date, modification_date, version, prescription_number, created_by, modified_by, patient_data_id) values (now(), null, 0, '123456786', null, null, 3);
 insert into prescription (creation_date, modification_date, version, prescription_number, created_by, modified_by, patient_data_id) values (now(), null, 0, '123456733', null, null, 3);
+insert into prescription (creation_date, modification_date, version, prescription_number, created_by, modified_by, patient_data_id) values (now(), null, 0, '123456734', null, null, 3);
 
 insert into patient_order (patient_data_id, order_date, order_state, created_by, creation_date, modification_date, modified_by, version, chemist_data_id, prescription_id) values (3, now(), 'IN_QUEUE', null, now(), null, null, 0, null, 1);
 insert into patient_order (patient_data_id, order_date, order_state, created_by, creation_date, modification_date, modified_by, version, chemist_data_id) values (3, now(), 'IN_QUEUE', null, now(), null, null, 0, null);
@@ -99,7 +99,7 @@ insert into patient_order (patient_data_id, order_date, order_state, created_by,
 insert into patient_order (patient_data_id, order_date, order_state, created_by, creation_date, modification_date, modified_by, version, chemist_data_id, prescription_id) values (3, now(), 'WAITING_FOR_CHEMIST_APPROVAL', null, now(), null, null, 0, null, 3);
 insert into patient_order (patient_data_id, order_date, order_state, created_by, creation_date, modification_date, modified_by, version, chemist_data_id, prescription_id) values (3, now(), 'WAITING_FOR_CHEMIST_APPROVAL', null, now(), null, null, 0, null, 4);
 insert into patient_order (patient_data_id, order_date, order_state, created_by, creation_date, modification_date, modified_by, version, chemist_data_id, prescription_id) values (3, now(), 'TO_BE_APPROVED_BY_PATIENT', null, now(), null, null, 0, null, 5);
-
+insert into patient_order (patient_data_id, order_date, order_state, created_by, creation_date, modification_date, modified_by, version, chemist_data_id, prescription_id) values (3, now(), 'TO_BE_APPROVED_BY_PATIENT', null, now(), null, null, 0, null, 6);
 
 insert into order_medication (order_id, medication_id, quantity, created_by, creation_date, modification_date, modified_by, version) values (1, 1, 2, null, now(), null, null, 0);
 insert into order_medication (order_id, medication_id, quantity, created_by, creation_date, modification_date, modified_by, version) values (1, 3, 4, null, now(), null, null, 0);
@@ -114,3 +114,5 @@ insert into order_medication (order_id, medication_id, quantity, created_by, cre
 insert into order_medication (order_id, medication_id, quantity, created_by, creation_date, modification_date, modified_by, version) values (4, 2, 4, null, now(), null, null, 0);
 
 insert into order_medication (order_id, medication_id, quantity, created_by, creation_date, modification_date, modified_by, version) values (5, 2, 4, null, now(), null, null, 0);
+
+insert into order_medication (order_id, medication_id, quantity, created_by, creation_date, modification_date, modified_by, version) values (6, 2, 4, null, now(), null, null, 0);

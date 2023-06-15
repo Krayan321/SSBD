@@ -257,4 +257,41 @@ public class OrderControllerIT extends BaseTest {
                     .statusCode(Response.Status.OK.getStatusCode());
         }
     }
+
+    @Nested
+    @Order(7)
+    @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+    class patientApprovedById {
+        @Test
+        @Order(1)
+        public void patientApprovedById_bad_State(){
+            given().header("Authorization", "Bearer " + patientJwt)
+                    .log().all()
+                    .put(getApiRoot() + "/order/2/patient-approve")
+                    .then().log().all()
+                    .statusCode(Response.Status.FORBIDDEN.getStatusCode())
+                    .body("message", CoreMatchers.equalTo(EXCEPTION_NO_PERMISSION_TO_APPROVE_ORDER));
+        }
+
+        @Test
+        @Order(2)
+        public void patientApprovedById_not_found(){
+            given().header("Authorization", "Bearer " + patientJwt)
+                    .log().all()
+                    .put(getApiRoot() + "/order/500/patient-approve")
+                    .then().log().all()
+                    .statusCode(Response.Status.FORBIDDEN.getStatusCode())
+                    .body("message", CoreMatchers.equalTo(EXCEPTION_ORDER_NOT_FOUND));
+        }
+
+        @Test
+        @Order(3)
+        public void patientApprovedById_correct(){
+            given().header("Authorization", "Bearer " + patientJwt)
+                    .log().all()
+                    .put(getApiRoot() + "/order/7/patient-approve")
+                    .then().log().all()
+                    .statusCode(Response.Status.OK.getStatusCode());
+        }
+    }
 }
