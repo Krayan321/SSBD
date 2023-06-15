@@ -64,16 +64,13 @@ export default function ShowBucket() {
     };
 
     const handleDelete = (medicationName) => {
-        let idx = -1;
-        bucket.find(({ medication, i }) => {
-            if(medication.name === medicationName) {
-                idx = i;
+        for (const i in bucket) {
+            if(bucket[i].medication.name === medicationName){
+                bucket.splice(i, 1);
+                localStorage.setItem("bucket", JSON.stringify(bucket));
+                refreshCart();
             }
-        });
-        bucket.splice(idx, 1);
-
-        localStorage.setItem("bucket", JSON.stringify(bucket));
-        refreshCart();
+        }
     };
 
     const handleBuy = () => {
@@ -118,35 +115,16 @@ export default function ShowBucket() {
                     {position: "top-center"});
             })
         })
-
-        // setBucket([]);
-        // localStorage.removeItem("bucket")
-        // toast.success(t("bought_successfully"), {position: "top-center"});
     };
 
 
 
     const handleConfirmation = (accepted) => {
         if (accepted) {
-            sendDataToBackend();
+            // sendDataToBackend();
         }
         setItemToDelete(null);
         setDialogOpen(false);
-    };
-
-
-    const sendDataToBackend = () => {
-        const localStorageData = localStorage.getItem("bucket");
-
-        const dataToSend = {
-            localStorageData: JSON.parse(localStorageData),
-        };
-        createOrder(dataToSend).then((response) => {
-
-            })
-            .catch((error) => {
-                console.error(error);
-            });
     };
 
     if (loading) {
