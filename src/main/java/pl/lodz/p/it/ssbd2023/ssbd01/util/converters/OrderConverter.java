@@ -47,9 +47,13 @@ public class OrderConverter {
 
   public static Prescription mapCreateOrderPrescriptionToPrescription(
           CreateOrderPrescriptionDTO prescription) {
-    return prescription == null
-            ? null
-            : new Prescription(prescription.getPrescriptionNumber());
+    if(prescription == null) {
+      return null;
+    }
+    if(prescription.getPrescriptionNumber() == null) {
+      return null;
+    }
+    return new Prescription(prescription.getPrescriptionNumber());
   }
 
   public static EtagVerification mapCreateOrderDtoToEtagVerification(CreateOrderDTO order) {

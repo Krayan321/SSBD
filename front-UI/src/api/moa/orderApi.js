@@ -40,6 +40,6 @@ export async function cancelOrder(id) {
   return await postWithEtag(`order/${id}/cancel`)
 }
 
-export async function submitOrder(orderData) {
-  return await postWithEtag("order/update-queue", orderData);
-}
+// export async function submitOrder(orderData) {
+//   return await postWithEtag("order/update-queue", orderData);
+// }

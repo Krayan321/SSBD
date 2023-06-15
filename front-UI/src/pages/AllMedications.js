@@ -29,32 +29,7 @@ export default function AllMedications() {
     const {t} = useTranslation();
 
     const isMedicationInBucket = (medication) => {
-        return bucket.some((item) => item.name === medication.name && item.categoryName === medication.categoryDTO.name);
-    };
-
-    const handleAddToBucket = async (name, price, categoryName, id) => {
-        const toAdd = {name: name, price: price, categoryName: categoryName, quantity: 1, id: id};
-        setItemToAdd(toAdd);
-        setDialogOpen(true);
-    };
-
-    const handleConfirmation = (accepted) => {
-        if (accepted) {
-            let flag = false;
-            for (let o of bucket) {
-                if (o.name === itemToAdd.name) {
-                    flag = true;
-                }
-            }
-            if (!flag) {
-                bucket.push(itemToAdd);
-                localStorage.setItem("bucket", JSON.stringify(bucket))
-            }
-            toast.success(t("medication_added_to_basket"), {position: "top-center"});
-        }
-        setItemToAdd(null);
-        setDialogOpen(false);
-
+        return bucket.some((item) => item.medication.name === medication.name);
     };
 
     const findMedications = useCallback(async () => {
@@ -72,7 +47,6 @@ export default function AllMedications() {
             .then((response) => {
                 setLoading(false);
                 setMedications(response.data);
-                console.log(response.data);
             })
             .catch((error) => {
                 setLoading(false);
@@ -92,6 +66,16 @@ export default function AllMedications() {
 
     const handleRefresh = () => {
         findMedications();
+    };
+
+    const handleAddToBucket = async (id) => {
+        const toAdd = medications.find((med) => med.id == id);
+        const isset = bucket.find((om) => om.name == toAdd.name);
+        if(isset == undefined) {
+            bucket.push({medication: toAdd, quantity: 1});
+            localStorage.setItem("bucket", JSON.stringify(bucket))
+        }
+        handleRefresh();
     };
 
     if (loading) {
@@ -211,8 +195,8 @@ export default function AllMedications() {
                                 <TableCell align="right">
                                     {!isMedicationInBucket(row) ? (
                                         <Button
-                                            onClick={() => handleAddToBucket(row.name, row.currentPrice, row.categoryDTO.name, row.id)}>
-                                            {t('dodaj')}
+                                            onClick={() => handleAddToBucket(row.id)}>
+                                            {t('add')}
                                         </Button>
                                     ) : (
                                         <>
@@ -227,15 +211,6 @@ export default function AllMedications() {
                             </TableRow>
                         ))}
                     </TableBody>
-                    <ConfirmationDialog
-                        open={dialogOpen}
-                        title={t("confirm_add_medication_to_basket")}
-                        actions={[
-                            {label: t("add"), handler: () => handleConfirmation(true), color: "primary"},
-                            {label: t("cancel"), handler: () => handleConfirmation(false), color: "secondary"},
-                        ]}
-                        onClose={() => setDialogOpen(false)}
-                    />
                 </Table>
                 <ToastContainer/>
             </TableContainer>

@@ -252,5 +252,7 @@
   "order_pending": "Zamówienie czeka na zatwierdzenie przez farmaceutę",
   "order_in_queue": "Zamówienie trafiło do kolejki",
   "bad_prescription_number": "Zły numer recepty",
-  "bought_successfully": "Zakup udany!"
+  "bought_successfully": "Zakup udany!",
+  "exception.order.prescription.already-exists": "Podana recepta jest już zarejestrowana",
+  "exception.order.prescription.required": "Wymagane jest podanie recepty"
 }

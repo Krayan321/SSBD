@@ -36,9 +36,9 @@ public abstract class BaseTest {
       MountableFile.forHostPath(Paths.get("target/ssbd01-0.0.1.war").toAbsolutePath());
 
   static String getApiRoot() {
-    return "http://localhost:8080/api";
-//    return String.format(
-//        "http://%s:%s/api", payaraServerContainer.getHost(), payaraServerContainer.getMappedPort(8080));
+//    return "http://localhost:8080/api";
+    return String.format(
+        "http://%s:%s/api", payaraServerContainer.getHost(), payaraServerContainer.getMappedPort(8080));
   }
 
   static final PostgreSQLContainer postgreSQLContainer;
