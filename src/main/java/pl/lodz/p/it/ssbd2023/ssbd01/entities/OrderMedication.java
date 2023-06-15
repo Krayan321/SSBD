@@ -43,7 +43,7 @@ public class OrderMedication extends AbstractEntity implements Serializable {
   @JoinColumn(name = "order_id", updatable = false, nullable = false)
   private Order order;
 
-  @ManyToOne(optional = false)
+  @ManyToOne(cascade = {CascadeType.MERGE}, optional = false)
   @JoinColumn(name = "medication_id", updatable = false, nullable = false)
   private Medication medication;
 
@@ -52,7 +52,7 @@ public class OrderMedication extends AbstractEntity implements Serializable {
   private Integer quantity;
 
   @Builder
-  OrderMedication(Order order, Medication medication, Integer quantity, BigDecimal purchasePrice) {
+  public OrderMedication(Order order, Medication medication, Integer quantity, BigDecimal purchasePrice) {
     this.setOrder(order);
     this.setMedication(medication);
     this.setQuantity(quantity);

@@ -1,10 +1,7 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.entities;
 
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -14,6 +11,7 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
+@ToString
 @NoArgsConstructor
 @Table(
         name = "patient_order",
@@ -78,11 +76,11 @@ public class Order extends AbstractEntity implements Serializable {
         this.chemistData = chemistData;
     }
 
-    @Builder(builderMethodName = "createBuilder")
+    @Builder(builderMethodName = "createBuilder", buildMethodName = "createBuild")
     public Order(Date orderDate, Prescription prescription,
                  List<OrderMedication> orderMedications) {
         this.orderDate = orderDate;
         this.prescription = prescription;
-        this.orderMedications = orderMedications;
+        this.orderMedications = new ArrayList<>(orderMedications);
     }
 }

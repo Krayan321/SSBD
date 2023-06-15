@@ -45,20 +45,16 @@ public class OrderManager extends AbstractManager
     private ShipmentFacade shipmentFacade;
     @Inject
     private AccountFacade accountFacade;
-    @Inject
-    private PatientDataFacade patientDataFacade;
     @Context
     private SecurityContext context;
-    @Inject
-    private ShipmentMedicationFacade shipmentMedicationFacade;
 
 
     @Override
     @RolesAllowed("createOrder")
     public void createOrder(Order order, EtagVerification etagVerification) {
         Account account = getCurrentUserWithAccessLevels();
-        log.info(AccessLevelFinder.findAccessLevel(account, Role.PATIENT).toString());
-        order.setPatientData(AccessLevelFinder.findAccessLevel(account, Role.PATIENT));
+        AccessLevel patientData = AccessLevelFinder.findAccessLevel(account, Role.PATIENT);
+        order.setPatientData(patientData);
 
         order.getOrderMedications().forEach(om -> {
             om.setOrder(order);
@@ -68,18 +64,20 @@ public class OrderManager extends AbstractManager
             om.setPurchasePrice(medication.getCurrentPrice());
         });
 
+        if(checkIsOnPrescription(order)) {
+            if(order.getPrescription() == null) {
+                throw OrderException.createPrescriptionRequired();
+            }
+            order.getPrescription().setPatientData(patientData);
+            order.setOrderState(OrderState.WAITING_FOR_CHEMIST_APPROVAL);
+        } else {
+            order.setOrderState(OrderState.FINALISED);
+        }
+
         if (!checkAllMedicationsAvailable(order)) {
             order.setOrderState(OrderState.IN_QUEUE);
         } else {
             decreaseMedicationStock(order, etagVerification);
-            if(checkIsOnPrescription(order)) {
-                if(order.getPrescription() == null) {
-                    throw OrderException.createPrescriptionRequired();
-                }
-                order.setOrderState(OrderState.WAITING_FOR_CHEMIST_APPROVAL);
-            } else {
-                order.setOrderState(OrderState.FINALISED);
-            }
         }
         orderFacade.create(order);
     }

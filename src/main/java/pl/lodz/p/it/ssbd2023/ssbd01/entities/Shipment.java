@@ -41,7 +41,7 @@ public class Shipment extends AbstractEntity implements Serializable {
   public Shipment(Date shipmentDate,
                   List<ShipmentMedication> shipmentMedications) {
     this.shipmentDate = shipmentDate;
-    this.shipmentMedications = shipmentMedications;
+    this.shipmentMedications = new ArrayList<>(shipmentMedications);
   }
 
   @Id

@@ -36,13 +36,13 @@ public class OrderConverter {
 
   public static Order mapCreateOrderDTOToOrder(CreateOrderDTO createOrderDTO) {
     return Order.createBuilder()
+            .orderMedications(OrderMedicationConverter.mapCreateOrderMedicationsDTOToOrderMedications(
+                    createOrderDTO.getOrderMedications()))
             .orderDate(Date.from(LocalDateTime.parse(createOrderDTO.getOrderDate())
                     .toInstant(ZoneOffset.UTC)))
             .prescription(mapCreateOrderPrescriptionToPrescription(
                     createOrderDTO.getPrescription()))
-            .orderMedications(OrderMedicationConverter.mapCreateOrderMedicationsDTOToOrderMedications(
-                    createOrderDTO.getOrderMedications()))
-            .build();
+            .createBuild();
   }
 
   public static Prescription mapCreateOrderPrescriptionToPrescription(
