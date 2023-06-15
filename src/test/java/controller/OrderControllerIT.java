@@ -278,7 +278,7 @@ public class OrderControllerIT extends BaseTest {
                     .log().all()
                     .put(getApiRoot() + "/order/update-queue")
                     .then().log().all()
-                    .statusCode(Response.Status.OK.getStatusCode());
+                    .statusCode(Response.Status.NO_CONTENT.getStatusCode());
         }
     }
 
@@ -445,6 +445,22 @@ public class OrderControllerIT extends BaseTest {
                     .then().log().all()
                     .statusCode(Response.Status.BAD_REQUEST.getStatusCode())
                     .body("message", equalTo(EXCEPTION_PRESCRIPTION_REQUIRED));
+        }
+
+        @Test
+        @Order(5)
+        public void submitOrder_onPrescription_prescriptionExists() {
+            setNewVersions();
+            createOrderDTO.getOrderMedications().add(medicationOnPrescription);
+            createOrderDTO.setPrescription(new CreateOrderPrescriptionDTO("1236"));
+
+            given().header("Authorization", "Bearer " + patientJwt)
+                    .body(createOrderDTO)
+                    .log().all()
+                    .post(getApiRoot() + "/order/submit")
+                    .then().log().all()
+                    .statusCode(Response.Status.CONFLICT.getStatusCode())
+                    .body("message", equalTo(EXCEPTION_PRESCRIPTION_ALREADY_EXISTS));
         }
     }
 }

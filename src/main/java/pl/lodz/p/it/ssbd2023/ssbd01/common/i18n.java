@@ -98,7 +98,9 @@ public class i18n {
   public static final String EXCEPTION_NO_PERMISSION_TO_APPROVE_ORDER =
           "exception.no.permission.to.approve.order";
   public static final String EXCEPTION_PRESCRIPTION_REQUIRED =
-          "exception.order.prescription-required";
+          "exception.order.prescription.required";
+  public static final String EXCEPTION_PRESCRIPTION_ALREADY_EXISTS =
+          "exception.order.prescription.already-exists";
 
   public static final String EXCEPTION_ORDER_NOT_FOUND =
           "exception.order_not_found";

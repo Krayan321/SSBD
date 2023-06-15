@@ -157,7 +157,7 @@ public class OrderController extends AbstractController {
     @RolesAllowed("updateQueue")
     public Response updateQueue() {
         repeatTransactionVoidWithOptimisticLock(orderManager, () -> orderManager.updateQueue());
-        return Response.ok().build();
+        return Response.noContent().build();
     }
 
     //moa 15

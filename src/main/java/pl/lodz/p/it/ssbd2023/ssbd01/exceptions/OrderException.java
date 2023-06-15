@@ -38,6 +38,9 @@ public class OrderException extends ApplicationException {
   public static OrderException createPrescriptionRequired() {
     return new OrderException(BAD_REQUEST, EXCEPTION_PRESCRIPTION_REQUIRED);
   }
+  public static OrderException createPrescriptionAlreadyExists() {
+    return new OrderException(CONFLICT, EXCEPTION_PRESCRIPTION_ALREADY_EXISTS);
+  }
   public static OrderException orderNotFound(Long id) {
     return new OrderException(FORBIDDEN, EXCEPTION_ORDER_NOT_FOUND);
   }

@@ -18,6 +18,7 @@ import lombok.extern.java.Log;
 import pl.lodz.p.it.ssbd2023.ssbd01.common.AbstractManager;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.*;
 import pl.lodz.p.it.ssbd2023.ssbd01.exceptions.ApplicationException;
+import pl.lodz.p.it.ssbd2023.ssbd01.exceptions.ApplicationExceptionEntityNotFound;
 import pl.lodz.p.it.ssbd2023.ssbd01.exceptions.OrderException;
 import pl.lodz.p.it.ssbd2023.ssbd01.interceptors.GenericManagerExceptionsInterceptor;
 import pl.lodz.p.it.ssbd2023.ssbd01.interceptors.TrackerInterceptor;
@@ -96,6 +97,8 @@ public class OrderManager extends AbstractManager
     @RolesAllowed("createOrder")
     private boolean checkIsOnPrescription(Order order) {
         for (OrderMedication om : order.getOrderMedications()) {
+            log.info("name: " + om.getMedication().getCategory().getName() +
+                    " is on presc: " + om.getMedication().getCategory().getIsOnPrescription());
             if (om.getMedication().getCategory().getIsOnPrescription()) {
                 return true;
             }
@@ -199,15 +202,12 @@ public class OrderManager extends AbstractManager
     @Override
     @RolesAllowed("getAllOrdersForSelf")
     public List<Order> getAllOrdersForSelf(Account account) {
-        account
-                .getAccessLevels()
-                .forEach(
-                        accessLevel -> {
-                            if (!accessLevel.getRole().getRoleName().equals("PATIENT")) {
-                                throw OrderException.onlyPatientCanListOrders();
-                            }
-                        });
-        return orderFacade.findAllByPatientId(account.getId());
+        try {
+            AccessLevel patientData = AccessLevelFinder.findAccessLevel(account, Role.PATIENT);
+            return orderFacade.findAllByPatientId(patientData.getId());
+        } catch(ApplicationExceptionEntityNotFound e) {
+            throw OrderException.onlyPatientCanListOrders();
+        }
     }
 
     @Override
@@ -248,13 +248,11 @@ public class OrderManager extends AbstractManager
     @RolesAllowed("withdraw")
     public void withdrawOrder(Long id) {
         Account account = getCurrentUser();
-        Optional<Order> order = orderFacade.find(id);
-        if (order.get().getOrderState() != OrderState.TO_BE_APPROVED_BY_PATIENT
-                || (account.getId() != order.get().getPatientData().getId())) {
+        Order order = orderFacade.find(id).orElseThrow();
+        if (!order.getOrderState().equals(OrderState.TO_BE_APPROVED_BY_PATIENT)) {
             throw OrderException.noPermissionToDeleteOrder();
         }
         orderFacade.withdrawOrder(id, account.getId());
-
     }
 
     @Override
