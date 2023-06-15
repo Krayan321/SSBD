@@ -9,7 +9,17 @@ import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.*;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.editAccount.EditAccountDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.order.CreateOrderDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.order.CreateOrderMedicationDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.order.CreateOrderPrescriptionDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.shipment.CreateShipmentDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.shipment.CreateShipmentMedicationDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.shipment.MedicationCreateShipmentDTO;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import static controller.dataForTests.*;
 import static io.restassured.RestAssured.given;
@@ -139,6 +149,44 @@ public class OrderControllerIT extends BaseTest {
                 .statusCode(Response.Status.OK.getStatusCode());
     }
 
+    @Test
+    @Order(3)
+    void should_change_orderStatus_when_update_queue() {
+        given()
+                .header("Authorization", "Bearer " + patientJwt)
+                .get(getApiRoot() + "/order/self")
+                .then()
+                .log().all()
+                .body("[1].orderState", equalTo("IN_QUEUE"))
+                .statusCode(Response.Status.OK.getStatusCode());
+
+        given()
+                .header("Authorization", "Bearer " + chemistJwt)
+                .put(getApiRoot() + "/order/update-queue")
+                .then()
+                .log().all()
+                .statusCode(Response.Status.NO_CONTENT.getStatusCode());
+
+        given()
+                .header("Authorization", "Bearer " + patientJwt)
+                .get(getApiRoot() + "/order/self")
+                .then()
+                .log().all()
+                .body("[1].orderState", equalTo("FINALISED"))
+                .statusCode(Response.Status.OK.getStatusCode());
+    }
+
+    @Test
+    @Order(4)
+    void only_chemist_should_update_queue() {
+        given()
+                .header("Authorization", "Bearer " + patientJwt)
+                .put(getApiRoot() + "/order/update-queue")
+                .then()
+                .log().all()
+                .statusCode(Response.Status.FORBIDDEN.getStatusCode());
+    }
+
     @Nested
     @Order(3)
     @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -255,6 +303,71 @@ public class OrderControllerIT extends BaseTest {
                     .put(getApiRoot() + "/order/6/withdraw")
                     .then().log().all()
                     .statusCode(Response.Status.OK.getStatusCode());
+        }
+    }
+
+    @Nested
+    @Order(7)
+    @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+    class CreateOrder {
+
+        private static CreateOrderDTO createOrderDTO = CreateOrderDTO.builder()
+                .orderDate(LocalDateTime.now().toString())
+                .orderMedications(new ArrayList<>())
+                .build();
+
+        private static CreateOrderMedicationDTO medicationOnPrescription;
+        private static CreateOrderMedicationDTO medicationOtc;
+
+        @BeforeAll
+        static void setNewVersions() {
+            List<CreateOrderMedicationDTO> medications = new ArrayList<>();
+
+            var responseMed1 = given()
+                    .header("authorization", "Bearer " + chemistJwt)
+                    .get(getApiRoot() + "/medication/7")
+                    .then().log().all()
+                    .statusCode(Response.Status.OK.getStatusCode())
+                    .extract().response();
+            String etag1 = responseMed1.getHeader("ETag").replace("\"", "");
+            Long version1 = responseMed1.getBody().jsonPath().getLong("version");
+            String name1 = responseMed1.getBody().jsonPath().getString("name");
+
+            medicationOnPrescription = CreateOrderMedicationDTO.builder()
+                    .quantity(2)
+                    .version(version1)
+                    .name(name1)
+                    .etag(etag1)
+                    .build();
+
+            var responseMed2 = given()
+                    .header("authorization", "Bearer " + chemistJwt)
+                    .get(getApiRoot() + "/medication/8")
+                    .then().log().all()
+                    .statusCode(Response.Status.OK.getStatusCode())
+                    .extract().response();
+            String etag2 = responseMed2.getHeader("ETag").replace("\"", "");
+            Long version2 = responseMed2.getBody().jsonPath().getLong("version");
+            String name2 = responseMed2.getBody().jsonPath().getString("name");
+
+            medicationOtc = CreateOrderMedicationDTO.builder()
+                    .quantity(2)
+                    .version(version2)
+                    .name(name2)
+                    .etag(etag2)
+                    .build();
+        }
+
+        @Test
+        @Order(1)
+        public void submitOrder_correct() {
+            createOrderDTO.getOrderMedications().add(medicationOtc);
+            given().header("Authorization", "Bearer " + patientJwt)
+                    .body(createOrderDTO)
+                    .log().all()
+                    .post(getApiRoot() + "/order/submit")
+                    .then().log().all()
+                    .statusCode(Response.Status.CREATED.getStatusCode());
         }
     }
 

@@ -10,7 +10,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class CreateOrderPrescription {
+public class CreateOrderPrescriptionDTO {
     @NotNull
     private String prescriptionNumber;
 }

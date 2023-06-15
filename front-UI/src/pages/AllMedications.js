@@ -32,8 +32,8 @@ export default function AllMedications() {
         return bucket.some((item) => item.name === medication.name && item.categoryName === medication.categoryDTO.name);
     };
 
-    const handleAddToBucket = async (name, price, categoryName) => {
-        const toAdd = {name: name, price: price, categoryName: categoryName, quantity: 1};
+    const handleAddToBucket = async (name, price, categoryName, id) => {
+        const toAdd = {name: name, price: price, categoryName: categoryName, quantity: 1, id: id};
         setItemToAdd(toAdd);
         setDialogOpen(true);
     };
@@ -211,7 +211,7 @@ export default function AllMedications() {
                                 <TableCell align="right">
                                     {!isMedicationInBucket(row) ? (
                                         <Button
-                                            onClick={() => handleAddToBucket(row.name, row.currentPrice, row.categoryDTO.name)}>
+                                            onClick={() => handleAddToBucket(row.name, row.currentPrice, row.categoryDTO.name, row.id)}>
                                             {t('dodaj')}
                                         </Button>
                                     ) : (

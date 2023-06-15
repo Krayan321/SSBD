@@ -2,6 +2,7 @@ package pl.lodz.p.it.ssbd2023.ssbd01.util;
 
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.AccessLevel;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Account;
+import pl.lodz.p.it.ssbd2023.ssbd01.entities.PatientData;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Role;
 import pl.lodz.p.it.ssbd2023.ssbd01.exceptions.ApplicationException;
 
@@ -13,5 +14,10 @@ public class AccessLevelFinder {
       }
     }
     throw ApplicationException.createEntityNotFoundException();
+  }
+
+  public static PatientData findPatientData(Account account) {
+    AccessLevel accessLevel = findAccessLevel(account, Role.PATIENT);
+    return (PatientData) accessLevel;
   }
 }

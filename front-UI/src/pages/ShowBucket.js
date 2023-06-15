@@ -15,8 +15,10 @@ import { Pathnames } from "../router/Pathnames";
 import { getSelfAccountDetails } from "../api/mok/accountApi";
 import { submitOrder } from "../api/moa/orderApi";
 import ConfirmationDialog from "../components/ConfirmationDialog";
-import ProductionQuantityLimitsIcon from "@mui/icons-material/ProductionQuantityLimits";
-import axios from "axios";
+import ProductionQuantityLimitsIcon from '@mui/icons-material/ProductionQuantityLimits';
+import axios from 'axios';
+import {getMedication} from "../api/moa/medicationApi";
+import dayjs from "dayjs";
 
 export default function ShowBucket() {
     const [bucket, setBucket] = useState([]);
@@ -28,6 +30,7 @@ export default function ShowBucket() {
     const { t } = useTranslation();
     const [patientData, setPatientData] = useState();
     const [id, setId] = useState();
+    const [prescriptionNumber, setPrescriptionNumber] = useState();
     const [dialogOpen, setDialogOpen] = useState(false);
     const [itemToDelete, setItemToDelete] = useState(null);
 
@@ -35,7 +38,6 @@ export default function ShowBucket() {
         const fetchData = async () => {
             const response = await getSelfAccountDetails();
             setAccessLevels(response.data.accessLevels);
-            setId(response.data.id);
             let data;
             accessLevels.forEach((element) => {
                 if (element.role === "PATIENT") {
@@ -66,8 +68,52 @@ export default function ShowBucket() {
     };
 
     const handleBuy = () => {
-        setDialogOpen(true);
+        if (prescriptionNumber < 100000000 || prescriptionNumber > 999999999) {
+            toast.error(t("bad_prescription_number"))
+            return
+        }
+
+        let order_medication = [];
+
+        const order_date = dayjs().format('YYYY-MM-DDTHH:mm:ss.SSS');
+        const prescription = {
+            prescriptionNumber: prescriptionNumber
+        }
+        const str = localStorage.getItem("bucket")
+        const array = JSON.parse(str);
+
+        array.forEach((element) => {
+            getMedication(element.id).then((response) => {
+                const etag = response.headers['etag'].split('"').join('');
+                const version = response.data.version;
+                order_medication.push({
+                    name: element.name,
+                    quantity: element.quantity,
+                    version: version,
+                    etag: etag,
+                    signablePayload: element.name + "." + version,
+                });
+            }).catch((error) => {
+                setLoading(false)
+                toast.error(t(error.response.data.message),
+                    {position: "top-center"});
+            })
+        })
+
+        const to_send = {
+            orderDate: order_date,
+            orderMedications: order_medication,
+            prescription: prescription
+        }
+
+        console.log(to_send);
+        createOrder(to_send);
+        setBucket([]);
+        localStorage.removeItem("bucket")
+        toast.success(t("bought_successfully"), {position: "top-center"});
     };
+
+
 
     const handleConfirmation = (accepted) => {
         if (accepted) {
@@ -113,12 +159,86 @@ export default function ShowBucket() {
             });
     };
 
+    if (loading) {
+        return (
+
+            <TableContainer component={Paper}>
+                <Table>
+                    <TableHead sx={{backgroundColor: theme.palette.primary.main}}>
+                        <TableRow>
+                            <TableCell sx={{color: "white"}}>{t("show_bucket_name")}</TableCell>
+                            <TableCell sx={{color: "white"}} align="right">{t("show_bucket_price")}</TableCell>
+                            <TableCell sx={{color: "white"}} align="right">{t("show_bucket_category")}</TableCell>
+                            <TableCell sx={{color: "white"}} align="right">{t("show_bucket_quantity")}</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        <TableRow>
+                            <TableCell>
+                                <Skeleton/>
+                            </TableCell>
+                            <TableCell>
+                                <Skeleton/>
+                            </TableCell>
+                            <TableCell>
+                                <Skeleton/>
+                            </TableCell>
+                            <TableCell>
+                                <Skeleton/>
+                            </TableCell>
+                            <TableCell>
+                                <Skeleton/>
+                            </TableCell>
+                        </TableRow>
+                    </TableBody>
+                </Table>
+            </TableContainer>
+        );
+    }
+
+    if (bucket.length === 0) {
+        return (
+            <div style={{textAlign: 'center'}}>
+                <Paper elevation={20} className="paper">
+                    <Stack justifyContent="center"
+                           alignItems="center" spacing={2}>
+                        <ProductionQuantityLimitsIcon style={{fontSize: 60}}/>
+                        <h5 style={{fontFamily: 'Lato'}}>
+                            {t("whoa_such_empty")} </h5>
+                        <Button onClick={() => {
+                            navigate(Pathnames.patientChemist.medications,)
+                        }} variant="contained" color="primary">
+                            {t("add_something_to_basket")}
+                        </Button>
+                    </Stack>
+                </Paper>
+            </div>
+        );
+    }
+
     return (
         <div style={{ display: "flex", justifyContent: "center", alignContent: "center", flexDirection: "column" }}>
             <Box sx={{ marginBottom: "10px", textAlign: "center" }}>
                 <IconButton variant="contained" onClick={() => handleBuy()}>
                     <PointOfSaleIcon />
                 </IconButton>
+                <TextField
+                    type="number"
+                    variant='outlined'
+                    color='secondary'
+                    align="right"
+                    inputMode="numeric"
+                    onChange={(e) => {
+                        if (e.target.value > 999999999) {
+                            e.target.value = "999999999";
+                        }
+                        if (e.target.value < 0) {
+                            e.target.value = "1";
+                        }
+                        setPrescriptionNumber(e.target.value);
+                    }
+                    }
+                />
             </Box>
             {bucket.length > 0 ? (
                 <TableContainer component={Paper}>

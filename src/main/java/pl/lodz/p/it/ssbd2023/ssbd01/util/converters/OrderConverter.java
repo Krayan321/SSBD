@@ -1,14 +1,16 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.util.converters;
 
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.order.CreateOrderDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.order.CreateOrderPrescriptionDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.order.OrderDTO;
-import pl.lodz.p.it.ssbd2023.ssbd01.dto.order.OrderMedicationDTO;
-import pl.lodz.p.it.ssbd2023.ssbd01.entities.Order;
-import pl.lodz.p.it.ssbd2023.ssbd01.entities.OrderMedication;
-import pl.lodz.p.it.ssbd2023.ssbd01.entities.Prescription;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.shipment.CreateShipmentDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.shipment.MedicationCreateShipmentDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.entities.*;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.util.Date;
+import java.util.HashMap;
 
 public class OrderConverter {
 
@@ -21,7 +23,7 @@ public class OrderConverter {
                 .map(OrderMedicationConverter::mapOrderMedicationToOrderMedicationDTO)
                 .toList())
         .patientData(AccessLevelConverter
-                .mapPatientDataToPatientDataDto(order.getPatientData()))
+                .mapPatientDataToPatientDataDto((PatientData) order.getPatientData()))
         .prescription(
             order.getPrescription() == null
                 ? null
@@ -32,22 +34,35 @@ public class OrderConverter {
         .build();
   }
 
-  //public static Order mapCreateOrderDTOToOrder(CreateOrderDTO createOrderDTO) {
-    //Order order = new Order();
-    //order.setOrderDate(createOrderDTO.getOrderDate());
-
-    // Konwersja listy OrderMedicationDTO na listę OrderMedication
-    //List<OrderMedication> orderMedications = createOrderDTO.getOrderMedication().stream()
-           // .map(CreateOrderMedicationConverter::mapCreateOrderMedicationDTOToOrderMedication)
-           // .collect(Collectors.toList());
-    //order.setOrderMedications(orderMedications);
-
-    // Konwersja CreateOrderPrescription na Prescription
-    //Prescription prescription = CreateOrderPrescriptionConverter.mapCreateOrderPrescriptionDTOToPrescription(createOrderDTO.getPrescription());
-    //order.setPrescription(prescription);
-
-    //return order;
+  public static Order mapCreateOrderDTOToOrder(CreateOrderDTO createOrderDTO) {
+    return Order.createBuilder()
+            .orderDate(Date.from(LocalDateTime.parse(createOrderDTO.getOrderDate())
+                    .toInstant(ZoneOffset.UTC)))
+            .prescription(mapCreateOrderPrescriptionToPrescription(
+                    createOrderDTO.getPrescription()))
+            .orderMedications(OrderMedicationConverter.mapCreateOrderMedicationsDTOToOrderMedications(
+                    createOrderDTO.getOrderMedications()))
+            .build();
   }
+
+  public static Prescription mapCreateOrderPrescriptionToPrescription(
+          CreateOrderPrescriptionDTO prescription) {
+    return prescription == null
+            ? null
+            : new Prescription(prescription.getPrescriptionNumber());
+  }
+
+  public static EtagVerification mapCreateOrderDtoToEtagVerification(CreateOrderDTO order) {
+    EtagVerification etagVerification = new EtagVerification(new HashMap<>());
+    order.getOrderMedications().forEach(om -> {
+      etagVerification.getEtagVersionList().put(om.getName(), EtagVersion.builder()
+              .version(om.getVersion())
+              .etag(om.getEtag())
+              .build());
+    });
+    return etagVerification;
+  }
+}
 
 
 

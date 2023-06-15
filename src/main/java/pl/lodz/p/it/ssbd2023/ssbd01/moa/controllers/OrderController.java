@@ -13,11 +13,17 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Response;
 import lombok.extern.java.Log;
 import pl.lodz.p.it.ssbd2023.ssbd01.common.AbstractController;
+import pl.lodz.p.it.ssbd2023.ssbd01.config.EntityIdentitySignerVerifier;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.order.CreateOrderDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.order.OrderDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.entities.EtagVerification;
+import pl.lodz.p.it.ssbd2023.ssbd01.entities.EtagVersion;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Order;
+import pl.lodz.p.it.ssbd2023.ssbd01.exceptions.ApplicationException;
 import pl.lodz.p.it.ssbd2023.ssbd01.moa.managers.OrderManagerLocal;
 import pl.lodz.p.it.ssbd2023.ssbd01.mok.managers.AccountManagerLocal;
 import pl.lodz.p.it.ssbd2023.ssbd01.util.converters.OrderConverter;
+import pl.lodz.p.it.ssbd2023.ssbd01.util.converters.ShipmentConverter;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -32,6 +38,8 @@ public class OrderController extends AbstractController {
     private OrderManagerLocal orderManager;
     @Inject
     private AccountManagerLocal accountManager;
+    @Inject
+    private EntityIdentitySignerVerifier entityIdentitySignerVerifier;
 
     //moa 18
     @GET
@@ -86,13 +94,21 @@ public class OrderController extends AbstractController {
     @POST
     @Path("/submit")
     @RolesAllowed("createOrder")
-    public Response submitOrder(String localStorageData) {
-        Order order = repeatTransaction(orderManager, () -> orderManager
-                .createOrder(localStorageData));
+    public Response submitOrder(@Valid CreateOrderDTO createOrderDTO) {
+      EtagVerification etagVerification = OrderConverter
+              .mapCreateOrderDtoToEtagVerification(createOrderDTO);
 
-        OrderDTO orderDTO = OrderConverter.mapOrderToOrderDTO(order);
-
-        return Response.ok(orderDTO).build();
+      createOrderDTO.getOrderMedications().forEach(om -> {
+        EtagVersion etagVersion = etagVerification.getEtagVersionList().get(om.getName());
+        if(!entityIdentitySignerVerifier.validateEntitySignature(etagVersion.getEtag()) ||
+                !entityIdentitySignerVerifier.verifyEntityIntegrity(om, etagVersion.getEtag())) {
+          throw ApplicationException.createEtagNotValidException();
+        }
+      });
+      Order inputOrder = OrderConverter.mapCreateOrderDTOToOrder(createOrderDTO);
+      repeatTransactionVoid(orderManager, () -> orderManager
+              .createOrder(inputOrder, etagVerification));
+      return Response.status(Response.Status.CREATED).build();
     }
 
 

@@ -250,5 +250,7 @@
   "order_deleted_successfully": "Order deleted successfully",
   "order_finalized": "Order finalized",
   "order_pending": "Order waiting for chemist to approve",
-  "order_in_queue": "Order in queue"
+  "order_in_queue": "Order in queue",
+  "bad_prescription_number": "Bad prescription Order",
+  "bought_successfully": "Bought successfully!"
 }

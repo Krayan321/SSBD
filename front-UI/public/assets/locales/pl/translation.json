@@ -250,6 +250,7 @@
   "order_deleted_successfully": "Usunięto zamówienie",
   "order_finalized": "Zamówienie gotowe",
   "order_pending": "Zamówienie czeka na zatwierdzenie przez farmaceutę",
-  "order_in_queue": "Zamówienie trafiło do kolejki"
-
+  "order_in_queue": "Zamówienie trafiło do kolejki",
+  "bad_prescription_number": "Zły numer recepty",
+  "bought_successfully": "Zakup udany!"
 }
