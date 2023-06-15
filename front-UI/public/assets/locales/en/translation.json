@@ -248,5 +248,6 @@
   "invalid_medication_data": "Invalid medication data",
   "add_medication": "Add medication",
   "order_deleted_successfully": "Order deleted successfully",
-  "bad_prescription_number": "Bad prescription Order"
+  "bad_prescription_number": "Bad prescription Order",
+  "bought_successfully": "Bought successfully!"
 }

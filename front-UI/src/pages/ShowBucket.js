@@ -18,6 +18,7 @@ import ConfirmationDialog from "../components/ConfirmationDialog";
 import ProductionQuantityLimitsIcon from '@mui/icons-material/ProductionQuantityLimits';
 import axios from 'axios';
 import {getMedication} from "../api/moa/medicationApi";
+import dayjs from "dayjs";
 
 export default function ShowBucket() {
     const [bucket, setBucket] = useState([]);
@@ -72,9 +73,9 @@ export default function ShowBucket() {
 
         let order_medication = [];
 
-        const order_date = Date.now();
+        const order_date = dayjs().format('YYYY-MM-DDTHH:mm:ss.SSS');
         const prescription = {
-            prescriptionNumber: Math.floor(100000000 + Math.random() * 900000000)
+            prescriptionNumber: prescriptionNumber
         }
         const str = localStorage.getItem("bucket")
         const array = JSON.parse(str);
@@ -103,8 +104,11 @@ export default function ShowBucket() {
             prescription: prescription
         }
 
-        console.log(to_send)
+        console.log(to_send);
         createOrder(to_send);
+        setBucket([]);
+        localStorage.removeItem("bucket")
+        toast.success(t("bought_successfully"), {position: "top-center"});
     };
 
     const handleDelete = (medicationName) => {
@@ -203,6 +207,12 @@ export default function ShowBucket() {
                     align="right"
                     inputMode="numeric"
                     onChange={(e) => {
+                        if (e.target.value > 999999999) {
+                            e.target.value = "999999999";
+                        }
+                        if (e.target.value < 0) {
+                            e.target.value = "1";
+                        }
                         setPrescriptionNumber(e.target.value);
                     }
                     }
