@@ -1,4 +1,4 @@
-import { get, del, put } from "../api";
+import { get, del, put, postWithEtag, post } from "../api";
 
 export async function getSelfOrders() {
   return await get("order/self");
@@ -16,8 +16,8 @@ export async function approveOrder(id) {
     return await put(`order/${id}/approve`);
 }
 
-export async function createOrder() {
-  return await put("order/${id}/submit");
+export async function createOrder(to_send) {
+  return await post("order/submit", to_send);
 }
 
 export async function deleteWaitingOrdersById(id) {
@@ -37,5 +37,9 @@ export async function withdrawOrderById(id) {
 }
 
 export async function cancelOrder(id) {
-  return await put(`order/${id}/cancel`)
+  return await postWithEtag(`order/${id}/cancel`)
+}
+
+export async function submitOrder(orderData) {
+  return await postWithEtag("order/update-queue", orderData);
 }

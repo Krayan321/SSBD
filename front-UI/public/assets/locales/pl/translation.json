@@ -247,6 +247,10 @@
   "medication_created": "Lek utworzony",
   "invalid_medication_data": "Nieprawidłowe dane leku",
   "add_medication": "Dodaj lek",
-  "order_deleted_successfully": "Usunięto zamówienie"
-
+  "order_deleted_successfully": "Usunięto zamówienie",
+  "order_finalized": "Zamówienie gotowe",
+  "order_pending": "Zamówienie czeka na zatwierdzenie przez farmaceutę",
+  "order_in_queue": "Zamówienie trafiło do kolejki",
+  "bad_prescription_number": "Zły numer recepty",
+  "bought_successfully": "Zakup udany!"
 }
