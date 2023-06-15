@@ -13,6 +13,7 @@ import pl.lodz.p.it.ssbd2023.ssbd01.common.AbstractFacade;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Order;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.OrderState;
 import pl.lodz.p.it.ssbd2023.ssbd01.interceptors.GenericFacadeExceptionsInterceptor;
+import pl.lodz.p.it.ssbd2023.ssbd01.interceptors.OrderFacadeExceptionsInterceptor;
 import pl.lodz.p.it.ssbd2023.ssbd01.interceptors.TrackerInterceptor;
 
 import java.time.Instant;
@@ -24,6 +25,7 @@ import java.util.Optional;
 @TransactionAttribute(TransactionAttributeType.MANDATORY)
 @Interceptors({
         GenericFacadeExceptionsInterceptor.class,
+        OrderFacadeExceptionsInterceptor.class,
         TrackerInterceptor.class
 })
 public class OrderFacade extends AbstractFacade<Order> {

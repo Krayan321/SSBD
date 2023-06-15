@@ -13,7 +13,7 @@ import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { Pathnames } from "../router/Pathnames";
 import { getSelfAccountDetails } from "../api/mok/accountApi";
-import { submitOrder } from "../api/moa/orderApi";
+import {createOrder, submitOrder} from "../api/moa/orderApi";
 import ConfirmationDialog from "../components/ConfirmationDialog";
 import ProductionQuantityLimitsIcon from '@mui/icons-material/ProductionQuantityLimits';
 import axios from 'axios';
@@ -28,135 +28,103 @@ export default function ShowBucket() {
     const theme = useTheme();
     const [loading, setLoading] = useState(false);
     const { t } = useTranslation();
-    const [patientData, setPatientData] = useState();
     const [id, setId] = useState();
-    const [prescriptionNumber, setPrescriptionNumber] = useState();
+    const [prescriptionNumber, setPrescriptionNumber] = useState(false);
     const [dialogOpen, setDialogOpen] = useState(false);
+    const [isOnPrescription, setIsOnPrescription] = useState(false);
     const [itemToDelete, setItemToDelete] = useState(null);
 
     useEffect(() => {
-        const fetchData = async () => {
-            const response = await getSelfAccountDetails();
-            setAccessLevels(response.data.accessLevels);
-            let data;
-            accessLevels.forEach((element) => {
-                if (element.role === "PATIENT") {
-                    data = element;
-                }
-            });
-            setPatientData(data.id);
-        };
-        fetchData();
+        refreshCart();
+    }, [localStorage]);
+
+
+    const refreshCart = function() {
         if (localStorage.getItem("bucket") !== null) {
             const str = localStorage.getItem("bucket");
             if (!str) return;
             const array = JSON.parse(str);
-            console.log(array);
             setBucket(array);
-        } else {
-            setBucket([]);
+            setIsOnPrescription(false);
+            for (const om of array) {
+                if(om.medication.categoryDTO.isOnPrescription){
+                    setIsOnPrescription(true);
+                }
+            }
         }
-    }, [localStorage]);
+    }
 
     const handleChange = async (medicationName, quantity) => {
-        let temp_to_change = bucket.find(({ name }) => name === medicationName);
+        let temp_to_change = bucket.find(({ medication }) => medication.name === medicationName);
 
         temp_to_change.quantity = quantity;
 
         localStorage.setItem("bucket", JSON.stringify(bucket));
-        window.location.reload();
+        refreshCart();
+    };
+
+    const handleDelete = (medicationName) => {
+        for (const i in bucket) {
+            if(bucket[i].medication.name === medicationName){
+                bucket.splice(i, 1);
+                localStorage.setItem("bucket", JSON.stringify(bucket));
+                refreshCart();
+            }
+        }
     };
 
     const handleBuy = () => {
-        if (prescriptionNumber < 100000000 || prescriptionNumber > 999999999) {
-            toast.error(t("bad_prescription_number"))
-            return
-        }
+        setLoading(true);
+        const order = {
+            orderDate: dayjs().format('YYYY-MM-DDTHH:mm:ss.SSS'),
+            prescription: {
+                prescriptionNumber: prescriptionNumber ? prescriptionNumber : null
+            },
+            orderMedications: []
+        };
 
-        let order_medication = [];
-
-        const order_date = dayjs().format('YYYY-MM-DDTHH:mm:ss.SSS');
-        const prescription = {
-            prescriptionNumber: prescriptionNumber
-        }
         const str = localStorage.getItem("bucket")
         const array = JSON.parse(str);
 
-        array.forEach((element) => {
-            getMedication(element.id).then((response) => {
+        const length = array.length;
+        let count = 0;
+        array.forEach((om) => {
+            getMedication(om.medication.id).then((response) => {
                 const etag = response.headers['etag'].split('"').join('');
                 const version = response.data.version;
-                order_medication.push({
-                    name: element.name,
-                    quantity: element.quantity,
+                order.orderMedications.push({
+                    name: om.medication.name,
+                    quantity: om.quantity,
                     version: version,
                     etag: etag,
-                    signablePayload: element.name + "." + version,
                 });
+                count++;
+                if(count == length) {
+                    createOrder(order).then((response) => {
+                        setLoading(false)
+                        toast.success(t("bought_successfully"), {position: "top-center"});
+                    }).catch((error) => {
+                        setLoading(false)
+                        toast.error(t(error.response.data.message),
+                            {position: "top-center"});
+                    })
+                }
             }).catch((error) => {
                 setLoading(false)
                 toast.error(t(error.response.data.message),
                     {position: "top-center"});
             })
         })
-
-        const to_send = {
-            orderDate: order_date,
-            orderMedications: order_medication,
-            prescription: prescription
-        }
-
-        console.log(to_send);
-        createOrder(to_send);
-        setBucket([]);
-        localStorage.removeItem("bucket")
-        toast.success(t("bought_successfully"), {position: "top-center"});
     };
 
 
 
     const handleConfirmation = (accepted) => {
         if (accepted) {
-            sendDataToBackend();
-            submitOrder(patientData)
-                .then((response) => {
-                    const orderState = response.data.orderState;
-
-                    if (orderState === "IN_QUEUE") {
-                        toast.success(t("order_in_queue"));
-                    } else if (orderState === "TO_BE_APPROVED_BY_CHEMIST") {
-                        toast.success(t("order_pending"));
-                    } else {
-                        toast.warning(t("order_finalized"));
-                    }
-                })
-                .catch((error) => {
-                    toast.error(t("error_occurred"));
-                });
+            // sendDataToBackend();
         }
         setItemToDelete(null);
         setDialogOpen(false);
-    };
-
-
-    const handleDelete = (medicationName) => {
-        setItemToDelete(medicationName);
-        setDialogOpen(true);
-    };
-
-    const sendDataToBackend = () => {
-        const localStorageData = localStorage.getItem("bucket");
-        const dataToSend = {
-            localStorageData: JSON.parse(localStorageData),
-        };
-
-        axios.post("/order/submit", dataToSend) // Zmień "/backend-url" na odpowiedni adres URL backendu
-            .then((response) => {
-
-            })
-            .catch((error) => {
-                console.error(error);
-            });
     };
 
     if (loading) {
@@ -222,23 +190,14 @@ export default function ShowBucket() {
                 <IconButton variant="contained" onClick={() => handleBuy()}>
                     <PointOfSaleIcon />
                 </IconButton>
-                <TextField
-                    type="number"
+                {isOnPrescription && <TextField
+                    type="text"
+                    label={t("prescription_number")}
                     variant='outlined'
                     color='secondary'
                     align="right"
-                    inputMode="numeric"
-                    onChange={(e) => {
-                        if (e.target.value > 999999999) {
-                            e.target.value = "999999999";
-                        }
-                        if (e.target.value < 0) {
-                            e.target.value = "1";
-                        }
-                        setPrescriptionNumber(e.target.value);
-                    }
-                    }
-                />
+                    onChange={(e) => {setPrescriptionNumber(e.target.value)}}
+                />}
             </Box>
             {bucket.length > 0 ? (
                 <TableContainer component={Paper}>
@@ -252,19 +211,19 @@ export default function ShowBucket() {
                         </TableHead>
                         <TableBody>
                             {bucket.map((row) => (
-                                <TableRow key={row.id}>
+                                <TableRow key={row.medication.id}>
                                     <TableCell component="th" scope="row">
-                                        {row.name}
+                                        {row.medication.name}
                                     </TableCell>
                                     <TableCell align="right">
                                         <TextField
                                             type="number"
                                             value={row.quantity}
-                                            onChange={(e) => handleChange(row.name, e.target.value)}
+                                            onChange={(e) => handleChange(row.medication.name, e.target.value)}
                                         />
                                     </TableCell>
                                     <TableCell align="right">
-                                        <Button variant="outlined" color="error" onClick={() => handleDelete(row.name)}>
+                                        <Button variant="outlined" color="error" onClick={() => handleDelete(row.medication.name)}>
                                             {t("delete")}
                                         </Button>
                                     </TableCell>

@@ -252,5 +252,7 @@
   "order_pending": "Order waiting for chemist to approve",
   "order_in_queue": "Order in queue",
   "bad_prescription_number": "Bad prescription Order",
-  "bought_successfully": "Bought successfully!"
+  "bought_successfully": "Bought successfully!",
+  "exception.order.prescription.already-exists": "Given prescription is already registered",
+  "exception.order.prescription.required": "Prescription is required"
 }

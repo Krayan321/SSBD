@@ -224,7 +224,7 @@ public class dataForTests {
           EditCategoryDTO.builder()
                   .id(4L)
                   .name("Edited")
-                  .isOnPrescription(true)
+                  .isOnPrescription(false)
                   .version(1L)
                   .build();
 }

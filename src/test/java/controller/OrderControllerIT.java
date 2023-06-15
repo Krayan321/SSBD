@@ -278,7 +278,7 @@ public class OrderControllerIT extends BaseTest {
                     .log().all()
                     .put(getApiRoot() + "/order/update-queue")
                     .then().log().all()
-                    .statusCode(Response.Status.OK.getStatusCode());
+                    .statusCode(Response.Status.NO_CONTENT.getStatusCode());
         }
     }
 
@@ -321,10 +321,8 @@ public class OrderControllerIT extends BaseTest {
 
         @BeforeAll
         static void setNewVersions() {
-            List<CreateOrderMedicationDTO> medications = new ArrayList<>();
-
             var responseMed1 = given()
-                    .header("authorization", "Bearer " + chemistJwt)
+                    .header("authorization", "Bearer " + patientJwt)
                     .get(getApiRoot() + "/medication/7")
                     .then().log().all()
                     .statusCode(Response.Status.OK.getStatusCode())
@@ -341,7 +339,7 @@ public class OrderControllerIT extends BaseTest {
                     .build();
 
             var responseMed2 = given()
-                    .header("authorization", "Bearer " + chemistJwt)
+                    .header("authorization", "Bearer " + patientJwt)
                     .get(getApiRoot() + "/medication/8")
                     .then().log().all()
                     .statusCode(Response.Status.OK.getStatusCode())
@@ -356,11 +354,13 @@ public class OrderControllerIT extends BaseTest {
                     .name(name2)
                     .etag(etag2)
                     .build();
+
+            createOrderDTO.setOrderMedications(new ArrayList<>());
         }
 
         @Test
         @Order(1)
-        public void submitOrder_correct() {
+        public void submitOrder_otc_correct() {
             createOrderDTO.getOrderMedications().add(medicationOtc);
             given().header("Authorization", "Bearer " + patientJwt)
                     .body(createOrderDTO)
@@ -368,6 +368,99 @@ public class OrderControllerIT extends BaseTest {
                     .post(getApiRoot() + "/order/submit")
                     .then().log().all()
                     .statusCode(Response.Status.CREATED.getStatusCode());
+            given()
+                    .header("authorization", "Bearer " + patientJwt)
+                    .get(getApiRoot() + "/medication/8")
+                    .then().log().all()
+                    .statusCode(Response.Status.OK.getStatusCode())
+                    .body("stock", equalTo(8)); // decreased
+        }
+
+        @Test
+        @Order(2)
+        public void submitOrder_otc_optimisticLock() {
+            given().header("Authorization", "Bearer " + patientJwt)
+                    .body(createOrderDTO)
+                    .log().all()
+                    .post(getApiRoot() + "/order/submit")
+                    .then().log().all()
+                    .statusCode(Response.Status.CONFLICT.getStatusCode())
+                    .body("message", equalTo(EXCEPTION_OPTIMISTIC_LOCK));
+        }
+
+        @Test
+        @Order(2)
+        public void submitOrder_onPrescription_correct() {
+            setNewVersions();
+            createOrderDTO.getOrderMedications().add(medicationOnPrescription);
+            createOrderDTO.setPrescription(new CreateOrderPrescriptionDTO("1235"));
+
+            given().header("Authorization", "Bearer " + patientJwt)
+                    .body(createOrderDTO)
+                    .log().all()
+                    .post(getApiRoot() + "/order/submit")
+                    .then().log().all()
+                    .statusCode(Response.Status.CREATED.getStatusCode());
+            given()
+                    .header("authorization", "Bearer " + patientJwt)
+                    .get(getApiRoot() + "/medication/7")
+                    .then().log().all()
+                    .statusCode(Response.Status.OK.getStatusCode())
+                    .body("stock", equalTo(8)); // decreased
+        }
+
+        @Test
+        @Order(3)
+        public void submitOrder_notOnState_correct() {
+            setNewVersions();
+            medicationOnPrescription.setQuantity(20);
+            createOrderDTO.getOrderMedications().add(medicationOnPrescription);
+            createOrderDTO.setPrescription(new CreateOrderPrescriptionDTO("1236"));
+
+            given().header("Authorization", "Bearer " + patientJwt)
+                    .body(createOrderDTO)
+                    .log().all()
+                    .post(getApiRoot() + "/order/submit")
+                    .then().log().all()
+                    .statusCode(Response.Status.CREATED.getStatusCode());
+            given()
+                    .header("authorization", "Bearer " + patientJwt)
+                    .get(getApiRoot() + "/medication/7")
+                    .then().log().all()
+                    .statusCode(Response.Status.OK.getStatusCode())
+                    .body("stock", equalTo(8)); // not decreased
+        }
+
+        @Test
+        @Order(4)
+        public void submitOrder_onPrescription_noPrescription() {
+            setNewVersions();
+            createOrderDTO.getOrderMedications().add(medicationOnPrescription);
+            createOrderDTO.setPrescription(null);
+
+            given().header("Authorization", "Bearer " + patientJwt)
+                    .body(createOrderDTO)
+                    .log().all()
+                    .post(getApiRoot() + "/order/submit")
+                    .then().log().all()
+                    .statusCode(Response.Status.BAD_REQUEST.getStatusCode())
+                    .body("message", equalTo(EXCEPTION_PRESCRIPTION_REQUIRED));
+        }
+
+        @Test
+        @Order(5)
+        public void submitOrder_onPrescription_prescriptionExists() {
+            setNewVersions();
+            createOrderDTO.getOrderMedications().add(medicationOnPrescription);
+            createOrderDTO.setPrescription(new CreateOrderPrescriptionDTO("1236"));
+
+            given().header("Authorization", "Bearer " + patientJwt)
+                    .body(createOrderDTO)
+                    .log().all()
+                    .post(getApiRoot() + "/order/submit")
+                    .then().log().all()
+                    .statusCode(Response.Status.CONFLICT.getStatusCode())
+                    .body("message", equalTo(EXCEPTION_PRESCRIPTION_ALREADY_EXISTS));
         }
     }
 

@@ -45,7 +45,7 @@ public class Prescription extends AbstractEntity implements Serializable {
       optional = false,
       cascade = {CascadeType.REFRESH})
   @JoinColumn(name = "patient_data_id", nullable = false, updatable = false)
-  private PatientData patientData;
+  private AccessLevel patientData;
 
   @Column(nullable = false, name = "prescription_number")
   private String prescriptionNumber;

@@ -247,5 +247,7 @@
   "medication_created": "Lék úspěšně vytvořen",
   "invalid_medication_data": "Neplatná data léku",
   "add_medication": "Přidat lék",
-  "order_deleted_successfully": "Objednávka byla úspěšně smazána"
+  "order_deleted_successfully": "Objednávka byla úspěšně smazána",
+  "exception.order.prescription.already-exists": "Daný předpis je již zaregistrován",
+  "exception.order.prescription.required": "Předpis je vyžadován"
 }

@@ -106,6 +106,7 @@ public class OrderController extends AbstractController {
         }
       });
       Order inputOrder = OrderConverter.mapCreateOrderDTOToOrder(createOrderDTO);
+      log.info("input order: " + inputOrder.toString());
       repeatTransactionVoid(orderManager, () -> orderManager
               .createOrder(inputOrder, etagVerification));
       return Response.status(Response.Status.CREATED).build();
@@ -156,7 +157,7 @@ public class OrderController extends AbstractController {
     @RolesAllowed("updateQueue")
     public Response updateQueue() {
         repeatTransactionVoidWithOptimisticLock(orderManager, () -> orderManager.updateQueue());
-        return Response.ok().build();
+        return Response.noContent().build();
     }
 
     //moa 15
