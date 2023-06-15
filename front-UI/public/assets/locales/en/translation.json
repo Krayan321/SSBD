@@ -247,5 +247,8 @@
   "medication_created": "Medication created",
   "invalid_medication_data": "Invalid medication data",
   "add_medication": "Add medication",
-  "order_deleted_successfully": "Order deleted successfully"
+  "order_deleted_successfully": "Order deleted successfully",
+  "order_finalized": "Order finalized",
+  "order_pending": "Order waiting for chemist to approve",
+  "order_in_queue": "Order in queue"
 }

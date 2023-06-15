@@ -1,4 +1,4 @@
-import { get, del, put } from "../api";
+import { get, del, put, postWithEtag } from "../api";
 
 export async function getSelfOrders() {
   return await get("order/self");
@@ -37,5 +37,9 @@ export async function withdrawOrderById(id) {
 }
 
 export async function cancelOrder(id) {
-  return await put(`order/${id}/cancel`)
+  return await postWithEtag(`order/${id}/cancel`)
+}
+
+export async function submitOrder(orderData) {
+  return await postWithEtag("order/update-queue", orderData);
 }
