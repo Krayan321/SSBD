@@ -29,9 +29,5 @@ public interface OrderManagerLocal extends CommonManagerLocalInterface {
 
     void approvedByPatient(Long id);
 
-    void addMedicationToOrder(Long id, OrderMedication orderMedication, Long version, Long medicationId);
-
-    List<Medication> getOrderDetails(Long orderId);
-
     void updateQueue();
 }

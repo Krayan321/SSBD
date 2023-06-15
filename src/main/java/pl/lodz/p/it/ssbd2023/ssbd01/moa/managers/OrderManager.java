@@ -174,18 +174,6 @@ public class OrderManager extends AbstractManager
                     }
                 });
     }
-    @PermitAll
-    private void decreaseMedicationStock(Order order) {
-        for (OrderMedication orderMedication : order.getOrderMedications()) {
-            Medication medication = orderMedication.getMedication();
-            int requestedQuantity = orderMedication.getQuantity();
-
-            int currentStock = medication.getStock();
-            int updatedStock = currentStock - requestedQuantity;
-            medication.setStock(updatedStock);
-            medicationFacade.edit(medication);
-        }
-    }
 
     @Override
     @DenyAll
@@ -262,8 +250,7 @@ public class OrderManager extends AbstractManager
         Order order = orderFacade.find(id)
                 .orElseThrow(() -> OrderException.orderNotFound(id));
 
-        if (order.getOrderState() != OrderState.TO_BE_APPROVED_BY_PATIENT
-                || (account.getId() != order.getPatientData().getId())) {
+        if (order.getOrderState() != OrderState.TO_BE_APPROVED_BY_PATIENT) {
             throw OrderException.noPermissionToApproveOrder();
         }
 
@@ -277,6 +264,19 @@ public class OrderManager extends AbstractManager
         }
     }
 
+    @RolesAllowed("approvedByPatient")
+    private void decreaseMedicationStock(Order order) {
+        for (OrderMedication orderMedication : order.getOrderMedications()) {
+            Medication medication = orderMedication.getMedication();
+            int requestedQuantity = orderMedication.getQuantity();
+
+            int currentStock = medication.getStock();
+            int updatedStock = currentStock - requestedQuantity;
+            medication.setStock(updatedStock);
+            medicationFacade.edit(medication);
+        }
+    }
+
     @Override
     @RolesAllowed("deleteWaitingOrdersById")
     public void deleteWaitingOrderById(Long id) {
@@ -287,46 +287,6 @@ public class OrderManager extends AbstractManager
         orderFacade.deleteWaitingOrdersById(id);
     }
 
-    @Override
-    @RolesAllowed("addMedicationToOrder")
-    public void addMedicationToOrder(
-            Long id, OrderMedication orderMedication, Long version, Long medicationId) {
-        Optional<Order> optOrder = orderFacade.find(id);
-        Optional<Medication> optMedication = medicationFacade.find(medicationId);
-        if (optOrder.isEmpty()) {
-            throw ApplicationException.createEntityNotFoundException();
-        }
-        if (optMedication.isEmpty()) {
-            throw ApplicationException.createEntityNotFoundException();
-        }
-        if (!(optOrder.get().getVersion().equals(version))) {
-            throw ApplicationException.createOptimisticLockException();
-        }
-        orderMedication.setMedication(optMedication.get());
-        orderMedication.setOrder(optOrder.get());
-        optOrder.get().getOrderMedications().add(orderMedication);
-        orderFacade.edit(optOrder.get());
-    }
-
-    @Override
-    @PermitAll
-    public List<Medication> getOrderDetails(Long orderId) {
-        Optional<Order> order = orderFacade.find(orderId);
-        List<Medication> res = new ArrayList<>();
-
-        if (order.isEmpty()) {
-            throw OrderException.createEntityNotFoundException();
-        }
-
-        order
-                .get()
-                .getOrderMedications()
-                .forEach(
-                        orderMedication -> {
-                            res.add(orderMedication.getMedication());
-                        });
-        return res;
-    }
 
     @RolesAllowed("getCurrentUser")
     public Account getCurrentUser() {
@@ -338,7 +298,6 @@ public class OrderManager extends AbstractManager
 
         return accountFacade.findByLoginAndRefresh(getCurrentUserLogin());
     }
-
 
     @PermitAll
     public String getCurrentUserLogin() {

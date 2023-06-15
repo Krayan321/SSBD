@@ -122,3 +122,5 @@ insert into order_medication (order_id, medication_id, quantity, created_by, cre
 insert into order_medication (order_id, medication_id, quantity, created_by, creation_date, modification_date, modified_by, version) values (5, 2, 4, null, now(), null, null, 0);
 
 insert into order_medication (order_id, medication_id, quantity, created_by, creation_date, modification_date, modified_by, version) values (6, 2, 4, null, now(), null, null, 0);
+
+insert into order_medication (order_id, medication_id, quantity, created_by, creation_date, modification_date, modified_by, version) values (7, 2, 4, null, now(), null, null, 0);

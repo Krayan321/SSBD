@@ -65,6 +65,26 @@ public class CategoryControllerIT extends BaseTest {
                     .then()
                     .statusCode(Response.Status.CONFLICT.getStatusCode());
         }
+
+        @Test
+        @Order(3)
+        public void readMedications_correct() {
+            given()
+                    .header("authorization", "Bearer " + chemistJwt)
+                    .get(getApiRoot() + "/medication/")
+                    .then()
+                    .statusCode(Response.Status.OK.getStatusCode());
+        }
+
+        @Test
+        @Order(4)
+        public void readCategories_correct() {
+            given()
+                    .header("authorization", "Bearer " + chemistJwt)
+                    .get(getApiRoot() + "/category/")
+                    .then()
+                    .statusCode(Response.Status.OK.getStatusCode());
+        }
     }
 
     @Nested

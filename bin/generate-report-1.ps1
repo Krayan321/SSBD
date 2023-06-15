@@ -9,4 +9,4 @@ Set-Location docker
 Start-Process -NoNewWindow docker "compose up"
 Set-Location ..
 
-mvn clean package
+#mvn clean package
