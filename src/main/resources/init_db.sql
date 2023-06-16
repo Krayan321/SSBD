@@ -74,8 +74,8 @@ insert into access_level (account_id, active, created_by, creation_date, modific
 
 insert into admin_data (id, work_phone_number) values (1, '123456789');
 insert into chemist_data (id, license_number) values (2, '456456');
-insert into chemist_data (id, license_number) values (1, '123123');
-insert into patient_data (id, pesel, nip, phone_number, first_name, last_name) values (3, '22344678801', '2234557890', '721545784', 'Jan', 'Kowalski');
+insert into chemist_data (id, license_number) values (3, '123123');
+insert into patient_data (id, pesel, nip, phone_number, first_name, last_name) values (4, '22344678801', '2234557890', '721545784', 'Jan', 'Kowalski');
 
 insert into category (name, created_by, creation_date, modification_date, modified_by, version, isOnPrescription) values ('antibiotics', null, now(), null, null, 0, true);
 insert into category (name, created_by, creation_date, modification_date, modified_by, version, isOnPrescription) values ('painkillers', null, now(), null, null, 0, false);
@@ -107,20 +107,20 @@ insert into patient_order (patient_data_id, order_date, order_state, created_by,
 insert into patient_order (patient_data_id, order_date, order_state, created_by, creation_date, modification_date, modified_by, version, chemist_data_id, prescription_id) values (4, now(), 'TO_BE_APPROVED_BY_PATIENT', null, now(), null, null, 0, null, 6);
 
 
-insert into order_medication (order_id, medication_id, quantity, created_by, creation_date, modification_date, modified_by, version) values (1, 1, 2, null, now(), null, null, 0);
-insert into order_medication (order_id, medication_id, quantity, created_by, creation_date, modification_date, modified_by, version) values (1, 3, 4, null, now(), null, null, 0);
-insert into order_medication (order_id, medication_id, quantity, created_by, creation_date, modification_date, modified_by, version) values (1, 4, 2, null, now(), null, null, 0);
+insert into order_medication (order_id, medication_id, quantity, created_by, creation_date, modification_date, modified_by, version, purchase_price) values (1, 1, 2, null, now(), null, null, 0, 10);
+insert into order_medication (order_id, medication_id, quantity, created_by, creation_date, modification_date, modified_by, version, purchase_price) values (1, 3, 4, null, now(), null, null, 0, 10);
+insert into order_medication (order_id, medication_id, quantity, created_by, creation_date, modification_date, modified_by, version, purchase_price) values (1, 4, 2, null, now(), null, null, 0, 10);
 
-insert into order_medication (order_id, medication_id, quantity, created_by, creation_date, modification_date, modified_by, version) values (2, 2, 5, null, now(), null, null, 0);
-insert into order_medication (order_id, medication_id, quantity, created_by, creation_date, modification_date, modified_by, version) values (2, 6, 1, null, now(), null, null, 0);
+insert into order_medication (order_id, medication_id, quantity, created_by, creation_date, modification_date, modified_by, version, purchase_price) values (2, 2, 5, null, now(), null, null, 0, 10);
+insert into order_medication (order_id, medication_id, quantity, created_by, creation_date, modification_date, modified_by, version, purchase_price) values (2, 6, 1, null, now(), null, null, 0, 25);
 
-insert into order_medication (order_id, medication_id, quantity, created_by, creation_date, modification_date, modified_by, version) values (3, 6, 5, null, now(), null, null, 0);
-insert into order_medication (order_id, medication_id, quantity, created_by, creation_date, modification_date, modified_by, version) values (3, 5, 4, null, now(), null, null, 0);
+insert into order_medication (order_id, medication_id, quantity, created_by, creation_date, modification_date, modified_by, version, purchase_price) values (3, 6, 5, null, now(), null, null, 0, 25);
+insert into order_medication (order_id, medication_id, quantity, created_by, creation_date, modification_date, modified_by, version, purchase_price) values (3, 5, 4, null, now(), null, null, 0, 20);
 
-insert into order_medication (order_id, medication_id, quantity, created_by, creation_date, modification_date, modified_by, version) values (4, 2, 4, null, now(), null, null, 0);
+insert into order_medication (order_id, medication_id, quantity, created_by, creation_date, modification_date, modified_by, version, purchase_price) values (4, 2, 4, null, now(), null, null, 0, 10);
 
-insert into order_medication (order_id, medication_id, quantity, created_by, creation_date, modification_date, modified_by, version) values (5, 2, 4, null, now(), null, null, 0);
+insert into order_medication (order_id, medication_id, quantity, created_by, creation_date, modification_date, modified_by, version, purchase_price) values (5, 2, 4, null, now(), null, null, 0, 10);
 
-insert into order_medication (order_id, medication_id, quantity, created_by, creation_date, modification_date, modified_by, version) values (6, 2, 4, null, now(), null, null, 0);
+insert into order_medication (order_id, medication_id, quantity, created_by, creation_date, modification_date, modified_by, version, purchase_price) values (6, 2, 4, null, now(), null, null, 0, 10);
 
-insert into order_medication (order_id, medication_id, quantity, created_by, creation_date, modification_date, modified_by, version) values (7, 2, 4, null, now(), null, null, 0);
+insert into order_medication (order_id, medication_id, quantity, created_by, creation_date, modification_date, modified_by, version, purchase_price) values (7, 2, 4, null, now(), null, null, 0, 10);
