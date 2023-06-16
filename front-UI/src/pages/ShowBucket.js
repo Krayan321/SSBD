@@ -63,14 +63,9 @@ export default function ShowBucket() {
         refreshCart();
     };
 
-    const handleDelete = (medicationName) => {
-        for (const i in bucket) {
-            if(bucket[i].medication.name === medicationName){
-                bucket.splice(i, 1);
-                localStorage.setItem("bucket", JSON.stringify(bucket));
-                refreshCart();
-            }
-        }
+    const handleDelete2 = (medicationName) => {
+        setItemToDelete(medicationName);
+        setDialogOpen(true);
     };
 
     const handleBuy = () => {
@@ -121,7 +116,14 @@ export default function ShowBucket() {
 
     const handleConfirmation = (accepted) => {
         if (accepted) {
-            // sendDataToBackend();
+            for (const i in bucket) {
+                if(bucket[i].medication.name === itemToDelete){
+                    bucket.splice(i, 1);
+                    localStorage.setItem("bucket", JSON.stringify(bucket));
+                    refreshCart();
+                }
+            }
+            toast.success(t("medication_removed_from_bucket"), {position: "top-center"});
         }
         setItemToDelete(null);
         setDialogOpen(false);
@@ -223,7 +225,7 @@ export default function ShowBucket() {
                                         />
                                     </TableCell>
                                     <TableCell align="right">
-                                        <Button variant="outlined" color="error" onClick={() => handleDelete(row.medication.name)}>
+                                        <Button variant="outlined" color="error" onClick={() => handleDelete2(row.medication.name)}>
                                             {t("delete")}
                                         </Button>
                                     </TableCell>
@@ -239,7 +241,7 @@ export default function ShowBucket() {
             )}
             <ConfirmationDialog
                 open={dialogOpen}
-                title={t("confirm_order_title")}
+                title={t("confirm_delete_medication_from_basket")}
                 actions={[
                     { label: t("confirm"), handler: () => handleConfirmation(true), color: "primary" },
                     { label: t("cancel"), handler: () => handleConfirmation(false), color: "secondary" },
