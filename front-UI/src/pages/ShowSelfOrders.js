@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -6,16 +6,16 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import { Skeleton, useTheme } from "@mui/material";
-import { approveOrderById } from "../api/moa/orderApi";
-import {getSelfOrders, withdrawOrderById} from "../api/moa/orderApi";
+import {Skeleton, useTheme, Box} from "@mui/material";
+import {approveOrderById, getSelfOrders, withdrawOrderById} from "../api/moa/orderApi";
 import moment from "moment";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import { toast, ToastContainer } from "react-toastify";
+import {toast} from "react-toastify";
 import ConfirmationDialog from "../components/ConfirmationDialog";
 import {useTranslation} from "react-i18next";
 import DeleteIcon from '@mui/icons-material/Delete';
 import IconButton from "@mui/material/IconButton";
+import RefreshIcon from "@mui/icons-material/Refresh";
 
 export default function ShowSelfOrders() {
 
@@ -23,10 +23,21 @@ export default function ShowSelfOrders() {
     const [loading, setLoading] = useState(false);
     const [dialogOpen, setDialogOpen] = useState(false);
     const [approveOrderId, setApproveOrderId] = useState(null);
-    const { t } = useTranslation();
+    const {t} = useTranslation();
     const [deleteOrderId, setDeleteOrderId] = useState(null);
+    const [refreshing, setRefreshing] = useState(false);
     const theme = useTheme();
-    useEffect(() => {
+
+    function whichPriceToShow(order, orderMedication) {
+        if (order.orderState === "FINALISED" || order.orderState === "REJECTED_BY_CHEMIST" ||
+            order.orderState === "REJECTED_BY_PATIENT" || order.orderState === "APPROVED_BY_PATIENT") {
+            return orderMedication.purchasePrice
+        } else {
+            return orderMedication.medication.currentPrice
+        }
+    }
+
+    function getPatientOrders() {
         setLoading(true);
 
         getSelfOrders()
@@ -39,7 +50,16 @@ export default function ShowSelfOrders() {
                 console.log(error);
                 setLoading(false);
             });
+    }
+
+    useEffect(() => {
+        getPatientOrders();
     }, []);
+
+
+    const handleRefresh = () => {
+        getPatientOrders();
+    };
 
     const formatOrderDate = (dateString) => {
         const trimmedDate = dateString.slice(0, -5);
@@ -101,41 +121,41 @@ export default function ShowSelfOrders() {
         return (
             <TableContainer component={Paper}>
                 <Table>
-                    <TableHead sx={{ backgroundColor: theme.palette.primary.main }}>
+                    <TableHead sx={{backgroundColor: theme.palette.primary.main}}>
                         <TableRow>
-                            <TableCell sx={{ color: "white" }}>{t("is_order_in_queue")}</TableCell>
-                            <TableCell sx={{ color: "white" }}>{t("order_date")}</TableCell>
-                            <TableCell sx={{ color: "white" }}>{t("medication_name")}</TableCell>
-                            <TableCell sx={{ color: "white" }}>{t("medication_price")}</TableCell>
-                            <TableCell sx={{ color: "white" }}>{t("medication_quantity")}</TableCell>
-                            <TableCell sx={{ color: "white" }}>{t("order_total_price")}</TableCell>
-                            <TableCell sx={{ color: "white" }}>{t("prescription_number")}</TableCell>
-                            <TableCell sx={{ color: "white" }}>{t("approve_order")}</TableCell>
+                            <TableCell sx={{color: "white"}}>{t("is_order_in_queue")}</TableCell>
+                            <TableCell sx={{color: "white"}}>{t("order_date")}</TableCell>
+                            <TableCell sx={{color: "white"}}>{t("medication_name")}</TableCell>
+                            <TableCell sx={{color: "white"}}>{t("medication_price")}</TableCell>
+                            <TableCell sx={{color: "white"}}>{t("medication_quantity")}</TableCell>
+                            <TableCell sx={{color: "white"}}>{t("order_total_price")}</TableCell>
+                            <TableCell sx={{color: "white"}}>{t("prescription_number")}</TableCell>
+                            <TableCell sx={{color: "white"}}>{t("approve_order")}</TableCell>
                             <TableCell sx={{color: "white"}}>{t("delete_order")}</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         <TableRow>
                             <TableCell>
-                                <Skeleton />
+                                <Skeleton/>
                             </TableCell>
                             <TableCell>
-                                <Skeleton />
+                                <Skeleton/>
                             </TableCell>
                             <TableCell>
-                                <Skeleton />
+                                <Skeleton/>
                             </TableCell>
                             <TableCell>
-                                <Skeleton />
+                                <Skeleton/>
                             </TableCell>
                             <TableCell>
-                                <Skeleton />
+                                <Skeleton/>
                             </TableCell>
                             <TableCell>
-                                <Skeleton />
+                                <Skeleton/>
                             </TableCell>
                             <TableCell>
-                                <Skeleton />
+                                <Skeleton/>
                             </TableCell>
                         </TableRow>
                     </TableBody>
@@ -145,78 +165,108 @@ export default function ShowSelfOrders() {
     }
 
     return (
-        <div style={{ display: "flex", justifyContent: "center", alignContent: "center", flexDirection: "column" }}>
-            <TableContainer sx={{ maxWidth: "800px", margin: "auto" }} component={Paper}>
+        <div style={{display: "flex", justifyContent: "center", alignContent: "center", flexDirection: "column"}}>
+            <Box sx={{marginBottom: "10px", textAlign: "center"}}>
+                <IconButton
+                    variant="contained"
+                    onClick={handleRefresh}
+                    disabled={refreshing}
+                >
+                    <RefreshIcon/>
+                </IconButton>
+            </Box>
+            <TableContainer sx={{maxWidth: "800px", margin: "auto"}} component={Paper}>
                 <Table>
-                    <TableHead sx={{ backgroundColor: theme.palette.primary.main }}>
+                    <TableHead sx={{backgroundColor: theme.palette.primary.main}}>
                         <TableRow>
-                            <TableCell sx={{ color: "white" }}>{t("order_state")}</TableCell>
-                            <TableCell sx={{ color: "white" }}>{t("order_date")}</TableCell>
-                            <TableCell sx={{ color: "white" }}>{t("medication_name")}</TableCell>
-                            <TableCell sx={{ color: "white" }}>{t("medication_price")}</TableCell>
-                            <TableCell sx={{ color: "white" }}>{t("medication_quantity")}</TableCell>
-                            <TableCell sx={{ color: "white" }}>{t("order_total_price")}</TableCell>
-                            <TableCell sx={{ color: "white" }}>{t("prescription_number")}</TableCell>
-                            <TableCell sx={{ color: "white" }}>{t("approve_order")}</TableCell>
+                            <TableCell sx={{color: "white"}}>{t("order_state")}</TableCell>
+                            <TableCell sx={{color: "white"}}>{t("order_date")}</TableCell>
+                            <TableCell sx={{color: "white"}}>{t("medication_name")}</TableCell>
+                            <TableCell sx={{color: "white"}}>{t("medication_price")}</TableCell>
+                            <TableCell sx={{color: "white"}}>{t("medication_quantity")}</TableCell>
+                            <TableCell sx={{color: "white"}}>{t("order_total_price")}</TableCell>
+                            <TableCell sx={{color: "white"}}>{t("prescription_number")}</TableCell>
+                            <TableCell sx={{color: "white"}}>{t("approve_order")}</TableCell>
                             <TableCell sx={{color: "white"}}>{t("delete_order")}</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {selfOrders.map((item, index) => {
-                            const totalPrice = item.orderMedication.reduce((sum, medication) => {
-                                return sum + medication.medication.currentPrice * medication.quantity;
+                        {selfOrders.map((order, index) => {
+                            const totalPrice = order.orderMedication.reduce((sum, medication) => {
+                                return sum + whichPriceToShow(order, medication) * medication.quantity;
                             }, 0);
 
-                            const isOrderToBeApproved = item.orderState === "TO_BE_APPROVED_BY_PATIENT";
+                            const isOrderToBeApproved = order.orderState === "TO_BE_APPROVED_BY_PATIENT";
 
-                            return item.orderMedication.map((medication, medicationIndex) => (
+                            return order.orderMedication.map((orderMedication, medicationIndex) => (
                                 <React.Fragment key={`${index}-${medicationIndex}`}>
                                     {medicationIndex === 0 && (
                                         <TableRow>
-                                            <TableCell rowSpan={item.orderMedication.length}>{t(item.orderState)}</TableCell>
-                                            <TableCell rowSpan={item.orderMedication.length}>{formatOrderDate(item.orderDate)}</TableCell>
-                                            <TableCell>{medication.medication.name}</TableCell>
-                                            <TableCell>{medication.medication.currentPrice}</TableCell>
-                                            <TableCell>{medication.quantity}</TableCell>
+                                            <TableCell
+                                                rowSpan={order.orderMedication.length}>{t(order.orderState)}</TableCell>
+                                            <TableCell
+                                                rowSpan={order.orderMedication.length}>{formatOrderDate(order.orderDate)}</TableCell>
+                                            <TableCell>{orderMedication.medication.name}</TableCell>
+                                            <TableCell>{whichPriceToShow(order, orderMedication)}</TableCell>
+                                            <TableCell>{orderMedication.quantity}</TableCell>
                                             {medicationIndex === 0 && (
-                                                <TableCell rowSpan={item.orderMedication.length}>{totalPrice}</TableCell>
+                                                <TableCell
+                                                    rowSpan={order.orderMedication.length}>{totalPrice}</TableCell>
                                             )}
-                                            {item.prescription && medicationIndex === 0 ? (
-                                                <TableCell rowSpan={item.orderMedication.length}>{item.prescription.prescriptionNumber}</TableCell>
+                                            {order.prescription && medicationIndex === 0 ? (
+                                                <TableCell
+                                                    rowSpan={order.orderMedication.length}>{order.prescription.prescriptionNumber}</TableCell>
                                             ) : (
-                                                <TableCell rowSpan={item.orderMedication.length}>-</TableCell>
+                                                <TableCell rowSpan={order.orderMedication.length}>-</TableCell>
                                             )}
                                             {medicationIndex === 0 && isOrderToBeApproved && (
-                                                <TableCell rowSpan={item.orderMedication.length}>
+                                                <TableCell rowSpan={order.orderMedication.length}>
                                                     <IconButton
                                                         color="success"
                                                         aria-label={t("approve_order")}
-                                                        onClick={() => handleApproveOrder(item.id)}
+                                                        onClick={() => handleApproveOrder(order.id)}
                                                     >
-                                                        <CheckCircleIcon />
+                                                        <CheckCircleIcon/>
                                                     </IconButton>
                                                     <ConfirmationDialog
-                                                        open={dialogOpen && approveOrderId === item.id}
+                                                        open={dialogOpen && approveOrderId === order.id}
                                                         title={t("confirm_approve_order")}
                                                         actions={[
-                                                            { label: t("confirm"), handler: acceptApproveOrder, color: "primary" },
-                                                            { label: t("cancel"), handler: rejectApproveOrder, color: "secondary" },
+                                                            {
+                                                                label: t("confirm"),
+                                                                handler: acceptApproveOrder,
+                                                                color: "primary"
+                                                            },
+                                                            {
+                                                                label: t("cancel"),
+                                                                handler: rejectApproveOrder,
+                                                                color: "secondary"
+                                                            },
                                                         ]}
                                                         onClose={() => setDialogOpen(false)}
                                                     />
                                                 </TableCell>
                                             )}
-                                            {item.orderState === "TO_BE_APPROVED_BY_PATIENT" && (
+                                            {order.orderState === "TO_BE_APPROVED_BY_PATIENT" && (
                                                 <TableCell>
-                                                    <IconButton color="error" aria-label={t("delete_order")} onClick={() => handleDeleteOrder(item.id)}>
-                                                        <DeleteIcon />
+                                                    <IconButton color="error" aria-label={t("delete_order")}
+                                                                onClick={() => handleDeleteOrder(order.id)}>
+                                                        <DeleteIcon/>
                                                     </IconButton>
                                                     <ConfirmationDialog
                                                         open={dialogOpen}
                                                         title={t("confirm_delete_order")}
                                                         actions={[
-                                                            { label: t("confirm"), handler: acceptDeleteOrder, color: "primary" },
-                                                            { label: t("cancel"), handler: rejectDeleteOrder, color: "secondary" },
+                                                            {
+                                                                label: t("confirm"),
+                                                                handler: acceptDeleteOrder,
+                                                                color: "primary"
+                                                            },
+                                                            {
+                                                                label: t("cancel"),
+                                                                handler: rejectDeleteOrder,
+                                                                color: "secondary"
+                                                            },
                                                         ]}
                                                         onClose={() => setDialogOpen(false)}
                                                     />
@@ -225,9 +275,9 @@ export default function ShowSelfOrders() {
                                     )}
                                     {medicationIndex > 0 && (
                                         <TableRow>
-                                            <TableCell>{medication.medication.name}</TableCell>
-                                            <TableCell>{medication.medication.currentPrice}</TableCell>
-                                            <TableCell>{medication.quantity}</TableCell>
+                                            <TableCell>{orderMedication.medication.name}</TableCell>
+                                            <TableCell>{whichPriceToShow(order, orderMedication)}</TableCell>
+                                            <TableCell>{orderMedication.quantity}</TableCell>
                                         </TableRow>
                                     )}
                                 </React.Fragment>
