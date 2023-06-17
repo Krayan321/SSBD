@@ -259,7 +259,7 @@ function AccountDetails() {
                   {t("First name")}
                 </Typography>
                 {accessLevels.map((level) =>
-                  level.name ? (
+                  level.firstName ? (
                     <Typography
                       style={{ fontSize: 16 }}
                       variant="h6"
@@ -379,7 +379,7 @@ function AccountDetails() {
               NIP
             </Typography>
             {accessLevels.map((level) =>
-              level.NIP ? (
+              level.nip ? (
                 <Typography
                   style={{ fontSize: 16 }}
                   variant="h6"
@@ -391,7 +391,7 @@ function AccountDetails() {
                     readOnly: true,
                   }}
                 >
-                  {level.NIP}
+                  {level.nip}
                 </Typography>
               ) : null
             )}
