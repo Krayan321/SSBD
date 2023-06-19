@@ -401,7 +401,7 @@ function AccountDetails() {
           </Box>
         )}
         <Button onClick={() => handleEditAccountDetails()}>
-          Edit Account Details
+          {t("edit_account_details")}
         </Button>
       </Paper>
       <ToastContainer />

@@ -89,7 +89,7 @@ function EditSingleAccount() {
         const response = await getSelfAccountDetails();
         setAccount(response.data);
         setAccessLevels(response.data.accessLevels);
-        setEtag(response.headers.etag);
+        setEtag(response.headers["etag"]);
         console.log("Etag in edit: " + etag);
         setLoading(false);
       } catch (error) {
@@ -97,7 +97,7 @@ function EditSingleAccount() {
       }
     };
     fetchData();
-  }, [etag]);
+  }, []);
 
   const superAdmin = user.cur === "ADMIN";
   const superChemist = user.cur === "CHEMIST";
@@ -137,7 +137,7 @@ function EditSingleAccount() {
 
     if (patient) {
       const body = {
-        login: account.login,
+        login: accessLevels.find((level) => level.role === "PATIENT").login,
         firstName: name,
         lastName: lastName,
         phoneNumber: phoneNumber,
@@ -145,7 +145,8 @@ function EditSingleAccount() {
         nip: nip,
         version: accessLevels.find((level) => level.role === "PATIENT").version,
       };
-      editSelfPatientData(body, etag)
+      const tag = etag.split('"').join("");
+      editSelfPatientData(body, tag)
         .then((res) => {
           setLoading((state) => !state);
           navigate(`/home/self`);
@@ -168,13 +169,12 @@ function EditSingleAccount() {
         });
     } else if (chemist) {
       const body = {
-        login: account.login,
+        login: accessLevels.find((level) => level.role === "CHEMIST").login,
         licenseNumber: licenseNumber,
         version: accessLevels.find((level) => level.role === "CHEMIST").version,
       };
-      //const tag = etag.split('"').join("");
-      console.log("Chemist body: " + JSON.stringify(body));
-      editSelfChemistData(body, etag)
+      const tag = etag.split('"').join("");
+      editSelfChemistData(body, tag)
         .then((res) => {
           setLoading((state) => !state);
           navigate(`/home/self`);
@@ -201,9 +201,8 @@ function EditSingleAccount() {
         login: account.login,
         version: accessLevels.find((level) => level.role === "ADMIN").version,
       };
-      //const tag = etag.split('"').join("");
-      console.log("Admin tag " + etag);
-      editSelfAdminData(body, etag)
+      const tag = etag.split('"').join("");
+      editSelfAdminData(body, tag)
         .then((res) => {
           setLoading((state) => !state);
           navigate(`/home/self`);
