@@ -90,7 +90,7 @@ function EditSingleAccount() {
         setAccount(response.data);
         setAccessLevels(response.data.accessLevels);
         setEtag(response.headers.etag);
-        console.log(etag);
+        console.log("Etag in edit: " + etag);
         setLoading(false);
       } catch (error) {
         console.error(error);
@@ -104,11 +104,17 @@ function EditSingleAccount() {
   const superPatient = user.cur === "PATIENT";
 
   const isAdmin =
-    accessLevels && accessLevels.some((level) => level.role === "ADMIN");
+    accessLevels &&
+    accessLevels.some((level) => level.role === "ADMIN") &&
+    superAdmin;
   const isChemist =
-    accessLevels && accessLevels.some((level) => level.role === "CHEMIST");
+    accessLevels &&
+    accessLevels.some((level) => level.role === "CHEMIST") &&
+    superChemist;
   const isPatient =
-    accessLevels && accessLevels.some((level) => level.role === "PATIENT");
+    accessLevels &&
+    accessLevels.some((level) => level.role === "PATIENT") &&
+    superPatient;
 
   let selectedSchema;
   if (isAdmin) {
@@ -139,8 +145,7 @@ function EditSingleAccount() {
         nip: nip,
         version: accessLevels.find((level) => level.role === "PATIENT").version,
       };
-      const tag = etag.split('"').join("");
-      editSelfPatientData(body, tag)
+      editSelfPatientData(body, etag)
         .then((res) => {
           setLoading((state) => !state);
           navigate(`/home/self`);
@@ -167,7 +172,8 @@ function EditSingleAccount() {
         licenseNumber: licenseNumber,
         version: accessLevels.find((level) => level.role === "CHEMIST").version,
       };
-      const tag = etag.split('"').join("");
+      //const tag = etag.split('"').join("");
+      console.log("Chemist body: " + JSON.stringify(body));
       editSelfChemistData(body, etag)
         .then((res) => {
           setLoading((state) => !state);
@@ -195,9 +201,9 @@ function EditSingleAccount() {
         login: account.login,
         version: accessLevels.find((level) => level.role === "ADMIN").version,
       };
-      const tag = etag.split('"').join("");
-      console.log("tag " + tag);
-      editSelfAdminData(body, tag)
+      //const tag = etag.split('"').join("");
+      console.log("Admin tag " + etag);
+      editSelfAdminData(body, etag)
         .then((res) => {
           setLoading((state) => !state);
           navigate(`/home/self`);
@@ -252,7 +258,7 @@ function EditSingleAccount() {
       <Paper elevation={20} style={paperStyle}>
         <h2 style={{ fontFamily: "Lato" }}>{t("edit_account_details")} </h2>
 
-        {superAdmin && (
+        {isAdmin && (
           <Box sx={{ marginBottom: 4 }}>
             <TextField
               {...register("workPhoneNumber")}
@@ -287,7 +293,7 @@ function EditSingleAccount() {
             )}
           </Box>
         )}
-        {superChemist && (
+        {isChemist && (
           <Box sx={{ marginBottom: 4 }}>
             <TextField
               {...register("licenceNumber")}
@@ -322,7 +328,7 @@ function EditSingleAccount() {
             )}
           </Box>
         )}
-        {superPatient && (
+        {isPatient && (
           <Box sx={{ marginBottom: 4 }}>
             <form>
               <TextField

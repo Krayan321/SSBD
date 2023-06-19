@@ -44,6 +44,8 @@ function AccountDetails() {
     fetchData();
   }, []);
 
+  console.log("Etag is: " + etag);
+
   const isAdmin = accessLevels.includes("ADMIN");
   const isChemist = accessLevels.includes("CHEMIST");
   const isPatient = accessLevels.includes("PATIENT");
