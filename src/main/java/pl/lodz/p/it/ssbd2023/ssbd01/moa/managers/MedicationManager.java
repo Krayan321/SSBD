@@ -9,13 +9,17 @@ import jakarta.ejb.TransactionAttribute;
 import jakarta.ejb.TransactionAttributeType;
 import jakarta.inject.Inject;
 import jakarta.interceptor.Interceptors;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.SecurityContext;
 import lombok.extern.java.Log;
 import pl.lodz.p.it.ssbd2023.ssbd01.common.AbstractManager;
+import pl.lodz.p.it.ssbd2023.ssbd01.entities.Account;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Category;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Medication;
 import pl.lodz.p.it.ssbd2023.ssbd01.exceptions.ApplicationException;
 import pl.lodz.p.it.ssbd2023.ssbd01.interceptors.GenericManagerExceptionsInterceptor;
 import pl.lodz.p.it.ssbd2023.ssbd01.interceptors.TrackerInterceptor;
+import pl.lodz.p.it.ssbd2023.ssbd01.moa.facades.AccountFacade;
 import pl.lodz.p.it.ssbd2023.ssbd01.moa.facades.CategoryFacade;
 import pl.lodz.p.it.ssbd2023.ssbd01.moa.facades.MedicationFacade;
 
@@ -36,6 +40,12 @@ public class MedicationManager extends AbstractManager implements MedicationMana
     @Inject
     private CategoryFacade categoryFacade;
 
+    @Inject
+    private AccountFacade accountFacade;
+
+    @Context
+    private SecurityContext context;
+
     @Override
     @PermitAll
     public Medication findByName(String name) {
@@ -47,6 +57,7 @@ public class MedicationManager extends AbstractManager implements MedicationMana
     public Medication createMedication(Medication medication, String categoryName) {
         Category managedCategory = categoryFacade.findByName(categoryName);
         medication.setCategory(managedCategory);
+        medication.setCreatedBy(getCurrentUserLogin());
         medicationFacade.create(medication);
         return medication;
     }
@@ -78,4 +89,15 @@ public class MedicationManager extends AbstractManager implements MedicationMana
         }
         return medication.get();
     }
+
+    @RolesAllowed("getCurrentUser")
+    public Account getCurrentUser() {
+        return accountFacade.findByLogin(getCurrentUserLogin());
+    }
+
+    @PermitAll
+    public String getCurrentUserLogin() {
+        return context.getUserPrincipal().getName();
+    }
+
 }
