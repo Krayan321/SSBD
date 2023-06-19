@@ -90,7 +90,6 @@ function EditSingleAccount() {
         setAccount(response.data);
         setAccessLevels(response.data.accessLevels);
         setEtag(response.headers["etag"]);
-        console.log("Etag in edit: " + etag);
         setLoading(false);
       } catch (error) {
         console.error(error);
@@ -137,13 +136,13 @@ function EditSingleAccount() {
 
     if (patient) {
       const body = {
-        login: accessLevels.find((level) => level.role === "PATIENT").login,
+        login: account.login,
         firstName: name,
         lastName: lastName,
         phoneNumber: phoneNumber,
         pesel: pesel,
         nip: nip,
-        version: accessLevels.find((level) => level.role === "PATIENT").version,
+        version: account.version,
       };
       const tag = etag.split('"').join("");
       editSelfPatientData(body, tag)
@@ -169,9 +168,9 @@ function EditSingleAccount() {
         });
     } else if (chemist) {
       const body = {
-        login: accessLevels.find((level) => level.role === "CHEMIST").login,
+        login: account.login,
         licenseNumber: licenseNumber,
-        version: accessLevels.find((level) => level.role === "CHEMIST").version,
+        version: account.version,
       };
       const tag = etag.split('"').join("");
       editSelfChemistData(body, tag)
@@ -199,7 +198,7 @@ function EditSingleAccount() {
       const body = {
         workPhoneNumber: workPhoneNumber,
         login: account.login,
-        version: accessLevels.find((level) => level.role === "ADMIN").version,
+        version: account.version,
       };
       const tag = etag.split('"').join("");
       editSelfAdminData(body, tag)
