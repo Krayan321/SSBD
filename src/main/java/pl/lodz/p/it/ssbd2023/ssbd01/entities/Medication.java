@@ -4,14 +4,12 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.Min;
+import lombok.*;
+import org.hibernate.Hibernate;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import java.util.Objects;
 
 @Entity
 @Table(
@@ -60,5 +58,18 @@ public class Medication extends AbstractEntity implements Serializable {
   public Medication(String name, BigDecimal currentPrice) {
     this.name = name;
     this.currentPrice = currentPrice;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+    Medication that = (Medication) o;
+    return getId() != null && Objects.equals(getId(), that.getId());
+  }
+
+  @Override
+  public int hashCode() {
+    return getClass().hashCode();
   }
 }

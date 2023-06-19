@@ -10,6 +10,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import pl.lodz.p.it.ssbd2023.ssbd01.common.AbstractFacade;
+import pl.lodz.p.it.ssbd2023.ssbd01.entities.Medication;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Order;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.OrderState;
 import pl.lodz.p.it.ssbd2023.ssbd01.interceptors.GenericFacadeExceptionsInterceptor;
@@ -72,6 +73,18 @@ public class OrderFacade extends AbstractFacade<Order> {
     public List<Order> findAllOrdersInQueueSortByOrderDate() {
         TypedQuery<Order> query = em.createNamedQuery("Order.findAllOrdersStateInQueueSortByOrderDate", Order.class);
         return query.getResultList();
+    }
+
+    @RolesAllowed("createOrder")
+    public List<Order> findOrdersInQueueContainingMedicationsSortByOrderDate(List<Medication> medications) {
+        return getEntityManager()
+                .createQuery("SELECT o FROM Order o " +
+                        "left join fetch o.orderMedications om " +
+                        "WHERE o.orderState = pl.lodz.p.it.ssbd2023.ssbd01.entities.OrderState.IN_QUEUE " +
+                        "AND om.medication in :medications " +
+                        "order by o.orderDate ASC")
+                .setParameter("medications", medications)
+                .getResultList();
     }
 
     @RolesAllowed("getOrdersToApprove")

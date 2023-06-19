@@ -53,10 +53,6 @@ public class Shipment extends AbstractEntity implements Serializable {
   @Temporal(TemporalType.TIMESTAMP)
   private Date shipmentDate;
 
-  @Column(nullable = false, name = "was_already_processed")
-  @NotNull
-  private Boolean wasAlreadyProcessed = false;
-
   @OneToMany(
       mappedBy = "shipment",
       cascade = {CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.REFRESH},

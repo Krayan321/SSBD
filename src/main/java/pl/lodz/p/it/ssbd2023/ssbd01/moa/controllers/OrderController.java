@@ -107,7 +107,7 @@ public class OrderController extends AbstractController {
       });
       Order inputOrder = OrderConverter.mapCreateOrderDTOToOrder(createOrderDTO);
       log.info("input order: " + inputOrder.toString());
-      repeatTransactionVoid(orderManager, () -> orderManager
+      repeatTransactionVoidWithOptimisticLock(orderManager, () -> orderManager
               .createOrder(inputOrder, etagVerification));
       return Response.status(Response.Status.CREATED).build();
     }

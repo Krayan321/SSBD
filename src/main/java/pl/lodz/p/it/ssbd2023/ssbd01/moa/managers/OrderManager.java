@@ -1,8 +1,5 @@
 package pl.lodz.p.it.ssbd2023.ssbd01.moa.managers;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.security.DenyAll;
 import jakarta.annotation.security.PermitAll;
 import jakarta.annotation.security.RolesAllowed;
@@ -12,23 +9,22 @@ import jakarta.ejb.TransactionAttribute;
 import jakarta.ejb.TransactionAttributeType;
 import jakarta.inject.Inject;
 import jakarta.interceptor.Interceptors;
+import jakarta.persistence.OptimisticLockException;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.SecurityContext;
 import lombok.extern.java.Log;
 import pl.lodz.p.it.ssbd2023.ssbd01.common.AbstractManager;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.*;
-import pl.lodz.p.it.ssbd2023.ssbd01.exceptions.ApplicationException;
 import pl.lodz.p.it.ssbd2023.ssbd01.exceptions.ApplicationExceptionEntityNotFound;
 import pl.lodz.p.it.ssbd2023.ssbd01.exceptions.OrderException;
 import pl.lodz.p.it.ssbd2023.ssbd01.interceptors.GenericManagerExceptionsInterceptor;
 import pl.lodz.p.it.ssbd2023.ssbd01.interceptors.TrackerInterceptor;
 import pl.lodz.p.it.ssbd2023.ssbd01.moa.facades.*;
-import pl.lodz.p.it.ssbd2023.ssbd01.mok.managers.AccountManager;
 import pl.lodz.p.it.ssbd2023.ssbd01.util.AccessLevelFinder;
 
-import java.math.BigDecimal;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
 
 @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 @Interceptors({GenericManagerExceptionsInterceptor.class, TrackerInterceptor.class})
@@ -57,6 +53,7 @@ public class OrderManager extends AbstractManager
         AccessLevel patientData = AccessLevelFinder.findAccessLevel(account, Role.PATIENT);
         order.setPatientData(patientData);
 
+        // load full medication object
         order.getOrderMedications().forEach(om -> {
             om.setOrder(order);
             Medication medication = medicationFacade.findByName(
@@ -65,40 +62,27 @@ public class OrderManager extends AbstractManager
             om.setPurchasePrice(medication.getCurrentPrice());
         });
 
+        // assert that prescription is provided if needed
         if(checkIsOnPrescription(order)) {
             if(order.getPrescription() == null) {
                 throw OrderException.createPrescriptionRequired();
             }
             order.getPrescription().setPatientData(patientData);
             order.setOrderState(OrderState.WAITING_FOR_CHEMIST_APPROVAL);
-        } else {
-            order.setOrderState(OrderState.FINALISED);
         }
 
-        if (!checkAllMedicationsAvailable(order)) {
-            order.setOrderState(OrderState.IN_QUEUE);
+        List<Shipment> shipmentsNotProcessed = shipmentFacade.findAllNotAlreadyProcessed();
+        if(shipmentsNotProcessed.isEmpty()) {
+            processOrderMedicationsStock(order, etagVerification);
         } else {
-            decreaseMedicationStock(order, etagVerification);
+            partiallyCalculateQueue(order, etagVerification, shipmentsNotProcessed);
         }
         orderFacade.create(order);
     }
 
     @RolesAllowed("createOrder")
-    private boolean checkAllMedicationsAvailable(Order order) {
-        for (OrderMedication orderMedication : order.getOrderMedications()) {
-            Medication medication = orderMedication.getMedication();
-            if (medication.getStock() <= orderMedication.getQuantity()) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    @RolesAllowed("createOrder")
     private boolean checkIsOnPrescription(Order order) {
         for (OrderMedication om : order.getOrderMedications()) {
-            log.info("name: " + om.getMedication().getCategory().getName() +
-                    " is on presc: " + om.getMedication().getCategory().getIsOnPrescription());
             if (om.getMedication().getCategory().getIsOnPrescription()) {
                 return true;
             }
@@ -107,16 +91,93 @@ public class OrderManager extends AbstractManager
     }
 
     @RolesAllowed("createOrder")
-    private void decreaseMedicationStock(Order order, EtagVerification etagVerification) {
-        order.getOrderMedications().forEach(om -> {
-            Medication medication = om.getMedication();
-            EtagVersion etagVersion = etagVerification.getEtagVersionList().get(
-                    om.getMedication().getName());
-            if(!etagVersion.getVersion().equals(medication.getVersion())) {
-                throw ApplicationException.createOptimisticLockException();
-            }
-            medication.setStock(medication.getStock() - om.getQuantity());
+    private void partiallyCalculateQueue(Order order,
+                                         EtagVerification etagVerification,
+                                         List<Shipment> shipmentsNotProcessed) {
+
+        // get list of all medications in current order
+        List<Medication> medicationsInOrder = order.getOrderMedications().stream()
+                .map(OrderMedication::getMedication)
+                .collect(Collectors.toList());
+
+        // get list of all orders containing one or more of given medications
+        List<Order> ordersInQueueToProcess =
+                orderFacade.findOrdersInQueueContainingMedicationsSortByOrderDate(medicationsInOrder);
+        Set<Medication> medicationsToProcess = ordersInQueueToProcess.stream()
+                .flatMap(o -> o.getOrderMedications().stream()
+                        .map(OrderMedication::getMedication))
+                .collect(Collectors.toSet());
+
+        // calculate shipments only for medications in found orders
+        increaseMedicationStock(shipmentsNotProcessed, medicationsToProcess);
+
+        // process orders from queue
+        ordersInQueueToProcess.forEach(this::processOrderMedicationsStock);
+
+        // process order that is being created
+        processOrderMedicationsStock(order, etagVerification);
+    }
+
+    @RolesAllowed("createOrder")
+    private void increaseMedicationStock(List<Shipment> shipmentsNotProcessed,
+                                         Set<Medication> medicationsToProcess) {
+        shipmentsNotProcessed.forEach(shipment -> {
+            shipment.getShipmentMedications().forEach(sm -> {
+                if(medicationsToProcess.contains(sm.getMedication())) {
+                    sm.getMedication().setStock(
+                            sm.getMedication().getStock() + sm.getQuantity());
+                    sm.setProcessed(true);
+                }
+            });
         });
+    }
+
+    @RolesAllowed("createOrder")
+    private void processOrderMedicationsStock(Order order) {
+        processOrderMedicationsStock(order, null);
+    }
+
+    @RolesAllowed("createOrder")
+    private void processOrderMedicationsStock(Order order, EtagVerification etagVerification) {
+        // check if stock can be decreased
+        for (OrderMedication orderMedication : order.getOrderMedications()) {
+            Medication medication = orderMedication.getMedication();
+            // check version if etag verification provided
+            if(etagVerification != null) {
+                checkEtagVersion(medication, etagVerification);
+            }
+            // check if stock is sufficient
+            if((orderMedication.getMedication().getStock() - orderMedication.getQuantity()) < 0) {
+                order.setOrderState(OrderState.IN_QUEUE);
+                return;
+            }
+            // check if medication price has had changed
+            if (orderMedication.getPurchasePrice() != null &&
+                    (medication.getCurrentPrice().compareTo(orderMedication.getPurchasePrice()) > 0)) {
+                order.setOrderState(OrderState.TO_BE_APPROVED_BY_PATIENT);
+                return;
+            }
+        }
+        // decrease stock
+        for (OrderMedication orderMedication : order.getOrderMedications()) {
+            Medication medication = orderMedication.getMedication();
+            medication.setStock(medication.getStock() - orderMedication.getQuantity());
+        }
+        // medications on prescription need to be additionally accepted by chemist
+        order.setOrderState(OrderState.FINALISED);
+        if (order.getPrescription() != null) {
+            order.setOrderState(OrderState.WAITING_FOR_CHEMIST_APPROVAL);
+        }
+    }
+
+    @RolesAllowed("createOrder")
+    private void checkEtagVersion(Medication medication, EtagVerification etagVerification) {
+        EtagVersion etagVersion = etagVerification.getEtagVersionList()
+                .get(medication.getName());
+        if(!etagVersion.getVersion().equals(medication.getVersion())) {
+            etagVersion.setVersion(medication.getVersion());
+            throw new OptimisticLockException();
+        }
     }
 
     @Override
@@ -125,20 +186,14 @@ public class OrderManager extends AbstractManager
         List<Order> ordersInQueue = orderFacade.findAllOrdersInQueueSortByOrderDate();
         List<Shipment> shipmentsNotProcessed = shipmentFacade.findAllNotAlreadyProcessed();
 
-        shipmentsNotProcessed.forEach(
-                shipment -> {
-                    shipment
-                            .getShipmentMedications()
-                            .forEach(
-                                    shipmentMedication -> {
-                                        shipmentMedication
-                                                .getMedication()
-                                                .setStock(
-                                                        shipmentMedication.getMedication().getStock()
-                                                                + shipmentMedication.getQuantity());
-                                    });
-                    shipment.setWasAlreadyProcessed(true);
-                });
+        shipmentsNotProcessed.forEach(shipment ->
+            shipment.getShipmentMedications().forEach(shipmentMedication -> {
+                shipmentMedication.getMedication()
+                        .setStock(shipmentMedication.getMedication().getStock()
+                                + shipmentMedication.getQuantity());
+                shipmentMedication.setProcessed(true);
+            })
+        );
 
         AtomicBoolean canAllMedicationsBeProceed = new AtomicBoolean(true);
         AtomicBoolean sendForPatientAproval = new AtomicBoolean(false);
