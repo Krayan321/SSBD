@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { useForm } from "react-hook-form";
+import { set, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
@@ -9,17 +9,10 @@ import { getCategory, editCategory } from "../api/moa/categoryApi";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 import ConfirmationDialog from "../components/ConfirmationDialog";
-import {
-  Paper,
-  Box,
-  TextField,
-  Button,
-  CircularProgress,
-  Menu,
-} from "@mui/material";
-import { ControlPointDuplicate, TextIncrease } from "@mui/icons-material";
+import { Paper, Box, TextField, Button, CircularProgress } from "@mui/material";
 import { MenuItem, Select } from "@mui/material";
 import { categorySchema } from "../utils/Validations";
+import { useLocation } from "react-router-dom";
 
 const paperStyle = {
   backgroundColor: "rgba(255, 255, 255, 0.75)",
@@ -29,15 +22,19 @@ const paperStyle = {
 };
 
 export default function EditCategory() {
+  const { state } = useLocation();
   const { id } = useParams();
   const { t } = useTranslation();
+  const location = useLocation();
   const navigate = useNavigate();
   const [category, setCategory] = useState({});
+  const [oldName, setOldName] = useState("");
+  const [oldIsOnPrescription, setOldIsOnPrescription] = useState(false);
   const [etag, setEtag] = useState("");
   const [name, setName] = useState("");
   const [isOnPrescription, setIsOnPrescription] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const {
     register,
@@ -47,12 +44,16 @@ export default function EditCategory() {
     resolver: yupResolver(categorySchema),
   });
 
+  console.log(location.state);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await getCategory(id);
         setCategory(response.data);
         setEtag(response.headers["etag"]);
+        setName(response.data.name);
+        setLoading(false);
         console.log(response.data);
       } catch (error) {
         toast.error(t(error.response.data.message), { position: "top-center" });
@@ -93,10 +94,21 @@ export default function EditCategory() {
     setDialogOpen(true);
   };
 
+  console.log(category);
+  console.log(category.name);
+  console.log(name);
+
   return (
-    <div>
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignContent: "center",
+        marginTop: "3rem",
+      }}
+    >
       <Paper elevation={20} style={paperStyle}>
-        <h2>{t("edit_category")}</h2>
+        <h2 style={{ fontFamily: "Lato" }}>{t("edit_category")}</h2>
         <Box sx={{ marginBottom: 4 }}>
           <TextField
             {...register("name")}
@@ -108,7 +120,7 @@ export default function EditCategory() {
             required
             error={errors.name}
             helperText={t(errors.name?.message)}
-            defaultValue={category.name}
+            defaultValue={location.state.name}
             focused
           />
           <Box sx={{ marginBottom: 2 }} />
@@ -122,6 +134,7 @@ export default function EditCategory() {
             select
             error={errors.isOnPrescription}
             helperText={t(errors.isOnPrescription?.message)}
+            defaultValue={location.state.isOnPrescription}
             focused
           >
             <MenuItem value={true}>{t("yes")}</MenuItem>

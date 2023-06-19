@@ -11,6 +11,7 @@ export const Pathnames = {
   auth: {
     landing: "/home",
     self: "/home/self",
+    editSelf: "/home/self/edit",
   },
   admin: {
     accounts: "/accounts",

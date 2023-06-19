@@ -69,8 +69,6 @@ export async function changeSelfAccountEmail(body, etag) {
 }
 
 export async function changeOtherAccountEmail(id, body, etag) {
-
-
   return await putWithEtag(`account/${id}`, body, etag);
 }
 
@@ -194,7 +192,6 @@ export async function signInAccount(login, password) {
   return await post("auth/login", body);
 }
 
-
 export async function notifyAccessLevelChange(role) {
   return await post("auth/notify-access-level-change/" + role);
 }
@@ -259,4 +256,16 @@ export async function editOtherChemistData(id, body, etag) {
 
 export async function editOtherAdminData(id, body, etag) {
   return await putWithEtag(`account/${id}/admin`, body, etag);
+}
+
+export async function editSelfPatientData(body, etag) {
+  return await putWithEtag("account/patient", body, etag);
+}
+
+export async function editSelfChemistData(body, etag) {
+  return await putWithEtag("account/chemist", body, etag);
+}
+
+export async function editSelfAdminData(body, etag) {
+  return await putWithEtag("account/admin", body, etag);
 }

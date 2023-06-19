@@ -44,10 +44,6 @@ function AccountDetails() {
     fetchData();
   }, []);
 
-  const handleEdit = () => {
-    navigate(Pathnames.auth.editSelf);
-  };
-
   const isAdmin = accessLevels.includes("ADMIN");
   const isChemist = accessLevels.includes("CHEMIST");
   const isPatient = accessLevels.includes("PATIENT");
@@ -73,6 +69,11 @@ function AccountDetails() {
   const handleChangeEmail = () => {
     setChangeEmail((state) => !state);
   };
+
+  const handleEditAccountDetails = () => {
+    navigate(`/home/self/edit`);
+  };
+
   return (
     <div
       style={{
@@ -397,7 +398,9 @@ function AccountDetails() {
             )}
           </Box>
         )}
-        <Button onClick={handleEdit}>Edit Account Details</Button>
+        <Button onClick={() => handleEditAccountDetails()}>
+          Edit Account Details
+        </Button>
       </Paper>
       <ToastContainer />
     </div>

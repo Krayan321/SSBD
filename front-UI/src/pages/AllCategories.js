@@ -52,7 +52,16 @@ export default function AllCategories() {
   };
 
   const handleEditCategory = (id) => {
-    navigate(`/categories/${id}/edit`);
+    const category = categories.find((row) => row.id === id);
+
+    if (category) {
+      navigate(`/categories/${id}/edit`, {
+        state: {
+          name: category.name,
+          isOnPrescription: category.isOnPrescription,
+        },
+      });
+    }
   };
 
   if (loading) {
@@ -148,7 +157,11 @@ export default function AllCategories() {
                   {row.isOnPrescription ? t("yes") : t("no")}
                 </TableCell>
                 <TableCell align="right">
-                  <Button onClick={() => handleEditCategory(row.id)}>
+                  <Button
+                    onClick={() =>
+                      handleEditCategory(row.id, row.name, row.isOnPrescription)
+                    }
+                  >
                     {t("edit")}
                   </Button>
                 </TableCell>
