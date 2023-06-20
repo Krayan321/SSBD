@@ -140,8 +140,8 @@ public class OrderManager extends AbstractManager
                     shipment.setWasAlreadyProcessed(true);
                 });
 
-        AtomicBoolean canAllMedicationsBeProceed = new AtomicBoolean(true);
-        AtomicBoolean sendForPatientAproval = new AtomicBoolean(false);
+        final Boolean[] canAllMedicationsBeProceed = {true};
+        final Boolean[] sendForPatientAproval = {false};
         ordersInQueue.forEach(
                 order -> {
                     for (OrderMedication orderMedication : order.getOrderMedications()) {
@@ -149,22 +149,22 @@ public class OrderManager extends AbstractManager
                         Medication medication = orderMedication.getMedication();
 
                         if (orderMedication.getPurchasePrice() != null && (medication.getCurrentPrice().compareTo(orderMedication.getPurchasePrice()) > 0)) {
-                            sendForPatientAproval.getAndSet(true);
+                            sendForPatientAproval[0] = true;
                         }
 
                         if (medication.getStock() < orderMedication.getQuantity()) {
-                            canAllMedicationsBeProceed.getAndSet(false);
+                            canAllMedicationsBeProceed[0] = false;
                             break;
                         }
                     }
 
-                    if (canAllMedicationsBeProceed.get()) {
+                    if (Boolean.TRUE.equals(canAllMedicationsBeProceed[0])) {
 
-                        if (sendForPatientAproval.get()) {
+                        if (Boolean.TRUE.equals(sendForPatientAproval[0])) {
                             order.setOrderState(OrderState.TO_BE_APPROVED_BY_PATIENT);
                         }
 
-                        if (!sendForPatientAproval.get() && order.getPrescription() == null) {
+                        if (Boolean.TRUE.equals(!sendForPatientAproval[0]) && order.getPrescription() == null) {
                             for (OrderMedication orderMedication : order.getOrderMedications()) {
                                 Medication medication = orderMedication.getMedication();
                                 medication.setStock(medication.getStock() - orderMedication.getQuantity());
