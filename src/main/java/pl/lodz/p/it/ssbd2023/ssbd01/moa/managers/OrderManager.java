@@ -48,7 +48,7 @@ public class OrderManager extends AbstractManager
 
     @Override
     @RolesAllowed("createOrder")
-    public void createOrder(Order order, EtagVerification etagVerification) {
+    public void createOrder(Order order) {
         Account account = getCurrentUserWithAccessLevels();
         AccessLevel patientData = AccessLevelFinder.findAccessLevel(account, Role.PATIENT);
         order.setPatientData(patientData);
@@ -73,9 +73,9 @@ public class OrderManager extends AbstractManager
 
         List<Shipment> shipmentsNotProcessed = shipmentFacade.findAllNotAlreadyProcessed();
         if(shipmentsNotProcessed.isEmpty()) {
-            processOrderMedicationsStock(order, etagVerification);
+            processOrderMedicationsStock(order);
         } else {
-            partiallyCalculateQueue(order, etagVerification, shipmentsNotProcessed);
+            partiallyCalculateQueue(order, shipmentsNotProcessed);
         }
         orderFacade.create(order);
     }
@@ -91,9 +91,7 @@ public class OrderManager extends AbstractManager
     }
 
     @RolesAllowed("createOrder")
-    private void partiallyCalculateQueue(Order order,
-                                         EtagVerification etagVerification,
-                                         List<Shipment> shipmentsNotProcessed) {
+    private void partiallyCalculateQueue(Order order, List<Shipment> shipmentsNotProcessed) {
 
         // get list of all medications in current order
         List<Medication> medicationsInOrder = order.getOrderMedications().stream()
@@ -115,7 +113,7 @@ public class OrderManager extends AbstractManager
         ordersInQueueToProcess.forEach(this::processOrderMedicationsStock);
 
         // process order that is being created
-        processOrderMedicationsStock(order, etagVerification);
+        processOrderMedicationsStock(order);
     }
 
     @RolesAllowed("createOrder")
@@ -134,21 +132,9 @@ public class OrderManager extends AbstractManager
 
     @RolesAllowed({"updateQueue", "createOrder"})
     private void processOrderMedicationsStock(Order order) {
-        processOrderMedicationsStock(order, null);
-    }
-
-    @RolesAllowed({"updateQueue", "createOrder"})
-    private void processOrderMedicationsStock(Order order, EtagVerification etagVerification) {
-        log.info("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
-        boolean throwOptimisticLock = false;
         // check if stock can be decreased
         for (OrderMedication orderMedication : order.getOrderMedications()) {
             Medication medication = orderMedication.getMedication();
-            // check version if etag verification provided
-            if(!checkEtagVersion(medication, etagVerification)) {
-                throwOptimisticLock = true;
-                continue;
-            }
             // check if stock is sufficient
             if((orderMedication.getMedication().getStock() - orderMedication.getQuantity()) < 0) {
                 order.setOrderState(OrderState.IN_QUEUE);
@@ -161,9 +147,6 @@ public class OrderManager extends AbstractManager
                 return;
             }
         }
-        if(throwOptimisticLock) {
-            throw new OptimisticLockException();
-        }
         // decrease stock
         for (OrderMedication orderMedication : order.getOrderMedications()) {
             Medication medication = orderMedication.getMedication();
@@ -174,20 +157,6 @@ public class OrderManager extends AbstractManager
         if (order.getPrescription() != null) {
             order.setOrderState(OrderState.WAITING_FOR_CHEMIST_APPROVAL);
         }
-    }
-
-    @RolesAllowed({"updateQueue", "createOrder"})
-    private boolean checkEtagVersion(Medication medication, EtagVerification etagVerification) {
-        if(etagVerification == null) {
-            return true;
-        }
-        EtagVersion etagVersion = etagVerification.getEtagVersionList()
-                .get(medication.getName());
-        if(!etagVersion.getVersion().equals(medication.getVersion())) {
-            etagVersion.setVersion(medication.getVersion());
-            return false;
-        }
-        return true;
     }
 
     @Override

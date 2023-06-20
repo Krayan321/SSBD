@@ -95,19 +95,8 @@ public class OrderController extends AbstractController {
     @Path("/submit")
     @RolesAllowed("createOrder")
     public Response submitOrder(@Valid CreateOrderDTO createOrderDTO) {
-      EtagVerification etagVerification = OrderConverter
-              .mapCreateOrderDtoToEtagVerification(createOrderDTO);
-
-      createOrderDTO.getOrderMedications().forEach(om -> {
-        EtagVersion etagVersion = etagVerification.getEtagVersionList().get(om.getName());
-        if(!entityIdentitySignerVerifier.validateEntitySignature(etagVersion.getEtag()) ||
-                !entityIdentitySignerVerifier.verifyEntityIntegrity(om, etagVersion.getEtag())) {
-          throw ApplicationException.createEtagNotValidException();
-        }
-      });
       Order inputOrder = OrderConverter.mapCreateOrderDTOToOrder(createOrderDTO);
-      repeatTransactionVoidWithOptimisticLock(orderManager, () -> orderManager
-              .createOrder(inputOrder, etagVerification));
+      repeatTransactionVoidWithOptimisticLock(orderManager, () -> orderManager.createOrder(inputOrder));
       return Response.status(Response.Status.CREATED).build();
     }
 

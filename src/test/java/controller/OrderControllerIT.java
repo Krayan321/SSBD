@@ -330,15 +330,11 @@ public class OrderControllerIT extends BaseTest {
                     .then().log().all()
                     .statusCode(Response.Status.OK.getStatusCode())
                     .extract().response();
-            String etag = responseMed1.getHeader("ETag").replace("\"", "");
-            Long version = responseMed1.getBody().jsonPath().getLong("version");
             String name = responseMed1.getBody().jsonPath().getString("name");
 
             return CreateOrderMedicationDTO.builder()
                     .quantity(5)
-                    .version(version)
                     .name(name)
-                    .etag(etag)
                     .build();
         }
 
