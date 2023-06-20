@@ -139,6 +139,7 @@ public class OrderManager extends AbstractManager
 
     @RolesAllowed({"updateQueue", "createOrder"})
     private void processOrderMedicationsStock(Order order, EtagVerification etagVerification) {
+        log.info("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
         boolean throwOptimisticLock = false;
         // check if stock can be decreased
         for (OrderMedication orderMedication : order.getOrderMedications()) {

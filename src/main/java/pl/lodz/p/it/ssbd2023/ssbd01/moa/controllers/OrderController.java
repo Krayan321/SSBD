@@ -106,7 +106,6 @@ public class OrderController extends AbstractController {
         }
       });
       Order inputOrder = OrderConverter.mapCreateOrderDTOToOrder(createOrderDTO);
-      log.info("input order: " + inputOrder.toString());
       repeatTransactionVoidWithOptimisticLock(orderManager, () -> orderManager
               .createOrder(inputOrder, etagVerification));
       return Response.status(Response.Status.CREATED).build();
@@ -135,7 +134,7 @@ public class OrderController extends AbstractController {
 
 
     // mok 10
-    @PUT
+    @DELETE
     @RolesAllowed("deleteWaitingOrdersById")
     @Path("/{id}/waiting")
     public Response deleteWaitingOrderById(@PathParam("id") Long id) {
