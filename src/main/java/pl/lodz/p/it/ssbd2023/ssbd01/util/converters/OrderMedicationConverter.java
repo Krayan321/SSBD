@@ -18,6 +18,7 @@ public class OrderMedicationConverter {
         return OrderMedicationDTO.builder()
                 .medication(MedicationConverter.mapMedicationToMedicationDTO(orderMedication.getMedication()))
                 .quantity(orderMedication.getQuantity())
+                .purchasePrice(orderMedication.getPurchasePrice())
                 .build();
     }
     public static List<OrderMedication> mapCreateOrderMedicationsDTOToOrderMedications(

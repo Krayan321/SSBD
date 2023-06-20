@@ -1,12 +1,4 @@
-import {
-    Box,
-    Button,
-    Grid,
-    Paper,
-    Stack,
-    TextField,
-    Typography,
-} from "@mui/material";
+import {Box, Button, Grid, Paper, Stack, TextField, Typography,} from "@mui/material";
 import LinearProgress from "@mui/material/LinearProgress";
 import LockOpenIcon from "@mui/icons-material/LockOpen";
 import LockIcon from "@mui/icons-material/Lock";
@@ -20,13 +12,14 @@ import {
     blockRoleChemist,
     blockRolePatient,
     getAccountDetails,
-    unblockRoleAdmin, unblockRoleChemist, unblockRolePatient
+    unblockRoleAdmin,
+    unblockRoleChemist,
+    unblockRolePatient
 } from "../api/mok/accountApi";
 import AddRoleForm from "../modules/accounts/AddRoleForm";
 import ChangeOtherEmailForm from "../modules/accounts/ChangeOtherEmailForm";
 import ChangeOtherPasswordForm from "../modules/accounts/ChangeOtherPasswordForm";
-import {toast, ToastContainer} from "react-toastify";
-import {Pathnames} from "../router/Pathnames";
+import {toast} from "react-toastify";
 
 function SingleAccount() {
     const {id} = useParams();
@@ -56,54 +49,63 @@ function SingleAccount() {
         if (blockOrUnblok) {
             if (accessLevelToBlockOrUnblock === "ADMIN") {
                 blockRoleAdmin(idToBlockOrUnblok).then((response) => {
+                    fetchAccountDetails()
                     toast.success(t("access_level_sucessfully_blocked"), {position: "top-center"});
                 }).catch((error) => {
                     toast.error(t(error.response.data.message), {position: "top-center"});
                 })
             } else if (accessLevelToBlockOrUnblock === "CHEMIST") {
                 blockRoleChemist(idToBlockOrUnblok).then((response) => {
+                    fetchAccountDetails()
                     toast.success(t("access_level_sucessfully_blocked"), {position: "top-center"});
                 }).catch((error) => {
                     toast.error(t(error.response.data.message), {position: "top-center"});
                 })
             } else if (accessLevelToBlockOrUnblock === "PATIENT") {
                 blockRolePatient(idToBlockOrUnblok).then((response) => {
+                    fetchAccountDetails()
                     toast.success(t("access_level_sucessfully_blocked"), {position: "top-center"});
                 }).catch((error) => {
                     toast.error(t(error.response.data.message), {position: "top-center"});
                 })
             }
+
+            setBlockOrUnblock((prev) => !prev);
+
         } else {
             if (accessLevelToBlockOrUnblock === "ADMIN") {
                 unblockRoleAdmin(idToBlockOrUnblok).then((response) => {
+                    fetchAccountDetails()
                     toast.success(t("access_level_sucessfully_unblocked"), {position: "top-center"});
                 }).catch((error) => {
                     toast.error(t(error.response.data.message), {position: "top-center"});
                 })
             } else if (accessLevelToBlockOrUnblock === "CHEMIST") {
                 unblockRoleChemist(idToBlockOrUnblok).then((response) => {
+                    fetchAccountDetails()
                     toast.success(t("access_level_sucessfully_unblocked"), {position: "top-center"});
                 }).catch((error) => {
                     toast.error(t(error.response.data.message), {position: "top-center"});
                 })
             } else if (accessLevelToBlockOrUnblock === "PATIENT") {
                 unblockRolePatient(idToBlockOrUnblok).then((response) => {
+                    fetchAccountDetails()
                     toast.success(t("access_level_sucessfully_unblocked"), {position: "top-center"});
                 }).catch((error) => {
                     toast.error(t(error.response.data.message), {position: "top-center"});
                 })
             }
+
+            setBlockOrUnblock((prev) => !prev);
         }
         setDialogOpen(false)
-
     };
 
     const reject = () => {
         setDialogOpen(false);
     };
 
-    useEffect(() => {
-
+    const fetchAccountDetails = () => {
         getAccountDetails(id).then(
             (response) => {
                 setAccount(response.data);
@@ -114,8 +116,13 @@ function SingleAccount() {
             .catch((error) => {
                 toast.error(t(error.response.data.message), {position: "top-center"});
             });
+    }
 
+    useEffect(() => {
+
+        fetchAccountDetails()
     }, []);
+
 
     const isAdmin =
         accessLevels && accessLevels.some((level) => level.role === "ADMIN");
@@ -159,6 +166,7 @@ function SingleAccount() {
                 justifyContent: "center",
                 alignContent: "center",
                 marginTop: "3rem",
+                marginBottom: "3rem",
             }}
         >
             <ConfirmationDialog
@@ -600,7 +608,6 @@ function SingleAccount() {
                     {t("edit_account_details")}
                 </Button>
             </Paper>
-            <ToastContainer/>
         </div>
     );
 }

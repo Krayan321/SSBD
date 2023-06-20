@@ -44,9 +44,7 @@ function AccountDetails() {
     fetchData();
   }, []);
 
-  const handleEdit = () => {
-    navigate(Pathnames.auth.editSelf);
-  };
+  console.log("Etag is: " + etag);
 
   const isAdmin = accessLevels.includes("ADMIN");
   const isChemist = accessLevels.includes("CHEMIST");
@@ -73,6 +71,11 @@ function AccountDetails() {
   const handleChangeEmail = () => {
     setChangeEmail((state) => !state);
   };
+
+  const handleEditAccountDetails = () => {
+    navigate(`/home/self/edit`);
+  };
+
   return (
     <div
       style={{
@@ -259,7 +262,7 @@ function AccountDetails() {
                   {t("First name")}
                 </Typography>
                 {accessLevels.map((level) =>
-                  level.name ? (
+                  level.firstName ? (
                     <Typography
                       style={{ fontSize: 16 }}
                       variant="h6"
@@ -379,7 +382,7 @@ function AccountDetails() {
               NIP
             </Typography>
             {accessLevels.map((level) =>
-              level.NIP ? (
+              level.nip ? (
                 <Typography
                   style={{ fontSize: 16 }}
                   variant="h6"
@@ -391,13 +394,15 @@ function AccountDetails() {
                     readOnly: true,
                   }}
                 >
-                  {level.NIP}
+                  {level.nip}
                 </Typography>
               ) : null
             )}
           </Box>
         )}
-        <Button onClick={handleEdit}>Edit Account Details</Button>
+        <Button onClick={() => handleEditAccountDetails()}>
+          {t("edit_account_details")}
+        </Button>
       </Paper>
       <ToastContainer />
     </div>
