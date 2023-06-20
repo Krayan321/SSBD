@@ -32,7 +32,9 @@ import lombok.AccessLevel;
     })
 @NamedQuery(
         name = "Shipment.findAllNotProcessed",
-        query = "SELECT s FROM Shipment s WHERE s.wasAlreadyProcessed = false")
+        query = "SELECT s FROM Shipment s " +
+                "left join ShipmentMedication sm " +
+                "where sm.processed = false")
 public class Shipment extends AbstractEntity implements Serializable {
 
   public static final long serialVersionUID = 1L;
