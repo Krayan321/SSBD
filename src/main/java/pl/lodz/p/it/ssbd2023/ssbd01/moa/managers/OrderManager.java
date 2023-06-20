@@ -132,19 +132,21 @@ public class OrderManager extends AbstractManager
         });
     }
 
-    @RolesAllowed("createOrder")
+    @RolesAllowed({"updateQueue", "createOrder"})
     private void processOrderMedicationsStock(Order order) {
         processOrderMedicationsStock(order, null);
     }
 
-    @RolesAllowed("createOrder")
+    @RolesAllowed({"updateQueue", "createOrder"})
     private void processOrderMedicationsStock(Order order, EtagVerification etagVerification) {
+        boolean throwOptimisticLock = false;
         // check if stock can be decreased
         for (OrderMedication orderMedication : order.getOrderMedications()) {
             Medication medication = orderMedication.getMedication();
             // check version if etag verification provided
-            if(etagVerification != null) {
-                checkEtagVersion(medication, etagVerification);
+            if(!checkEtagVersion(medication, etagVerification)) {
+                throwOptimisticLock = true;
+                continue;
             }
             // check if stock is sufficient
             if((orderMedication.getMedication().getStock() - orderMedication.getQuantity()) < 0) {
@@ -158,6 +160,9 @@ public class OrderManager extends AbstractManager
                 return;
             }
         }
+        if(throwOptimisticLock) {
+            throw new OptimisticLockException();
+        }
         // decrease stock
         for (OrderMedication orderMedication : order.getOrderMedications()) {
             Medication medication = orderMedication.getMedication();
@@ -170,14 +175,18 @@ public class OrderManager extends AbstractManager
         }
     }
 
-    @RolesAllowed("createOrder")
-    private void checkEtagVersion(Medication medication, EtagVerification etagVerification) {
+    @RolesAllowed({"updateQueue", "createOrder"})
+    private boolean checkEtagVersion(Medication medication, EtagVerification etagVerification) {
+        if(etagVerification == null) {
+            return true;
+        }
         EtagVersion etagVersion = etagVerification.getEtagVersionList()
                 .get(medication.getName());
         if(!etagVersion.getVersion().equals(medication.getVersion())) {
             etagVersion.setVersion(medication.getVersion());
-            throw new OptimisticLockException();
+            return false;
         }
+        return true;
     }
 
     @Override
@@ -194,40 +203,7 @@ public class OrderManager extends AbstractManager
                 shipmentMedication.setProcessed(true);
             })
         );
-
-        final Boolean[] canAllMedicationsBeProceed = {true};
-        final Boolean[] sendForPatientAproval = {false};
-        ordersInQueue.forEach(
-                order -> {
-                    for (OrderMedication orderMedication : order.getOrderMedications()) {
-
-                        Medication medication = orderMedication.getMedication();
-
-                        if (orderMedication.getPurchasePrice() != null && (medication.getCurrentPrice().compareTo(orderMedication.getPurchasePrice()) > 0)) {
-                            sendForPatientAproval[0] = true;
-                        }
-
-                        if (medication.getStock() < orderMedication.getQuantity()) {
-                            canAllMedicationsBeProceed[0] = false;
-                            break;
-                        }
-                    }
-
-                    if (Boolean.TRUE.equals(canAllMedicationsBeProceed[0])) {
-
-                        if (Boolean.TRUE.equals(sendForPatientAproval[0])) {
-                            order.setOrderState(OrderState.TO_BE_APPROVED_BY_PATIENT);
-                        }
-
-                        if (Boolean.TRUE.equals(!sendForPatientAproval[0]) && order.getPrescription() == null) {
-                            for (OrderMedication orderMedication : order.getOrderMedications()) {
-                                Medication medication = orderMedication.getMedication();
-                                medication.setStock(medication.getStock() - orderMedication.getQuantity());
-                            }
-                            order.setOrderState(OrderState.FINALISED);
-                        }
-                    }
-                });
+        ordersInQueue.forEach(this::processOrderMedicationsStock);
     }
 
     @Override

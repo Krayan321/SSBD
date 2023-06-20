@@ -22,6 +22,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import static pl.lodz.p.it.ssbd2023.ssbd01.entities.OrderState.IN_QUEUE;
+
 @Stateless
 @TransactionAttribute(TransactionAttributeType.MANDATORY)
 @Interceptors({
@@ -80,9 +82,12 @@ public class OrderFacade extends AbstractFacade<Order> {
         return getEntityManager()
                 .createQuery("SELECT o FROM Order o " +
                         "left join fetch o.orderMedications om " +
-                        "WHERE o.orderState = pl.lodz.p.it.ssbd2023.ssbd01.entities.OrderState.IN_QUEUE " +
-                        "AND om.medication in :medications " +
+                        "WHERE o.orderState = :state " +
+                        "AND o in (select o from Order o " +
+                            "left join o.orderMedications om " +
+                            "where om.medication in :medications)" +
                         "order by o.orderDate ASC")
+                .setParameter("state", IN_QUEUE)
                 .setParameter("medications", medications)
                 .getResultList();
     }
@@ -106,7 +111,7 @@ public class OrderFacade extends AbstractFacade<Order> {
         getEntityManager()
                 .createQuery(orderQuery)
                 .setParameter("newState", OrderState.REJECTED_BY_CHEMIST)
-                .setParameter("currentState", OrderState.IN_QUEUE)
+                .setParameter("currentState", IN_QUEUE)
                 .setParameter("orderId", id)
                 .executeUpdate();
 
