@@ -485,12 +485,6 @@ public class OrderControllerIT extends BaseTest {
         @Test
         @Order(6)
         public void submitOrder_partiallyCalculateQueue_correct() {
-            given()
-                    .header("Authorization", "Bearer " + patientJwt)
-                    .get(getApiRoot() + "/order/self")
-                    .then()
-                    .log().all()
-                    .statusCode(Response.Status.OK.getStatusCode());
             // assert beginning stock
             assertMediationStock(medicationOtcId, 10);
             assertMediationStock(medicationOnPrescriptionId, 10);
@@ -516,11 +510,21 @@ public class OrderControllerIT extends BaseTest {
             assertMediationStock(medicationOnPrescriptionId, 10);
             assertMediationStock(medicationOnPrescription2Id, 10);
 
+            // check status of orders
+            var response = given()
+                    .header("Authorization", "Bearer " + patientJwt)
+                    .get(getApiRoot() + "/order/self")
+                    .then()
+                    .log().all()
+                    .statusCode(Response.Status.OK.getStatusCode())
+                    .extract().response();
+            Assertions.assertEquals("IN_QUEUE", response.getBody().jsonPath().getString("[9].orderState"));
+            Assertions.assertEquals("IN_QUEUE", response.getBody().jsonPath().getString("[10].orderState"));
+
             // create new order
             medicationOnPrescription.setQuantity(5);
             createOrderDTO.getOrderMedications().add(medicationOnPrescription);
             createOrderDTO.setPrescription(new CreateOrderPrescriptionDTO("1238"));
-
             given().header("Authorization", "Bearer " + patientJwt)
                     .body(createOrderDTO)
                     .log().all()
@@ -533,13 +537,17 @@ public class OrderControllerIT extends BaseTest {
             assertMediationStock(medicationOnPrescriptionId, 0); // previous orders in queue has been finalised
             assertMediationStock(medicationOnPrescription2Id, 0); // all medications in computed orders have been computed
 
-            // check status of order
-            given()
+            // check status of orders
+            response = given()
                     .header("Authorization", "Bearer " + patientJwt)
                     .get(getApiRoot() + "/order/self")
                     .then()
                     .log().all()
-                    .statusCode(Response.Status.OK.getStatusCode());
+                    .statusCode(Response.Status.OK.getStatusCode())
+                    .extract().response();
+            Assertions.assertEquals("WAITING_FOR_CHEMIST_APPROVAL", response.getBody().jsonPath().getString("[9].orderState"));
+            Assertions.assertEquals("WAITING_FOR_CHEMIST_APPROVAL", response.getBody().jsonPath().getString("[10].orderState"));
+            Assertions.assertEquals("IN_QUEUE", response.getBody().jsonPath().getString("[11].orderState"));
         }
     }
 
