@@ -9,14 +9,19 @@ import jakarta.ejb.TransactionAttribute;
 import jakarta.ejb.TransactionAttributeType;
 import jakarta.inject.Inject;
 import jakarta.interceptor.Interceptors;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.SecurityContext;
 import lombok.extern.java.Log;
 import pl.lodz.p.it.ssbd2023.ssbd01.common.AbstractManager;
+import pl.lodz.p.it.ssbd2023.ssbd01.entities.Account;
 import pl.lodz.p.it.ssbd2023.ssbd01.entities.Category;
 import pl.lodz.p.it.ssbd2023.ssbd01.exceptions.ApplicationException;
 import pl.lodz.p.it.ssbd2023.ssbd01.interceptors.GenericManagerExceptionsInterceptor;
 import pl.lodz.p.it.ssbd2023.ssbd01.interceptors.TrackerInterceptor;
+import pl.lodz.p.it.ssbd2023.ssbd01.moa.facades.AccountFacade;
 import pl.lodz.p.it.ssbd2023.ssbd01.moa.facades.CategoryFacade;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -32,6 +37,12 @@ public class CategoryManager extends AbstractManager implements CategoryManagerL
     @Inject
     private CategoryFacade categoryFacade;
 
+    @Inject
+    private AccountFacade accountFacade;
+
+    @Context
+    private SecurityContext context;
+
     @Override
     @RolesAllowed("getAllCategories")
     public List<Category> getAllCategories() {
@@ -44,6 +55,7 @@ public class CategoryManager extends AbstractManager implements CategoryManagerL
         if (existingCategory != null) {
             throw ApplicationException.createCategoryAlreadyExistsException();
         }
+        category.setCreatedBy(getCurrentUserLogin());
         categoryFacade.create(category);
         return category;
     }
@@ -70,6 +82,8 @@ public class CategoryManager extends AbstractManager implements CategoryManagerL
             }
             categoryToUpdate.setName(category.getName());
             categoryToUpdate.setIsOnPrescription(category.getIsOnPrescription());
+            categoryToUpdate.setModifiedBy(getCurrentUserLogin());
+            categoryToUpdate.setModificationDate(new Date());
             categoryFacade.edit(categoryToUpdate);
             return categoryToUpdate;
         } else {
@@ -81,5 +95,15 @@ public class CategoryManager extends AbstractManager implements CategoryManagerL
     @PermitAll
     public Category findByName(String name) {
         return categoryFacade.findByName(name);
+    }
+
+    @RolesAllowed("getCurrentUser")
+    public Account getCurrentUser() {
+        return accountFacade.findByLogin(getCurrentUserLogin());
+    }
+
+    @PermitAll
+    public String getCurrentUserLogin() {
+        return context.getUserPrincipal().getName();
     }
 }

@@ -24,6 +24,7 @@ import ShowBucket from "../pages/ShowBucket";
 import MedicationDetails from "../pages/MedicationDetails";
 import AllCategories from "../pages/AllCategories";
 import EditCategory from "../pages/EditCategory";
+import EditSelfAccountDetails from "../pages/EditSelfAccountDetails";
 
 export const publicRoutes = [
   {
@@ -60,6 +61,10 @@ export const AuthRoutes = [
   {
     path: Pathnames.auth.landing,
     Component: Landing,
+  },
+  {
+    path: Pathnames.auth.editSelf,
+    Component: EditSelfAccountDetails,
   },
 ];
 
