@@ -203,6 +203,7 @@ export default function AllMedications() {
                                     ) : (
                                         <>
                                             <IconButton onClick={() => navigate(Pathnames.patient.showBucket)}
+                                                        style={{visibility: role === "PATIENT" ? 'visible' : "hidden"}}
                                                         color="inherit">
                                                 <ShoppingBasketIcon/>
                                             </IconButton>
