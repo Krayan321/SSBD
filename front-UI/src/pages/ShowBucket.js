@@ -51,6 +51,9 @@ export default function ShowBucket() {
     const handleChange = async (medicationName, quantity) => {
         let temp_to_change = bucket.find(({ medication }) => medication.name === medicationName);
 
+        if (quantity < 1) {
+            quantity = 1;
+        }
         temp_to_change.quantity = quantity;
 
         localStorage.setItem("bucket", JSON.stringify(bucket));

@@ -175,7 +175,7 @@ export default function ShowSelfOrders() {
                     <RefreshIcon/>
                 </IconButton>
             </Box>
-            <TableContainer sx={{maxWidth: "800px", margin: "auto"}} component={Paper}>
+            <TableContainer sx={{maxWidth: "900px", margin: "auto"}} component={Paper}>
                 <Table>
                     <TableHead sx={{backgroundColor: theme.palette.primary.main}}>
                         <TableRow>

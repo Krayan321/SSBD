@@ -249,5 +249,11 @@
   "add_medication": "Přidat lék",
   "order_deleted_successfully": "Objednávka byla úspěšně smazána",
   "exception.order.prescription.already-exists": "Daný předpis je již zaregistrován",
-  "exception.order.prescription.required": "Předpis je vyžadován"
+  "exception.order.prescription.required": "Předpis je vyžadován",
+  "quantity": "Množství",
+  "actions": "Akce",
+  "exception.order.illegal-state.modification": "Špatný stav entity",
+  "category_edited": "Category edited succesfully",
+  "exception.category.already-exists": "Kategorie úspěšně upravena",
+  "exception.medication.already-exists": "Léky již existují"
 }
