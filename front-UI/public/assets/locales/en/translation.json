@@ -133,7 +133,7 @@
   "list_of_medications": "List of medications",
   "login": "Login",
   "login_length_max": "Login can have maximum 50 characters",
-  "login_length_min": "Login must have at least 2 characters",
+  "login_length_min": "Login must have at least 5 characters",
   "login_or_register_to_continue": "Login or register to continue",
   "login_required": "Login is required",
   "logout": "Logout",
@@ -254,5 +254,8 @@
   "bad_prescription_number": "Bad prescription Order",
   "bought_successfully": "Bought successfully!",
   "exception.order.prescription.already-exists": "Given prescription is already registered",
-  "exception.order.prescription.required": "Prescription is required"
+  "exception.order.prescription.required": "Prescription is required",
+  "exception.account.deactivate.last-access-level": "Cannot deactivate last access level",
+  "confirm_buy": "Are you sure you want to proceed?",
+  "account_created": "Account created"
 }

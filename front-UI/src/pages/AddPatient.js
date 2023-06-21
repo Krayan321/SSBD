@@ -72,7 +72,6 @@ function AddPatient() {
     });
 
     const paperStyle = {padding: '20px 20px', margin: "0px auto", width: 400}
-    const headerStyle = {margin: 0}
     const [passwordShown, setPasswordShown] = useState(false);
     const [confirmPasswordShown, setConfirmPasswordShown] = useState(false);
     const {t} = useTranslation();
@@ -83,10 +82,10 @@ function AddPatient() {
 
         setLoading(true)
 
-        addPatient(name, lastName, login, email, password, phoneNumber, pesel, nip).then(
+        addPatient({name, lastName, login, email, password, phoneNumber, pesel, nip}).then(
             () => {
                 setLoading(false)
-                toast.success(t("account_created_check_email"), {
+                toast.success(t("account_created"), {
                     position: "top-center",
                 })
                 navigate(Pathnames.auth.landing);

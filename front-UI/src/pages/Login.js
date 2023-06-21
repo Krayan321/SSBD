@@ -9,7 +9,7 @@ import {Grid, TextField, Button, Box, Typography} from "@mui/material";
 import {useTranslation} from "react-i18next";
 import {signInAccount} from "../api/mok/accountApi";
 import axios from "axios";
-import {changeLevel, login as loginDispatch} from "../redux/UserSlice";
+import {changeLevel, login as loginDispatch, logout} from "../redux/UserSlice";
 import {useNavigate} from "react-router-dom";
 import 'react-toastify/dist/ReactToastify.css';
 import {ToastContainer, toast} from 'react-toastify';
@@ -46,6 +46,7 @@ const Login = () => {
 
         signInAccount(login, password).then((response) => {
             setLoading(false)
+            dispatch(logout())
             const jwt = response.data.jwtToken;
             localStorage.setItem(JWT_TOKEN, jwt);
             const decodedJWT = jwtDecode(jwt);
@@ -139,7 +140,9 @@ const Login = () => {
                 <DialogActions>
                     {
                         userRoles.map((role, index) => {
-                            return <Button onClick={() => {
+                            return <Button
+                                key={index}
+                                onClick={() => {
                                 dispatch(changeLevel({
                                     sub: user.sub,
                                     roles: user.roles,

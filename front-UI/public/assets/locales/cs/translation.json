@@ -134,7 +134,7 @@
   "list_of_medications": "Seznam léků",
   "login": "Uživatelské jméno",
   "login_length_max": "Uživatelské jméno může mít maximálně 50 znaků",
-  "login_length_min": "Uživatelské jméno musí mít alespoň 2 znaky",
+  "login_length_min": "Uživatelské jméno musí mít alespoň 5 znaky",
   "login_or_register_to_continue": "Přihlaste se nebo zaregistrujte pro pokračování",
   "login_required": "Uživatelské jméno je povinné",
   "logout": "Odhlásit",

@@ -61,10 +61,10 @@ function AddChemist() {
 
         setLoading(true)
 
-        addChemist(login, email, password, licenseNumber).then(
+        addChemist({login, email, password, licenseNumber}).then(
             () => {
                 setLoading(false)
-                toast.success(t("account_created_check_email"), {
+                toast.success(t("account_created"), {
                     position: "top-center",
                 })
                 navigate(Pathnames.auth.landing);

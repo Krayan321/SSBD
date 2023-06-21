@@ -163,7 +163,7 @@ function AddRoleForm({account, etag, hideChange}) {
                             (role) =>
                                 account.accessLevels.filter(
                                     (accessLevel) => accessLevel.role === role
-                                ).length === 0 && <MenuItem value={role}>{role}</MenuItem>
+                                ).length === 0 && <MenuItem key={role} value={role}>{role}</MenuItem>
                         )}
                     </Select>
                 </FormControl>

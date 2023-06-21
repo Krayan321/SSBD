@@ -47,7 +47,7 @@ function ChangePasswordForm({account, etag, hideChange}) {
 
     const handleReset = async () =>{
 
-        setLoading((true))
+        setLoading(true)
         const tag = etag.split('"').join("")
         const body = {
             login: account.login,
@@ -58,8 +58,7 @@ function ChangePasswordForm({account, etag, hideChange}) {
           
             setLoading((state)=> !state)
             setDialogOpen((state)=> !state)
-            //hideChange((state)=> !state)
-            //navigate('/accounts');
+            hideChange((state)=> !state)
             toast.success(t("success"), {
                 position: "top-center",
             })

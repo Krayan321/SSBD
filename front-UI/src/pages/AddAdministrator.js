@@ -57,14 +57,14 @@ function AddAdministrator() {
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
 
-    const onSubmit = handleSubmit(({login, email, password, licenseNumber}) => {
+    const onSubmit = handleSubmit(({login, email, password, workPhoneNumber}) => {
 
         setLoading(true)
 
-        addAdmin(login, email, password, licenseNumber).then(
+        addAdmin({login, email, password, workPhoneNumber}).then(
             () => {
                 setLoading(false)
-                toast.success(t("account_created_check_email"), {
+                toast.success(t("account_created"), {
                     position: "top-center",
                 })
                 navigate(Pathnames.auth.landing);
