@@ -254,5 +254,11 @@
   "bad_prescription_number": "Zły numer recepty",
   "bought_successfully": "Zakup udany!",
   "exception.order.prescription.already-exists": "Podana recepta jest już zarejestrowana",
-  "exception.order.prescription.required": "Wymagane jest podanie recepty"
+  "exception.order.prescription.required": "Wymagane jest podanie recepty",
+  "exception.account.deactivate.last-access-level": "Nie można dezaktywować ostatniego poziomu dostępu.",
+  "confirm_buy": "Czy na pewno chcesz kontynuować?",
+  "account_created": "Konto utworzone",
+  "confirm_shipment": "Czy na pewno chcesz utworzyć tę przesyłkę?",
+  "confirm_add_medication" : "Czy na pewno chcesz utworzyć ten lek?",
+  "confirm_reject_order" : "Czy na pewno chcesz odrzucić to zamówienie?"
 }

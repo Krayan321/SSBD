@@ -15,6 +15,7 @@ import {getAllMedications, getMedication} from "../api/moa/medicationApi";
 import {createShipment} from "../api/moa/shipmentApi";
 import {DatePicker} from "@mui/x-date-pickers";
 import dayjs from "dayjs";
+import ConfirmationDialog from "../components/ConfirmationDialog";
 
 export default function Shipment() {
   const {t} = useTranslation();
@@ -45,6 +46,8 @@ export default function Shipment() {
   const [createMedication, setCreateMedication] = useState(false);
   const [shipmentDate, setShipmentDate] = useState(dayjs());
   const [medications, setMedications] = useState(false);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [dataToSubmit, setDataToSubmit] = useState(false);
   const {fields, append, remove} = useFieldArray({ name: 'orderMedications', control });
   const navigate = useNavigate();
 
@@ -63,8 +66,16 @@ export default function Shipment() {
     findAllMedications()
   }, [findAllMedications]);
 
-
   const onSubmit = function(data) {
+    setDataToSubmit(data);
+    setDialogOpen(true);
+  }
+
+  const confirmSubmit = function () {
+    doSubmit(dataToSubmit);
+  }
+
+  const doSubmit = function(data) {
     const body = {
       shipmentDate: shipmentDate.format('YYYY-MM-DDTHH:mm:ss.SSS'),
       shipmentMedications: []}
@@ -184,6 +195,15 @@ export default function Shipment() {
       <AddMedicationOverlay open={createMedication}
                             onClose={() => setCreateMedication(false)}
                             append={append}/>
+      <ConfirmationDialog
+          open={dialogOpen}
+          title={t("confirm_shipment")}
+          actions={[
+            { label: t("confirm"), handler: confirmSubmit, color: "primary" },
+            { label: t("cancel"), handler: () => setDialogOpen(false), color: "secondary" },
+          ]}
+          onClose={() => setDialogOpen(false)}
+      />
     </div>
   )
 }

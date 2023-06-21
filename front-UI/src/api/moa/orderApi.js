@@ -37,7 +37,7 @@ export async function withdrawOrderById(id) {
 }
 
 export async function cancelOrder(id) {
-  return await postWithEtag(`order/${id}/cancel`)
+  return await put(`order/${id}/cancel`)
 }
 
 // export async function submitOrder(orderData) {

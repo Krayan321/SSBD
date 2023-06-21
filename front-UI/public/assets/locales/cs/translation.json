@@ -249,5 +249,11 @@
   "add_medication": "Přidat lék",
   "order_deleted_successfully": "Objednávka byla úspěšně smazána",
   "exception.order.prescription.already-exists": "Daný předpis je již zaregistrován",
-  "exception.order.prescription.required": "Předpis je vyžadován"
+  "exception.order.prescription.required": "Předpis je vyžadován",
+  "exception.account.deactivate.last-access-level": "Nelze deaktivovat poslední úroveň přístupu.",
+  "confirm_buy": "Jste si jisti, že chcete pokračovat?",
+  "account_created": "Účet vytvořen",
+  "confirm_shipment": "Jste si jisti, že chcete vytvořit tuto zásilku?",
+  "confirm_add_medication" : "Jste si jisti, že chcete vytvořit tuto léčbu?",
+  "confirm_reject_order" : "Jste si jisti, že chcete odmítnout toto objednávku?"
 }

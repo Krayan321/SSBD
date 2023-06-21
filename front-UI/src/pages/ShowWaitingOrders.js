@@ -153,7 +153,7 @@ export default function ShowWaitingOrders() {
                                 <TableCell>{formatOrderDate(row.orderDate)}</TableCell>
                                 <TableCell>
                                     {row.orderMedication.map((om) => (
-                                        <Box sx={{ m: 1 }}>
+                                        <Box key={om.medication.name} sx={{ m: 1 }}>
                                             {om.medication.name}
                                         </Box>
                                     ))}

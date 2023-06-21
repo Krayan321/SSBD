@@ -20,6 +20,7 @@ import { useForm } from "react-hook-form";
 import { medicationSchema } from "../../utils/Validations";
 import { getAllCategories } from "../../api/moa/categoryApi";
 import { useEffect } from "react";
+import ConfirmationDialog from "../../components/ConfirmationDialog";
 
 function AddMedicationOverlay({ open, onClose }) {
   const {
@@ -35,6 +36,8 @@ function AddMedicationOverlay({ open, onClose }) {
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [categories, setCategories] = useState([]);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [dataToSubmit, setDataToSubmit] = useState(true);
 
   useEffect(() => {
     getAllCategories()
@@ -49,7 +52,17 @@ function AddMedicationOverlay({ open, onClose }) {
 
   const selectedCategory = watch("categoryName");
 
-  const onSubmit = handleSubmit(({ name, stock, price }) => {
+  const confirmSubmit = function() {
+    doSubmit(dataToSubmit);
+    setDialogOpen(false)
+  }
+
+  const onSubmit = handleSubmit((data) => {
+    setDataToSubmit(data);
+    setDialogOpen(true)
+  })
+
+  const doSubmit = function({ name, stock, price }) {
     setLoading(true);
 
     addMedication(name, stock, price, selectedCategory)
@@ -76,7 +89,7 @@ function AddMedicationOverlay({ open, onClose }) {
           });
         }
       });
-  });
+  };
 
   return (
     <Overlay open={open}>
@@ -161,6 +174,15 @@ function AddMedicationOverlay({ open, onClose }) {
           )}
         </Box>
       </Stack>
+      <ConfirmationDialog
+          open={dialogOpen}
+          title={t("confirm_add_medication")}
+          actions={[
+            { label: t("confirm"), handler: confirmSubmit, color: "primary" },
+            { label: t("cancel"), handler: () => setDialogOpen(false), color: "secondary" },
+          ]}
+          onClose={() => setDialogOpen(false)}
+      />
     </Overlay>
   );
 }

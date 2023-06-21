@@ -257,5 +257,8 @@
   "exception.order.prescription.required": "Prescription is required",
   "exception.account.deactivate.last-access-level": "Cannot deactivate last access level",
   "confirm_buy": "Are you sure you want to proceed?",
-  "account_created": "Account created"
+  "account_created": "Account created",
+  "confirm_shipment": "Are you sure you want to create this shipment?",
+  "confirm_add_medication" : "Are you sure you want to create this medication?",
+  "confirm_reject_order" : "Are you sure you want to reject this order?"
 }

@@ -15,11 +15,15 @@ import {useTranslation} from "react-i18next";
 import {toast, ToastContainer} from "react-toastify";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import {approveOrder, cancelOrder, getOrdersToApprove} from "../api/moa/orderApi";
+import ConfirmationDialog from "../components/ConfirmationDialog";
 
 export default function OrdersToApprove() {
     const [orders, setOrders] = useState([]);
     const theme = useTheme();
     const [loading, setLoading] = useState(false);
+    const [dialogRejectOpen, setDialogRejectOpen] = useState(false);
+    const [dialogApproveOpen, setDialogApproveOpen] = useState(false);
+    const [id, setId] = useState(false);
 
     const {t} = useTranslation();
 
@@ -36,25 +40,47 @@ export default function OrdersToApprove() {
 
     useEffect(() => {
         findOrders();
-    }, [findOrders]);
+    }, []);
 
-    const handleOrderApprove = async (id) => {
+    const confirmApprove = function() {
+        doHandleApprove()
+        setDialogApproveOpen(false)
+    }
+
+    const handleOrderApprove = function (idToSet) {
+        setId(idToSet);
+        setDialogApproveOpen(true)
+    }
+
+    const doHandleApprove = function () {
         approveOrder(id).then((response) => {
             toast.success(t("approved_successfully"), {position: "top-center"});
             findOrders();
         }).catch((error) => {
             toast.error(t(error.response.data.message), {position: "top-center"});
         })
+    }
+
+    const confirmReject = function() {
+        doHandleReject();
+        setDialogRejectOpen(false);
+    }
+
+    const handleOrderReject = function(idToSet) {
+        setId(idToSet);
+        setDialogRejectOpen(true)
     };
 
-    const handleOrderReject = async (id) => {
+    const doHandleReject = function() {
         cancelOrder(id).then((response) => {
             toast.success(t("order_rejected"), {position: "top-center"});
             findOrders();
         }).catch((error) => {
             toast.error(t(error.response.data.message), {position: "top-center"});
         })
-    };
+    }
+
+
 
     if (loading) {
         return (
@@ -131,7 +157,7 @@ export default function OrdersToApprove() {
                                 </TableCell>
                                 <TableCell>
                                     {row.orderMedication.map((om) => (
-                                        <Box sx={{m: 1}}>
+                                        <Box key={om.medication.name} sx={{m: 1}}>
                                             {om.medication.name}
                                         </Box>
                                     ))}
@@ -155,6 +181,24 @@ export default function OrdersToApprove() {
                 </Table>
                 <ToastContainer/>
             </TableContainer>
+            <ConfirmationDialog
+                open={dialogApproveOpen}
+                title={t("confirm_approve_order")}
+                actions={[
+                    { label: t("confirm"), handler: confirmApprove, color: "primary" },
+                    { label: t("cancel"), handler: () => setDialogApproveOpen(false), color: "secondary" },
+                ]}
+                onClose={() => setDialogApproveOpen(false)}
+            />
+            <ConfirmationDialog
+                open={dialogRejectOpen}
+                title={t("confirm_reject_order")}
+                actions={[
+                    { label: t("confirm"), handler: confirmReject, color: "primary" },
+                    { label: t("cancel"), handler: () => setDialogRejectOpen(false), color: "secondary" },
+                ]}
+                onClose={() => setDialogRejectOpen(false)}
+            />
         </div>
     );
 }
