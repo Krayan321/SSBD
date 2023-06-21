@@ -57,11 +57,20 @@ function AddAdministrator() {
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
 
-    const onSubmit = handleSubmit(({login, email, password, licenseNumber}) => {
+    const onSubmit = handleSubmit(({login, email, password, confirmPassword, workPhoneNumber}) => {
 
         setLoading(true)
 
-        addAdmin(login, email, password, licenseNumber).then(
+        const adminData = {
+            login: login,
+            email: email,
+            password: password,
+            confirmPassword: confirmPassword,
+            workPhoneNumber: workPhoneNumber
+        };
+
+
+        addAdmin(adminData).then(
             () => {
                 setLoading(false)
                 toast.success(t("account_created_check_email"), {
@@ -86,6 +95,8 @@ function AddAdministrator() {
                 })
             }
         })
+        console.log(login, email, password, confirmPassword, workPhoneNumber);
+
     })
 
     return (
@@ -178,8 +189,10 @@ function AddAdministrator() {
 
                     {
                         loading ? <CircularProgress style={{marginRight: "auto", marginLeft: "auto"}}/> :
-                            <Button fullWidth
-                                    onClick={onSubmit} type='submit' variant='contained'>{t("submit")}</Button>
+                            <Button fullWidth onClick={onSubmit} type='submit' variant='contained'>
+                                {t("submit")}
+                            </Button>
+
                     }
                 </form>
             </Paper>
