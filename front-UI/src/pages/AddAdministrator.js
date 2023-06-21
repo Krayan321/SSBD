@@ -73,7 +73,7 @@ function AddAdministrator() {
         addAdmin(adminData).then(
             () => {
                 setLoading(false)
-                toast.success(t("account_created_check_email"), {
+                toast.success(t("account_created"), {
                     position: "top-center",
                 })
                 navigate(Pathnames.auth.landing);
@@ -95,8 +95,6 @@ function AddAdministrator() {
                 })
             }
         })
-        console.log(login, email, password, confirmPassword, workPhoneNumber);
-
     })
 
     return (

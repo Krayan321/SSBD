@@ -72,7 +72,7 @@ function AddChemist() {
         addChemist(chemistData).then(
             () => {
                 setLoading(false)
-                toast.success(t("account_created_check_email"), {
+                toast.success(t("account_created"), {
                     position: "top-center",
                 })
                 navigate(Pathnames.auth.landing);
@@ -94,7 +94,6 @@ function AddChemist() {
                 })
             }
         })
-        console.log(login, email, password, confirmPassword, licenseNumber);
     })
 
     return (

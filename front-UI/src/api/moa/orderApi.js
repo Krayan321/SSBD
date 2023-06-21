@@ -21,7 +21,7 @@ export async function createOrder(to_send) {
 }
 
 export async function deleteWaitingOrdersById(id) {
-  return await put(`order/${id}/waiting`);
+  return await del(`order/${id}/waiting`);
 }
 
 export async function approveOrderById(id) {
@@ -37,7 +37,7 @@ export async function withdrawOrderById(id) {
 }
 
 export async function cancelOrder(id) {
-  return await postWithEtag(`order/${id}/cancel`);
+  return await put(`order/${id}/cancel`);
 }
 
 // export async function submitOrder(orderData) {

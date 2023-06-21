@@ -17,7 +17,6 @@ function AccountDetails() {
   const navigate = useNavigate();
   const user = useSelector((state) => state.user);
   const currentRole = user.cur;
-  console.log(user);
 
   const paperStyle = {
     backgroundColor: "rgba(255, 255, 255, 0.75)",
@@ -44,21 +43,10 @@ function AccountDetails() {
     fetchData();
   }, []);
 
-  console.log("Etag is: " + etag);
-
-  const isAdmin = accessLevels.includes("ADMIN");
-  const isChemist = accessLevels.includes("CHEMIST");
-  const isPatient = accessLevels.includes("PATIENT");
-
   const isSuperAdmin = currentRole === "ADMIN";
   const isSuperChemist = currentRole === "CHEMIST";
   const isSuperPatient = currentRole === "PATIENT";
 
-  const alfa = accessLevels[0];
-  console.log(alfa);
-  const beta = accessLevels[1];
-  console.log(beta);
-  const gamma = accessLevels[2];
 
   if (loading) {
     return <p>Loading...</p>;
@@ -196,6 +184,7 @@ function AccountDetails() {
             {accessLevels.map((level) =>
               level.workPhoneNumber ? (
                 <Typography
+                  key={level.workPhoneNumber}
                   style={{ fontSize: 16 }}
                   variant="h6"
                   component="div"
@@ -229,6 +218,7 @@ function AccountDetails() {
             {accessLevels.map((level) =>
               level.licenseNumber ? (
                 <Typography
+                  key={level.licenseNumber}
                   style={{ fontSize: 16 }}
                   variant="h6"
                   component="div"
@@ -264,6 +254,7 @@ function AccountDetails() {
                 {accessLevels.map((level) =>
                   level.firstName ? (
                     <Typography
+                      key={level.firstName}
                       style={{ fontSize: 16 }}
                       variant="h6"
                       component="div"

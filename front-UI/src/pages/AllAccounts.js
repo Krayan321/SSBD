@@ -74,6 +74,7 @@ export default function AllAccounts() {
             if (active) {
                 try {
                     await blockAccount(accountId);
+                    console.log("helo")
                     toast.success(t("account_blocked"), {position: "top-center"});
                 } catch (error) {
                     toast.error(t(error.response.data.message), {position: "top-center"});

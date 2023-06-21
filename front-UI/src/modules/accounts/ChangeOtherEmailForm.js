@@ -49,6 +49,7 @@ function ChangeOtherEmailForm({account, etag, hideChange}) {
          
             setLoading((state)=> !state)
             setDialogOpen((state)=> !state)
+            hideChange((state)=> !state)
             //navigate('/accounts');
             toast.success(t("success"), {
                 position: "top-center",

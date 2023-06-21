@@ -121,7 +121,7 @@ function SingleAccount() {
     useEffect(() => {
 
         fetchAccountDetails()
-    }, []);
+    }, [changePass, addRole, changeEmail]);
 
 
     const isAdmin =
@@ -149,10 +149,6 @@ function SingleAccount() {
 
     const handleAddRole = () => {
         setAddRole((state) => !state);
-    };
-
-    const handleEditRole = () => {
-        setEditRole((state) => !state);
     };
 
     const handleChangeEmail = () => {
@@ -186,10 +182,8 @@ function SingleAccount() {
                         color="secondary"
                         value={account.confirmed}
                         label={t("confirmed")}
-                        fullWidth
-                        InputProps={{
-                            readOnly: true,
-                        }}
+                        
+                        
                     />
                     <TextField
                         type="text"
@@ -197,10 +191,8 @@ function SingleAccount() {
                         color="secondary"
                         value={account.active}
                         label={t("active")}
-                        fullWidth
-                        InputProps={{
-                            readOnly: true,
-                        }}
+                        
+                        
                     />
                 </Stack>
                 <Typography
@@ -209,10 +201,8 @@ function SingleAccount() {
                     component="div"
                     sx={{flexGrow: 1, mb: 1}}
                     type="text"
-                    fullWidth
-                    InputProps={{
-                        readOnly: true,
-                    }}
+                    
+                    
                 >
                     Email
                 </Typography>
@@ -222,10 +212,8 @@ function SingleAccount() {
                     component="div"
                     sx={{flexGrow: 1, mb: 2}}
                     type="text"
-                    fullWidth
-                    InputProps={{
-                        readOnly: true,
-                    }}
+                    
+                    
                 >
                     {account.email}
                 </Typography>
@@ -301,10 +289,6 @@ function SingleAccount() {
                     component="div"
                     sx={{flexGrow: 1, mb: 1, mt: 1}}
                     type="text"
-                    fullWidth
-                    InputProps={{
-                        readOnly: true,
-                    }}
                 >
                     Login
                 </Typography>
@@ -314,10 +298,6 @@ function SingleAccount() {
                     component="div"
                     sx={{flexGrow: 1, mb: 2}}
                     type="text"
-                    fullWidth
-                    InputProps={{
-                        readOnly: true,
-                    }}
                 >
                     {account.login}
                 </Typography>
@@ -327,10 +307,6 @@ function SingleAccount() {
                     component="div"
                     sx={{flexGrow: 1, mb: 1}}
                     type="text"
-                    fullWidth
-                    InputProps={{
-                        readOnly: true,
-                    }}
                 >
                     {t("access_level")}
                 </Typography>
@@ -358,25 +334,18 @@ function SingleAccount() {
                             component="div"
                             sx={{flexGrow: 1, mb: 1}}
                             type="text"
-                            fullWidth
-                            InputProps={{
-                                readOnly: true,
-                            }}
                         >
                             {t("work_phone_number")}
                         </Typography>
                         {accessLevels.map((level) =>
                             level.workPhoneNumber ? (
                                 <Typography
+                                    key={level.workPhoneNumber}
                                     style={{fontSize: 16}}
                                     variant="h6"
                                     component="div"
                                     sx={{flexGrow: 1, mb: 2}}
                                     type="text"
-                                    fullWidth
-                                    InputProps={{
-                                        readOnly: true,
-                                    }}
                                 >
                                     {String(level.workPhoneNumber)}
                                 </Typography>
@@ -388,7 +357,7 @@ function SingleAccount() {
                     <Box>
                         {accessLevels.map((level) =>
                             level.licenseNumber ? (
-                                <Box>
+                                <Box key={String(level.licenseNumber)}>
                                     <Typography
                                         style={{
                                             fontFamily: "Lato",
@@ -398,10 +367,6 @@ function SingleAccount() {
                                         component="div"
                                         sx={{flexGrow: 1, mb: 1}}
                                         type="text"
-                                        fullWidth
-                                        InputProps={{
-                                            readOnly: true,
-                                        }}
                                     >
                                         {t("licesne_number")}
                                     </Typography>
@@ -412,10 +377,6 @@ function SingleAccount() {
                                         component="div"
                                         sx={{flexGrow: 1, mb: 2}}
                                         type="text"
-                                        fullWidth
-                                        InputProps={{
-                                            readOnly: true,
-                                        }}
                                     >
                                         {String(level.licenseNumber)}
                                     </Typography>
@@ -428,7 +389,7 @@ function SingleAccount() {
                     <Box>
                         {accessLevels.map((level) =>
                             level.firstName ? (
-                                <Box>
+                                <Box key={level.firstName}>
                                     <Typography
                                         style={{
                                             fontFamily: "Lato",
@@ -438,10 +399,6 @@ function SingleAccount() {
                                         component="div"
                                         sx={{flexGrow: 1, mb: 1}}
                                         type="text"
-                                        fullWidth
-                                        InputProps={{
-                                            readOnly: true,
-                                        }}
                                     >
                                         {t("name")}
                                     </Typography>
@@ -451,10 +408,6 @@ function SingleAccount() {
                                         component="div"
                                         sx={{flexGrow: 1, mb: 2}}
                                         type="text"
-                                        fullWidth
-                                        InputProps={{
-                                            readOnly: true,
-                                        }}
                                     >
                                         {String(level.firstName)}
                                     </Typography>
@@ -464,7 +417,7 @@ function SingleAccount() {
 
                         {accessLevels.map((level) =>
                             level.lastName ? (
-                                <Box>
+                                <Box key={level.lastName}>
                                     <Typography
                                         style={{
                                             fontFamily: "Lato",
@@ -474,10 +427,6 @@ function SingleAccount() {
                                         component="div"
                                         sx={{flexGrow: 1, mb: 1}}
                                         type="text"
-                                        fullWidth
-                                        InputProps={{
-                                            readOnly: true,
-                                        }}
                                     >
                                         {t("last_name")}
                                     </Typography>
@@ -487,10 +436,6 @@ function SingleAccount() {
                                         component="div"
                                         sx={{flexGrow: 1, mb: 2}}
                                         type="text"
-                                        fullWidth
-                                        InputProps={{
-                                            readOnly: true,
-                                        }}
                                     >
                                         {String(level.lastName)}
                                     </Typography>
@@ -499,7 +444,7 @@ function SingleAccount() {
                         )}
                         {accessLevels.map((level) =>
                             level.phoneNumber ? (
-                                <Box>
+                                <Box key={level.phoneNumber}>
                                     <Typography
                                         style={{
                                             fontFamily: "Lato",
@@ -509,10 +454,6 @@ function SingleAccount() {
                                         component="div"
                                         sx={{flexGrow: 1, mb: 1}}
                                         type="text"
-                                        fullWidth
-                                        InputProps={{
-                                            readOnly: true,
-                                        }}
                                     >
                                         {t("phone_number")}
                                     </Typography>
@@ -522,10 +463,6 @@ function SingleAccount() {
                                         component="div"
                                         sx={{flexGrow: 1, mb: 2}}
                                         type="text"
-                                        fullWidth
-                                        InputProps={{
-                                            readOnly: true,
-                                        }}
                                     >
                                         {String(level.phoneNumber)}
                                     </Typography>
@@ -534,7 +471,7 @@ function SingleAccount() {
                         )}
                         {accessLevels.map((level) =>
                             level.pesel ? (
-                                <Box>
+                                <Box key={level.pesel}>
                                     <Typography
                                         style={{
                                             fontFamily: "Lato",
@@ -544,10 +481,6 @@ function SingleAccount() {
                                         component="div"
                                         sx={{flexGrow: 1, mb: 1}}
                                         type="text"
-                                        fullWidth
-                                        InputProps={{
-                                            readOnly: true,
-                                        }}
                                     >
                                         Pesel
                                     </Typography>
@@ -557,10 +490,6 @@ function SingleAccount() {
                                         component="div"
                                         sx={{flexGrow: 1, mb: 2}}
                                         type="text"
-                                        fullWidth
-                                        InputProps={{
-                                            readOnly: true,
-                                        }}
                                     >
                                         {String(level.pesel)}
                                     </Typography>
@@ -569,7 +498,7 @@ function SingleAccount() {
                         )}
                         {accessLevels.map((level) =>
                             level.NIP ? (
-                                <Box>
+                                <Box key={level.NIP}>
                                     <Typography
                                         style={{
                                             fontFamily: "Lato",
@@ -579,10 +508,6 @@ function SingleAccount() {
                                         component="div"
                                         sx={{flexGrow: 1, mb: 1}}
                                         type="text"
-                                        fullWidth
-                                        InputProps={{
-                                            readOnly: true,
-                                        }}
                                     >
                                         NIP
                                     </Typography>
@@ -592,10 +517,6 @@ function SingleAccount() {
                                         component="div"
                                         sx={{flexGrow: 1, mb: 2}}
                                         type="text"
-                                        fullWidth
-                                        InputProps={{
-                                            readOnly: true,
-                                        }}
                                     >
                                         {String(level.NIP)}
                                     </Typography>

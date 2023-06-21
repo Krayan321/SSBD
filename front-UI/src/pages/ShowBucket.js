@@ -25,6 +25,7 @@ export default function ShowBucket() {
     const { t } = useTranslation();
     const [prescriptionNumber, setPrescriptionNumber] = useState(false);
     const [dialogOpen, setDialogOpen] = useState(false);
+    const [buyDialogOpen, setBuyDialogOpen] = useState(false);
     const [isOnPrescription, setIsOnPrescription] = useState(false);
     const [itemToDelete, setItemToDelete] = useState(null);
 
@@ -173,7 +174,7 @@ export default function ShowBucket() {
     return (
         <div style={{ display: "flex", justifyContent: "center", alignContent: "center", flexDirection: "column" }}>
             <Box sx={{ marginBottom: "10px", textAlign: "center" }}>
-                <IconButton variant="contained" onClick={() => handleBuy()}>
+                <IconButton variant="contained" onClick={() => setBuyDialogOpen(true)}>
                     <PointOfSaleIcon />
                 </IconButton>
                 {isOnPrescription && <TextField
@@ -231,6 +232,15 @@ export default function ShowBucket() {
                     { label: t("cancel"), handler: () => handleConfirmation(false), color: "secondary" },
                 ]}
                 onClose={() => setDialogOpen(false)}
+            />
+            <ConfirmationDialog
+                open={buyDialogOpen}
+                title={t("confirm_buy")}
+                actions={[
+                    { label: t("confirm"), handler: () => handleBuy(), color: "primary" },
+                    { label: t("cancel"), handler: () => setBuyDialogOpen(false), color: "secondary" },
+                ]}
+                onClose={() => setBuyDialogOpen(false)}
             />
             <ToastContainer />
         </div>
