@@ -78,11 +78,23 @@ function AddPatient() {
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
 
-    const onSubmit = handleSubmit(({name, lastName, login, email, password, phoneNumber, pesel, nip}) => {
+    const onSubmit = handleSubmit(({name, lastName, login, email, password, confirmPassword, phoneNumber, pesel, nip}) => {
 
         setLoading(true)
 
-        addPatient({name, lastName, login, email, password, phoneNumber, pesel, nip}).then(
+        const patientData = {
+            name: name,
+            lastName: lastName,
+            login: login,
+            email: email,
+            password: password,
+            confirmPassword: confirmPassword,
+            phoneNumber: phoneNumber,
+            pesel: pesel,
+            nip: nip
+        };
+
+        addPatient(patientData).then(
             () => {
                 setLoading(false)
                 toast.success(t("account_created"), {

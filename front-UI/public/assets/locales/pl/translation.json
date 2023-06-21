@@ -261,4 +261,10 @@
   "confirm_shipment": "Czy na pewno chcesz utworzyć tę przesyłkę?",
   "confirm_add_medication" : "Czy na pewno chcesz utworzyć ten lek?",
   "confirm_reject_order" : "Czy na pewno chcesz odrzucić to zamówienie?"
+  "quantity": "Ilość",
+  "actions": "Akcje",
+  "exception.order.illegal-state.modification": "Nieodpowiedni stan obiektu",
+  "category_edited": "Kategoria została pomyślnie zaktualizowana",
+  "exception.category.already-exists": "Kategoria już istnieje",
+  "exception.medication.already-exists": "Lek już istnieje"
 }

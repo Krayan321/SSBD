@@ -231,6 +231,7 @@ public class OrderManager extends AbstractManager
             throw OrderException.createModificationOrderOfIllegalState();
         }
         orderFacade.cancelOrder(id, account.getId());
+
     }
 
     @Override
@@ -242,6 +243,7 @@ public class OrderManager extends AbstractManager
             throw OrderException.noPermissionToDeleteOrder();
         }
         orderFacade.withdrawOrder(id, account.getId());
+        order.setOrderState(OrderState.REJECTED_BY_PATIENT);
     }
 
     @Override

@@ -263,4 +263,10 @@
   "confirm_reject_order" : "Are you sure you want to reject this order?",
   "category_edit_success": "Category edited successfully",
   "category_edit_conflict": "There already exists category with given name"
+  "quantity": "Quantity",
+  "actions": "Actions",
+  "exception.order.illegal-state.modification": "Bad entity state",
+  "category_edited": "Category edited succesfully",
+  "exception.category.already-exists": "Category already exists",
+  "exception.medication.already-exists": "Medication already exists"
 }

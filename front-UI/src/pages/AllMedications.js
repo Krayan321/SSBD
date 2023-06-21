@@ -23,6 +23,7 @@ export default function AllMedications() {
     const [loading, setLoading] = useState(false);
     const [refreshing, setRefreshing] = useState(false);
     const [bucket, setBucket] = useState([]);
+    const [role, setRole] = useState(localStorage.getItem("currentAccessLevel"))
     const [dialogOpen, setDialogOpen] = useState(false);
     const [itemToAdd, setItemToAdd] = useState(null);
 
@@ -195,12 +196,14 @@ export default function AllMedications() {
                                 <TableCell align="right">
                                     {!isMedicationInBucket(row) ? (
                                         <Button
+                                            style={{visibility: role === "PATIENT" ? 'visible' : "hidden"}}
                                             onClick={() => handleAddToBucket(row.id)}>
                                             {t('add')}
                                         </Button>
                                     ) : (
                                         <>
                                             <IconButton onClick={() => navigate(Pathnames.patient.showBucket)}
+                                                        style={{visibility: role === "PATIENT" ? 'visible' : "hidden"}}
                                                         color="inherit">
                                                 <ShoppingBasketIcon/>
                                             </IconButton>

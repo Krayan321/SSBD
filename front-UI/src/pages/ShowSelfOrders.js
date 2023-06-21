@@ -22,6 +22,7 @@ export default function ShowSelfOrders() {
     const [selfOrders, setSelfOrders] = useState([]);
     const [loading, setLoading] = useState(false);
     const [dialogOpen, setDialogOpen] = useState(false);
+    const [dialogApproveOpen, setDialogApproveOpen] = useState(false);
     const [approveOrderId, setApproveOrderId] = useState(null);
     const {t} = useTranslation();
     const [deleteOrderId, setDeleteOrderId] = useState(null);
@@ -69,7 +70,7 @@ export default function ShowSelfOrders() {
 
     const handleApproveOrder = (approveOrderId) => {
         setApproveOrderId(approveOrderId);
-        setDialogOpen(true);
+        setDialogApproveOpen(true);
     };
 
     const acceptApproveOrder = () => {
@@ -79,7 +80,7 @@ export default function ShowSelfOrders() {
                 setSelfOrders(updatedOrders);
 
                 setApproveOrderId(null);
-                setDialogOpen(false);
+                setDialogApproveOpen(false);
 
                 toast.success(t("order_approved"), {
                     position: "top-center",
@@ -89,7 +90,7 @@ export default function ShowSelfOrders() {
 
     const rejectApproveOrder = () => {
         setApproveOrderId(null);
-        setDialogOpen(false);
+        setDialogApproveOpen(false);
     };
 
     const handleDeleteOrder = (deleteOrderId) => {
@@ -100,11 +101,10 @@ export default function ShowSelfOrders() {
     const acceptDeleteOrder = () => {
 
         withdrawOrderById(deleteOrderId)
-            .then(() => {
-                const updatedOrders = selfOrders.filter((order) => order.id !== deleteOrderId);
+            .then(() => {const updatedOrders = selfOrders.filter((order) => order.id !== deleteOrderId);
                 setSelfOrders(updatedOrders);
 
-                setDeleteOrderId(null);
+                //setDeleteOrderId(null);
                 setDialogOpen(false);
 
                 toast.success(t("order_rejected"), {
@@ -229,7 +229,7 @@ export default function ShowSelfOrders() {
                                                         <CheckCircleIcon/>
                                                     </IconButton>
                                                     <ConfirmationDialog
-                                                        open={dialogOpen && approveOrderId === order.id}
+                                                        open={dialogApproveOpen}
                                                         title={t("confirm_approve_order")}
                                                         actions={[
                                                             {
@@ -243,7 +243,7 @@ export default function ShowSelfOrders() {
                                                                 color: "secondary"
                                                             },
                                                         ]}
-                                                        onClose={() => setDialogOpen(false)}
+                                                        onClose={() => setDialogApproveOpen(false)}
                                                     />
                                                 </TableCell>
                                             )}
