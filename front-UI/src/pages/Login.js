@@ -151,7 +151,7 @@ const Login = () => {
                                 }));
                                 navigate(Pathnames.auth.landing);
                                 setDialogOpen(false)
-                            }}>{role}</Button>
+                            }}>{t(role)}</Button>
                         })
                     }
                 </DialogActions>

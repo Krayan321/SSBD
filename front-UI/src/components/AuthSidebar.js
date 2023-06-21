@@ -59,6 +59,7 @@ function AuthSidebar() {
   return (
     <>
       <Sidebar
+        width={"300px"}
         className="text-white"
         backgroundColor={theme.palette.primary.main}
       >
@@ -72,7 +73,7 @@ function AuthSidebar() {
               >
                 {login}
               </Typography>
-              <Typography variant="h6">{userRole}</Typography>
+              <Typography variant="h6">{t(userRole)}</Typography>
             </Box>
           </Box>
           <Divider variant="middle" sx={{ bgcolor: "white" }} />

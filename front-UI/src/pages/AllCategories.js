@@ -173,7 +173,7 @@ export default function AllCategories() {
         open={addCategory}
         onClose={() => {
           setAddCategory(false);
-          handleRefresh();
+          setTimeout(handleRefresh, 100);
         }}
       />
     </div>

@@ -255,11 +255,14 @@
   "account_created": "Účet vytvořen",
   "confirm_shipment": "Jste si jisti, že chcete vytvořit tuto zásilku?",
   "confirm_add_medication" : "Jste si jisti, že chcete vytvořit tuto léčbu?",
-  "confirm_reject_order" : "Jste si jisti, že chcete odmítnout toto objednávku?"
+  "confirm_reject_order" : "Jste si jisti, že chcete odmítnout toto objednávku?",
   "quantity": "Množství",
   "actions": "Akce",
   "exception.order.illegal-state.modification": "Špatný stav entity",
   "category_edited": "Category edited succesfully",
   "exception.category.already-exists": "Kategorie úspěšně upravena",
-  "exception.medication.already-exists": "Léky již existují"
+  "exception.medication.already-exists": "Léky již existují",
+  "PATIENT": "Pacient",
+  "CHEMIST": "Chemik",
+  "ADMIN": "Administrátor"
 }

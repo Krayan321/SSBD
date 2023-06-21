@@ -96,7 +96,7 @@ export default function AuthNavbar() {
                                                 handleClose(event);
                                                 navigate(Pathnames.auth.landing);
                                             }}>
-                                            {role}
+                                            {t(role)}
                                         </MenuItem>
                                     ))}
                                 </Menu>
