@@ -57,11 +57,19 @@ function AddChemist() {
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
 
-    const onSubmit = handleSubmit(({login, email, password, licenseNumber}) => {
+    const onSubmit = handleSubmit(({login, email, password, confirmPassword, licenseNumber}) => {
 
         setLoading(true)
 
-        addChemist(login, email, password, licenseNumber).then(
+        const chemistData = {
+            login: login,
+            email: email,
+            password: password,
+            confirmPassword: confirmPassword,
+            licenseNumber: licenseNumber
+        };
+
+        addChemist(chemistData).then(
             () => {
                 setLoading(false)
                 toast.success(t("account_created_check_email"), {
@@ -86,6 +94,7 @@ function AddChemist() {
                 })
             }
         })
+        console.log(login, email, password, confirmPassword, licenseNumber);
     })
 
     return (
