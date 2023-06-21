@@ -88,8 +88,9 @@ insert into medication (medication_name, current_price, category_id, created_by,
 insert into medication (medication_name, current_price, category_id, created_by, creation_date, modification_date, modified_by, version, stock) values ('Prozac', 10, 3, null, now(), null, null, 0, 10);
 insert into medication (medication_name, current_price, category_id, created_by, creation_date, modification_date, modified_by, version, stock) values ('Zoloft', 20, 3, null, now(), null, null, 0, 10);
 insert into medication (medication_name, current_price, category_id, created_by, creation_date, modification_date, modified_by, version, stock) values ('Marsjanki', 25, 4, null, now(), null, null, 0, 10);
-insert into medication (medication_name, current_price, category_id, created_by, creation_date, modification_date, modified_by, version, stock) values ('Amoksycylina', 25, 1, null, now(), null, null, 0, 10);
-insert into medication (medication_name, current_price, category_id, created_by, creation_date, modification_date, modified_by, version, stock) values ('Witamina D3', 25, 4, null, now(), null, null, 0, 10);
+insert into medication (medication_name, current_price, category_id, created_by, creation_date, modification_date, modified_by, version, stock) values ('Witamina D3', 25, 4, null, now(), null, null, 0, 15);
+insert into medication (medication_name, current_price, category_id, created_by, creation_date, modification_date, modified_by, version, stock) values ('Amoksycylina', 25, 1, null, now(), null, null, 0, 15);
+insert into medication (medication_name, current_price, category_id, created_by, creation_date, modification_date, modified_by, version, stock) values ('Xanax', 25, 3, null, now(), null, null, 0, 10);
 
 insert into prescription (creation_date, modification_date, version, prescription_number, created_by, modified_by, patient_data_id) values (now(), null, 0, '123456789', null, null, 4);
 insert into prescription (creation_date, modification_date, version, prescription_number, created_by, modified_by, patient_data_id) values (now(), null, 0, '123456788', null, null, 4);

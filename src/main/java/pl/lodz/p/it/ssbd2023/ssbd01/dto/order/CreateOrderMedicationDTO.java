@@ -21,20 +21,10 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class CreateOrderMedicationDTO implements SignableEntity {
-
+public class CreateOrderMedicationDTO {
     @NotNull
     private String name;
     @NotNull
-    private Long version;
-    @NotNull
-    private String etag;
-    @NotNull
     private Integer quantity;
-
-    @Override
-    public String getSignablePayload() {
-        return String.format("%s.%d", name, version);
-    }
 }
 

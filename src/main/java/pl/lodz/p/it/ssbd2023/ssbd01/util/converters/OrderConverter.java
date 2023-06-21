@@ -55,17 +55,6 @@ public class OrderConverter {
     }
     return new Prescription(prescription.getPrescriptionNumber());
   }
-
-  public static EtagVerification mapCreateOrderDtoToEtagVerification(CreateOrderDTO order) {
-    EtagVerification etagVerification = new EtagVerification(new HashMap<>());
-    order.getOrderMedications().forEach(om -> {
-      etagVerification.getEtagVersionList().put(om.getName(), EtagVersion.builder()
-              .version(om.getVersion())
-              .etag(om.getEtag())
-              .build());
-    });
-    return etagVerification;
-  }
 }
 
 

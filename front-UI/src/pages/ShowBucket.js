@@ -12,23 +12,17 @@ import PointOfSaleIcon from "@mui/icons-material/PointOfSale";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { Pathnames } from "../router/Pathnames";
-import { getSelfAccountDetails } from "../api/mok/accountApi";
-import {createOrder, submitOrder} from "../api/moa/orderApi";
+import {createOrder} from "../api/moa/orderApi";
 import ConfirmationDialog from "../components/ConfirmationDialog";
 import ProductionQuantityLimitsIcon from '@mui/icons-material/ProductionQuantityLimits';
-import axios from 'axios';
-import {getMedication} from "../api/moa/medicationApi";
 import dayjs from "dayjs";
 
 export default function ShowBucket() {
     const [bucket, setBucket] = useState([]);
-    const [accessLevels, setAccessLevels] = useState([]);
     const navigate = useNavigate();
-    const [quantity, setQuantity] = useState();
     const theme = useTheme();
     const [loading, setLoading] = useState(false);
     const { t } = useTranslation();
-    const [id, setId] = useState();
     const [prescriptionNumber, setPrescriptionNumber] = useState(false);
     const [dialogOpen, setDialogOpen] = useState(false);
     const [isOnPrescription, setIsOnPrescription] = useState(false);
@@ -81,35 +75,22 @@ export default function ShowBucket() {
         const str = localStorage.getItem("bucket")
         const array = JSON.parse(str);
 
-        const length = array.length;
-        let count = 0;
         array.forEach((om) => {
-            getMedication(om.medication.id).then((response) => {
-                const etag = response.headers['etag'].split('"').join('');
-                const version = response.data.version;
-                order.orderMedications.push({
-                    name: om.medication.name,
-                    quantity: om.quantity,
-                    version: version,
-                    etag: etag,
-                });
-                count++;
-                if(count == length) {
-                    createOrder(order).then((response) => {
-                        setLoading(false)
-                        toast.success(t("bought_successfully"), {position: "top-center"});
-                    }).catch((error) => {
-                        setLoading(false)
-                        toast.error(t(error.response.data.message),
-                            {position: "top-center"});
-                    })
-                }
-            }).catch((error) => {
-                setLoading(false)
-                toast.error(t(error.response.data.message),
-                    {position: "top-center"});
-            })
+            order.orderMedications.push({
+                name: om.medication.name,
+                quantity: om.quantity,
+            });
         })
+        createOrder(order).then((response) => {
+            setLoading(false)
+            toast.success(t("bought_successfully"), {position: "top-center"});
+        }).catch((error) => {
+            setLoading(false)
+            toast.error(t(error.response.data.message),
+                {position: "top-center"});
+        });
+        localStorage.setItem("bucket", JSON.stringify([]));
+        refreshCart();
     };
 
 

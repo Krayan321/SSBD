@@ -42,6 +42,10 @@ public class ShipmentMedication extends AbstractEntity implements Serializable {
   @JoinColumn(name = "shipment_id", updatable = false, nullable = false)
   private Shipment shipment;
 
+  @Column(nullable = false, name = "processed")
+  @NotNull
+  private Boolean processed = false;
+
   @ManyToOne(optional = false, cascade = {CascadeType.REFRESH})
   @JoinColumn(name = "medication_id", referencedColumnName = "id",
           updatable = false, nullable = false)

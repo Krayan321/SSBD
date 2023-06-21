@@ -1902,7 +1902,7 @@ public class AccountControllerIT extends BaseTest {
     public void init() {
       var response = given()
               .header("authorization", "Bearer " + adminJwt)
-              .get(getApiRoot() + "/account/1")
+              .get(getApiRoot() + "/account/details")
               .then()
               .log()
               .all()

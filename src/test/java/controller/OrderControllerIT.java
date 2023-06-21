@@ -15,6 +15,7 @@ import pl.lodz.p.it.ssbd2023.ssbd01.dto.order.CreateOrderPrescriptionDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.shipment.CreateShipmentDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.shipment.CreateShipmentMedicationDTO;
 import pl.lodz.p.it.ssbd2023.ssbd01.dto.shipment.MedicationCreateShipmentDTO;
+import pl.lodz.p.it.ssbd2023.ssbd01.dto.shipment.ShipmentMedicationDTO;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -138,43 +139,7 @@ public class OrderControllerIT extends BaseTest {
                 .statusCode(Response.Status.FORBIDDEN.getStatusCode());
     }
 
-    @Test
-    @Order(2)
-    void should_successfully_read_own_orders_as_patient() {
-        given()
-                .header("Authorization", "Bearer " + patientJwt)
-                .get(getApiRoot() + "/order/self")
-                .then()
-                .log().all()
-                .statusCode(Response.Status.OK.getStatusCode());
-    }
 
-    @Test
-    @Order(3)
-    void should_change_orderStatus_when_update_queue() {
-        given()
-                .header("Authorization", "Bearer " + patientJwt)
-                .get(getApiRoot() + "/order/self")
-                .then()
-                .log().all()
-                .body("[1].orderState", equalTo("IN_QUEUE"))
-                .statusCode(Response.Status.OK.getStatusCode());
-
-        given()
-                .header("Authorization", "Bearer " + chemistJwt)
-                .put(getApiRoot() + "/order/update-queue")
-                .then()
-                .log().all()
-                .statusCode(Response.Status.NO_CONTENT.getStatusCode());
-
-        given()
-                .header("Authorization", "Bearer " + patientJwt)
-                .get(getApiRoot() + "/order/self")
-                .then()
-                .log().all()
-                .body("[1].orderState", equalTo("FINALISED"))
-                .statusCode(Response.Status.OK.getStatusCode());
-    }
 
     @Test
     @Order(4)
@@ -233,7 +198,7 @@ public class OrderControllerIT extends BaseTest {
         public void deleteWaitingOrderById_correct() {
             given().header("Authorization", "Bearer " + chemistJwt)
                     .log().all()
-                    .put(getApiRoot() + "/order/1/waiting")
+                    .delete(getApiRoot() + "/order/1/waiting")
                     .then().log().all()
                     .statusCode(Response.Status.OK.getStatusCode());
         }
@@ -243,7 +208,7 @@ public class OrderControllerIT extends BaseTest {
         public void deleteWaitingOrderById_not_in_queue() {
             given().header("Authorization", "Bearer " + chemistJwt)
                     .log().all()
-                    .put(getApiRoot() + "/order/1/waiting")
+                    .delete(getApiRoot() + "/order/1/waiting")
                     .then().log().all()
                     .statusCode(Response.Status.FORBIDDEN.getStatusCode());
         }
@@ -270,15 +235,6 @@ public class OrderControllerIT extends BaseTest {
                     .get(getApiRoot() + "/order/waiting")
                     .then().log().all()
                     .statusCode(Response.Status.OK.getStatusCode());
-        }
-        @Test
-        @Order(3)
-        public void updateQueue_correct() {
-            given().header("Authorization", "Bearer " + chemistJwt)
-                    .log().all()
-                    .put(getApiRoot() + "/order/update-queue")
-                    .then().log().all()
-                    .statusCode(Response.Status.NO_CONTENT.getStatusCode());
         }
     }
 
@@ -309,6 +265,49 @@ public class OrderControllerIT extends BaseTest {
     @Nested
     @Order(7)
     @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+    class UpdateQueue {
+        @Test
+        @Order(2)
+        void should_successfully_read_own_orders_as_patient() {
+            given()
+                    .header("Authorization", "Bearer " + patientJwt)
+                    .get(getApiRoot() + "/order/self")
+                    .then()
+                    .log().all()
+                    .statusCode(Response.Status.OK.getStatusCode());
+        }
+
+        @Test
+        @Order(3)
+        void should_change_orderStatus_when_update_queue() {
+            given()
+                    .header("Authorization", "Bearer " + patientJwt)
+                    .get(getApiRoot() + "/order/self")
+                    .then()
+                    .log().all()
+                    .body("[1].orderState", equalTo("IN_QUEUE"))
+                    .statusCode(Response.Status.OK.getStatusCode());
+
+            given()
+                    .header("Authorization", "Bearer " + chemistJwt)
+                    .put(getApiRoot() + "/order/update-queue")
+                    .then()
+                    .log().all()
+                    .statusCode(Response.Status.NO_CONTENT.getStatusCode());
+
+            given()
+                    .header("Authorization", "Bearer " + patientJwt)
+                    .get(getApiRoot() + "/order/self")
+                    .then()
+                    .log().all()
+                    .body("[1].orderState", equalTo("FINALISED"))
+                    .statusCode(Response.Status.OK.getStatusCode());
+        }
+    }
+
+    @Nested
+    @Order(8)
+    @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
     class CreateOrder {
 
         private static CreateOrderDTO createOrderDTO = CreateOrderDTO.builder()
@@ -316,51 +315,74 @@ public class OrderControllerIT extends BaseTest {
                 .orderMedications(new ArrayList<>())
                 .build();
 
+        private static int medicationOtcId = 7;
+        private static int medicationOnPrescriptionId = 8;
+        private static int medicationOnPrescription2Id = 9;
         private static CreateOrderMedicationDTO medicationOnPrescription;
+        private static CreateOrderMedicationDTO medicationOnPrescription2;
         private static CreateOrderMedicationDTO medicationOtc;
+        private static List<CreateShipmentMedicationDTO> shipmentMedications;
 
-        @BeforeAll
-        static void setNewVersions() {
+        private static CreateOrderMedicationDTO getCreateOrderMedication(int id) {
             var responseMed1 = given()
                     .header("authorization", "Bearer " + patientJwt)
-                    .get(getApiRoot() + "/medication/7")
+                    .get(getApiRoot() + "/medication/" + id)
+                    .then().log().all()
+                    .statusCode(Response.Status.OK.getStatusCode())
+                    .extract().response();
+            String name = responseMed1.getBody().jsonPath().getString("name");
+
+            return CreateOrderMedicationDTO.builder()
+                    .quantity(5)
+                    .name(name)
+                    .build();
+        }
+
+        private static CreateShipmentMedicationDTO getCreateShipmentMedication(int id, int quantity) {
+            var responseMed1 = given()
+                    .header("authorization", "Bearer " + chemistJwt)
+                    .get(getApiRoot() + "/medication/" + id)
                     .then().log().all()
                     .statusCode(Response.Status.OK.getStatusCode())
                     .extract().response();
             String etag1 = responseMed1.getHeader("ETag").replace("\"", "");
             Long version1 = responseMed1.getBody().jsonPath().getLong("version");
+            String price1 = responseMed1.getBody().jsonPath().getString("currentPrice");
             String name1 = responseMed1.getBody().jsonPath().getString("name");
 
-            medicationOnPrescription = CreateOrderMedicationDTO.builder()
-                    .quantity(2)
-                    .version(version1)
-                    .name(name1)
-                    .etag(etag1)
+            return CreateShipmentMedicationDTO.builder()
+                    .quantity(quantity)
+                    .medication(MedicationCreateShipmentDTO.builder()
+                            .name(name1)
+                            .version(version1)
+                            .etag(etag1)
+                            .price(BigDecimal.valueOf(Double.parseDouble(price1)))
+                            .build())
                     .build();
+        }
 
-            var responseMed2 = given()
-                    .header("authorization", "Bearer " + patientJwt)
-                    .get(getApiRoot() + "/medication/8")
-                    .then().log().all()
+        private static void assertMediationStock(int id, int stock) {
+            given().header("authorization", "Bearer " + patientJwt)
+                    .get(getApiRoot() + "/medication/" + id)
+                    .then()
                     .statusCode(Response.Status.OK.getStatusCode())
-                    .extract().response();
-            String etag2 = responseMed2.getHeader("ETag").replace("\"", "");
-            Long version2 = responseMed2.getBody().jsonPath().getLong("version");
-            String name2 = responseMed2.getBody().jsonPath().getString("name");
+                    .body("stock", equalTo(stock));
+        }
 
-            medicationOtc = CreateOrderMedicationDTO.builder()
-                    .quantity(2)
-                    .version(version2)
-                    .name(name2)
-                    .etag(etag2)
-                    .build();
+        @BeforeEach
+        void setNewVersions() {
+            medicationOtc = getCreateOrderMedication(medicationOtcId);
+            medicationOnPrescription = getCreateOrderMedication(medicationOnPrescriptionId);
+            medicationOnPrescription2 = getCreateOrderMedication(medicationOnPrescription2Id);
 
             createOrderDTO.setOrderMedications(new ArrayList<>());
+            shipmentMedications = new ArrayList<>();
         }
 
         @Test
         @Order(1)
         public void submitOrder_otc_correct() {
+            assertMediationStock(medicationOtcId, 15);
             createOrderDTO.getOrderMedications().add(medicationOtc);
             given().header("Authorization", "Bearer " + patientJwt)
                     .body(createOrderDTO)
@@ -368,30 +390,12 @@ public class OrderControllerIT extends BaseTest {
                     .post(getApiRoot() + "/order/submit")
                     .then().log().all()
                     .statusCode(Response.Status.CREATED.getStatusCode());
-            given()
-                    .header("authorization", "Bearer " + patientJwt)
-                    .get(getApiRoot() + "/medication/8")
-                    .then().log().all()
-                    .statusCode(Response.Status.OK.getStatusCode())
-                    .body("stock", equalTo(8)); // decreased
-        }
-
-        @Test
-        @Order(2)
-        public void submitOrder_otc_optimisticLock() {
-            given().header("Authorization", "Bearer " + patientJwt)
-                    .body(createOrderDTO)
-                    .log().all()
-                    .post(getApiRoot() + "/order/submit")
-                    .then().log().all()
-                    .statusCode(Response.Status.CONFLICT.getStatusCode())
-                    .body("message", equalTo(EXCEPTION_OPTIMISTIC_LOCK));
+            assertMediationStock(medicationOtcId, 10);
         }
 
         @Test
         @Order(2)
         public void submitOrder_onPrescription_correct() {
-            setNewVersions();
             createOrderDTO.getOrderMedications().add(medicationOnPrescription);
             createOrderDTO.setPrescription(new CreateOrderPrescriptionDTO("1235"));
 
@@ -401,40 +405,13 @@ public class OrderControllerIT extends BaseTest {
                     .post(getApiRoot() + "/order/submit")
                     .then().log().all()
                     .statusCode(Response.Status.CREATED.getStatusCode());
-            given()
-                    .header("authorization", "Bearer " + patientJwt)
-                    .get(getApiRoot() + "/medication/7")
-                    .then().log().all()
-                    .statusCode(Response.Status.OK.getStatusCode())
-                    .body("stock", equalTo(8)); // decreased
+            assertMediationStock(medicationOnPrescriptionId, 10);
+            assertMediationStock(medicationOtcId, 10);
         }
 
         @Test
         @Order(3)
-        public void submitOrder_notOnState_correct() {
-            setNewVersions();
-            medicationOnPrescription.setQuantity(20);
-            createOrderDTO.getOrderMedications().add(medicationOnPrescription);
-            createOrderDTO.setPrescription(new CreateOrderPrescriptionDTO("1236"));
-
-            given().header("Authorization", "Bearer " + patientJwt)
-                    .body(createOrderDTO)
-                    .log().all()
-                    .post(getApiRoot() + "/order/submit")
-                    .then().log().all()
-                    .statusCode(Response.Status.CREATED.getStatusCode());
-            given()
-                    .header("authorization", "Bearer " + patientJwt)
-                    .get(getApiRoot() + "/medication/7")
-                    .then().log().all()
-                    .statusCode(Response.Status.OK.getStatusCode())
-                    .body("stock", equalTo(8)); // not decreased
-        }
-
-        @Test
-        @Order(4)
         public void submitOrder_onPrescription_noPrescription() {
-            setNewVersions();
             createOrderDTO.getOrderMedications().add(medicationOnPrescription);
             createOrderDTO.setPrescription(null);
 
@@ -448,11 +425,10 @@ public class OrderControllerIT extends BaseTest {
         }
 
         @Test
-        @Order(5)
+        @Order(3)
         public void submitOrder_onPrescription_prescriptionExists() {
-            setNewVersions();
             createOrderDTO.getOrderMedications().add(medicationOnPrescription);
-            createOrderDTO.setPrescription(new CreateOrderPrescriptionDTO("1236"));
+            createOrderDTO.setPrescription(new CreateOrderPrescriptionDTO("1235"));
 
             given().header("Authorization", "Bearer " + patientJwt)
                     .body(createOrderDTO)
@@ -462,10 +438,117 @@ public class OrderControllerIT extends BaseTest {
                     .statusCode(Response.Status.CONFLICT.getStatusCode())
                     .body("message", equalTo(EXCEPTION_PRESCRIPTION_ALREADY_EXISTS));
         }
+
+        @Test
+        @Order(4)
+        public void submitOrder_notOnStock_single() {
+            assertMediationStock(medicationOnPrescriptionId, 10);
+            medicationOnPrescription.setQuantity(20);
+            createOrderDTO.getOrderMedications().add(medicationOnPrescription);
+            createOrderDTO.setPrescription(new CreateOrderPrescriptionDTO("1236"));
+
+            given().header("Authorization", "Bearer " + patientJwt)
+                    .body(createOrderDTO)
+                    .log().all()
+                    .post(getApiRoot() + "/order/submit")
+                    .then().log().all()
+                    .statusCode(Response.Status.CREATED.getStatusCode());
+            assertMediationStock(medicationOnPrescriptionId, 10);
+        }
+
+        @Test
+        @Order(5)
+        public void submitOrder_notOnStock_multiple() {
+            assertMediationStock(medicationOnPrescriptionId, 10);
+            assertMediationStock(medicationOnPrescription2Id, 10);
+            medicationOnPrescription.setQuantity(20); // not sufficient
+            createOrderDTO.getOrderMedications().add(medicationOnPrescription);
+            assertMediationStock(medicationOnPrescription2Id, 10);
+            medicationOnPrescription2.setQuantity(10); // sufficient
+            createOrderDTO.getOrderMedications().add(medicationOnPrescription2);
+            createOrderDTO.setPrescription(new CreateOrderPrescriptionDTO("1237"));
+
+            given().header("Authorization", "Bearer " + patientJwt)
+                    .body(createOrderDTO)
+                    .log().all()
+                    .post(getApiRoot() + "/order/submit")
+                    .then().log().all()
+                    .statusCode(Response.Status.CREATED.getStatusCode());
+            assertMediationStock(medicationOnPrescriptionId, 10);
+            assertMediationStock(medicationOnPrescription2Id, 10);
+        }
+
+        @Test
+        @Order(6)
+        public void submitOrder_partiallyCalculateQueue_correct() {
+            // assert beginning stock
+            assertMediationStock(medicationOtcId, 10);
+            assertMediationStock(medicationOnPrescriptionId, 10);
+            assertMediationStock(medicationOnPrescription2Id, 10);
+
+            // create shipment
+            shipmentMedications.add(
+                    getCreateShipmentMedication(medicationOnPrescriptionId, 30));
+            shipmentMedications.add(
+                    getCreateShipmentMedication(medicationOtcId, 10));
+            CreateShipmentDTO createShipmentDTO = CreateShipmentDTO.builder()
+                    .shipmentDate(LocalDateTime.now().toString())
+                    .shipmentMedications(shipmentMedications)
+                    .build();
+            given().header("authorization", "Bearer " + chemistJwt)
+                    .body(createShipmentDTO)
+                    .post(getApiRoot() + "/shipment")
+                    .then().log().all()
+                    .statusCode(Response.Status.CREATED.getStatusCode());
+
+            // assert stock has not changed
+            assertMediationStock(medicationOtcId, 10);
+            assertMediationStock(medicationOnPrescriptionId, 10);
+            assertMediationStock(medicationOnPrescription2Id, 10);
+
+            // check status of orders
+            var response = given()
+                    .header("Authorization", "Bearer " + patientJwt)
+                    .get(getApiRoot() + "/order/self")
+                    .then()
+                    .log().all()
+                    .statusCode(Response.Status.OK.getStatusCode())
+                    .extract().response();
+            Assertions.assertEquals("IN_QUEUE", response.getBody().jsonPath().getString("[9].orderState"));
+            Assertions.assertEquals("IN_QUEUE", response.getBody().jsonPath().getString("[10].orderState"));
+
+            // create new order
+            medicationOnPrescription.setQuantity(5);
+            createOrderDTO.getOrderMedications().add(medicationOnPrescription);
+            createOrderDTO.setPrescription(new CreateOrderPrescriptionDTO("1238"));
+            given().header("Authorization", "Bearer " + patientJwt)
+                    .body(createOrderDTO)
+                    .log().all()
+                    .post(getApiRoot() + "/order/submit")
+                    .then().log().all()
+                    .statusCode(Response.Status.CREATED.getStatusCode());
+
+            // assert stock has been computed
+            assertMediationStock(medicationOtcId, 10); // not changed despite new shipment
+            assertMediationStock(medicationOnPrescriptionId, 0); // previous orders in queue has been finalised
+            assertMediationStock(medicationOnPrescription2Id, 0); // all medications in computed orders have been computed
+
+            // check status of orders
+            response = given()
+                    .header("Authorization", "Bearer " + patientJwt)
+                    .get(getApiRoot() + "/order/self")
+                    .then()
+                    .log().all()
+                    .statusCode(Response.Status.OK.getStatusCode())
+                    .extract().response();
+            Assertions.assertEquals("WAITING_FOR_CHEMIST_APPROVAL", response.getBody().jsonPath().getString("[9].orderState"));
+            Assertions.assertEquals("WAITING_FOR_CHEMIST_APPROVAL", response.getBody().jsonPath().getString("[10].orderState"));
+            Assertions.assertEquals("IN_QUEUE", response.getBody().jsonPath().getString("[11].orderState"));
+        }
     }
 
     @Nested
-    @Order(7)
+    @Order(9)
     @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
     class patientApprovedById {
         @Test

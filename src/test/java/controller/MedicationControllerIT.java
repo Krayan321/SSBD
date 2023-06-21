@@ -105,7 +105,7 @@ public class MedicationControllerIT extends BaseTest {
             public void getMedication_noSuchMedication() {
                 given()
                         .header("authorization", "Bearer " + chemistJwt)
-                        .get(getApiRoot() + "/medication/10")
+                        .get(getApiRoot() + "/medication/999")
                         .then()
                         .statusCode(Response.Status.NOT_FOUND.getStatusCode());
             }
