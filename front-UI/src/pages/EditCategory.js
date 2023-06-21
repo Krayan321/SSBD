@@ -44,8 +44,6 @@ export default function EditCategory() {
     resolver: yupResolver(categorySchema),
   });
 
-  console.log(location.state);
-
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -54,7 +52,6 @@ export default function EditCategory() {
         setEtag(response.headers["etag"]);
         setName(response.data.name);
         setLoading(false);
-        console.log(response.data);
       } catch (error) {
         toast.error(t(error.response.data.message), { position: "top-center" });
       }
@@ -76,12 +73,12 @@ export default function EditCategory() {
 
     editCategory(id, body, tag)
       .then((response) => {
-        toast.success(t("category_edited"), { position: "top-center" });
+        toast.success(t("category_edit_success"), { position: "top-center" });
         navigate("/categories");
       })
       .catch((error) => {
         if (error.response.status === 409) {
-          toast.error(t("category_edited"), { position: "top-center" });
+          toast.error(t("category_edit_conflict"), { position: "top-center" });
           navigate("/categories");
         }
         toast.error(t(error.response.data.message), { position: "top-center" });
@@ -93,10 +90,6 @@ export default function EditCategory() {
     setIsOnPrescription(data.isOnPrescription);
     setDialogOpen(true);
   };
-
-  console.log(category);
-  console.log(category.name);
-  console.log(name);
 
   return (
     <div
@@ -128,7 +121,7 @@ export default function EditCategory() {
             {...register("isOnPrescription")}
             variant="outlined"
             color="secondary"
-            label="is_on_prescription"
+            label={t("is_on_prescription")}
             fullWidth
             required
             select

@@ -21,7 +21,7 @@ public class CORSFilter implements Filter {
         ((HttpServletResponse) servletResponse).addHeader("Access-Control-Allow-Credentials","true");
         ((HttpServletResponse) servletResponse).addHeader("Access-Control-Allow-Headers","origin, content-type, accept, authorization, if-match");
         ((HttpServletResponse) servletResponse).addHeader("Access-Control-Expose-Headers","etag");
-        ((HttpServletResponse) servletResponse).addHeader("Access-Control-Allow-Methods","GET, OPTIONS, HEAD, PUT, POST");
+        ((HttpServletResponse) servletResponse).addHeader("Access-Control-Allow-Methods","GET, OPTIONS, HEAD, PUT, POST, DELETE");
         ((HttpServletResponse) servletResponse).addHeader("Access-Control-Max-Age","1209600");
         HttpServletResponse resp = (HttpServletResponse) servletResponse;
         // For HTTP OPTIONS verb/method reply with ACCEPTED status code -- per CORS handshake

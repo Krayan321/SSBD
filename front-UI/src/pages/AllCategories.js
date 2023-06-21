@@ -23,7 +23,6 @@ export default function AllCategories() {
   const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [addCategory, setAddCategory] = useState(false);
-  const { append } = useState(false);
 
   const { t } = useTranslation();
 
@@ -34,7 +33,6 @@ export default function AllCategories() {
       .then((response) => {
         setLoading(false);
         setCategories(response.data);
-        console.log(response.data);
       })
       .catch((error) => {
         setLoading(false);
@@ -173,8 +171,10 @@ export default function AllCategories() {
       </TableContainer>
       <AddCategoryOverlay
         open={addCategory}
-        onClose={() => setAddCategory(false)}
-        append={append}
+        onClose={() => {
+          setAddCategory(false);
+          handleRefresh();
+        }}
       />
     </div>
   );
