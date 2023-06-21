@@ -13,7 +13,7 @@ export async function getOrdersToApprove() {
 }
 
 export async function approveOrder(id) {
-    return await put(`order/${id}/approve`);
+  return await put(`order/${id}/approve`);
 }
 
 export async function createOrder(to_send) {
@@ -21,11 +21,11 @@ export async function createOrder(to_send) {
 }
 
 export async function deleteWaitingOrdersById(id) {
-  return await del(`order/${id}/waiting`);
+  return await put(`order/${id}/waiting`);
 }
 
 export async function approveOrderById(id) {
-  return await put(`order/${id}/patient-approve`)
+  return await put(`order/${id}/patient-approve`);
 }
 
 export async function updateQueue() {
@@ -33,11 +33,11 @@ export async function updateQueue() {
 }
 
 export async function withdrawOrderById(id) {
-  return await put(`order/${id}/withdraw`)
+  return await put(`order/${id}/withdraw`);
 }
 
 export async function cancelOrder(id) {
-  return await postWithEtag(`order/${id}/cancel`)
+  return await postWithEtag(`order/${id}/cancel`);
 }
 
 // export async function submitOrder(orderData) {
