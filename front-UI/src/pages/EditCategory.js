@@ -81,7 +81,6 @@ export default function EditCategory() {
       })
       .catch((error) => {
         if (error.response.status === 409) {
-          toast.error(t("category_edited"), { position: "top-center" });
           navigate("/categories");
         }
         toast.error(t(error.response.data.message), { position: "top-center" });

@@ -254,5 +254,11 @@
   "bad_prescription_number": "Bad prescription Order",
   "bought_successfully": "Bought successfully!",
   "exception.order.prescription.already-exists": "Given prescription is already registered",
-  "exception.order.prescription.required": "Prescription is required"
+  "exception.order.prescription.required": "Prescription is required",
+  "quantity": "Quantity",
+  "actions": "Actions",
+  "exception.order.illegal-state.modification": "Bad entity state",
+  "category_edited": "Category edited succesfully",
+  "exception.category.already-exists": "Category already exists",
+  "exception.medication.already-exists": "Medication already exists"
 }

@@ -254,5 +254,11 @@
   "bad_prescription_number": "Zły numer recepty",
   "bought_successfully": "Zakup udany!",
   "exception.order.prescription.already-exists": "Podana recepta jest już zarejestrowana",
-  "exception.order.prescription.required": "Wymagane jest podanie recepty"
+  "exception.order.prescription.required": "Wymagane jest podanie recepty",
+  "quantity": "Ilość",
+  "actions": "Akcje",
+  "exception.order.illegal-state.modification": "Nieodpowiedni stan obiektu",
+  "category_edited": "Kategoria została pomyślnie zaktualizowana",
+  "exception.category.already-exists": "Kategoria już istnieje",
+  "exception.medication.already-exists": "Lek już istnieje"
 }
